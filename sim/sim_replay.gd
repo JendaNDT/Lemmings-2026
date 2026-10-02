@@ -74,6 +74,8 @@ func _valid_payload(command: Dictionary) -> bool:
 		LevelSim.Command.RELEASE_RATE:
 			return command.target == -1 and command.value >= sim.release_rate \
 				and command.value <= SimConst.MAX_RELEASE_RATE
+		LevelSim.Command.NUKE:
+			return command.target == -1 and command.value == 0
 	return false
 
 

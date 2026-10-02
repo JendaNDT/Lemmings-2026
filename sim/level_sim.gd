@@ -9,7 +9,7 @@ extends RefCounted
 ## - Stejný level + stejné příkazy ve stejných ticích = vždy stejný výsledek
 ##   (díky tomu půjde udělat replay, přetáčení času a ověřování řešení).
 
-enum Command { ASSIGN_SKILL, RELEASE_RATE }
+enum Command { ASSIGN_SKILL, RELEASE_RATE, NUKE }
 
 var spec: LevelSpec
 var mask: TerrainMask
@@ -22,6 +22,7 @@ var spawned := 0
 var saved := 0
 var lost := 0
 var finished := false
+var nuking := false
 ## Kopie přijatých příkazů; pořadí v poli rozhoduje i uvnitř stejného tiku.
 var replay_log: Array[Dictionary]:
 	get:
@@ -33,6 +34,7 @@ var _states := {}
 var _events: Array[Dictionary] = []
 var _next_spawn_tick := 0
 var _next_hatch := 0
+var _next_nuke_tick := 0
 
 
 func _init(level_spec: LevelSpec, terrain: TerrainMask) -> void:
@@ -52,6 +54,9 @@ func _init(level_spec: LevelSpec, terrain: TerrainMask) -> void:
 		Lemming.State.SHRUGGING: ShruggingState.new(),
 		Lemming.State.BASHER: BasherState.new(),
 		Lemming.State.DIGGER: DiggerState.new(),
+		Lemming.State.CLIMBER: ClimberState.new(),
+		Lemming.State.FLOATER: FloaterState.new(),
+		Lemming.State.MINER: MinerState.new(),
 	}
 
 
@@ -61,11 +66,17 @@ func tick() -> void:
 		return
 	tick_count += 1
 	_spawn_if_due()
+	_arm_next_nuke()
 	for lem in lemmings:
 		if lem.removed:
 			continue
 		lem.prev_x = lem.x
 		lem.prev_y = lem.y
+		if lem.bomb_ticks > 0:
+			lem.bomb_ticks -= 1
+			if lem.bomb_ticks == 0:
+				_explode(lem)
+				continue
 		lem.state_ticks += 1
 		_states[lem.state].tick(lem, self)
 		if lem.removed:
@@ -88,6 +99,7 @@ func remove_lemming(lem: Lemming, was_saved: bool) -> void:
 	if lem.removed:
 		return
 	lem.removed = true
+	lem.bomb_ticks = -1
 	lem.saved = was_saved
 	if was_saved:
 		saved += 1
@@ -100,14 +112,19 @@ func remove_lemming(lem: Lemming, was_saved: bool) -> void:
 func can_assign(lem: Lemming, skill: int) -> bool:
 	if lem == null or lem.removed or finished:
 		return false
-	if lem.id < 0 or lem.id >= lemmings.size() or lemmings[lem.id] != lem:
+	if (lem.id < 0 or lem.id >= lemmings.size() or lemmings[lem.id] != lem
+			or int(skills.get(skill, 0)) <= 0
+			or lem.state in [Lemming.State.SPLATTING, Lemming.State.EXITING]):
 		return false
-	if int(skills.get(skill, 0)) <= 0:
-		return false
+	match skill:
+		Lemming.Skill.CLIMBER:
+			return not lem.can_climb
+		Lemming.Skill.FLOATER:
+			return not lem.has_floater
+		Lemming.Skill.BOMBER:
+			return lem.bomb_ticks < 0
 	var target := _state_for_skill(skill)
-	if target < 0:
-		return false  # dovednost zatím není naprogramovaná
-	return lem.state in Lemming.WORKING_STATES and lem.state != target
+	return target >= 0 and lem.state in Lemming.WORKING_STATES and lem.state != target
 
 
 func assign_skill(lem: Lemming, skill: int) -> bool:
@@ -126,12 +143,15 @@ func apply_command(kind: int, target: int, value: int) -> bool:
 			if not _assign_skill_command(target, value):
 				return false
 		Command.RELEASE_RATE:
-			if target != -1:
-				return false
 			value = clampi(value, _minimum_release_rate, SimConst.MAX_RELEASE_RATE)
-			if value == release_rate:
+			if target != -1 or value == release_rate:
 				return false
 			release_rate = value
+		Command.NUKE:
+			if target != -1 or value != 0 or nuking:
+				return false
+			nuking = true
+			_next_nuke_tick = tick_count + 1
 		_:
 			return false
 	_replay_log.append({"tick": tick_count, "kind": kind, "target": target, "value": value})
@@ -145,7 +165,15 @@ func _assign_skill_command(target: int, skill: int) -> bool:
 	if not can_assign(lem, skill):
 		return false
 	skills[skill] = int(skills[skill]) - 1
-	set_state(lem, _state_for_skill(skill) as Lemming.State)
+	match skill:
+		Lemming.Skill.CLIMBER:
+			lem.can_climb = true
+		Lemming.Skill.FLOATER:
+			lem.has_floater = true
+		Lemming.Skill.BOMBER:
+			lem.bomb_ticks = SimConst.BOMB_TICKS
+		_:
+			set_state(lem, _state_for_skill(skill) as Lemming.State)
 	emit_event("assign", lem)
 	return true
 
@@ -160,7 +188,32 @@ func _state_for_skill(skill: int) -> int:
 			return Lemming.State.BASHER
 		Lemming.Skill.DIGGER:
 			return Lemming.State.DIGGER
+		Lemming.Skill.MINER:
+			return Lemming.State.MINER
 	return -1
+
+
+func start_nuke() -> bool:
+	return apply_command(Command.NUKE, -1, 0)
+
+
+func _arm_next_nuke() -> void:
+	if not nuking or tick_count < _next_nuke_tick:
+		return
+	for lem in lemmings:
+		if lem.removed or lem.bomb_ticks >= 0 or lem.state in [
+				Lemming.State.SPLATTING, Lemming.State.EXITING]:
+			continue
+		lem.bomb_ticks = SimConst.BOMB_TICKS
+		emit_event("assign", lem)
+		_next_nuke_tick = tick_count + SimConst.NUKE_INTERVAL
+		return
+
+
+func _explode(lem: Lemming) -> void:
+	mask.erase_circle(lem.x, lem.y - SimConst.LEMMING_HEIGHT / 2, SimConst.BOMB_RADIUS)
+	emit_event("explode", lem)
+	remove_lemming(lem, false)
 
 
 ## Najde lumíka pod kurzorem. Přednost mají ti, kterým jde vybraná dovednost dát.
@@ -229,7 +282,7 @@ func lemmings_out() -> int:
 
 
 func lemmings_waiting() -> int:
-	return spec.lemming_count - spawned
+	return 0 if nuking else spec.lemming_count - spawned
 
 
 func time_left_ticks() -> int:
@@ -245,7 +298,7 @@ func is_won() -> bool:
 
 
 func _spawn_if_due() -> void:
-	if spawned >= spec.lemming_count or spec.hatches.is_empty():
+	if nuking or spawned >= spec.lemming_count or spec.hatches.is_empty():
 		return
 	if tick_count < _next_spawn_tick:
 		return
@@ -281,10 +334,14 @@ func _update_finished() -> void:
 	if time_left_ticks() <= 0:
 		finished = true
 		return
-	if spawned < spec.lemming_count:
+	if not nuking and spawned < spec.lemming_count:
 		return
-	# Konec, když už nezbývá nikdo, kdo by se mohl hýbat (blokaři se nepočítají).
+	# Blokař s bombou nebo dostupným bombičem může ještě ovlivnit výsledek.
 	for lem in lemmings:
-		if not lem.removed and lem.state != Lemming.State.BLOCKER:
+		if lem.removed:
+			continue
+		if lem.state != Lemming.State.BLOCKER or lem.bomb_ticks > 0 or nuking:
+			return
+		if int(skills.get(Lemming.Skill.BOMBER, 0)) > 0:
 			return
 	finished = true

@@ -18,7 +18,7 @@
 - Připojení pro zápis ani cílová složka zatím nejsou nastavené. Neoznačovat
   nahrávání za funkční nebo soubor za nahraný bez ověření skutečného přenosu.
 - Propojení Disku je na přání Jendy odložené. Aktuální APK předávat přes
-  existující GitHub repozitář v samostatné větvi `downloads/android-0.2.1`.
+  existující GitHub repozitář v samostatné větvi `downloads/android-0.3.0`.
   Odkaz na soubor uvnitř cloudového pracovního prostoru mu nestačí ke stažení.
 - Současně udržovat aktuální zdrojový kód na původní pracovní větvi
   `ccr-ee49bb72-jyyh2r`. Instalační APK patří pouze do větve pro stažení.
@@ -27,7 +27,7 @@
 - `sim/` = čistá logika: žádné uzly (Node), žádný `Input`, žádná náhoda,
   žádný reálný čas, herní pravidla používají celá čísla. Čas posouvá jen `LevelSim.tick()`.
 - `view/` a `ui/` simulaci jen čtou. Příkazy posílají přes `assign_skill()`
-  a `change_release_rate()`, které vedou do jednotného `apply_command()`.
+  a `change_release_rate()` / `start_nuke()`, které vedou do jednotného `apply_command()`.
   Provedou se okamžitě mezi tiky i při pauze; pořadí v `replay_log` je závazné.
 - Nový stav lumíka = nový soubor v `sim/states/` (dědí `LemmingState`)
   + zaregistrovat v `LevelSim._init()` + případně `Lemming.State` / `Lemming.Skill`

@@ -39,8 +39,10 @@ func handle_events(events: Array[Dictionary]) -> void:
 		match String(e["type"]):
 			"dig":
 				_burst(p, 3, DIRT, Vector2(0, -35), 30.0, 0.5, 0.9)
-			"bash":
+			"bash", "mine":
 				_burst(p + Vector2(4.0 * d, -5.0), 3, DIRT, Vector2(25.0 * d, -15.0), 25.0, 0.5, 0.9)
+			"explode":
+				_burst(p + Vector2(0, -5), 24, DIRT, Vector2(0, -40), 70.0, 0.65, 1.5)
 			"brick":
 				_burst(p + Vector2(2.0 * d, -1.0), 2, DUST, Vector2(0, -8), 10.0, 0.4, 0.6, 0.2)
 			"brick_warning":

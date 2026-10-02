@@ -95,17 +95,21 @@ U nás je to stejné:
 ```
 
 Hotové stavy: chodec, padající, splácnutí, odchod východem,
-blokař, stavitel (+ krčení rameny), razič, kopáč.
+blokař, stavitel (+ krčení rameny), razič, kopáč, lezec, plachtění a horník.
 
-Plánované: lezec, padák, bombič (+ atomovka), horník, utopení,
-pasti.
+Lezení a padák jsou navíc trvalé vlastnosti postavy; odpočet bomby běží
+souběžně s aktuálním stavem. Bombič tedy není samostatný pohybový stav.
+Hromadné ukončení je třetí společný příkaz (`NUKE`); jeho průběh řídí
+simulační tiky. Kombinace a priority popisuje `ETAPA_4_OVERENI.md`.
+
+Plánované: utopení a pasti.
 
 ### Pravidla simulace (nesmí se porušit)
 
 - V `sim/` **nesmí** být žádné uzly (Node), `Input`, náhoda ani reálný
   čas. Jen čistá data a celá čísla.
 - Čas se posouvá jen funkcí `LevelSim.tick()`.
-- Dovednosti a vypouštění vstupují přes `apply_command()`. Provedou se
+- Dovednosti, vypouštění a hromadné ukončení vstupují přes `apply_command()`. Provedou se
   okamžitě mezi tiky, také během pauzy. Přijaté příkazy se zapisují do
   `replay_log`: `{tick, kind, target, value}`. Tik N označuje okamžik
   po dokončení N a před N+1; pořadí v poli rozhoduje i ve stejném tiku.

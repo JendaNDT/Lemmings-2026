@@ -14,12 +14,13 @@ výchozí je `main/game_3d.tscn`.
 
 ## Testovací verze pro Android
 
-[**Stáhnout Android APK 0.2.1 (60 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.2.1/android/Lemmings-2026-Android-0.2.1.apk)
+[**Stáhnout Android APK 0.3.0 (60 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.3.0/android/Lemmings-2026-Android-0.3.0.apk)
 
 Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.2.1).
+[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.3.0).
 
-APK `Lemmings-2026-Android-0.2.1.apk` obsahuje stejnou ukázkovou misi.
+APK `Lemmings-2026-Android-0.3.0.apk` obsahuje původní misi, tři ukázky nových dovedností
+a hřiště se všemi osmi schopnostmi. Mise se vybírají vlevo v dolní liště.
 Je určené pro telefony a tablety s Androidem 7.0+ a OpenGL ES 3.0,
 včetně 32bitového a 64bitového ARM. Stáhni APK přímo na zařízení a otevři
 jej; případné povolení instalace se týká aplikace, ze které soubor otevíráš.
@@ -34,6 +35,10 @@ Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 
 Pro opakování exportu nastav v editoru Godotu Android SDK a Java SDK,
 nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
+
+Grafika je stále provizorní; schválený modelínový mockup ukazuje cílový
+vzhled, kterého současná hra ještě nedosahuje. Novinky a řešení ukázek:
+[`etapa 4`](docs/ETAPA_4_OVERENI.md).
 
 ## Spuštění hotové verze na Macu
 
@@ -116,6 +121,8 @@ kontrolní průchod jsou v [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERENI.md).
 | Zrychlení 3× | **F** |
 | Vypouštění pomaleji / rychleji | **−** / **=** (nebo na numerické klávesnici) |
 | Restart levelu | **R** |
+| Výběr zkušební mise | nabídka vlevo v dolní liště |
+| Hromadné ukončení | **N** nebo **Ukončit**, poté potvrzení; **Esc** zruší dialog |
 
 ## Jak upravit level
 

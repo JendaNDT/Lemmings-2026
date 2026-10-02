@@ -62,16 +62,24 @@ func _draw_lemming(lem: Lemming, p: Vector2, t: float) -> void:
 			return
 
 	var stride := 0.0
-	if lem.state == Lemming.State.WALKER:
+	if lem.state in [Lemming.State.WALKER, Lemming.State.CLIMBER]:
 		stride = sin(t * TAU / 8.0) * 1.1
 	_draw_body(p, d, stride, t)
+	if lem.bomb_ticks > 0:
+		draw_string(ThemeDB.fallback_font, p + Vector2(-2, -15),
+			str(ceili(lem.bomb_ticks / float(SimConst.TICKS_PER_SECOND))),
+			HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color("ffe297"))
 
 	# Ruce a nářadí podle toho, co lumík dělá.
 	var shoulder := p + Vector2(0.0, -6.5)
 	match lem.state:
-		Lemming.State.FALLER:
+		Lemming.State.FALLER, Lemming.State.CLIMBER, Lemming.State.FLOATER:
 			draw_line(shoulder, shoulder + Vector2(-1.8, -3.0), SKIN, 0.8)
 			draw_line(shoulder, shoulder + Vector2(1.8, -3.0), SKIN, 0.8)
+			if lem.state == Lemming.State.FLOATER:
+				draw_arc(p + Vector2(0, -17), 6, PI, TAU, 12, BRICK, 1.4)
+				for side in [-1, 1]:
+					draw_line(p + Vector2(side * 6, -17), shoulder, TOOL, 0.4)
 		Lemming.State.BLOCKER:
 			draw_line(shoulder + Vector2(-4.0, 0.0), shoulder + Vector2(4.0, 0.0), SKIN, 0.9)
 		Lemming.State.DIGGER:
@@ -84,6 +92,9 @@ func _draw_lemming(lem: Lemming, p: Vector2, t: float) -> void:
 		Lemming.State.BASHER:
 			var punch := absf(sin(t * TAU / 4.0)) * 2.5
 			draw_line(shoulder, shoulder + Vector2((2.0 + punch) * d, 0.5), SKIN, 0.9)
+		Lemming.State.MINER:
+			var swing := sin(lem.state_ticks * TAU / SimConst.MINER_TICKS_PER_STEP)
+			draw_line(shoulder, p + Vector2(4 * d, -2 + swing * 2), TOOL, 0.8)
 		Lemming.State.SHRUGGING:
 			draw_line(shoulder, shoulder + Vector2(-2.2, -1.2), SKIN, 0.8)
 			draw_line(shoulder, shoulder + Vector2(2.2, -1.2), SKIN, 0.8)

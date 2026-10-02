@@ -47,23 +47,29 @@ func update(delta: float, events: Array[Dictionary]) -> void:
 		node.rotation.z = age * 4 * signf(velocity.x)
 	for event in events:
 		var type: String = event["type"]
-		if type not in ["dig", "bash", "brick", "brick_warning", "steel"]:
+		if type not in ["dig", "bash", "mine", "explode", "brick", "brick_warning", "steel"]:
 			continue
 		var point := Vector2(float(event["x"]) + 0.5, float(event["y"]))
 		var direction := float(event["dir"])
-		if type in ["bash", "steel"]:
+		if type in ["bash", "steel", "mine"]:
 			point += Vector2(3 * direction, -5)
+		elif type == "explode":
+			point.y -= SimConst.LEMMING_HEIGHT * 0.5
 		var at := ClaySpace.to_world(point, 0.3)
-		if type in ["bash", "dig"]:
+		if type in ["bash", "dig", "mine", "explode"]:
 			impacts[_pulse % 8] = Vector4(at.x, at.y, 1, 0)
 			_pulse += 1
-		for index in 3:
+		var count := 16 if type == "explode" else 3
+		for index in count:
 			if _particles.size() >= LIMIT:
 				break
 			var node := MeshInstance3D.new()
 			node.mesh = _mesh
-			node.material_override = _clay if type in ["dig", "bash"] else _brick
+			node.material_override = _clay if type in ["dig", "bash", "mine", "explode"] else _brick
 			node.position = at
 			add_child(node)
-			_particles.append({"node": node, "origin": at, "age": 0.0,
-				"velocity": Vector3((index - 1) * 0.9 + direction * 0.3, 1.0 + index * 0.2, 0.5)})
+			var angle := index * TAU / count
+			var velocity := Vector3(cos(angle) * 3.5, 1 + sin(angle) * 3, 0.5) \
+				if type == "explode" else Vector3((index - 1) * 0.9 + direction * 0.3,
+					1.0 + index * 0.2, 0.5)
+			_particles.append({"node": node, "origin": at, "age": 0.0, "velocity": velocity})

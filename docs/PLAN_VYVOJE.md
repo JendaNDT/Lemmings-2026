@@ -6,20 +6,20 @@ Aktualizováno: 2. října 2026. Jde o plán budoucí implementace, nikoli o sez
 
 Herní pravidla zůstanou ve 2D; zobrazení přejde na 3D terén, animované 3D postavy, světla a prostorové pozadí. Pevná ortografická kamera zachová přehlednost. Lumíci se pohybují v jedné herní rovině a rozhraní zůstane 2D.
 
-**První hratelné sestavení je určeno pro macOS**, který má autor nyní k dispozici. Herní jádro zůstane společné pro macOS, budoucí Windows a Android. Windows zůstávají plánovanou cílovou platformou; jejich sestavení ani nativní testování nyní neblokují první etapu. **Android je zamýšlené pozdější rozšíření** pro telefon a tablet; dotykové ovládání a výkon se ověří samostatně. Linux slouží jako cloudové vývojové a testovací prostředí, není slíbenou distribuční platformou.
+**První hratelné sestavení je určeno pro macOS**, který má autor nyní k dispozici. Herní jádro zůstane společné pro macOS, budoucí Windows a Android. Windows zůstávají plánovanou cílovou platformou; jejich sestavení ani nativní testování nyní neblokují první etapu. **Android má testovací APK** pro telefon a tablet; nativní spuštění a výkon se ověří samostatně. Linux slouží jako cloudové vývojové a testovací prostředí, není slíbenou distribuční platformou.
 
 Vydání 1.0 zahrne osm dovedností, 15–20 vlastních levelů, menu, nastavení, ukládání postupu, úvod do ovládání, grafiku a zvuk. Web, uživatelský replay, přetáčení času a editor ve hře patří do navazujících etap.
 
-## Aktuální ověřený stav po etapách 1 a 2
+## Aktuální ověřený stav
 
 - Cloud obsahuje standardní Godot 4.7 a nástroje pro kontrolu GDScriptu.
-- Existuje simulace, první level, blokař, stavitel, razič a kopáč, kamera a HUD.
+- Existuje simulace všech osmi dovedností, první level, tři další zkušební mise a hřiště, kamera a HUD.
 - První level byl dokončen přes ovládání v samostatném Linux QA exportu (20/20), ověřeny shadery, kamera, rozlišení a restarty.
 - Je připraven univerzální balíček pro macOS; nativní spuštění na MacBooku zbývá ověřit.
 - Procházejí regresní kontroly mechanik, terénu, celého řešení a skutečné scény s HUD.
 - Dovednosti i vypouštění mají společný záznam. Technický replay přes JSON opakuje průběh při různém tempu snímků; uživatelské rozhraní replaye je pozdější etapa.
-- Přenosné kontroly byly ověřeny v čisté kopii s oddělenou instalací nástrojů. CI pro Linux a macOS je připravené; vzdálený běh čeká na odeslání změn na GitHub.
-- Výchozí grafika již používá 2.5D prototyp etapy 3. Zvuk, Android a nativní výkon na cílovém zařízení dosud ověřeny nejsou.
+- Přenosné kontroly byly ověřeny v čisté kopii s oddělenou instalací nástrojů. CI pro Linux a macOS je připravené; vzdálený výsledek CI dosud nebyl ověřen.
+- Výchozí grafika používá technický 2.5D prototyp. Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
 - Příprava etapy 3: hotová první sada modelínových materiálů, modelů,
   animací a samostatná galerie. Podrobnosti v [podkladech prototypu](PODKLADY_PROTOTYPU.md).
 
@@ -78,6 +78,9 @@ Celkový počet dvanácti etap zůstává stejný.
 
 ## Etapa 4 — Všech osm dovedností
 
+**Stav:** technicky dokončeno, včetně tří zkušebních misí, hřiště se všemi
+dovednostmi a ovládání. Výsledky a meze jsou v [ověření etapy 4](ETAPA_4_OVERENI.md).
+
 Postupně doplnit lezce, padák, horníka, bombiče a hromadné ukončení. Lezení a padák reprezentovat jako trvalé vlastnosti; odpočet bomby musí fungovat souběžně s činností lumíka. Určit platné kombinace a okamžiky přidělení.
 
 Upravit vyhodnocení konce levelu tak, aby zohledňovalo čekající výbuchy a jiné akce schopné změnit výsledek. Každou mechaniku ihned propojit s provizorním 3D zobrazením a případnou změnou terénu.
@@ -101,6 +104,13 @@ Ukládání musí zvládat přerušený zápis, poškozený soubor a změnu form
 **Podmínka dokončení:** lze projít cestu od spuštění přes dokončení levelu až po návrat další den se zachovaným postupem.
 
 ## Etapa 7 — Reprezentativní demo a výtvarný směr
+
+**Výtvarná revize:** současná ukázka neodpovídá kvalitě schváleného mockupu.
+Při hraní autor označil grafiku za nevyhovující. Doporučení je přesunout
+výtvarné dotažení jedné skutečné mise před další rozšiřování hry: oblé
+hrany terénu včetně kopání, výraznější postava, světlo, prostorové pozadí
+a čitelné rozhraní. Přesun je zatím návrh; nepovažovat technické splnění
+etap 3 a 4 za schválení současné grafické kvality.
 
 Rozpracovat již zvolený modelínový styl z etapy 3 do reprezentativní kvality.
 

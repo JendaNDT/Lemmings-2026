@@ -9,6 +9,9 @@ func enter(lem: Lemming, _sim: LevelSim) -> void:
 
 func tick(lem: Lemming, sim: LevelSim) -> void:
 	for _i in SimConst.FALL_SPEED:
+		if lem.has_floater and lem.fall_distance >= SimConst.FLOATER_OPEN_DISTANCE:
+			sim.set_state(lem, Lemming.State.FLOATER)
+			return
 		if sim.mask.is_solid(lem.x, lem.y):
 			if lem.fall_distance > SimConst.SAFE_FALL_DISTANCE:
 				sim.set_state(lem, Lemming.State.SPLATTING)

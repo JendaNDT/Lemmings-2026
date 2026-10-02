@@ -8,9 +8,12 @@ signal release_rate_step(delta: int)
 signal pause_pressed
 signal speed_pressed
 signal restart_pressed
+signal mission_selected(index: int)
+signal nuke_requested
+signal nuke_decided(confirmed: bool)
 
 const TOP_BAR_HEIGHT := 56.0
-const BOTTOM_BAR_HEIGHT := 120.0
+const BOTTOM_BAR_HEIGHT := 144.0
 const ACCENT := Color("a6ddb1")
 const TEXT := Color("fff1d5")
 const TEXT_DIM := Color("c4d1c5")
@@ -28,6 +31,9 @@ var _rate_value: Label
 var _skills_box: HBoxContainer
 var _pause_button: Button
 var _speed_button: Button
+var _mission_picker: OptionButton
+var _nuke_button: Button
+var _confirm_layer: Panel
 var _result_layer: CenterContainer
 var _result_title: Label
 var _result_text: Label
@@ -46,7 +52,7 @@ func setup(sim: LevelSim) -> void:
 	_result_layer.visible = false
 	_title.text = sim.spec.title
 	for child in _skills_box.get_children():
-		child.queue_free()
+		child.free()
 	_skill_widgets.clear()
 	_visible_skills.clear()
 	_selected_skill = -1
@@ -90,6 +96,30 @@ func refresh(paused: bool, speed: float) -> void:
 		count_label.text = str(int(_sim.skills.get(s, 0)))
 	_pause_button.text = "Pokračuj" if paused else "Pauza"
 	_speed_button.text = "%d×" % roundi(speed)
+	_nuke_button.disabled = _sim.finished or _sim.nuking
+	_nuke_button.text = "Odpočet…" if _sim.nuking else "Ukončit"
+	for skill: int in _skill_widgets:
+		(_skill_widgets[skill]["button"] as Button).disabled = \
+			_sim.finished or int(_sim.skills.get(skill, 0)) <= 0
+
+
+func set_missions(titles: Array[String], selected: int) -> void:
+	_mission_picker.clear()
+	for title in titles:
+		_mission_picker.add_item(title)
+	_mission_picker.select(selected)
+
+
+func show_nuke_confirmation() -> void:
+	_confirm_layer.show()
+
+
+func close_nuke_confirmation() -> void:
+	_confirm_layer.hide()
+
+
+func confirmation_open() -> bool:
+	return _confirm_layer.visible
 
 
 func show_result(sim: LevelSim) -> void:
@@ -127,47 +157,18 @@ func _build() -> void:
 	_stats = _label("", 22, TEXT)
 	top_row.add_child(_stats)
 
-	# Spodní lišta: vypouštění, dovednosti, ovládání.
+	# Dva řádky udrží všech osm dovedností dostupných i na telefonu.
 	var bottom := PanelContainer.new()
 	_root.add_child(bottom)
 	_place(bottom, 0.0, 1.0, 1.0, 1.0, 0.0, -BOTTOM_BAR_HEIGHT, 0.0, 0.0)
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 10)
-	bottom.add_child(row)
-
-	var minus := _button("−", Vector2(56, 92))
-	minus.pressed.connect(func() -> void: release_rate_step.emit(-1))
-	row.add_child(minus)
-	var rate_box := VBoxContainer.new()
-	rate_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	rate_box.custom_minimum_size = Vector2(96, 0)
-	rate_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_rate_value = _label("50", 30, TEXT)
-	_rate_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rate_box.add_child(_rate_value)
-	var rate_caption := _label("Vypouštění", 15, TEXT_DIM)
-	rate_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	rate_box.add_child(rate_caption)
-	row.add_child(rate_box)
-	var plus := _button("+", Vector2(56, 92))
-	plus.pressed.connect(func() -> void: release_rate_step.emit(1))
-	row.add_child(plus)
-
-	row.add_child(VSeparator.new())
+	var rows := VBoxContainer.new()
+	rows.add_theme_constant_override("separation", 6)
+	bottom.add_child(rows)
+	_build_controls(rows)
 	_skills_box = HBoxContainer.new()
-	_skills_box.add_theme_constant_override("separation", 8)
-	row.add_child(_skills_box)
-	row.add_child(_spacer())
-
-	_pause_button = _button("Pauza", Vector2(120, 92))
-	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
-	row.add_child(_pause_button)
-	_speed_button = _button("1×", Vector2(92, 92))
-	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
-	row.add_child(_speed_button)
-	var restart := _button("Znovu", Vector2(120, 92))
-	restart.pressed.connect(func() -> void: restart_pressed.emit())
-	row.add_child(restart)
+	_skills_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_skills_box.add_theme_constant_override("separation", 6)
+	rows.add_child(_skills_box)
 
 	# Okno s výsledkem uprostřed obrazovky.
 	_result_layer = CenterContainer.new()
@@ -191,9 +192,74 @@ func _build() -> void:
 	col.add_child(again)
 	_result_layer.visible = false
 
+	_build_confirmation()
+
+
+func _build_controls(rows: VBoxContainer) -> void:
+	var row := HBoxContainer.new()
+	rows.add_child(row)
+	_mission_picker = OptionButton.new()
+	_mission_picker.custom_minimum_size = Vector2(260, 44)
+	_mission_picker.focus_mode = Control.FOCUS_NONE
+	_mission_picker.item_selected.connect(func(index: int) -> void: mission_selected.emit(index))
+	row.add_child(_mission_picker)
+	row.add_child(_spacer())
+	row.add_child(_label("Vypouštění", 16, TEXT_DIM))
+	var minus := _button("−", Vector2(48, 44))
+	minus.pressed.connect(func() -> void: release_rate_step.emit(-1))
+	row.add_child(minus)
+	_rate_value = _label("50", 24, TEXT)
+	_rate_value.custom_minimum_size.x = 42
+	_rate_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	row.add_child(_rate_value)
+	var plus := _button("+", Vector2(48, 44))
+	plus.pressed.connect(func() -> void: release_rate_step.emit(1))
+	row.add_child(plus)
+	row.add_child(_spacer())
+	_pause_button = _button("Pauza", Vector2(120, 44))
+	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
+	row.add_child(_pause_button)
+	_speed_button = _button("1×", Vector2(64, 44))
+	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
+	row.add_child(_speed_button)
+	var restart := _button("Znovu", Vector2(96, 44))
+	restart.pressed.connect(func() -> void: restart_pressed.emit())
+	row.add_child(restart)
+	_nuke_button = _button("Ukončit", Vector2(112, 44))
+	_nuke_button.tooltip_text = "Zavře líheň a spustí postupné odpočty bomb. Vyžaduje potvrzení."
+	_nuke_button.pressed.connect(func() -> void: nuke_requested.emit())
+	row.add_child(_nuke_button)
+
+
+func _build_confirmation() -> void:
+	_confirm_layer = Panel.new()
+	_confirm_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var shade := _box(Color(0, 0, 0, 0.7), Color.TRANSPARENT, 0, 0)
+	_confirm_layer.add_theme_stylebox_override("panel", shade)
+	_root.add_child(_confirm_layer)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_confirm_layer.add_child(center)
+	var panel := PanelContainer.new()
+	center.add_child(panel)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 14)
+	panel.add_child(col)
+	col.add_child(_label("Ukončit pokus?", 30, TEXT))
+	col.add_child(_label("Líheň se zavře a lumíkům začne odpočet bomby.\n"
+		+ "Dosavadní záchrany zůstanou započítané.", 20, TEXT))
+	var cancel := _button("Pokračovat ve hře", Vector2(460, 56))
+	cancel.pressed.connect(func() -> void: nuke_decided.emit(false))
+	col.add_child(cancel)
+	var confirm := _button("Ano, spustit odpočty", Vector2(460, 56))
+	confirm.pressed.connect(func() -> void: nuke_decided.emit(true))
+	col.add_child(confirm)
+	_confirm_layer.hide()
+
 
 func _add_skill_button(skill: int, hotkey: int) -> void:
-	var button := _button("", Vector2(112, 92))
+	var button := _button("", Vector2(100, 68))
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.toggle_mode = true
 	button.pressed.connect(func() -> void: skill_selected.emit(skill))
 	var col := VBoxContainer.new()
@@ -201,7 +267,7 @@ func _add_skill_button(skill: int, hotkey: int) -> void:
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	button.add_child(col)
 	col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var count := _label("0", 32, TEXT)
+	var count := _label("0", 26, TEXT)
 	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var number_row := HBoxContainer.new()
 	number_row.alignment = BoxContainer.ALIGNMENT_CENTER

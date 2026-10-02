@@ -75,9 +75,10 @@ func snapshot(sim: LevelSim) -> Array:
 		actors.append([
 			lem.id, lem.x, lem.y, lem.prev_x, lem.prev_y, lem.dir, lem.state,
 			lem.state_ticks, lem.fall_distance, lem.bricks_left, lem.removed, lem.saved,
+			lem.can_climb, lem.has_floater, lem.bomb_ticks,
 		])
 	return [
 		sim.tick_count, sim.spawned, sim.saved, sim.lost, sim.finished, sim.release_rate,
 		sim.skills.duplicate(), actors, sim.mask.data.duplicate(), sim.mask.version,
-		sim.replay_log, sim.time_left_ticks(), sim.is_won(),
+		sim.replay_log, sim.time_left_ticks(), sim.is_won(), sim.nuking,
 	]

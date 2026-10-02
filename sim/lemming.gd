@@ -16,6 +16,9 @@ enum State {
 	SHRUGGING,
 	BASHER,
 	DIGGER,
+	CLIMBER,
+	FLOATER,
+	MINER,
 }
 
 ## Dovednosti, které hráč přiděluje (pořadí jako v originále).
@@ -59,6 +62,7 @@ const WORKING_STATES := [
 	State.BUILDER,
 	State.BASHER,
 	State.DIGGER,
+	State.MINER,
 ]
 
 var id := 0
@@ -74,6 +78,11 @@ var state: State = State.FALLER
 var state_ticks := 0
 var fall_distance := 0
 var bricks_left := 0
+## Trvalé vlastnosti přežijí změnu pracovní činnosti i pád.
+var can_climb := false
+var has_floater := false
+## -1 = bez bomby; zbývající čas se mění výhradně v pevných ticích.
+var bomb_ticks := -1
 ## Lumík už ze hry zmizel (zachráněn nebo mrtvý).
 var removed := false
 var saved := false

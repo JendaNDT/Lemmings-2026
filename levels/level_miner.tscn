@@ -1,0 +1,34 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="Miner" type="Node2D"]
+script = ExtResource("1_def")
+title = "3 · Šikmý tunel"
+size = Vector2i(440, 200)
+lemming_count = 6
+save_required = 6
+release_rate = 50
+time_limit_seconds = 180
+miners = 2
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Shape0" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 80, 240, 80, 240, 200, 0, 200)
+script = ExtResource("2_shape")
+
+[node name="Shape1" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(240, 170, 440, 170, 440, 200, 240, 200)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(40, 50)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(370, 170)
+script = ExtResource("4_exit")

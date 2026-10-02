@@ -10,27 +10,28 @@ nově také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**Etapa 4 – doplnění zbývajících dovedností.** Etapa 3 má hotový hratelný
-2.5D prototyp prvního levelu: materiály, animace, měnitelný prostorový terén,
-světlo, kamera, klikání a HUD jsou zapojené. Grafický průchod zachránil 20/20.
-Původní 2D scéna zůstává pro diagnostické porovnání. Podrobnosti a omezení
-jsou v [`ověření etapy 3`](docs/ETAPA_3_OVERENI.md).
-Etapa 2 doplnila společné příkazy,
-technický replay a regresní kontroly simulace i skutečné herní smyčky.
-Současně zbývá uživatelské spuštění macOS balíčku na MacBooku; cloud
-nepotvrzuje jeho nativní běh. Připravené CI pro Linux a macOS se spustí
-po odeslání změn na GitHub, vzdálený běh zatím nebyl ověřen.
+**Etapa 4 je technicky dokončená:** všech osm dovedností, souběžné odpočty,
+hromadné ukončení s potvrzením, tři nové zkušební mise a hřiště se všemi
+schopnostmi. Podrobnosti: [`ověření etapy 4`](docs/ETAPA_4_OVERENI.md).
 
-Kompletní pořadí dvanácti etap je v [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md).
-Výsledky: [`etapa 1`](docs/ETAPA_1_OVERENI.md),
-[`etapa 2`](docs/ETAPA_2_SIMULACE.md), [`etapa 3`](docs/ETAPA_3_OVERENI.md).
+Podle číselného pořadí navazuje etapa 5 (nebezpečí a objekty). Jenda ale
+upozornil, že současná grafika je nevyhovující. Doporučeným dalším krokem
+je proto výtvarné dotažení jedné celé scény podle schváleného mockupu.
+Přesun této práce dopředu zatím nebyl potvrzen. Současný technický prototyp
+**nedosahuje cílového modelínového vzhledu**; samotná sada textur nestačí.
+Reprezentativní kvalita byla původně v etapě 7, finální grafika celé hry
+v etapě 8. Stav „hotovo“ u technických etap není schválení výtvarné kvality.
+
+Kompletní pořadí dvanácti etap je v [`plánu vývoje`](docs/PLAN_VYVOJE.md).
+Nativní spuštění a výkon na MacBooku a Androidu čekají na ověření;
+Windows jsou na přání autora odložené na závěr. Cloudové průchody je nenahrazují.
 
 ## ✅ Hotovo
 - Návrh architektury (`docs/ARCHITEKTURA.md`)
 - Struktura projektu Godot 4.7
 - Simulace s pevným krokem (17 tiků/s), deterministická, záznam příkazů pro replay
 - Logická mapa terénu (hlína / ocel / cihly), kopání, stavění, vypalování mnohoúhelníků
-- Stavy lumíka: chodec, pád, splácnutí, odchod východem, blokař, stavitel, razič, kopáč
+- Stavy lumíka: chodec, pád, splácnutí, odchod východem, blokař, stavitel, razič, kopáč, lezec, padák a horník
 - Tvorba levelů v editoru Godotu (TerrainShape, LemmingHatch, LemmingExit)
 - Level 1 „První kroky“ (ověřený simulací: řešitelný, 20/20)
 - Automatické kontroly mechanik, řešení levelu, JSON replaye a hlavní scény s HUD
@@ -62,15 +63,20 @@ Výsledky: [`etapa 1`](docs/ETAPA_1_OVERENI.md),
 - Android demo 0.2.1: podepsané APK pro ARM32/ARM64, Android 7.0+, bez oprávnění
 - Dotyk: klepnutí, posun, přiblížení dvěma prsty; ochrana před nechtěným přidělením
 - Mobilní profil OpenGL ES 3, menší stíny a rozlišení 3D, bez SSAO/MSAA
-- Aktuální kontroly bez zátěžových měření: 46 GDScriptů, 6 sad, 131 ověření
+- Kontroly před etapou 4: 46 GDScriptů, 6 sad, 131 ověření
 - Celý level ověřený dotykovými událostmi v Compatibility rendereru: 20/20
-- Android APK 0.2.1 nahrané do samostatné GitHub větve `downloads/android-0.2.1`,
+- Android APK 0.3.0 ve větvi `downloads/android-0.3.0` (starší 0.2.1 zůstává zachované),
   s návodem a kontrolním součtem; odkaz na stažení je v README
 - Propojení Google Disku odložené; cloudový přístup nebyl dokončen ani ověřen
 
+- Etapa 4: osm dovedností, kombinace trvalých vlastností, odpočty a hromadné ukončení
+- Tři nové řešitelné zkušební mise (6/6, 6/6, 3/4) a hřiště se všemi schopnostmi
+- Osm dovedností v mobilní liště, výběr scén, potvrzení ukončení a restart vybrané mise
+- Aktuální kontrola: 53 GDScriptů, osm sad, 184 ověření; původní mise stále 20/20
+- Nové mise prošly dotykovým průchodem v Compatibility rendereru na Linuxu
+
 ## 📝 TODO
 ### MVP (nutné pro v1)
-- Lezec, padák, bombič (+ atomovka), horník
 - Voda / láva / pasti, jednosměrné zdi
 - Menu a výběr levelů, ukládání postupu
 - 15–20 vlastních levelů
@@ -107,7 +113,7 @@ Výsledky: [`etapa 1`](docs/ETAPA_1_OVERENI.md),
 - **Stavy lumíka:** jeden soubor na stav, stavy jsou bezstavové (data drží Lemming).
 - **Levely:** scény v editoru Godotu z mnohoúhelníků, ne vlastní formát.
 - **Konec levelu:** při vypršení času nebo pokud po vypuštění všech zbývají jen
-  blokaři. Blokaři se nezachrání; `lost` počítá skutečné smrti, zbývající postavy
+  blokaři bez běžícího odpočtu a bez dostupného bombiče. Blokaři se nezachrání; `lost` počítá skutečné smrti, zbývající postavy
   se na konci pouze zastaví. Splnění cíle samo o sobě level předčasně neukončí.
 - **Klávesy:** podle fyzické pozice (funguje i na české klávesnici).
 - **Grafický směr:** schválené 2.5D – prostorový terén a postavy,

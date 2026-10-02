@@ -152,7 +152,7 @@ func _test_assignments() -> void:
 	var count: int = sim.skills[Lemming.Skill.BUILDER]
 	check(not sim.assign_skill(foreign, Lemming.Skill.BUILDER)
 		and not sim.assign_skill(null, Lemming.Skill.BUILDER), "cizí a chybějící lumík se odmítne")
-	check(not sim.assign_skill(lem, Lemming.Skill.CLIMBER), "neimplementovaná dovednost se odmítne")
+	check(not sim.assign_skill(lem, 999), "neexistující dovednost se odmítne")
 	sim.skills[Lemming.Skill.DIGGER] = 0
 	check(not sim.assign_skill(lem, Lemming.Skill.DIGGER), "vyčerpaná dovednost se odmítne")
 	check(sim.assign_skill(lem, Lemming.Skill.BUILDER)
@@ -179,6 +179,7 @@ func _test_exits_and_end() -> void:
 	check(not sim.change_release_rate(1) and not sim.assign_skill(lem, Lemming.Skill.BUILDER)
 		and snapshot(sim) == frozen, "dokončený level odmítá tiky i příkazy")
 	var blocked := fixture(1)
+	blocked.skills[Lemming.Skill.BOMBER] = 0
 	blocked.spec.exits.append(Vector2i(60, 80))
 	var blocker := add_lemming(blocked)
 	blocked.assign_skill(blocker, Lemming.Skill.BLOCKER)

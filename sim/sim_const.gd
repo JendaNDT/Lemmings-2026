@@ -21,6 +21,17 @@ const MAX_STEP_DOWN := 3
 const FALL_SPEED := 3
 ## Delší pád než tohle = splácnutí.
 const SAFE_FALL_DISTANCE := 60
+## Padák se otevře po krátkém volném pádu a zůstane rozvinutý do přistání.
+const FLOATER_OPEN_DISTANCE := 16
+const FLOATER_SPEED := 1
+## Horník razí průchozí tunel šikmo dolů, v obou směrech stejně.
+const MINER_TICKS_PER_STEP := 4
+const MINER_STEP_X := 2
+const MINER_REACH := 4
+## Bomba běží souběžně s činností. Hromadné ukončení zapaluje postupně.
+const BOMB_TICKS := 5 * TICKS_PER_SECOND
+const BOMB_RADIUS := 16
+const NUKE_INTERVAL := 2
 
 ## Dosah „neviditelné zdi“ blokaře do stran a do výšky.
 const BLOCKER_FIELD := 6

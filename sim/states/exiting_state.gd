@@ -4,6 +4,7 @@ extends LemmingState
 
 
 func enter(lem: Lemming, sim: LevelSim) -> void:
+	lem.bomb_ticks = -1
 	sim.emit_event("exit", lem)
 
 

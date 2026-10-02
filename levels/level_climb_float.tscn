@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="ClimbFloat" type="Node2D"]
+script = ExtResource("1_def")
+title = "2 · Lezec a padák"
+size = Vector2i(400, 200)
+lemming_count = 6
+save_required = 6
+release_rate = 50
+time_limit_seconds = 180
+climbers = 6
+floaters = 6
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Shape0" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 70, 120, 70, 120, 200, 0, 200)
+script = ExtResource("2_shape")
+
+[node name="Shape1" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(90, 30, 120, 30, 120, 70, 90, 70)
+script = ExtResource("2_shape")
+
+[node name="Shape2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(120, 160, 400, 160, 400, 200, 120, 200)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(40, 45)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(350, 160)
+script = ExtResource("4_exit")

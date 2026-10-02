@@ -15,7 +15,10 @@ func tick(lem: Lemming, sim: LevelSim) -> void:
 		while up <= SimConst.MAX_STEP_UP and mask.is_solid(nx, lem.y - up - 1):
 			up += 1
 		if up > SimConst.MAX_STEP_UP:
-			lem.dir = -lem.dir
+			if lem.can_climb and nx >= 0 and nx < mask.width:
+				sim.set_state(lem, Lemming.State.CLIMBER)
+			else:
+				lem.dir = -lem.dir
 			return
 		lem.x = nx
 		lem.y -= up

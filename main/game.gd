@@ -4,8 +4,20 @@ extends Node
 ## Každý snímek: přičte uplynulý čas, provede tolik pevných kroků simulace,
 ## kolik se jich do něj vejde, a pak předá grafice, jak daleko jsme mezi tiky.
 
+const MISSIONS := [
+	preload("res://levels/level_01.tscn"),
+	preload("res://levels/level_climb_float.tscn"),
+	preload("res://levels/level_miner.tscn"),
+	preload("res://levels/level_bomber.tscn"),
+	preload("res://levels/level_playground.tscn"),
+]
+const MISSION_TITLES: Array[String] = [
+	"1 · První kroky", "2 · Lezec a padák", "3 · Šikmý tunel",
+	"4 · Cesta skrz zeď", "5 · Všech osm dovedností",
+]
+
 ## Který level se hraje. Dá se přepnout v Inspectoru.
-@export var level_scene: PackedScene = preload("res://levels/level_01.tscn")
+@export var level_scene: PackedScene = MISSIONS[0]
 @export var use_3d := false
 
 var _sim: LevelSim
@@ -16,6 +28,7 @@ var _fast := false
 var _accumulator := 0.0
 var _result_shown := false
 var _touch: TouchControls
+var _pause_before_confirmation := false
 
 @onready var _world: Node2D = $World
 @onready var _terrain_view: TerrainView = $World/TerrainView
@@ -32,6 +45,9 @@ func _ready() -> void:
 	_hud.pause_pressed.connect(_toggle_pause)
 	_hud.speed_pressed.connect(_toggle_speed)
 	_hud.restart_pressed.connect(_load_level)
+	_hud.mission_selected.connect(_choose_mission)
+	_hud.nuke_requested.connect(_request_nuke)
+	_hud.nuke_decided.connect(_decide_nuke)
 	_camera.top_padding = Hud.TOP_BAR_HEIGHT
 	_camera.bottom_padding = Hud.BOTTOM_BAR_HEIGHT
 	if use_3d:
@@ -48,6 +64,7 @@ func _ready() -> void:
 
 
 func _load_level() -> void:
+	_hud.close_nuke_confirmation()
 	if _touch != null:
 		_touch.clear()
 	if _level != null:
@@ -73,8 +90,10 @@ func _load_level() -> void:
 		_fx_view.clear()
 		_camera.setup(Vector2(spec.width, spec.height), focus)
 	_hud.setup(_sim)
+	_hud.set_missions(MISSION_TITLES, maxi(0, MISSIONS.find(level_scene)))
 
 	_paused = false
+	_fast = false
 	_accumulator = 0.0
 	_result_shown = false
 	var skills := _hud.visible_skills()
@@ -121,6 +140,10 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _hud.confirmation_open():
+		if event is InputEventKey and event.pressed and event.physical_keycode == KEY_ESCAPE:
+			_decide_nuke(false)
+		return
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
 		if use_3d and mb.device == InputEvent.DEVICE_ID_EMULATION:
@@ -144,6 +167,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_toggle_speed()
 			KEY_R:
 				_load_level()
+			KEY_N:
+				_request_nuke()
 			KEY_MINUS, KEY_KP_SUBTRACT:
 				_change_release_rate(-1)
 			KEY_EQUAL, KEY_KP_ADD:
@@ -151,21 +176,25 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _touch != null and not _result_shown:
+	if _touch != null and not _result_shown and not _hud.confirmation_open():
 		_touch.handle(event, get_viewport().get_visible_rect().size)
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED:
 		_paused = true
+		_pause_before_confirmation = true
 		if _touch != null:
 			_touch.clear()
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
-		_toggle_pause()
+		if _hud.confirmation_open():
+			_decide_nuke(false)
+		else:
+			_toggle_pause()
 
 
 func _try_assign_touch(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished:
+	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open():
 		return
 	var best: Lemming = null
 	var best_distance := 42.0
@@ -183,7 +212,7 @@ func _try_assign_touch(screen_point: Vector2) -> void:
 
 
 func _try_assign(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished:
+	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open():
 		return
 	var lem := _sim.find_lemming_at(logic_position(screen_point), _selected_skill)
 	if lem != null:
@@ -215,3 +244,29 @@ func _toggle_pause() -> void:
 
 func _toggle_speed() -> void:
 	_fast = not _fast
+
+
+func _choose_mission(index: int) -> void:
+	if index < 0 or index >= MISSIONS.size():
+		return
+	level_scene = MISSIONS[index]
+	_load_level()
+
+
+func _request_nuke() -> void:
+	if _sim.finished or _sim.nuking or _hud.confirmation_open():
+		return
+	_pause_before_confirmation = _paused
+	_paused = true
+	if _touch != null:
+		_touch.clear()
+	_hud.show_nuke_confirmation()
+
+
+func _decide_nuke(confirmed: bool) -> void:
+	if not _hud.confirmation_open():
+		return
+	_hud.close_nuke_confirmation()
+	if confirmed:
+		_sim.start_nuke()
+	_paused = _pause_before_confirmation
