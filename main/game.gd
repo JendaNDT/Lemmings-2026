@@ -6,6 +6,7 @@ extends Node
 
 ## Který level se hraje. Dá se přepnout v Inspectoru.
 @export var level_scene: PackedScene = preload("res://levels/level_01.tscn")
+@export var use_3d := false
 
 var _sim: LevelSim
 var _level: LevelDefinition
@@ -14,6 +15,7 @@ var _paused := false
 var _fast := false
 var _accumulator := 0.0
 var _result_shown := false
+var _touch: TouchControls
 
 @onready var _world: Node2D = $World
 @onready var _terrain_view: TerrainView = $World/TerrainView
@@ -21,6 +23,7 @@ var _result_shown := false
 @onready var _fx_view: FxView = $World/FxView
 @onready var _camera: GameCamera = $World/GameCamera
 @onready var _hud: Hud = $Hud
+@onready var _clay: ClayWorld = get_node_or_null("ClayWorld")
 
 
 func _ready() -> void:
@@ -31,10 +34,22 @@ func _ready() -> void:
 	_hud.restart_pressed.connect(_load_level)
 	_camera.top_padding = Hud.TOP_BAR_HEIGHT
 	_camera.bottom_padding = Hud.BOTTOM_BAR_HEIGHT
+	if use_3d:
+		_world.visible = false
+		$Background.visible = false
+		_camera.enabled = false
+		for node in [_camera, _terrain_view, _lemmings_view, _fx_view]:
+			node.set_process(false)
+			node.set_process_unhandled_input(false)
+		_touch = TouchControls.new()
+		_touch.camera = _clay.camera
+		_touch.tapped = _try_assign_touch
 	_load_level()
 
 
 func _load_level() -> void:
+	if _touch != null:
+		_touch.clear()
 	if _level != null:
 		_world.remove_child(_level)
 		_level.queue_free()
@@ -47,13 +62,16 @@ func _load_level() -> void:
 	LevelLoader.hide_terrain_shapes(_level)
 	_sim = LevelSim.new(spec, mask)
 
-	_terrain_view.setup(mask)
-	_lemmings_view.setup(_sim)
-	_fx_view.clear()
 	var focus := Vector2(spec.width / 2.0, spec.height / 2.0)
 	if not spec.hatches.is_empty():
 		focus = Vector2(spec.hatches[0])
-	_camera.setup(Vector2(spec.width, spec.height), focus)
+	if use_3d:
+		_clay.setup(_sim)
+	else:
+		_terrain_view.setup(mask)
+		_lemmings_view.setup(_sim)
+		_fx_view.clear()
+		_camera.setup(Vector2(spec.width, spec.height), focus)
 	_hud.setup(_sim)
 
 	_paused = false
@@ -77,11 +95,21 @@ func _process(delta: float) -> void:
 			steps += 1
 		_accumulator = minf(_accumulator, tick_time)
 
-	_fx_view.handle_events(_sim.take_events())
-	_lemmings_view.alpha = clampf(_accumulator / tick_time, 0.0, 1.0)
+	var events := _sim.take_events()
+	var alpha := clampf(_accumulator / tick_time, 0.0, 1.0)
+	if use_3d:
+		var visual_delta := 0.0 if _paused or _sim.finished else delta * \
+			(SimConst.FAST_FORWARD_MULTIPLIER if _fast else 1.0)
+		_clay.update_frame(alpha, events, visual_delta)
+	else:
+		_fx_view.handle_events(events)
+		_lemmings_view.alpha = alpha
 
-	var hovered := _sim.find_lemming_at(_lemmings_view.get_global_mouse_position(), _selected_skill)
-	_lemmings_view.hovered = hovered
+	var hovered := _sim.find_lemming_at(mouse_logic_position(), _selected_skill)
+	if use_3d:
+		_clay.highlight(hovered)
+	else:
+		_lemmings_view.hovered = hovered
 	var cursor := Input.CURSOR_CROSS if hovered != null else Input.CURSOR_ARROW
 	if Input.get_current_cursor_shape() != cursor:
 		Input.set_default_cursor_shape(cursor)
@@ -95,8 +123,10 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
+		if use_3d and mb.device == InputEvent.DEVICE_ID_EMULATION:
+			return
 		if mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-			_try_assign()
+			_try_assign(mb.position)
 	elif event is InputEventKey:
 		var key := event as InputEventKey
 		if not key.pressed or key.echo:
@@ -120,12 +150,54 @@ func _unhandled_input(event: InputEvent) -> void:
 				_change_release_rate(1)
 
 
-func _try_assign() -> void:
+func _input(event: InputEvent) -> void:
+	if _touch != null and not _result_shown:
+		_touch.handle(event, get_viewport().get_visible_rect().size)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_PAUSED:
+		_paused = true
+		if _touch != null:
+			_touch.clear()
+	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
+		_toggle_pause()
+
+
+func _try_assign_touch(screen_point: Vector2) -> void:
 	if _selected_skill < 0 or _sim.finished:
 		return
-	var lem := _sim.find_lemming_at(_lemmings_view.get_global_mouse_position(), _selected_skill)
+	var best: Lemming = null
+	var best_distance := 42.0
+	# Větší dotykový dosah, ale stále jen mezi cíli, jimž lze dovednost přidělit.
+	for lem in _sim.lemmings:
+		if not _sim.can_assign(lem, _selected_skill):
+			continue
+		var position := _clay.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5))
+		var distance := screen_point.distance_to(position)
+		if distance < best_distance:
+			best = lem
+			best_distance = distance
+	if best != null:
+		_sim.assign_skill(best, _selected_skill)
+
+
+func _try_assign(screen_point: Vector2) -> void:
+	if _selected_skill < 0 or _sim.finished:
+		return
+	var lem := _sim.find_lemming_at(logic_position(screen_point), _selected_skill)
 	if lem != null:
 		_sim.assign_skill(lem, _selected_skill)
+
+
+func mouse_logic_position() -> Vector2:
+	return logic_position(get_viewport().get_mouse_position())
+
+
+func logic_position(screen_point: Vector2) -> Vector2:
+	if use_3d:
+		return _clay.camera.screen_to_logic(screen_point)
+	return _lemmings_view.get_global_transform_with_canvas().affine_inverse() * screen_point
 
 
 func _select_skill(skill: int) -> void:

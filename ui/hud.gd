@@ -11,9 +11,14 @@ signal restart_pressed
 
 const TOP_BAR_HEIGHT := 56.0
 const BOTTOM_BAR_HEIGHT := 120.0
-const ACCENT := Color(0.36, 0.86, 0.45)
-const TEXT := Color(0.92, 0.94, 1.0)
-const TEXT_DIM := Color(0.62, 0.66, 0.78)
+const ACCENT := Color("a6ddb1")
+const TEXT := Color("fff1d5")
+const TEXT_DIM := Color("c4d1c5")
+const SKILL_ICONS := {
+	Lemming.Skill.BLOCKER: "blocker", Lemming.Skill.BUILDER: "builder",
+	Lemming.Skill.BASHER: "basher", Lemming.Skill.DIGGER: "digger",
+	Lemming.Skill.MINER: "miner",
+}
 
 var _sim: LevelSim
 var _root: Control
@@ -198,7 +203,19 @@ func _add_skill_button(skill: int, hotkey: int) -> void:
 	col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var count := _label("0", 32, TEXT)
 	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(count)
+	var number_row := HBoxContainer.new()
+	number_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	number_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if SKILL_ICONS.has(skill):
+		var icon := TextureRect.new()
+		icon.texture = load("res://assets/clay/ui/icons/%s.svg" % SKILL_ICONS[skill])
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.custom_minimum_size = Vector2(30, 30)
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		number_row.add_child(icon)
+	number_row.add_child(count)
+	col.add_child(number_row)
 	var caption := _label("%d · %s" % [hotkey, Lemming.SKILL_NAMES[skill]], 15, TEXT_DIM)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(caption)

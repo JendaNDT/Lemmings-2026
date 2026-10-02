@@ -4,9 +4,12 @@ extends RefCounted
 ##
 ## Pravidla:
 ## - Žádné uzly, žádná grafika, žádný Input, žádná náhoda, žádný reálný čas.
-## - Svět se posouvá jen voláním tick() – vždy o jeden pevný krok.
+## - Čas se posouvá jen voláním tick() – vždy o jeden pevný krok.
+## - Příkazy se provedou mezi tiky, okamžitě i během pauzy, v pořadí přijetí.
 ## - Stejný level + stejné příkazy ve stejných ticích = vždy stejný výsledek
 ##   (díky tomu půjde udělat replay, přetáčení času a ověřování řešení).
+
+enum Command { ASSIGN_SKILL, RELEASE_RATE }
 
 var spec: LevelSpec
 var mask: TerrainMask
@@ -19,9 +22,13 @@ var spawned := 0
 var saved := 0
 var lost := 0
 var finished := false
-## Záznam hráčových příkazů [tik, id lumíka, dovednost] – základ pro replay.
-var replay_log: Array[Array] = []
+## Kopie přijatých příkazů; pořadí v poli rozhoduje i uvnitř stejného tiku.
+var replay_log: Array[Dictionary]:
+	get:
+		return _replay_log.duplicate(true)
 
+var _replay_log: Array[Dictionary] = []
+var _minimum_release_rate := SimConst.MIN_RELEASE_RATE
 var _states := {}
 var _events: Array[Dictionary] = []
 var _next_spawn_tick := 0
@@ -32,6 +39,7 @@ func _init(level_spec: LevelSpec, terrain: TerrainMask) -> void:
 	spec = level_spec
 	mask = terrain
 	release_rate = clampi(spec.release_rate, SimConst.MIN_RELEASE_RATE, SimConst.MAX_RELEASE_RATE)
+	_minimum_release_rate = release_rate
 	skills = spec.skills.duplicate()
 	_next_spawn_tick = SimConst.HATCH_OPEN_TICKS
 	_states = {
@@ -92,6 +100,8 @@ func remove_lemming(lem: Lemming, was_saved: bool) -> void:
 func can_assign(lem: Lemming, skill: int) -> bool:
 	if lem == null or lem.removed or finished:
 		return false
+	if lem.id < 0 or lem.id >= lemmings.size() or lemmings[lem.id] != lem:
+		return false
 	if int(skills.get(skill, 0)) <= 0:
 		return false
 	var target := _state_for_skill(skill)
@@ -103,8 +113,38 @@ func can_assign(lem: Lemming, skill: int) -> bool:
 func assign_skill(lem: Lemming, skill: int) -> bool:
 	if not can_assign(lem, skill):
 		return false
+	return apply_command(Command.ASSIGN_SKILL, lem.id, skill)
+
+
+## Jediný vstup hráčových příkazů. Neplatný příkaz ani změna bez účinku se nezapíše.
+## Tik N znamená „po dokončení tiku N, před tikem N+1“; nula je před startem.
+func apply_command(kind: int, target: int, value: int) -> bool:
+	if finished:
+		return false
+	match kind:
+		Command.ASSIGN_SKILL:
+			if not _assign_skill_command(target, value):
+				return false
+		Command.RELEASE_RATE:
+			if target != -1:
+				return false
+			value = clampi(value, _minimum_release_rate, SimConst.MAX_RELEASE_RATE)
+			if value == release_rate:
+				return false
+			release_rate = value
+		_:
+			return false
+	_replay_log.append({"tick": tick_count, "kind": kind, "target": target, "value": value})
+	return true
+
+
+func _assign_skill_command(target: int, skill: int) -> bool:
+	if target < 0 or target >= lemmings.size():
+		return false
+	var lem := lemmings[target]
+	if not can_assign(lem, skill):
+		return false
 	skills[skill] = int(skills[skill]) - 1
-	replay_log.append([tick_count, lem.id, skill])
 	set_state(lem, _state_for_skill(skill) as Lemming.State)
 	emit_event("assign", lem)
 	return true
@@ -176,8 +216,8 @@ func take_events() -> Array[Dictionary]:
 
 # --- Stav levelu ----------------------------------------------------------------
 
-func change_release_rate(delta: int) -> void:
-	release_rate = clampi(release_rate + delta, spec.release_rate, SimConst.MAX_RELEASE_RATE)
+func change_release_rate(delta: int) -> bool:
+	return apply_command(Command.RELEASE_RATE, -1, release_rate + delta)
 
 
 func spawn_interval_ticks() -> int:

@@ -1,0 +1,83 @@
+{
+  "character": "clay_worker.glb",
+  "purpose": "first prototype, original authored model",
+  "skeleton_bones": 16,
+  "glTF_up": "+Y",
+  "glTF_forward": "+Z",
+  "authored_height_m": 1.205,
+  "root_motion": false,
+  "clips": [
+    {
+      "name": "idle_loop",
+      "seconds": 2.0,
+      "loop": true,
+      "contact_phase": null
+    },
+    {
+      "name": "walk_loop",
+      "seconds": 1.0,
+      "loop": true,
+      "contact_phase": null
+    },
+    {
+      "name": "fall_loop",
+      "seconds": 1.0,
+      "loop": true,
+      "contact_phase": null
+    },
+    {
+      "name": "block_loop",
+      "seconds": 2.0,
+      "loop": true,
+      "contact_phase": null
+    },
+    {
+      "name": "build_loop",
+      "seconds": 1.0,
+      "loop": true,
+      "contact_phase": 0.5
+    },
+    {
+      "name": "bash_loop",
+      "seconds": 1.0,
+      "loop": true,
+      "contact_phase": 0.5
+    },
+    {
+      "name": "dig_loop",
+      "seconds": 1.0,
+      "loop": true,
+      "contact_phase": 0.5
+    },
+    {
+      "name": "mine_loop",
+      "seconds": 1.0,
+      "loop": true,
+      "contact_phase": 0.5
+    },
+    {
+      "name": "shrug",
+      "seconds": 0.8333333333333334,
+      "loop": false,
+      "contact_phase": null
+    },
+    {
+      "name": "splat",
+      "seconds": 0.6666666666666666,
+      "loop": false,
+      "contact_phase": null
+    },
+    {
+      "name": "exit",
+      "seconds": 1.0,
+      "loop": false,
+      "contact_phase": null
+    }
+  ],
+  "notes": [
+    "Tools are separate socket props.",
+    "Mine clip anticipates phase 4 diagonal-down skill.",
+    "No upward digging.",
+    "Retiming to simulation events is an integration task."
+  ]
+}

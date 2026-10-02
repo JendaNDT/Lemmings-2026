@@ -4,6 +4,12 @@ Návrh, jak je hra postavená a proč. Psáno tak, aby se v tom vyznal
 i neprogramátor, a zároveň aby se podle toho dalo dál stavět
 (i s pomocí AI).
 
+**Aktualizace směru:** cílem je 2.5D zobrazení nad společnou 2D simulací.
+Výchozí scéna již používá 3D terén, postavy a pevnou ortografickou kameru.
+Původní 2D scéna zůstává pro porovnání. První distribuční test
+míří na macOS, později Windows a Android. Aktuální pořadí prací:
+[`PLAN_VYVOJE.md`](PLAN_VYVOJE.md).
+
 ---
 
 ## 1. Shrnutí v pěti bodech
@@ -98,9 +104,14 @@ pasti.
 
 - V `sim/` **nesmí** být žádné uzly (Node), `Input`, náhoda ani reálný
   čas. Jen čistá data a celá čísla.
-- Svět se posouvá jen funkcí `LevelSim.tick()`.
-- Hráčovy příkazy se zapisují do `replay_log` (tik + lumík + dovednost).
-  Ze stejného levelu a stejného logu musí vždy vyjít stejný výsledek.
+- Čas se posouvá jen funkcí `LevelSim.tick()`.
+- Dovednosti a vypouštění vstupují přes `apply_command()`. Provedou se
+  okamžitě mezi tiky, také během pauzy. Přijaté příkazy se zapisují do
+  `replay_log`: `{tick, kind, target, value}`. Tik N označuje okamžik
+  po dokončení N a před N+1; pořadí v poli rozhoduje i ve stejném tiku.
+- `SimReplay` přehrává tento záznam na čerstvé simulaci stejného levelu.
+  Ze stejného levelu a stejného logu musí vyjít stejný výsledek. Pravidla
+  a meze technického replaye jsou v `ETAPA_2_SIMULACE.md`.
 
 ---
 
@@ -174,17 +185,51 @@ Z toho zadarmo plyne:
 
 - **Pauza** – prostě se netiká. Dovednosti jde přidělovat i v pauze.
 - **Zrychlení** – víc tiků za snímek.
-- **Replay** (později) – přehrát `replay_log` od začátku.
+- **Replay** – technický `SimReplay` je hotový; hráčské rozhraní a ukládání přijdou později.
 - **Přetáčení času** (později) – ukládat snímky stavu každých pár
   sekund a dopočítat zbytek z logu.
 
+Smyčka zpracuje nejvýše osm tiků za snímek a zbytek akumulátoru omezí
+na jeden tik. Při velké prodlevě tedy hra zpomalí vůči skutečnému času.
+Determinismus se vztahuje ke stejným tikům a příkazům, nikoli ke stejným
+sekundám na nástěnných hodinách.
+
 ---
 
-## 7. Grafika 2026 – plán
+## 7. Grafika 2.5D — implementovaný prototyp
 
-Doporučený směr: **HD 2D s moderním osvětlením** (jako hry typu
-Ori, Trine, Dead Cells). Je to nejlepší poměr „wow efekt / práce“
-a Godot to umí výborně.
+`main/game_3d.tscn` dědí původní hlavní scénu. Sdílí herní smyčku a HUD,
+ale vypíná původní 2D prezentaci. `ClayWorld` spojuje následující části:
+
+| Část | Odpovědnost |
+|---|---|
+| `ClaySpace` | Jeden logický pixel = 0,1 m; +Y logiky směřuje dolů, +Y světa nahoru. |
+| `ClayMesher` | Přesné přední/zadní plochy buněk a boky proti prázdnu, hloubka 2,4 m. |
+| `ClayTerrain` | Oblasti 32 × 32, samostatně sledované revize, sdílená maska a čtyři materiály. |
+| `ClayActor` | Importovaný GLB, orientace, interpolace a ruční hledání pózy podle simulačního času. |
+| `ClayCamera` | Pevný sklon 12°, ortografický zoom a průsečík paprsku s rovinou postav. |
+| `ClayFx` | Nejvýše 96 dekorativních hrudek a osm krátkých povrchových deformací. |
+
+Maska zůstává jediným zdrojem kolizí. Její mutace zvýší celkovou revizi
+a revize dotčených oblastí včetně sousedů o jednu buňku dál. Žádný renderer
+změny nespotřebovává. Obdélníky stejných materiálů se slučují; boky přes
+hranici oblasti čtou sousední buňky, takže nevznikají vnitřní stěny.
+UV používají souřadnice celého levelu, aby textura na švech neposkakovala.
+
+Pracovní klipy jsou časované podle konstant raziče, kopáče a stavitele;
+jejich kontaktní fáze odpovídá tiku změny masky. Pauza zastaví i pózu a efekty.
+Povrchové promáčknutí mění normály/stínování, hrudky se protahují a odlétají;
+nejde o měkkou fyziku terénu. Trvalý otvor je skutečně přestavěný mesh.
+
+Podklady jsou v `assets/clay/`, původ a kontrolní součty v `assets/clay.lock.json`.
+Po změnách se kontroluje geometrie, projekce, celý level i výkon; postup
+je v [`ETAPA_3_OVERENI.md`](ETAPA_3_OVERENI.md).
+
+### Navazující výtvarná práce
+
+Následující tabulka zachycuje původní návrh dalších efektů; rozhodující je
+schválený modelínový směr. 2D světla a sprite postavy v tomto starším návrhu
+již nahradily prostorové modely, materiály a světla výše.
 
 | Oblast | Co uděláme |
 |---|---|
@@ -195,7 +240,7 @@ a Godot to umí výborně.
 | Prostředí | Paralaxní pozadí ve více vrstvách, mlha, počasí, voda a láva se shaderem a odrazy. |
 | UI | Moderní lišta dovedností, minimapa, ovládání dotykem i gamepadem. |
 
-**Alternativa 2.5D:** simulace zůstane 2D, ale terén se vykreslí jako
+**Zvolená cesta 2.5D:** simulace zůstane 2D, ale terén se vykreslí jako
 3D těleso vytažené z masky a lumíci jako 3D modely. Díky oddělení
 logiky je to možné i později – jen vyměníme složku `view/`.
 
@@ -238,6 +283,10 @@ v testu za pár sekund (`tests/test_level_01.gd`). Tak se hlídá,
 ---
 
 ## 10. Plán vývoje (milníky)
+
+Původní stručné milníky níže rozpracovává a nahrazuje aktuální
+[plán dvanácti etap](PLAN_VYVOJE.md), který zahrnuje 2.5D prototyp
+a první sestavení pro Mac. Tabulka zachycuje původní rámec.
 
 | # | Milník | Obsah |
 |---|---|---|

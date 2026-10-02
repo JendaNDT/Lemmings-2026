@@ -2,6 +2,9 @@
 .godot/
 /android/
 *.tmp
+/build/
+__pycache__/
+*.py[cod]
 
 # OS
 .DS_Store

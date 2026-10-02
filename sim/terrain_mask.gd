@@ -16,12 +16,16 @@ enum Kind { DIRT, STEEL, ERASE }
 
 const BYTES_PER_PIXEL := 4
 const ON := 255
+## Čistě celočíselná revize oblastí; čtenáři si drží vlastní poslední verze.
+const REGION_SIZE := 32
 
 var width: int
 var height: int
 var data := PackedByteArray()
 ## Zvýší se při každé změně – grafika podle toho pozná, že má texturu obnovit.
 var version := 0
+var region_columns: int
+var region_versions := PackedInt32Array()
 
 
 func _init(w: int, h: int) -> void:
@@ -29,6 +33,9 @@ func _init(w: int, h: int) -> void:
 	height = maxi(h, 1)
 	data.resize(width * height * BYTES_PER_PIXEL)
 	data.fill(0)
+	region_columns = ceili(width / float(REGION_SIZE))
+	region_versions.resize(region_columns * ceili(height / float(REGION_SIZE)))
+	region_versions.fill(0)
 
 
 ## Je na daném místě pevný terén? Boky levelu se chovají jako zeď,
@@ -73,7 +80,7 @@ func erase_rect(x0: int, y0: int, w: int, h: int) -> bool:
 		for x in range(maxi(x0, 0), mini(x0 + w, width)):
 			changed = _erase(x, y) or changed
 	if changed:
-		version += 1
+		_mark_changed(Rect2i(x0, y0, w, h))
 	return changed
 
 
@@ -88,7 +95,7 @@ func erase_circle(cx: int, cy: int, radius: int) -> bool:
 			if dx * dx + dy * dy <= r2:
 				changed = _erase(x, y) or changed
 	if changed:
-		version += 1
+		_mark_changed(Rect2i(cx - radius, cy - radius, radius * 2 + 1, radius * 2 + 1))
 	return changed
 
 
@@ -105,7 +112,7 @@ func add_brick_row(x_from: int, x_to: int, y: int) -> void:
 			data[i + 2] = ON
 			changed = true
 	if changed:
-		version += 1
+		_mark_changed(Rect2i(mini(x_from, x_to), y, absi(x_to - x_from) + 1, 1))
 
 
 ## Vyplní mnohoúhelník daným druhem terénu (používá se při načítání levelu).
@@ -116,9 +123,13 @@ func paint_polygon(points: PackedVector2Array, kind: Kind) -> void:
 		return
 	var min_y := INF
 	var max_y := -INF
+	var min_x := INF
+	var max_x := -INF
 	for p in points:
 		min_y = minf(min_y, p.y)
 		max_y = maxf(max_y, p.y)
+		min_x = minf(min_x, p.x)
+		max_x = maxf(max_x, p.x)
 	var crossings := PackedFloat32Array()
 	for y in range(maxi(floori(min_y), 0), mini(ceili(max_y), height - 1) + 1):
 		# Řádkový algoritmus: najdi, kde střed řádku protíná hrany, a vyplň mezi nimi.
@@ -137,7 +148,19 @@ func paint_polygon(points: PackedVector2Array, kind: Kind) -> void:
 			for x in range(xa, xb + 1):
 				_paint(x, y, kind)
 			k += 2
+	_mark_changed(Rect2i(floori(min_x), floori(min_y),
+		ceili(max_x - min_x) + 1, ceili(max_y - min_y) + 1))
+
+
+func _mark_changed(rect: Rect2i) -> void:
 	version += 1
+	# Sousední oblast musí aktualizovat bok i při změně přesně za svou hranicí.
+	var area := rect.grow(1).intersection(Rect2i(0, 0, width, height))
+	if not area.has_area():
+		return
+	for row in range(area.position.y / REGION_SIZE, (area.end.y - 1) / REGION_SIZE + 1):
+		for column in range(area.position.x / REGION_SIZE, (area.end.x - 1) / REGION_SIZE + 1):
+			region_versions[row * region_columns + column] = version
 
 
 func _erase(x: int, y: int) -> bool:

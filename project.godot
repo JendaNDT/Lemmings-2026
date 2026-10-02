@@ -12,21 +12,36 @@ config_version=5
 
 config/name="Lemmings 2026"
 config/description="Moderní předělávka klasické hry Lemmings (1991) v Godotu."
-run/main_scene="res://main/game.tscn"
+run/main_scene="res://main/game_3d.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+config/quit_on_go_back=false
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
+window/size/viewport_width.android=1280
+window/size/viewport_height.android=720
 window/size/window_width_override=1600
 window/size/window_height_override=900
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/handheld/orientation=0
+
+[input_devices]
+
+pointing/emulate_mouse_from_touch=true
 
 [rendering]
 
 renderer/rendering_method="forward_plus"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 anti_aliasing/quality/msaa_2d=2
+anti_aliasing/quality/msaa_2d.mobile=0
+anti_aliasing/quality/msaa_3d=2
+anti_aliasing/quality/msaa_3d.mobile=0
+lights_and_shadows/directional_shadow/size.mobile=1024
+scaling_3d/scale.mobile=0.75
 environment/defaults/default_clear_color=Color(0.04, 0.05, 0.09, 1)

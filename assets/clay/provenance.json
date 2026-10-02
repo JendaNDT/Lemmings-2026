@@ -1,0 +1,41 @@
+{
+  "asset_id": "lemmings-2026-clay-kit",
+  "version": "0.1.0",
+  "created_on": "2026-10-02",
+  "license": "LicenseRef-Lemmings2026-Project-Internal",
+  "authoring": {
+    "textures": "Original periodic mathematical fields; build_textures.py",
+    "models_and_animation": "Original Blender meshes, sixteen-bone rigid skinning, keyed poses; build_models.py",
+    "ui": "Original authored SVG geometry and Godot theme",
+    "blender": "4.3.2",
+    "godot_tested": "4.7.stable.official.5b4e0cb0f"
+  },
+  "references": [
+    {
+      "file": "reference/schvaleny-mockup.png",
+      "sha256": "33e885112dd70f4fde8ccc3df01c017a9d434435a869ca560f00430b20a4a150",
+      "provider": "OpenAI ImageGen, host native",
+      "role": "art direction reference only"
+    },
+    {
+      "file": "reference/srovnani-stylu.png",
+      "sha256": "36d03daa47a7fb0b7b2ab54a89e0e291ec7f2e663952c996d4bffce1a639dff0",
+      "provider": "OpenAI ImageGen, host native",
+      "role": "art direction reference only"
+    }
+  ],
+  "mockup_prompt_file": "reference/mockup-prompt.txt",
+  "negative_prompt": null,
+  "paid_external_provider_jobs": [],
+  "canonical_game_dev_cli_package": false,
+  "validation": "custom byte validation plus native Godot import and GPU preview",
+  "source_preservation": "Generated reference originals retained outside package; copies only",
+  "scope": "first 2.5D prototype art kit and motion studies, not final campaign graphics",
+  "remaining_integration": [
+    "2D-mask-driven geometry",
+    "simulation-synchronized work contacts",
+    "runtime collisions",
+    "target-device performance",
+    "Android quality profile"
+  ]
+}

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://main/game.tscn" id="1_base"]
+[ext_resource type="Script" path="res://view/clay_world.gd" id="2_clay"]
+
+[node name="Game" instance=ExtResource("1_base")]
+use_3d = true
+
+[node name="ClayWorld" type="Node3D" parent="." index="3"]
+script = ExtResource("2_clay")

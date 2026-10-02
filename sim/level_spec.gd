@@ -8,7 +8,7 @@ var width := 640
 var height := 200
 var lemming_count := 20
 var save_required := 10
-## Rychlost vypouštění lumíků (1–99). Hráč ji může jen zvýšit.
+## Počáteční rychlost vypouštění (1–99). Hráč nesmí klesnout pod tuto hodnotu.
 var release_rate := 50
 var time_limit_seconds := 300
 ## Lemming.Skill → počet kusů.
