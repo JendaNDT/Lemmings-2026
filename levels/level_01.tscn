@@ -1,0 +1,63 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="Level01" type="Node2D"]
+script = ExtResource("1_def")
+title = "1 · První kroky"
+size = Vector2i(640, 200)
+lemming_count = 20
+save_required = 10
+release_rate = 50
+time_limit_seconds = 300
+blockers = 2
+builders = 3
+bashers = 2
+diggers = 2
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="LeftWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(10, 52, 12, 30, 22, 22, 34, 26, 36, 50, 34, 72, 14, 72)
+script = ExtResource("2_shape")
+
+[node name="UpperSlab" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 70, 60, 69, 110, 71, 160, 70, 230, 70, 300, 70, 300, 100, 270, 104, 220, 100, 160, 106, 100, 101, 50, 104, 16, 96, 10, 80)
+script = ExtResource("2_shape")
+
+[node name="Pillar" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(176, 72, 174, 40, 180, 20, 190, 16, 197, 28, 195, 72)
+script = ExtResource("2_shape")
+
+[node name="Mesa" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(296, 58, 340, 57, 390, 58, 436, 58, 438, 90, 434, 140, 440, 200, 292, 200, 298, 140, 300, 100)
+script = ExtResource("2_shape")
+
+[node name="Cave" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(304, 80, 330, 79, 380, 81, 424, 80, 424, 112, 304, 112)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="SteelPlate" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(398, 64, 434, 64, 434, 79, 398, 79)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="PitFloor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(436, 182, 500, 180, 560, 183, 640, 181, 640, 200, 436, 200)
+script = ExtResource("2_shape")
+
+[node name="RightCliff" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(604, 182, 610, 120, 622, 96, 640, 92, 640, 200, 604, 200)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(90, 34)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(380, 112)
+script = ExtResource("4_exit")

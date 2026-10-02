@@ -1,0 +1,53 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://main/game.gd" id="1_game"]
+[ext_resource type="PackedScene" path="res://levels/level_01.tscn" id="2_level"]
+[ext_resource type="Shader" path="res://view/background.gdshader" id="3_bg"]
+[ext_resource type="Shader" path="res://view/terrain.gdshader" id="4_terrain"]
+[ext_resource type="Script" path="res://view/terrain_view.gd" id="5_terrain_view"]
+[ext_resource type="Script" path="res://view/lemmings_view.gd" id="6_lemmings_view"]
+[ext_resource type="Script" path="res://view/fx_view.gd" id="7_fx_view"]
+[ext_resource type="Script" path="res://view/game_camera.gd" id="8_camera"]
+[ext_resource type="Script" path="res://ui/hud.gd" id="9_hud"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bg"]
+shader = ExtResource("3_bg")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_terrain"]
+shader = ExtResource("4_terrain")
+
+[node name="Game" type="Node"]
+script = ExtResource("1_game")
+level_scene = ExtResource("2_level")
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="Sky" type="ColorRect" parent="Background"]
+material = SubResource("ShaderMaterial_bg")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="TerrainView" type="Sprite2D" parent="World"]
+texture_filter = 2
+material = SubResource("ShaderMaterial_terrain")
+centered = false
+script = ExtResource("5_terrain_view")
+
+[node name="LemmingsView" type="Node2D" parent="World"]
+script = ExtResource("6_lemmings_view")
+
+[node name="FxView" type="Node2D" parent="World"]
+script = ExtResource("7_fx_view")
+
+[node name="GameCamera" type="Camera2D" parent="World"]
+script = ExtResource("8_camera")
+
+[node name="Hud" type="CanvasLayer" parent="."]
+script = ExtResource("9_hud")

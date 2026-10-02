@@ -1,0 +1,271 @@
+class_name Hud
+extends CanvasLayer
+## Herní rozhraní: horní lišta se stavem, spodní lišta s dovednostmi a ovládáním
+## a okno s výsledkem. Staví se celé z kódu, aby se dalo snadno upravovat.
+
+signal skill_selected(skill: int)
+signal release_rate_step(delta: int)
+signal pause_pressed
+signal speed_pressed
+signal restart_pressed
+
+const TOP_BAR_HEIGHT := 56.0
+const BOTTOM_BAR_HEIGHT := 120.0
+const ACCENT := Color(0.36, 0.86, 0.45)
+const TEXT := Color(0.92, 0.94, 1.0)
+const TEXT_DIM := Color(0.62, 0.66, 0.78)
+
+var _sim: LevelSim
+var _root: Control
+var _title: Label
+var _stats: Label
+var _rate_value: Label
+var _skills_box: HBoxContainer
+var _pause_button: Button
+var _speed_button: Button
+var _result_layer: CenterContainer
+var _result_title: Label
+var _result_text: Label
+## Lemming.Skill → { "button": Button, "count": Label }
+var _skill_widgets := {}
+var _visible_skills: Array[int] = []
+var _selected_skill := -1
+
+
+func _ready() -> void:
+	_build()
+
+
+func setup(sim: LevelSim) -> void:
+	_sim = sim
+	_result_layer.visible = false
+	_title.text = sim.spec.title
+	for child in _skills_box.get_children():
+		child.queue_free()
+	_skill_widgets.clear()
+	_visible_skills.clear()
+	_selected_skill = -1
+	var hotkey := 1
+	for skill: int in Lemming.SKILL_ORDER:
+		if int(sim.skills.get(skill, 0)) <= 0:
+			continue
+		_add_skill_button(skill, hotkey)
+		_visible_skills.append(skill)
+		hotkey += 1
+	refresh(false, 1.0)
+
+
+## Dovednosti v pořadí, v jakém jsou na liště (klávesy 1, 2, 3…).
+func visible_skills() -> Array[int]:
+	return _visible_skills
+
+
+func select_skill(skill: int) -> void:
+	_selected_skill = skill
+	for s: int in _skill_widgets:
+		var button: Button = _skill_widgets[s]["button"]
+		button.set_pressed_no_signal(s == skill)
+
+
+func refresh(paused: bool, speed: float) -> void:
+	if _sim == null:
+		return
+	var secs := _sim.time_left_seconds()
+	_stats.text = "Venku %d     Doma %d / %d     Čeká %d     Čas %d:%02d" % [
+		_sim.lemmings_out(),
+		_sim.saved,
+		_sim.spec.save_required,
+		_sim.lemmings_waiting(),
+		floori(secs / 60.0),
+		secs % 60,
+	]
+	_rate_value.text = str(_sim.release_rate)
+	for s: int in _skill_widgets:
+		var count_label: Label = _skill_widgets[s]["count"]
+		count_label.text = str(int(_sim.skills.get(s, 0)))
+	_pause_button.text = "Pokračuj" if paused else "Pauza"
+	_speed_button.text = "%d×" % roundi(speed)
+
+
+func show_result(sim: LevelSim) -> void:
+	_result_layer.visible = true
+	if sim.is_won():
+		_result_title.text = "Výborně!"
+		_result_title.add_theme_color_override("font_color", ACCENT)
+	else:
+		_result_title.text = "Tentokrát to nevyšlo"
+		_result_title.add_theme_color_override("font_color", Color(1.0, 0.55, 0.45))
+	_result_text.text = "Zachráněno %d z %d lumíků (potřeba %d)." % [
+		sim.saved, sim.spec.lemming_count, sim.spec.save_required
+	]
+
+
+# --- Stavba rozhraní --------------------------------------------------------------
+
+func _build() -> void:
+	_root = Control.new()
+	_root.name = "Root"
+	_root.theme = _make_theme()
+	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_root)
+
+	# Horní lišta: název levelu a počítadla.
+	var top := PanelContainer.new()
+	_root.add_child(top)
+	_place(top, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, TOP_BAR_HEIGHT)
+	var top_row := HBoxContainer.new()
+	top.add_child(top_row)
+	_title = _label("", 22, TEXT)
+	top_row.add_child(_title)
+	top_row.add_child(_spacer())
+	_stats = _label("", 22, TEXT)
+	top_row.add_child(_stats)
+
+	# Spodní lišta: vypouštění, dovednosti, ovládání.
+	var bottom := PanelContainer.new()
+	_root.add_child(bottom)
+	_place(bottom, 0.0, 1.0, 1.0, 1.0, 0.0, -BOTTOM_BAR_HEIGHT, 0.0, 0.0)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	bottom.add_child(row)
+
+	var minus := _button("−", Vector2(56, 92))
+	minus.pressed.connect(func() -> void: release_rate_step.emit(-1))
+	row.add_child(minus)
+	var rate_box := VBoxContainer.new()
+	rate_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	rate_box.custom_minimum_size = Vector2(96, 0)
+	rate_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_rate_value = _label("50", 30, TEXT)
+	_rate_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rate_box.add_child(_rate_value)
+	var rate_caption := _label("Vypouštění", 15, TEXT_DIM)
+	rate_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	rate_box.add_child(rate_caption)
+	row.add_child(rate_box)
+	var plus := _button("+", Vector2(56, 92))
+	plus.pressed.connect(func() -> void: release_rate_step.emit(1))
+	row.add_child(plus)
+
+	row.add_child(VSeparator.new())
+	_skills_box = HBoxContainer.new()
+	_skills_box.add_theme_constant_override("separation", 8)
+	row.add_child(_skills_box)
+	row.add_child(_spacer())
+
+	_pause_button = _button("Pauza", Vector2(120, 92))
+	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
+	row.add_child(_pause_button)
+	_speed_button = _button("1×", Vector2(92, 92))
+	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
+	row.add_child(_speed_button)
+	var restart := _button("Znovu", Vector2(120, 92))
+	restart.pressed.connect(func() -> void: restart_pressed.emit())
+	row.add_child(restart)
+
+	# Okno s výsledkem uprostřed obrazovky.
+	_result_layer = CenterContainer.new()
+	_result_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(_result_layer)
+	_result_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size = Vector2(520, 0)
+	_result_layer.add_child(panel)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 18)
+	panel.add_child(col)
+	_result_title = _label("", 40, ACCENT)
+	_result_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(_result_title)
+	_result_text = _label("", 22, TEXT)
+	_result_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(_result_text)
+	var again := _button("Hrát znovu", Vector2(0, 64))
+	again.pressed.connect(func() -> void: restart_pressed.emit())
+	col.add_child(again)
+	_result_layer.visible = false
+
+
+func _add_skill_button(skill: int, hotkey: int) -> void:
+	var button := _button("", Vector2(112, 92))
+	button.toggle_mode = true
+	button.pressed.connect(func() -> void: skill_selected.emit(skill))
+	var col := VBoxContainer.new()
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(col)
+	col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var count := _label("0", 32, TEXT)
+	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(count)
+	var caption := _label("%d · %s" % [hotkey, Lemming.SKILL_NAMES[skill]], 15, TEXT_DIM)
+	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(caption)
+	_skills_box.add_child(button)
+	_skill_widgets[skill] = {"button": button, "count": count}
+
+
+func _place(c: Control, al: float, at: float, ar: float, ab: float,
+		ol: float, ot: float, o_r: float, ob: float) -> void:
+	c.anchor_left = al
+	c.anchor_top = at
+	c.anchor_right = ar
+	c.anchor_bottom = ab
+	c.offset_left = ol
+	c.offset_top = ot
+	c.offset_right = o_r
+	c.offset_bottom = ob
+
+
+func _label(text: String, font_size: int, color: Color) -> Label:
+	var l := Label.new()
+	l.text = text
+	l.add_theme_font_size_override("font_size", font_size)
+	l.add_theme_color_override("font_color", color)
+	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return l
+
+
+func _button(text: String, min_size: Vector2) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.custom_minimum_size = min_size
+	b.focus_mode = Control.FOCUS_NONE
+	return b
+
+
+func _spacer() -> Control:
+	var s := Control.new()
+	s.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	s.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return s
+
+
+func _make_theme() -> Theme:
+	var t := Theme.new()
+	t.default_font_size = 20
+	var panel_box := _box(Color(0.05, 0.06, 0.1, 0.85), Color(1, 1, 1, 0.06), 0, 10)
+	t.set_stylebox("panel", "PanelContainer", panel_box)
+	t.set_stylebox("normal", "Button", _box(Color(0.12, 0.14, 0.2, 0.95), Color(1, 1, 1, 0.08), 12, 8))
+	t.set_stylebox("hover", "Button", _box(Color(0.18, 0.21, 0.29, 0.95), Color(1, 1, 1, 0.22), 12, 8))
+	t.set_stylebox("pressed", "Button", _box(Color(0.12, 0.3, 0.18, 0.95), ACCENT, 12, 8))
+	t.set_stylebox("hover_pressed", "Button", _box(Color(0.15, 0.36, 0.22, 0.95), ACCENT, 12, 8))
+	t.set_stylebox("disabled", "Button", _box(Color(0.1, 0.1, 0.12, 0.6), Color(1, 1, 1, 0.04), 12, 8))
+	t.set_stylebox("focus", "Button", StyleBoxEmpty.new())
+	t.set_color("font_color", "Button", TEXT)
+	t.set_color("font_hover_color", "Button", Color.WHITE)
+	t.set_color("font_pressed_color", "Button", ACCENT)
+	t.set_font_size("font_size", "Button", 22)
+	return t
+
+
+func _box(bg: Color, border: Color, radius: int, margin: float) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = bg
+	s.border_color = border
+	s.set_border_width_all(2)
+	s.set_corner_radius_all(radius)
+	s.set_content_margin_all(margin)
+	s.anti_aliasing = true
+	return s
