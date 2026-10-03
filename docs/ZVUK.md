@@ -81,6 +81,7 @@ ukončení zvuk nezahltí. Výška tónu se při každém přehrání nepatrně 
 
 - Zvuky jsem nemohl poslechnout; posuzoval jsem jejich průběh, spektrum
   a hlasitost a zkontroloval záznam ze hry. Jak znějí, musí posoudit autor.
-- Na Macu a Androidu neověřeno; nové APK nevzniklo.
+- Zvuky jsou v [APK 0.5.0](ANDROID_DEMO.md); na Macu ani v telefonu zatím
+  neověřené.
 - Hudba chybí (doplní autor). Hlasitosti zatím nejdou nastavit v menu
   (menu a nastavení jsou v etapě 6), jen ztlumit vše.

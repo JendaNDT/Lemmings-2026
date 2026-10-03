@@ -26,14 +26,21 @@ Další kroky:
 1. **Poslechnout ukázku zvuků** a říct, co upravit (hlasitost, charakter).
 2. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5), zahrát misi 6
    a říct, co se líbí – vzhled je posouzený jen z cloudových snímků.
-3. Nové APK a Mac balíček s origami grafikou a misí 6 (APK 0.4.0 je stará grafika).
-4. Doladit obtížnost mise 6 a vzhled vody a lávy podle tvého názoru.
+3. **Vyzkoušet APK 0.5.0 na telefonu** (origami, mise 6, zvuky):
+   [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.5.0/android/Lemmings-2026-Android-0.5.0.apk).
+   Nejdřív odinstalovat 0.4.0 (jiný testovací podpis). [Návod](docs/ANDROID_DEMO.md).
+4. Etapa 6: menu, nastavení (hlasitosti) a ukládání postupu.
+5. Doladit obtížnost mise 6 a vzhled vody a lávy podle tvého názoru.
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.5.0** ve větvi `downloads/android-0.5.0`: origami grafika,
+  mise 1–6, zvuky; versionCode 6, ARM32/ARM64, bez oprávnění. Ověřený
+  podpis v2/v3, zarovnání, manifest a spuštění herních souborů z APK
+  v Linuxu. Nový testovací klíč – 0.4.0 je nutné nejdřív odinstalovat.
 - **Zvuky:** 29 papírových efektů (dovednosti, nebezpečí, líheň, východ,
   rozhraní, znělky) a 3 okolní smyčky z vlastního generátoru
   (`assets/audio/`), `GameAudio` s prostorovým umístěním, omezením

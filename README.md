@@ -51,33 +51,35 @@ Výchozí scéna je `main/game_origami.tscn`.
 
 ## Testovací verze pro Android
 
-[**Stáhnout Android APK 0.4.0 (60 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.4.0/android/Lemmings-2026-Android-0.4.0.apk)
+[**Stáhnout Android APK 0.5.0 (66 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.5.0/android/Lemmings-2026-Android-0.5.0.apk)
 
 Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.4.0).
+[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.5.0).
 
-APK `Lemmings-2026-Android-0.4.0.apk` obsahuje původní misi, tři ukázky nových dovedností
-a hřiště se všemi osmi schopnostmi. Mise se vybírají vlevo v dolní liště.
-Je určené pro telefony a tablety s Androidem 7.0+ a OpenGL ES 3.0,
+APK `Lemmings-2026-Android-0.5.0.apk` má origami grafiku, šest misí
+(včetně „6 · Voda, láva a past“) a zvuky. Mise se vybírají vlevo v dolní
+liště. Je určené pro telefony a tablety s Androidem 7.0+ a OpenGL ES 3.0,
 včetně 32bitového a 64bitového ARM. Stáhni APK přímo na zařízení a otevři
 jej; případné povolení instalace se týká aplikace, ze které soubor otevíráš.
+**Starší verzi 0.4.0 nejdřív odinstaluj** – nové APK má jiný testovací
+podpis a jako aktualizace by se nenainstalovalo.
 
 Hraje se na šířku. Klepni na dovednost a potom na postavu, jedním prstem
 posouvej scénu a dvěma prsty přibližuj. Tlačítko Zpět přepíná pauzu;
 přepnutí aplikace na pozadí hru pozastaví. APK nepožaduje žádná oprávnění.
 
-Jde o vývojové APK podepsané testovacím klíčem. Podpis, obsah a dotykový
-průchod v cloudu jsou ověřené; instalace a výkon přímo na Androidu zatím ne.
-Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
+Jde o vývojové APK podepsané testovacím klíčem. Podpis, obsah a spuštění
+herních souborů z APK v cloudu jsou ověřené; instalace a výkon přímo
+na Androidu zatím ne. Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 
 Pro opakování exportu nastav v editoru Godotu Android SDK a Java SDK,
 nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
 
-## Technický stav verze 0.4.0
+## Starší 2.5D verze 0.4.0
 
-[Ověření dosavadní hry a používané soubory](docs/GRAFIKA_04.md).
-**APK 0.4.0 i dřívější Mac balíček ještě obsahují starou 2.5D grafiku.**
-Origami zobrazení je zatím ve zdrojích; nové sestavení vznikne exportem.
+[Ověření 2.5D grafiky a používané soubory](docs/GRAFIKA_04.md).
+APK 0.4.0 a dřívější Mac balíček obsahují starou 2.5D grafiku;
+nový Mac balíček s origami zatím nevznikl.
 Řešení zkušebních misí: [etapa 4](docs/ETAPA_4_OVERENI.md).
 
 ## Spuštění hotové verze na Macu
