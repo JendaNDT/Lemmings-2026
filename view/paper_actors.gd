@@ -18,6 +18,13 @@ const BOIL_TICKS := 2
 ## Dopad z pádu: krátké zplácnutí postavy (tiky).
 const LAND_TICKS := 3.0
 const FALLING_ANIMS := ["fall", "fall_umbrella", "float"]
+## Postavička je „nálepka“: světlý papírový okraj kolem siluety a vržený
+## stín na pozadí (zvednutý list jako terén). Tloušťka okraje v logických px.
+const OUTLINE_WIDTH := 0.2
+const OUTLINE_COLOR := Color("fbf3e2")
+const SHADOW_OFFSET := Vector2(0.55, 0.7)
+const SHADOW_COLOR := Color(0.12, 0.07, 0.04, 0.26)
+const SILHOUETTE_SHADER := preload("res://view/paper_silhouette.gdshader")
 const FLAME_OUTER := Color("f3923a")
 const FLAME_MID := Color("fab84a")
 const FLAME_CORE := Color("fff0b0")
@@ -35,6 +42,8 @@ var rig: Dictionary
 var _views := {}
 var _scale := 32.0
 var _font: Font
+## Pod postavami: vržený stín a světlý okraj (stejné díly, jednobarevně).
+var _silhouette: Node2D
 
 
 class ActorView:
@@ -56,6 +65,15 @@ func _init() -> void:
 	_scale = float(rig["atlas_scale"])
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	_font = preload("res://assets/art_v2/ui/Nunito.ttf")
+	_silhouette = Node2D.new()
+	_silhouette.name = "Silhouette"
+	_silhouette.show_behind_parent = true
+	_silhouette.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	var material := ShaderMaterial.new()
+	material.shader = SILHOUETTE_SHADER
+	_silhouette.material = material
+	_silhouette.draw.connect(_draw_silhouettes)
+	add_child(_silhouette)
 
 
 func setup(level_sim: LevelSim) -> void:
@@ -231,6 +249,7 @@ func actor_position(lem: Lemming) -> Vector2:
 
 func _process(_delta: float) -> void:
 	queue_redraw()
+	_silhouette.queue_redraw()
 
 
 func _draw() -> void:
@@ -254,46 +273,22 @@ func _draw() -> void:
 
 func _draw_actor(lem: Lemming, view: ActorView) -> void:
 	var p := actor_position(lem)
-	var fade := 1.0
+	var fade := actor_fade(lem)
 	var tint := Color.WHITE
-	match lem.state:
-		Lemming.State.EXITING:
-			fade = 1.0 - clampf((pose_ticks(lem) - 4.0) / float(SimConst.EXIT_TICKS - 4), 0.0, 1.0)
-		Lemming.State.DROWNING:
-			# Potopí se za průsvitné přední pruhy vody a na konci zmizí.
-			fade = 1.0 - clampf((pose_ticks(lem) / float(SimConst.DROWN_TICKS) - 0.75) * 4.0, 0.0, 1.0)
-		Lemming.State.BURNING:
-			var k := pose_ticks(lem) / float(SimConst.BURN_TICKS)
-			tint = Color.WHITE.lerp(CHAR, clampf(k / 0.55, 0.0, 1.0))
-			fade = 1.0 - clampf((k - 0.8) / 0.2, 0.0, 1.0)
+	if lem.state == Lemming.State.BURNING:
+		var k := pose_ticks(lem) / float(SimConst.BURN_TICKS)
+		tint = Color.WHITE.lerp(CHAR, clampf(k / 0.55, 0.0, 1.0))
 	var grounded := lem.state not in [
 		Lemming.State.FALLER, Lemming.State.FLOATER, Lemming.State.CLIMBER,
 		Lemming.State.DROWNING, Lemming.State.BURNING]
 	if grounded and lem.state != Lemming.State.SPLATTING:
 		draw_set_transform(p + Vector2(0, 0.1), 0.0, Vector2(2.5, 0.5))
 		draw_circle(Vector2.ZERO, 1.0, Color(0.1, 0.06, 0.03, 0.22 * fade))
-	var base := Transform2D(0.0, Vector2(view.facing, 1.0), 0.0, p)
-	var xforms := part_transforms(view.pose, view.root)
-	var anim: Dictionary = rig["animations"][view.anim]
-	var tool: String = view.pose.get("_tool", "")
-	var parts: Dictionary = rig["parts"]
 	var skeleton: Dictionary = rig["skeleton"]
-	for name in rig["draw_order"]:
-		var part: String = skeleton[name].get("part", "")
-		if name == "tool":
-			part = tool
-		if part == "":
-			continue
-		var info: Dictionary = parts[part]
-		var region := Rect2(info["region"][0], info["region"][1], info["region"][2], info["region"][3])
-		var pivot := Vector2(info["pivot"][0], info["pivot"][1])
-		var xf := base * (xforms[name] as Transform2D)
-		if name == "tool" and int(anim.get("unfold_ticks", 0)) > 0:
-			var open := clampf(pose_ticks(lem) / float(anim["unfold_ticks"]), 0.15, 1.0)
-			xf = xf * Transform2D(0.0, Vector2(open, 0.6 + 0.4 * open), 0.0, Vector2.ZERO)
-		draw_set_transform_matrix(xf)
-		var shade := float(skeleton[name].get("shade", 1.0))
-		draw_texture_rect_region(ATLAS, Rect2(-pivot / _scale, region.size / _scale), region,
+	for item: Array in _part_draws(lem, view, p):
+		draw_set_transform_matrix(item[0])
+		var shade := float(skeleton[item[3]].get("shade", 1.0))
+		draw_texture_rect_region(ATLAS, item[1], item[2],
 			Color(shade * tint.r, shade * tint.g, shade * tint.b, fade))
 	if lem.state == Lemming.State.BURNING:
 		_draw_flames(lem, p)
@@ -304,6 +299,21 @@ func _draw_actor(lem: Lemming, view: ActorView) -> void:
 		draw_rect(Rect2(-14, -22, 28, 28), Color("8a4a2c"), false, 2.0)
 		draw_string(_font, Vector2(-14, 0), str(seconds), HORIZONTAL_ALIGNMENT_CENTER, 28, 26,
 			Color("8a2f1c"))
+
+
+## Průhlednost postavy při odchodu, topení a hoření.
+func actor_fade(lem: Lemming) -> float:
+	var fade := 1.0
+	match lem.state:
+		Lemming.State.EXITING:
+			fade = 1.0 - clampf((pose_ticks(lem) - 4.0) / float(SimConst.EXIT_TICKS - 4), 0.0, 1.0)
+		Lemming.State.DROWNING:
+			# Potopí se za průsvitné přední pruhy vody a na konci zmizí.
+			fade = 1.0 - clampf((pose_ticks(lem) / float(SimConst.DROWN_TICKS) - 0.75) * 4.0, 0.0, 1.0)
+		Lemming.State.BURNING:
+			var k := pose_ticks(lem) / float(SimConst.BURN_TICKS)
+			fade = 1.0 - clampf((k - 0.8) / 0.2, 0.0, 1.0)
+	return fade
 
 
 ## Papírové plameny kolem hořící postavy: jazyky mění tvar po celých ticích,
@@ -335,3 +345,59 @@ func _draw_flames(lem: Lemming, p: Vector2) -> void:
 				base + Vector2(w, 0.0),
 			])
 			draw_colored_polygon(tongue, Color(color, 0.92))
+
+
+## Díly k vykreslení: [transformace, cílový obdélník, oblast atlasu, jméno kloubu].
+func _part_draws(lem: Lemming, view: ActorView, p: Vector2) -> Array:
+	var out := []
+	var base := Transform2D(0.0, Vector2(view.facing, 1.0), 0.0, p)
+	var xforms := part_transforms(view.pose, view.root)
+	var anim: Dictionary = rig["animations"][view.anim]
+	var tool: String = view.pose.get("_tool", "")
+	var parts: Dictionary = rig["parts"]
+	var skeleton: Dictionary = rig["skeleton"]
+	for name: String in rig["draw_order"]:
+		var part: String = skeleton[name].get("part", "")
+		if name == "tool":
+			part = tool
+		if part == "":
+			continue
+		var info: Dictionary = parts[part]
+		var region := Rect2(info["region"][0], info["region"][1], info["region"][2], info["region"][3])
+		var pivot := Vector2(info["pivot"][0], info["pivot"][1])
+		var xf := base * (xforms[name] as Transform2D)
+		if name == "tool" and int(anim.get("unfold_ticks", 0)) > 0:
+			var open := clampf(pose_ticks(lem) / float(anim["unfold_ticks"]), 0.15, 1.0)
+			xf = xf * Transform2D(0.0, Vector2(open, 0.6 + 0.4 * open), 0.0, Vector2.ZERO)
+		out.append([xf, Rect2(-pivot / _scale, region.size / _scale), region, name])
+	return out
+
+
+## Stín a světlý okraj všech postav jednou vrstvou pod nimi (okraje sousedních
+## postav splývají jako nálepky). Okraj = silueta posunutá do 8 směrů.
+func _draw_silhouettes() -> void:
+	if sim == null:
+		return
+	var offsets: Array[Vector2] = []
+	for k in 8:
+		offsets.append(Vector2.from_angle(k * TAU / 8.0) * OUTLINE_WIDTH)
+	for pass_index in 2:
+		for lem in sim.lemmings:
+			if lem.removed or not _views.has(lem.id):
+				continue
+			var fade := actor_fade(lem)
+			if lem.state == Lemming.State.DROWNING:
+				fade *= 0.6
+			var p := actor_position(lem)
+			var items := _part_draws(lem, _views[lem.id], p)
+			var shifts: Array[Vector2] = offsets
+			if pass_index == 0:
+				shifts = [SHADOW_OFFSET]
+			var color := Color(SHADOW_COLOR, SHADOW_COLOR.a * fade) if pass_index == 0 \
+				else Color(OUTLINE_COLOR, fade)
+			for shift in shifts:
+				for item: Array in items:
+					var xf: Transform2D = item[0]
+					_silhouette.draw_set_transform_matrix(Transform2D(xf.x, xf.y, xf.origin + shift))
+					_silhouette.draw_texture_rect_region(ATLAS, item[1], item[2], color)
+	_silhouette.draw_set_transform_matrix(Transform2D.IDENTITY)

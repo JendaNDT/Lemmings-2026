@@ -18,12 +18,15 @@ const HIDDEN_ALPHA := 0.28
 
 var camera: PaperCamera
 var sim: LevelSim
+## Herní čas v ticích: trsy se pomalu kývají ve větru.
+var time := 0.0
 var alpha := 1.0
 ## Průhlednost trsů podle jejich stálé identity (perioda × 100 + položka).
 var _fade := {}
 
 
 func _init() -> void:
+	# Trsy jsou blíž než herní rovina: rozostřené už v podkladech (hloubka ostrosti).
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 
@@ -80,6 +83,13 @@ func _draw() -> void:
 	for entry in clump_rects():
 		var rect: Rect2 = entry[1]
 		var tex: Texture2D = CLUMPS[entry[3]]
+		# Kývání kolem spodního středu: vrch trsu se zkosí do strany.
+		var key: int = entry[0]
+		var sway := sin(time * 0.12 + key * 1.7) * 0.035 + sin(time * 0.31 + key) * 0.012
+		var foot := Vector2(rect.get_center().x, rect.end.y)
+		draw_set_transform_matrix(Transform2D(Vector2(1, 0), Vector2(-sway, 1), foot))
+		var local := Rect2(rect.position - foot, rect.size)
 		if entry[2]:
-			rect = Rect2(rect.position + Vector2(rect.size.x, 0), Vector2(-rect.size.x, rect.size.y))
-		draw_texture_rect(tex, rect, false, Color(1, 1, 1, float(_fade.get(entry[0], 1.0))))
+			local = Rect2(local.position + Vector2(local.size.x, 0), Vector2(-local.size.x, local.size.y))
+		draw_texture_rect(tex, local, false, Color(1, 1, 1, float(_fade.get(key, 1.0))))
+	draw_set_transform_matrix(Transform2D.IDENTITY)

@@ -1,0 +1,98 @@
+{
+ "tile": 2800,
+ "clouds": [
+  {
+   "texture": "layers/cloud_0.png",
+   "pos": [
+    380,
+    300
+   ],
+   "anchor": [
+    208.5,
+    168
+   ],
+   "speed": 0.16
+  },
+  {
+   "texture": "layers/cloud_1.png",
+   "pos": [
+    980,
+    200
+   ],
+   "anchor": [
+    141.5,
+    111
+   ],
+   "speed": 0.24
+  },
+  {
+   "texture": "layers/cloud_2.png",
+   "pos": [
+    1480,
+    330
+   ],
+   "anchor": [
+    165.0,
+    129
+   ],
+   "speed": 0.12
+  },
+  {
+   "texture": "layers/cloud_3.png",
+   "pos": [
+    2180,
+    290
+   ],
+   "anchor": [
+    196.0,
+    158
+   ],
+   "speed": 0.2
+  },
+  {
+   "texture": "layers/cloud_4.png",
+   "pos": [
+    2620,
+    170
+   ],
+   "anchor": [
+    130.0,
+    103
+   ],
+   "speed": 0.28
+  }
+ ],
+ "birds": {
+  "frames": [
+   "layers/bird_0.png",
+   "layers/bird_1.png",
+   "layers/bird_2.png"
+  ],
+  "anchor": [
+   40,
+   36
+  ],
+  "flock": [
+   [
+    0,
+    0,
+    1.0
+   ],
+   [
+    -70,
+    38,
+    0.8
+   ],
+   [
+    -130,
+    12,
+    0.7
+   ]
+  ],
+  "start": [
+   1250,
+   140
+  ],
+  "speed": 2.6
+ }
+}

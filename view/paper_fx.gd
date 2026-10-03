@@ -23,7 +23,7 @@ const ATLAS := preload("res://assets/origami/actor/worker_atlas.png")
 
 ## Bubliny, kouř, kruhy na hladině a plovoucí klobouk (jen vzhled).
 class Puff:
-	enum Kind { BUBBLE, SMOKE, RIPPLE, HAT }
+	enum Kind { BUBBLE, SMOKE, RIPPLE, HAT, PETAL }
 	var kind := Kind.BUBBLE
 	var pos := Vector2.ZERO
 	var vel := Vector2.ZERO
@@ -34,6 +34,8 @@ class Puff:
 	## Hladina, na které bublina praskne (y v logických pixelech).
 	var surface := 0.0
 	var dir := 1.0
+	var color := Color.WHITE
+	var angle := 0.0
 
 
 class Scrap:
@@ -55,6 +57,8 @@ class Scrap:
 var unfolding: Array[Array] = []
 var sim: LevelSim
 var alpha := 1.0
+## Viditelná část levelu (logické px): sem občas přiletí lístek nebo okvětní plátek.
+var view_rect := Rect2()
 var _scraps: Array[Scrap] = []
 var _puffs: Array[Puff] = []
 var _rng := RandomNumberGenerator.new()
@@ -192,6 +196,7 @@ func _hazard_tick() -> void:
 	if sim == null or sim.tick_count == _last_tick:
 		return
 	_last_tick = sim.tick_count
+	_spawn_petal()
 	for lem in sim.lemmings:
 		if lem.removed:
 			continue
@@ -250,6 +255,15 @@ func advance(delta: float) -> void:
 			Puff.Kind.HAT:
 				puff.pos.x += puff.vel.x * delta
 				puff.vel.x *= 1.0 - minf(delta * 0.7, 0.5)
+			Puff.Kind.PETAL:
+				if puff.surface > 0.0:
+					continue
+				# Lístek se snáší, houpe se do stran a přetáčí; na zemi chvíli zůstane.
+				puff.pos += Vector2(puff.vel.x + sin(puff.phase * 0.35) * 3.5, puff.vel.y) * delta
+				puff.angle += delta * 1.6 * puff.dir
+				if sim != null and sim.mask.is_solid(floori(puff.pos.x), floori(puff.pos.y + 0.4)):
+					puff.surface = 1.0
+					puff.life = minf(puff.life, 2.5)
 	for i in range(_scraps.size() - 1, -1, -1):
 		var s := _scraps[i]
 		s.life -= delta
@@ -319,6 +333,26 @@ func _draw() -> void:
 		draw_colored_polygon(pts, c)
 
 
+## Občasný lístek nebo okvětní plátek v horní části pohledu (jen vzhled).
+func _spawn_petal() -> void:
+	if view_rect.size.x <= 0.0 or posmod(sim.tick_count, 19) != 0 or _rng.randf() > 0.7:
+		return
+	var petal := Puff.new()
+	petal.kind = Puff.Kind.PETAL
+	petal.pos = Vector2(view_rect.position.x + _rng.randf() * view_rect.size.x * 0.9,
+		view_rect.position.y - 4.0)
+	petal.vel = Vector2(_rng.randf_range(1.5, 4.5), _rng.randf_range(3.5, 6.0))
+	petal.max_life = 14.0
+	petal.life = petal.max_life
+	petal.size = _rng.randf_range(0.9, 1.4)
+	petal.phase = _rng.randf() * TAU
+	petal.angle = _rng.randf() * TAU
+	petal.dir = 1.0 if _rng.randf() < 0.5 else -1.0
+	var colors := [Color("b5b45e"), Color("e4903f"), Color("f1e9da"), Color("9aa456")]
+	petal.color = colors[_rng.randi() % colors.size()]
+	_add_puff(petal)
+
+
 func _draw_puffs() -> void:
 	for puff in _puffs:
 		var t := 1.0 - puff.life / puff.max_life
@@ -343,6 +377,16 @@ func _draw_puffs() -> void:
 				var radius := lerpf(0.6, 6.0 if puff.size >= 1.0 else 1.6, sqrt(local))
 				draw_set_transform(puff.pos, 0.0, Vector2(1.0, 0.24))
 				draw_arc(Vector2.ZERO, radius, 0.0, TAU, 28, Color(RIPPLE, 0.75 * (1.0 - local)), 0.9, true)
+				draw_set_transform_matrix(Transform2D.IDENTITY)
+			Puff.Kind.PETAL:
+				var fade := clampf(puff.life / 1.5, 0.0, 1.0)
+				# Přetáčení: lístek se zužuje, jak se otáčí kolem své osy.
+				var flip := 0.35 + 0.65 * absf(cos(puff.phase * 0.5))
+				draw_set_transform(puff.pos, puff.angle, Vector2(flip, 1.0) * puff.size)
+				var leaf := PackedVector2Array([Vector2(0, -1.1), Vector2(0.55, -0.2), Vector2(0.3, 0.7),
+					Vector2(0, 1.0), Vector2(-0.3, 0.7), Vector2(-0.55, -0.2)])
+				draw_colored_polygon(leaf, Color(puff.color, fade))
+				draw_line(Vector2(0, -0.9), Vector2(0, 0.85), Color(puff.color.darkened(0.25), fade), 0.12)
 				draw_set_transform_matrix(Transform2D.IDENTITY)
 			Puff.Kind.HAT:
 				# Klobouk se houpe na vlnách a nakonec se rozmočí.

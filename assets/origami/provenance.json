@@ -12,8 +12,8 @@
     "scipy": "1.17.1"
   },
   "generator_sha256": {
-    "build_all.py": "b2f9ff4eca6e610ba5fe3f32c7a0ae7d73fe2ce05653ff22f0137b6f87e449e4",
-    "build_backgrounds.py": "9c107f6ffb3cc8feee8178d049130a4a8343b1ce4236759ef0a486f86e0854eb",
+    "build_all.py": "6060226f49c48a06d27d6bf35ea0e044040922602dfbe6ebd66855f87975d3bc",
+    "build_backgrounds.py": "948cfd7122929b00b8c7799f39bf1fe141746cc707b66b4b36d6120cb53c8365",
     "build_character.py": "b4547bc991f198c2e636f69506f424263727bcf3de944f7952f147353d0b739c",
     "build_props.py": "f64534d859f114d5ed19358e512c93aafff0d6bedde28cca0c495faf1f07ced9",
     "build_ui.py": "da7f69fd92a71cb57d227ba45d3ea5c1404f452d26cdf8246d04c41fe137a112",
@@ -26,7 +26,7 @@
     "props": "24 px textury = 1 logický pixel; kotvy v props/props.json"
   },
   "contents": {
-    "layers": "obloha se sluncem a mraky, hory, střední pás s vesnicí, viaduktem a vodopádem, blízký les s řekou, tři trsy rostlin popředí",
+    "layers": "obloha se sluncem, pět samostatných mraků a tři pózy letícího ptáčka (sky.json), hory, střední pás s vesnicí, viaduktem a vodopádem, blízký les s řekou, tři trsy rostlin popředí",
     "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
     "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
     "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",

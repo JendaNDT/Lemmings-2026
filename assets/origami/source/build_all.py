@@ -75,7 +75,8 @@ def write_manifest() -> None:
             "props": "24 px textury = 1 logický pixel; kotvy v props/props.json",
         },
         "contents": {
-            "layers": "obloha se sluncem a mraky, hory, střední pás s vesnicí, viaduktem a vodopádem, "
+            "layers": "obloha se sluncem, pět samostatných mraků a tři pózy letícího ptáčka "
+                      "(sky.json), hory, střední pás s vesnicí, viaduktem a vodopádem, "
                       "blízký les s řekou, tři trsy rostlin popředí",
             "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
             "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",

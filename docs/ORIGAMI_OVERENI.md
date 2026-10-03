@@ -36,6 +36,39 @@ Na přání autora (body 1–4 a pokus se stop-motion):
 
 ![Před a po: stejný okamžik první mise](images/origami-pred-po.jpg)
 
+## Čitelnost, hloubka a živá krajina (3. kolo, 3. října 2026)
+
+Na přání autora (body: čitelnější postavičky, hloubka a světlo, živá krajina):
+
+1. **Čitelnější postavičky:** výchozí pohled je blíž (počítač 2×, telefon
+   2,6×), postavy mají světlý papírový okraj jako nálepka a vržený stín na
+   pozadí. Okraj sousedních postav splývá (jedna vrstva pod všemi).
+2. **Hloubka a světlo:** vzdálenější vrstvy krajiny i popředí jsou
+   rozostřené jako na fotce papírového dioramatu (předem v generátoru, ve hře
+   to nic nestojí), vzdálené vrstvy mají opar, teplé světlo slunce zleva
+   s jemnými paprsky, chladnější strana vpravo dole, delší stín terénu,
+   tmavší úzké tunely a středy jeskyní.
+3. **Živá krajina:** mraky pomalu plují (každý jinou rychlostí), hejnko tří
+   ptáčků mává křídly a přelétá oblohu, rostlinky, mech na hranách terénu
+   i trsy v popředí se kývají ve větru, občas se snese lístek nebo okvětní
+   plátek a chvíli poleží na zemi, plameny nad lávou jsou nepravidelné.
+   Vše běží podle herního času: pauza to zastaví, stop-motion to posouvá
+   po krocích.
+
+![Před a po (3. kolo): výchozí pohled první mise](images/origami-pred-po-3.jpg)
+
+Záznam (13 s): [`images/origami-ziva-krajina.mp4`](images/origami-ziva-krajina.mp4).
+
+Ověření 3. kola: `check.py` 71 GDScriptů, 10 sad, 297 kontrol (nové kontroly
+výchozího pohledu, okraje postav, mraků, mávání ptáků, oparu a zastavení
+dekorací pauzou). Grafický průchod mise 1 znovu: počítač 1920 × 1080
+klávesnicí a myší 20/20, terén 34 720 buněk bez neshody; telefon 20:9
+klepnutím 20/20, terén 50 592 buněk bez neshody; dva prsty bez herního
+příkazu. Generátor dál dává bit po bitu stejné soubory. Rozostření je
+předpočítané v podkladech, ve hře nepřidává výpočet; nové jsou jen průchod
+světla přes obrazovku a obrys postav (8 kopií dílů pod každou postavou).
+Výkon na skutečném Macu a telefonu zbývá změřit.
+
 Porovnání pohybu (vlevo stop-motion, vpravo plynule):
 [`images/origami-stopmotion.mp4`](images/origami-stopmotion.mp4).
 

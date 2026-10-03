@@ -98,7 +98,11 @@ func _draw() -> void:
 		var tex := _plant_textures[plant.z]
 		var anchor := Vector2(info["anchor"][0], info["anchor"][1])
 		var size := tex.get_size() / float(data["hatch"]["scale"])
-		draw_texture_rect(tex, Rect2(Vector2(plant.x + 0.5, plant.y) - anchor, size), false)
+		# Rostlinka se kývá ve větru kolem místa, kde roste.
+		var sway := sin(now * 0.21 + plant.x * 0.37) * 0.07 + sin(now * 0.53 + plant.x) * 0.02
+		draw_set_transform(Vector2(plant.x + 0.5, plant.y), sway, Vector2.ONE)
+		draw_texture_rect(tex, Rect2(-anchor, size), false)
+	draw_set_transform_matrix(Transform2D.IDENTITY)
 	for i in sim.spec.traps.size():
 		_draw_trap(i, now)
 	for i in sim.spec.hatches.size():

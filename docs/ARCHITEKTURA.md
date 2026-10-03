@@ -256,13 +256,14 @@ a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
 | Část | Odpovědnost |
 |---|---|
 | `PaperCamera` | Jediná herní transformace logika → obrazovka, zoom 1×–3,2× kolem kurzoru či středu prstů, hranice levelu, klávesy, okraj, kolečko, tažení. |
-| `PaperParallax` | Čtyři vodorovně navazující vrstvy (nebe, hory, vesnice, blízký les). Posun i zoom odvozené z kamery: `měřítko = výška/1200 × zoom^exponent`. Spodní řádek se protáhne dolů, takže nevzniká prázdný okraj. |
+| `PaperParallax` | Čtyři vodorovně navazující vrstvy (nebe, hory, vesnice, blízký les). Posun i zoom odvozené z kamery: `měřítko = výška/1200 × zoom^exponent`. Spodní řádek se protáhne dolů, takže nevzniká prázdný okraj. Hloubka ostrosti je předem v podkladech (generátor rozmaže vzdálenější vrstvy víc), shader přidá opar. Nebe nese pohyblivé výřezy: plující mraky a mávající ptáčky (`sky.json`), řízené herním časem. |
 | `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: listy trhaného papíru složené z vystřižených kusů (natržené švy, překryv, mírný náklon), bílé vláknité okraje, mech z lístků se stíny, ocel s mřížkou jako nalepený díl, harmonikové schody, světlou zadní stěnu výkopu a tmavší jeskyni (i uzavřené dutiny). Měkké stíny dávají mipmapy masky (levné rozmazání). Vodu a lávu (vlnité pruhy, plameny) a šipky jednosměrných zdí čte z textury nebezpečí sestavené z kanálu A masky; přední pruhy hladiny kreslí uzel `HazardSurface` nad postavami. |
 | `PaperProps` | Líheň (chatka na kůlech, padací dvířka), východ (domek, vlající vlajka), pasti (masožravá rostlina, čelisti podle `trap_fired`/`trap_ready`) a drobné rostlinky svázané s maskou. |
 | `PaperActors` | Origami postavy z dílů atlasu; přechody 3 tiky, otočka jako „otočení papírku“. Výchozí stop-motion: póza i poloha po celých ticích, jemné deterministické chvění dílů po 2 ticích, zplácnutí při dopadu, plameny kolem hořící postavy; plynulý režim = funkce `state_ticks + alpha` (klávesa M). |
 | `PaperFx` | Papírové ústřižky z událostí, rozkládání cihly, bubliny, kruhy na hladině, plovoucí klobouk, kouř a popel; průběžné efekty jednou za simulační tik (pauza je zastaví), čas efektů běží s herním časem. |
-| `PaperForeground` | Nízké trsy rostlin u spodní lišty; zprůhlední, když je za nimi postava, líheň nebo východ. Vstup nepřijímají. |
-| Zrnitost (`paper_grain.gdshader`) | Násobící vrstva přes celou herní scénu pod HUDem: papírové žíhání a ztmavení rohů. |
+| `PaperForeground` | Nízké trsy rostlin u spodní lišty (rozostřené, blíž než herní rovina), kývají se ve větru; zprůhlední, když je za nimi postava, líheň nebo východ. Vstup nepřijímají. |
+| Světlo (`paper_light.gdshader`) | Přičítací vrstva: teplá záře slunce zleva shora a jemné paprsky, pomalu se posouvají s herním časem. |
+| Zrnitost (`paper_grain.gdshader`) | Násobící vrstva přes celou herní scénu pod HUDem: papírové žíhání, ztmavení rohů a chladnější strana odvrácená od slunce. |
 
 **Přesnost terénu.** Hrana leží na izočáře 0,5 bilineárně interpolované
 masky (bez mipmap; rozmazané úrovně slouží jen ke stínům a okrajům). Šum trhaného okraje je omezený na ±0,4, takže střed každé buňky

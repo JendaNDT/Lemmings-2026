@@ -200,28 +200,42 @@ vec4 liquid(vec2 p, float depth, bool lava, bool front_only) {
 
 // Papírové plameny nad lávou: sloupce mění výšku po dvou ticích.
 // Tři řady: vzadu vysoké červené, uprostřed oranžové, vpředu nízké žluté.
+// Jazyky nestojí v pravidelné mřížce: každý má posunutý střed i šířku
+// a výšku mění po dvou ticích (do pixelu se hledá ve třech sousedních buňkách).
 vec4 flames(vec2 p, float up) {
 	vec4 out_col = vec4(0.0);
 	float step_t = floor(sim_time / 2.0);
 	for (int row = 0; row < 3; row++) {
 		float w = row == 0 ? 4.6 : (row == 1 ? 3.6 : 2.6);
 		float x = p.x + float(row) * 1.7;
-		float column = floor(x / w);
-		float fx = fract(x / w) * 2.0 - 1.0;
+		float cell = floor(x / w);
 		float base_h = row == 0 ? 2.4 : (row == 1 ? 1.8 : 0.9);
-		float extra = row == 0 ? 4.2 : (row == 1 ? 3.0 : 1.8);
-		// Některé jazyky na chvíli skoro zhasnou, řada pak není pravidelná.
-		extra *= 0.35 + 0.65 * step(0.3, hash(vec2(column, step_t * 0.5 + float(row) * 7.0)));
-		float h = base_h + extra * hash(vec2(column, step_t + float(row) * 31.0));
-		float lean = (hash(vec2(column + 7.0, step_t + float(row))) - 0.5) * 0.7;
-		float profile = h * pow(max(1.0 - abs(fx + lean * up / h), 0.0), 1.3);
-		float shape = 1.0 - smoothstep(profile - 0.18, profile + 0.18, up);
-		float core = 1.0 - smoothstep(profile * 0.5 - 0.15, profile * 0.5 + 0.15, up);
-		vec3 c = row == 0 ? mix(LAVA, LAVA_LIGHT, smoothstep(0.0, h, up))
-			: (row == 1 ? mix(LAVA_LIGHT, FLAME, smoothstep(0.0, h, up)) : FLAME);
+		float extra = row == 0 ? 4.4 : (row == 1 ? 3.2 : 1.8);
+		float shape = 0.0;
+		float core = 0.0;
+		float rim = 0.0;
+		float h_best = 1.0;
+		for (int n = -1; n <= 1; n++) {
+			float column = cell + float(n);
+			float center = (column + 0.5 + (hash(vec2(column, 21.0 + float(row))) - 0.5) * 0.7) * w;
+			float half_w = w * (0.38 + 0.4 * hash(vec2(column, 23.0 + float(row))));
+			float h = base_h + extra * hash(vec2(column, step_t + float(row) * 31.0));
+			// Některé jazyky na chvíli skoro zhasnou.
+			h *= 0.35 + 0.65 * step(0.28, hash(vec2(column, step_t * 0.5 + float(row) * 7.0)));
+			float lean = (hash(vec2(column + 7.0, step_t + float(row))) - 0.5) * 0.8;
+			float fx = (x - center) / half_w;
+			float profile = h * pow(max(1.0 - abs(fx + lean * up / max(h, 0.1)), 0.0), 1.3);
+			float s_n = 1.0 - smoothstep(profile - 0.18, profile + 0.18, up);
+			if (s_n > shape) {
+				shape = s_n;
+				core = 1.0 - smoothstep(profile * 0.5 - 0.15, profile * 0.5 + 0.15, up);
+				rim = (1.0 - smoothstep(0.0, 0.35, abs(up - profile))) * s_n;
+				h_best = max(h, 0.1);
+			}
+		}
+		vec3 c = row == 0 ? mix(LAVA, LAVA_LIGHT, smoothstep(0.0, h_best, up))
+			: (row == 1 ? mix(LAVA_LIGHT, FLAME, smoothstep(0.0, h_best, up)) : FLAME);
 		c = mix(c, FLAME_CORE, core * (row == 0 ? 0.3 : 0.8)) * (1.0 + (paper(p, 20.0) - 0.5) * 0.12);
-		// Tenký světlý okraj vystřiženého plamene.
-		float rim = (1.0 - smoothstep(0.0, 0.35, abs(up - profile))) * shape;
 		c = mix(c, FLAME_CORE, rim * 0.35);
 		out_col = over(vec4(c, shape * (row == 0 ? 0.9 : 1.0)), out_col);
 	}
@@ -260,7 +274,8 @@ void fragment() {
 	float aa = max(fwidth(m.r) * 0.6, 0.01);
 	float inside = smoothstep(thr - aa, thr + aa, m.r);
 	// Měkký stín vrhaný terénem doprava dolů: terén je list zvednutý nad krajinou.
-	float drop = soft(p - vec2(1.3, 1.9), 1.2).r * 0.55 + soft(p - vec2(2.4, 3.4), 2.3).r * 0.45;
+	// Delší stín od nízkého slunce zleva shora; terén je list vysoko nad krajinou.
+	float drop = soft(p - vec2(1.6, 2.2), 1.2).r * 0.5 + soft(p - vec2(3.4, 4.6), 2.5).r * 0.5;
 	if (debug_mode == 1) {
 		COLOR = vec4(vec3(step(thr, m.r)), 1.0);
 	} else if (debug_mode == 2) {
@@ -271,7 +286,7 @@ void fragment() {
 		COLOR = vec4(front.rgb, front.a * (1.0 - inside));
 	} else if (m.r < 0.002 && st.r < 0.5 && st.g < 0.5 && !has_liquid) {
 		// Volný prostor bez zadní stěny: jen stín, zbytek výpočtu se přeskočí.
-		COLOR = vec4(0.0, 0.0, 0.0, drop * 0.36);
+		COLOR = vec4(0.0, 0.0, 0.0, drop * 0.4);
 	} else {
 		float steel = inside * smoothstep(0.4, 0.6, m.g);
 		float brick = inside * smoothstep(0.4, 0.6, m.b) * (1.0 - steel);
@@ -351,7 +366,10 @@ void fragment() {
 		float leaf_shadow = 0.0;
 		for (int row = 0; row < 2; row++) {
 			float rw = row == 0 ? 4.4 : 3.1;
-			float lx = (p.x + float(row) * 1.3) / rw + (noise(vec2(p.x, 5.0 + float(row) * 11.0), 70.0).r - 0.5) * 0.9;
+			// Lístky se ve větru pomalu kývají: špičky víc než kořen (jen vzhled).
+			float sway = sin(sim_time * 0.23 + p.x * 0.045 + float(row) * 1.7) * 0.035 * depth;
+			float lx = (p.x + float(row) * 1.3) / rw + (noise(vec2(p.x, 5.0 + float(row) * 11.0), 70.0).r - 0.5) * 0.9
+				+ sway;
 			float li = floor(lx);
 			float lf = fract(lx);
 			float h = hash(vec2(li, 2.0 + float(row)));
@@ -433,10 +451,13 @@ void fragment() {
 		vec3 back_col = mix(TUNNEL, mix(TUNNEL_DARK, CAVE, 0.3), cave);
 		back_col *= 1.0 + fib * 0.35 + (paper(p, 30.0) - 0.5) * 0.12;
 		back_col *= 1.0 - near_top * 0.42;
+		// Hloubka: v úzkém tunelu nebo uprostřed jeskyně je méně světla.
+		float enclosed = soft(p, 3.6).r;
+		back_col *= 1.0 - smoothstep(0.25, 0.85, enclosed) * 0.38;
 
 		drop *= 1.0 - inside;
 
-		vec4 outside = vec4(0.0, 0.0, 0.0, drop * 0.36);
+		vec4 outside = vec4(0.0, 0.0, 0.0, drop * 0.4);
 		vec4 back_rgba = vec4(back_col * (1.0 - drop * 0.25), 1.0);
 		outside = mix(outside, back_rgba, back);
 

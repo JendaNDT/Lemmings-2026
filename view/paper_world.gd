@@ -8,12 +8,14 @@ extends Node2D
 ## Herní rovina má jedinou transformaci z PaperCamera; vrstvy ji jen čtou.
 
 const LAYER_DIR := "res://assets/origami/layers/"
-## [textura, posun, svislý posun, exponent zoomu, kotevní řádek, výška na obrazovce]
+const SKY_DATA := "res://assets/origami/layers/sky.json"
+## [textura, posun, svislý posun, exponent zoomu, kotevní řádek, výška na obrazovce,
+##  protažení dolů, opar]
 const LAYERS := [
-	["sky_decor", 0.03, 0.02, 0.04, 560.0, 0.42, false],
-	["mountains", 0.1, 0.06, 0.12, 640.0, 0.6, true],
-	["midground", 0.27, 0.16, 0.3, 720.0, 0.82, true],
-	["near", 0.5, 0.3, 0.5, 620.0, 1.0, true],
+	["sky_decor", 0.03, 0.02, 0.04, 560.0, 0.42, false, 0.0],
+	["mountains", 0.1, 0.06, 0.12, 640.0, 0.6, true, 0.2],
+	["midground", 0.27, 0.16, 0.3, 720.0, 0.82, true, 0.11],
+	["near", 0.5, 0.3, 0.5, 620.0, 1.0, true, 0.05],
 ]
 const SKY := [Color("8fc3d6"), Color("b4d3d8"), Color("e6e4d2")]
 
@@ -29,6 +31,8 @@ var _sim: LevelSim
 var _sky: Node2D
 var _sky_texture: GradientTexture2D
 var _grain: Node2D
+var _light: Node2D
+var _light_material: ShaderMaterial
 
 
 func _ready() -> void:
@@ -55,8 +59,10 @@ func _ready() -> void:
 		layer.name = String(spec[0]).capitalize().replace(" ", "")
 		layer.setup(camera, load(LAYER_DIR + spec[0] + ".png"), spec[1], spec[2], spec[3], spec[4],
 			spec[5], spec[6])
+		layer.haze = spec[7]
 		add_child(layer)
 		layers.append(layer)
+	_add_sky_life(layers[0])
 	plane = Node2D.new()
 	plane.name = "GamePlane"
 	add_child(plane)
@@ -78,6 +84,15 @@ func _ready() -> void:
 	foreground.name = "Foreground"
 	foreground.camera = camera
 	add_child(foreground)
+	# Teplé světlo slunce a paprsky přes celou scénu (pod HUDem).
+	_light = Node2D.new()
+	_light.name = "Light"
+	_light_material = ShaderMaterial.new()
+	_light_material.shader = preload("res://view/paper_light.gdshader")
+	_light.material = _light_material
+	_light.draw.connect(func() -> void:
+		_light.draw_rect(Rect2(Vector2.ZERO, camera.viewport_size()), Color.WHITE))
+	add_child(_light)
 	# Zrnitost papíru a vinětace sjednotí všechny vrstvy; HUD zůstane čistý.
 	_grain = Node2D.new()
 	_grain.name = "Grain"
@@ -90,6 +105,26 @@ func _ready() -> void:
 	add_child(_grain)
 
 
+## Mraky plují pomalu, každý jinou rychlostí; hejnko tří ptáčků mává křídly.
+func _add_sky_life(sky: PaperParallax) -> void:
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SKY_DATA))
+	for cloud: Dictionary in data["clouds"]:
+		sky.drifters.append({"frames": [load("res://assets/origami/" + cloud["texture"])],
+			"pos": Vector2(cloud["pos"][0], cloud["pos"][1]),
+			"anchor": Vector2(cloud["anchor"][0], cloud["anchor"][1]),
+			"speed": float(cloud["speed"]), "bob": 2.0, "phase": cloud["pos"][0] / 997.0})
+	var birds: Dictionary = data["birds"]
+	var frames: Array = []
+	for path: String in birds["frames"]:
+		frames.append(load("res://assets/origami/" + path))
+	var start := Vector2(birds["start"][0], birds["start"][1])
+	for i in (birds["flock"] as Array).size():
+		var member: Array = birds["flock"][i]
+		sky.drifters.append({"frames": frames, "pos": start + Vector2(member[0], member[1]),
+			"anchor": Vector2(birds["anchor"][0], birds["anchor"][1]), "scale": float(member[2]),
+			"speed": float(birds["speed"]), "flap": 2, "bob": 6.0, "phase": i * 0.37})
+
+
 func setup(sim: LevelSim) -> void:
 	_sim = sim
 	terrain.setup(sim.mask)
@@ -100,10 +135,10 @@ func setup(sim: LevelSim) -> void:
 	foreground.sim = sim
 	var focus := Vector2(sim.spec.width * 0.5, sim.spec.height * 0.45)
 	if not sim.spec.hatches.is_empty():
-		focus = Vector2(sim.spec.hatches[0]) + Vector2(60, 40)
-	# Na telefonu je obrazovka fyzicky malá: začneme blíž, aby byly postavy čitelné.
+		focus = Vector2(sim.spec.hatches[0]) + Vector2(60, 26)
+	# Postavy mají být čitelné bez přibližování; telefon je fyzicky menší, začne ještě blíž.
 	camera.setup(Vector2(sim.spec.width, sim.spec.height), focus,
-		2.0 if DeviceProfile.touch_mode() else 1.5)
+		2.6 if DeviceProfile.touch_mode() else 2.0)
 	_apply_camera()
 
 
@@ -112,8 +147,16 @@ func update_frame(alpha: float, events: Array[Dictionary], delta: float) -> void
 	# Vlny a plameny: ve stop-motion se mění po dvou ticích jako postavy.
 	if _sim != null:
 		var ticks := _sim.tick_count
-		terrain.set_time(float(ticks - posmod(ticks, PaperActors.BOIL_TICKS)) if actors.stop_motion
-			else ticks + alpha)
+		var now := float(ticks - posmod(ticks, PaperActors.BOIL_TICKS)) if actors.stop_motion \
+			else ticks + alpha
+		terrain.set_time(now)
+		_light_material.set_shader_parameter("time", now)
+		for layer in layers:
+			layer.time = now
+		foreground.time = now
+		var vp := camera.viewport_size()
+		var top_left := camera.screen_to_logic(Vector2.ZERO)
+		fx.view_rect = Rect2(top_left, camera.screen_to_logic(vp) - top_left)
 	actors.alpha = alpha
 	actors.update_views()
 	props.alpha = alpha
@@ -143,6 +186,7 @@ func _apply_camera() -> void:
 	camera.refresh()
 	plane.transform = camera.game_transform()
 	_sky.queue_redraw()
+	_light.queue_redraw()
 	_grain.queue_redraw()
 
 

@@ -7,6 +7,7 @@ bez prázdných okrajů. Popředí jsou samostatné trsy rostlin.
 
 from __future__ import annotations
 
+import json
 import math
 from pathlib import Path
 
@@ -86,48 +87,72 @@ def build_smooth_noise(rng, out: Path):
     Image.fromarray(arr, "RGBA").save(out / "paper" / "noise_smooth.png", optimize=True)
 
 
-def layer_sky(fiber, rng, out: Path):
+def draw_cloud(c, cx, cy, w, h, rng):
+    """Kupovitý mrak z laloků se stínovou vrstvou; spodek je rovný (y = cy)."""
+    lobes = []
+    n = max(4, int(w / 70))
+    for i in range(n):
+        t = (i + 0.5) / n
+        r = h * (0.32 + 0.55 * math.sin(math.pi * t) ** 1.3) * rng.uniform(0.85, 1.12)
+        x = cx - w / 2 + w * t
+        lobes.append((x, cy - r * 0.55, r))
+    for i in range(n - 1):
+        t = (i + 1.0) / n
+        r = h * (0.45 + 0.5 * math.sin(math.pi * t)) * rng.uniform(0.8, 1.0)
+        lobes.append((cx - w / 2 + w * t, cy - r * 0.95, r * 0.8))
+    base = [(cx - w / 2 - h * 0.2, cy), (cx + w / 2 + h * 0.2, cy),
+            (cx + w / 2 + h * 0.1, cy - h * 0.25), (cx - w / 2 - h * 0.1, cy - h * 0.25)]
+    for layer, (dx, dy, col) in enumerate([(16, 12, P.CLOUD_SHADE), (0, 0, P.CLOUD)]):
+        polys = [tear(transform(ellipse(x, y, r, r, 40), dx, dy), 1.4, rng, step=4)
+                 for x, y, r in lobes]
+        polys.append(transform(base, dx, dy))
+        # Spodní hrana mraku je rovná: nic pod základnou.
+        polys = [[(px, min(py, cy + dy)) for px, py in poly] for poly in polys]
+        c.shape(polys, col, fiber=0.05, shadow=(8, 10, 7, 0.10) if layer == 0 else None,
+                core=(3.0, 0.5) if layer == 1 else None)
+    c.crease((cx - w * 0.3, cy - h * 0.18), (cx + w * 0.25, cy - h * 0.15), 3, P.CLOUD_SHADE, 0.35)
+
+
+def draw_bird(c, bx, by, size, wing):
+    """Skládaný papírový ptáček hledící doprava; wing = výška konců křídel (−1 dole … 1 nahoře)."""
+    body = [(bx - size * 0.5, by + size * 0.1), (bx + size * 0.7, by - size * 0.05),
+            (bx + size * 0.2, by + size * 0.3)]
+    wing_back = [(bx, by), (bx - size * 0.95, by - size * 0.75 * wing), (bx - size * 0.35, by + size * 0.15)]
+    wing_front = [(bx, by), (bx + size * 0.85, by - size * 0.5 * wing), (bx + size * 0.3, by + size * 0.2)]
+    c.shape(wing_back, mix(P.LEAF_RUST, "#000000", 0.12), fiber=0.05)
+    c.shape(body, P.LEAF_RUST, fiber=0.05, shadow=(3, 4, 3, 0.12))
+    c.shape(wing_front, P.LEAF_RUST_LIGHT, fiber=0.05)
+
+
+def layer_sky(fiber, rng, out: Path) -> dict:
+    """Obloha: slunce v dlaždici, mraky a ptáci jako samostatné výřezy (pohybují se v Godotu)."""
     c = Canvas(TILE, 560, wrap_x=True, fiber=fiber)
     # Slunce: dvě vrstvy papíru s trhaným okrajem.
     sun = tear(ellipse(1960, 150, 78, 78, 90), 2.2, rng, step=3)
     c.shape(sun, P.SUN, fiber=0.08, shadow=(4, 5, 4, 0.12), rim=(2, P.SUN_LIGHT, 0.6))
     c.shape(tear(ellipse(1950, 140, 52, 52, 70), 1.5, rng), P.SUN_LIGHT, fiber=0.06)
     c.core(sun, 3.0, 0.55)
-    # Mraky: kupovité laloky z kruhů, spodek zarovnaný, pod nimi stínová vrstva.
-    for cx, cy, w, h in [(380, 300, 300, 105), (980, 200, 190, 66), (1480, 330, 230, 78),
-                         (2180, 290, 280, 98), (2620, 170, 170, 60)]:
-        lobes = []
-        n = max(4, int(w / 70))
-        for i in range(n):
-            t = (i + 0.5) / n
-            r = h * (0.32 + 0.55 * math.sin(math.pi * t) ** 1.3) * rng.uniform(0.85, 1.12)
-            x = cx - w / 2 + w * t
-            lobes.append((x, cy - r * 0.55, r))
-        for i in range(n - 1):
-            t = (i + 1.0) / n
-            r = h * (0.45 + 0.5 * math.sin(math.pi * t)) * rng.uniform(0.8, 1.0)
-            lobes.append((cx - w / 2 + w * t, cy - r * 0.95, r * 0.8))
-        base = [(cx - w / 2 - h * 0.2, cy), (cx + w / 2 + h * 0.2, cy),
-                (cx + w / 2 + h * 0.1, cy - h * 0.25), (cx - w / 2 - h * 0.1, cy - h * 0.25)]
-        for layer, (dx, dy, col) in enumerate([(16, 12, P.CLOUD_SHADE), (0, 0, P.CLOUD)]):
-            polys = [tear(transform(ellipse(x, y, r, r, 40), dx, dy), 1.4, rng, step=4)
-                     for x, y, r in lobes]
-            polys.append(transform(base, dx, dy))
-            # Spodní hrana mraku je rovná: nic pod základnou.
-            polys = [[(px, min(py, cy + dy)) for px, py in poly] for poly in polys]
-            c.shape(polys, col, fiber=0.05, shadow=(8, 10, 7, 0.10) if layer == 0 else None,
-                    core=(3.0, 0.5) if layer == 1 else None)
-        c.crease((cx - w * 0.3, cy - h * 0.18), (cx + w * 0.25, cy - h * 0.15), 3, P.CLOUD_SHADE, 0.35)
-    # Skládaní papíroví ptáčci (dvě křídla s přehybem).
-    for bx, by, size, flip in [(1250, 120, 26, 1), (1330, 165, 20, -1), (610, 230, 18, 1)]:
-        wing_l = [(bx, by), (bx - size * flip, by - size * 0.7), (bx - size * 0.35 * flip, by + size * 0.15)]
-        wing_r = [(bx, by), (bx + size * 0.9 * flip, by - size * 0.45), (bx + size * 0.3 * flip, by + size * 0.2)]
-        body = [(bx - size * 0.5 * flip, by + size * 0.1), (bx + size * 0.7 * flip, by - size * 0.05),
-                (bx + size * 0.2 * flip, by + size * 0.3)]
-        c.shape(body, P.LEAF_RUST, fiber=0.05, shadow=(3, 4, 3, 0.12))
-        c.shape(wing_l, P.LEAF_RUST_LIGHT, fiber=0.05)
-        c.shape(wing_r, mix(P.LEAF_RUST, "#000000", 0.12), fiber=0.05)
     c.save(out / "layers" / "sky_decor.png")
+    clouds = []
+    speeds = [0.16, 0.24, 0.12, 0.2, 0.28]
+    for i, (x, y, w, h) in enumerate([(380, 300, 300, 105), (980, 200, 190, 66), (1480, 330, 230, 78),
+                                      (2180, 290, 280, 98), (2620, 170, 170, 60)]):
+        cw, ch = int(w + h * 0.6 + 70), int(h * 1.45 + 50)
+        cloud = Canvas(cw, ch, fiber=fiber)
+        ax, ay = cw / 2 - 8, ch - 34
+        draw_cloud(cloud, ax, ay, w, h, rng)
+        cloud.save(out / "layers" / f"cloud_{i}.png")
+        clouds.append({"texture": f"layers/cloud_{i}.png", "pos": [x, y], "anchor": [ax, ay],
+                       "speed": speeds[i]})
+    birds = []
+    for k, wing in enumerate([1.0, 0.25, -0.6]):
+        bird = Canvas(84, 70, fiber=fiber)
+        draw_bird(bird, 40, 36, 26, wing)
+        bird.save(out / "layers" / f"bird_{k}.png")
+        birds.append(f"layers/bird_{k}.png")
+    return {"tile": TILE, "clouds": clouds,
+            "birds": {"frames": birds, "anchor": [40, 36], "flock": [[0, 0, 1.0], [-70, 38, 0.8], [-130, 12, 0.7]],
+                      "start": [1250, 140], "speed": 2.6}}
 
 
 def layer_mountains(fiber, rng, out: Path):
@@ -391,10 +416,45 @@ def fg_clump(name, fiber, rng, out: Path, w, h, leaves, flowers=0):
     c.save(out / "layers" / f"{name}.png")
 
 
+# Hloubka ostrosti jako u fotky papírového dioramatu: čím dál od herní roviny
+# (a popředí blíž než ona), tím rozmazanější. Sigma v pixelech textury.
+DEPTH_BLUR = {
+    "sky_decor": 1.4, "cloud_0": 1.4, "cloud_1": 1.4, "cloud_2": 1.4, "cloud_3": 1.4,
+    "cloud_4": 1.4, "bird_0": 1.0, "bird_1": 1.0, "bird_2": 1.0,
+    "mountains": 3.2, "midground": 2.2, "near": 1.2,
+    "fg_leaves_teal": 3.4, "fg_leaves_rust": 3.4, "fg_fern_sage": 3.4,
+}
+WRAPPED = {"sky_decor", "mountains", "midground", "near"}
+FOREGROUND = {"fg_leaves_teal", "fg_leaves_rust", "fg_fern_sage"}
+
+
+def soften(path: Path, sigma: float, wrap_x: bool, pad_sides: int = 0) -> None:
+    """Gaussovské rozostření s předem vynásobenou alfou (bez tmavých lemů).
+
+    Dlaždice se rozmazávají přes svůj vodorovný šev; výřezy popředí dostanou
+    průhledný okraj vlevo, vpravo a nahoře, aby rozmazaný kraj nebyl uříznutý."""
+    from PIL import Image
+    from scipy import ndimage
+    img = np.asarray(Image.open(path).convert("RGBA"), np.float32) / 255.0
+    if pad_sides:
+        img = np.pad(img, ((pad_sides, 0), (pad_sides, pad_sides), (0, 0)))
+    rgb_p = img[..., :3] * img[..., 3:4]
+    stack = np.concatenate([rgb_p, img[..., 3:4]], axis=2)
+    mode = ("nearest", "wrap", "nearest") if wrap_x else ("constant", "constant", "nearest")
+    out = np.empty_like(stack)
+    for ch in range(4):
+        out[..., ch] = ndimage.gaussian_filter(stack[..., ch], sigma, mode=mode[:2])
+    alpha = out[..., 3:4]
+    rgb_out = np.where(alpha > 1e-4, out[..., :3] / np.maximum(alpha, 1e-4), 0.0)
+    result = np.concatenate([np.clip(rgb_out, 0, 1), np.clip(alpha, 0, 1)], axis=2)
+    Image.fromarray((result * 255 + 0.5).astype(np.uint8), "RGBA").save(path, optimize=True)
+
+
 def build(out: Path, seed: int = 2026):
     rng = np.random.default_rng(seed)
     fiber = build_fiber(rng, out)
-    layer_sky(fiber, np.random.default_rng(seed + 1), out)
+    sky = layer_sky(fiber, np.random.default_rng(seed + 1), out)
+    (out / "layers" / "sky.json").write_text(json.dumps(sky, indent=1) + "\n")
     layer_mountains(fiber, np.random.default_rng(seed + 2), out)
     layer_mid(fiber, np.random.default_rng(seed + 3), out)
     layer_near(fiber, np.random.default_rng(seed + 4), out)
@@ -404,6 +464,9 @@ def build(out: Path, seed: int = 2026):
              [(P.LEAF_RUST, P.LEAF_RUST_LIGHT)] * 4 + [(P.LEAF_TEAL, P.LEAF_TEAL_LIGHT)] * 3, flowers=1)
     fg_clump("fg_fern_sage", fiber, np.random.default_rng(seed + 7), out, 520, 520,
              [(P.LEAF_SAGE, P.LEAF_SAGE_LIGHT)] * 8)
+    for name, sigma in DEPTH_BLUR.items():
+        soften(out / "layers" / f"{name}.png", sigma, name in WRAPPED,
+               int(sigma * 3) if name in FOREGROUND else 0)
 
 
 if __name__ == "__main__":

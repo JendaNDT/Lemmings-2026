@@ -16,6 +16,8 @@ Vývoj a kontroly probíhají v cloudu.
 v simulaci, editoru i origami vzhledu, nová mise „6 · Voda, láva a past“
 (řešitelná 8/10, požadavek 6). Ve 2. kole vylepšená voda, láva a animace
 postaviček (topení, hoření, chůze, pád, dopad). [Ověření etapy 5](docs/ETAPA_5_OVERENI.md).
+Ve 3. kole vzhledu čitelnější postavičky, hloubka a světlo jako u papírového
+dioramatu a živá krajina ([popis](docs/ORIGAMI_OVERENI.md)).
 
 Další kroky:
 1. **Zvuky** (na řadě podle tvého přání).
@@ -94,6 +96,12 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
   a dotyk (8/10, shoda s replayem); snímky a 19s záznam
 - Kontrola: 71 GDScriptů, 10 sad, 290 ověření (`test_hazards` 48,
   `test_origami` 56); mise 1 na telefonu znovu 20/20, terén 0 neshod
+- **Vzhled 3. kolo:** čitelnější postavičky (bližší výchozí pohled, světlý
+  papírový okraj a stín), hloubka ostrosti krajiny a popředí, opar, teplé
+  světlo s paprsky, delší stíny, tmavší tunely; plující mraky, mávající
+  ptáci, kývající se rostliny, mech i popředí, padající lístky,
+  nepravidelné plameny nad lávou; kontrola 71 GDScriptů, 10 sad,
+  297 ověření (`test_origami` 63)
 - **Vylepšení 2. kolo:** šikmé břehy jezírka a lávové jámy, odlesky,
   kruhy a bubliny ve vodě, plovoucí klobouk po utonutí; láva s třemi
   řadami plamenů, jiskrami, kůrkou, bublinami a září na hlíně; topící se

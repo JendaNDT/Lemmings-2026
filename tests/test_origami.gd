@@ -28,6 +28,7 @@ func _run() -> void:
 	_test_animation_in_scene(game, world)
 	game.free()
 	_test_hazard_effects()
+	await _test_living_scene(scene)
 	await process_frame
 	_test_solution(scene)
 	_test_other_missions(scene)
@@ -629,6 +630,48 @@ func _test_hazard_effects() -> void:
 	view = actors._views[faller.id]
 	check(squashed and float(view.root[4]) > 0.94, "dopad z pádu postavu krátce zplácne a narovná")
 	actors.free()
+
+
+## Čitelnost, hloubka a živá krajina: jen vzhled, řízený herním časem.
+func _test_living_scene(scene: PackedScene) -> void:
+	var game := scene.instantiate()
+	root.add_child(game)
+	game.set_process(false)
+	var world: PaperWorld = game.get_node("PaperWorld")
+	world.camera.input_enabled = false
+	game.call("_choose_mission", 0)
+	var sim: LevelSim = game.get("_sim")
+	check(is_equal_approx(world.camera.zoom_factor, 2.0),
+		"výchozí pohled je bližší, postavy jsou čitelné bez přibližování")
+	var silhouette := world.actors.get_node("Silhouette") as Node2D
+	check(silhouette != null and silhouette.show_behind_parent and silhouette.material != null,
+		"postavy mají pod sebou světlý okraj a vržený stín")
+	var sky := world.layers[0]
+	var clouds := sky.drifters.filter(func(d: Dictionary) -> bool: return d.get("flap", 0) == 0)
+	var birds := sky.drifters.filter(func(d: Dictionary) -> bool: return d.get("flap", 0) > 0)
+	check(clouds.size() == 5 and birds.size() == 3, "na obloze je 5 mraků a hejnko 3 ptáčků")
+	for _frame in 40:
+		game.call("_process", 1.0 / 17.0)
+	var t0 := sky.time
+	var cloud_x := sky.drifter_position(clouds[0]).x
+	var poses := {}
+	for _frame in 30:
+		game.call("_process", 1.0 / 17.0)
+		poses[sky.drifter_frame(birds[0])] = true
+	var moved := fposmod(sky.drifter_position(clouds[0]).x - cloud_x, 2800.0)
+	check(sky.time > t0 and moved > 0.5 and moved < 20.0, "mraky pomalu plují s herním časem")
+	check(poses.size() == 3, "ptáček mává křídly (tři pózy)")
+	check(world.layers[1].haze > world.layers[3].haze and world.layers[3].haze > 0.0,
+		"vzdálenější vrstvy jsou víc v oparu")
+	game.call("_toggle_pause")
+	var paused_time := sky.time
+	var petals := world.fx._puffs.size()
+	for _frame in 20:
+		game.call("_process", 1.0 / 17.0)
+	check(sky.time == paused_time and world.fx._puffs.size() == petals and sim.replay_log.is_empty(),
+		"pauza zastaví mraky, ptáky i lístky; dekorace nevytváří herní příkazy")
+	game.free()
+	await process_frame
 
 
 func _touch(index: int, point: Vector2, pressed: bool) -> InputEventScreenTouch:
