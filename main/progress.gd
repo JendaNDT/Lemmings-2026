@@ -174,8 +174,9 @@ static func digest(sim: LevelSim) -> String:
 
 
 static func _clean_entry(data: Dictionary) -> Dictionary:
+	var done: Variant = data.get("completed")
 	return {
-		"completed": data.get("completed") == true,
+		"completed": done is bool and done,
 		"best_saved": maxi(0, _int(data, "best_saved")),
 		"best_ticks": maxi(0, _int(data, "best_ticks")),
 		"plays": maxi(0, _int(data, "plays")),

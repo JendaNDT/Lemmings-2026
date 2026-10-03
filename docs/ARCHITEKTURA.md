@@ -174,6 +174,13 @@ Level01  (LevelDefinition – pravidla v Inspectoru)
 - Při startu levelu `LevelLoader` všechny tvary „vypálí“ do logické mapy.
 - Pozdější tvary přemalují dřívější (jako vrstvy v grafickém editoru).
 
+Každá mise má v Inspectoru **Level Id** – stabilní identifikátor
+(malá písmena, číslice, pomlčky, např. `voda-lava-past`). Podle něj se
+ukládá postup, takže přejmenování nebo přeřazení mise výsledky hráče
+nezničí. Pořadí kampaně určuje `main/campaign.gd` (`Campaign.SCENES`);
+název a počty si kampaň čte přímo ze scény. Chybějící id hlásí
+`LevelValidator` jako varování u kořene levelu.
+
 Později přibude: kusy terénu jako obrázky (z alfa kanálu se vyrobí
 maska), dekorace, světla a částice umístěné přímo ve scéně levelu.
 
@@ -194,7 +201,8 @@ Z toho zadarmo plyne:
 
 - **Pauza** – prostě se netiká. Dovednosti jde přidělovat i v pauze.
 - **Zrychlení** – víc tiků za snímek.
-- **Replay** – technický `SimReplay` je hotový; hráčské rozhraní a ukládání přijdou později.
+- **Replay** – technický `SimReplay` je hotový. Využívá ho i ukládání
+  rozehrané mise (oddíl 6a); hráčské přehrávání řešení přijde později.
 - **Přetáčení času** (později) – ukládat snímky stavu každých pár
   sekund a dopočítat zbytek z logu.
 
@@ -202,6 +210,48 @@ Smyčka zpracuje nejvýše osm tiků za snímek a zbytek akumulátoru omezí
 na jeden tik. Při velké prodlevě tedy hra zpomalí vůči skutečnému času.
 Determinismus se vztahuje ke stejným tikům a příkazům, nikoli ke stejným
 sekundám na nástěnných hodinách.
+
+---
+
+## 6a. Aplikace, menu a ukládání (etapa 6)
+
+Hlavní scéna je `main/app.tscn` (`App`). Hra (`game_origami.tscn`) se
+pro každou misi z menu vytvoří znovu a po návratu do menu se celá uvolní;
+restart a další mise běží uvnitř téže instance hry.
+
+```
+App (main/app.gd)
+├── Backdrop   MenuBackdrop – papírová krajina za menu (bez simulace)
+├── MenuAudio  GameAudio – kliknutí v menu
+├── Menu       MenuScreens – hlavní menu, výběr misí, nastavení
+└── Game       game_origami.tscn – jen během mise
+```
+
+| Soubor | Co dělá |
+|---|---|
+| `main/save_file.gd` | `SaveFile`: bezpečný zápis. Dva řádky – hlavička (hra, verze formátu, SHA-256 dat) a data v JSON. Zápis jde do `.tmp`, ten se ověří, předchozí platná verze se zkopíruje do `.bak` a teprve pak se `.tmp` přejmenuje. Poškozený soubor se odloží jako `.corrupt` a načte se záloha. |
+| `main/game_settings.gd` | `GameSettings`: hlasitosti sběrnic, ztlumení, celá obrazovka, pohyb postav, FPS, velikost rozhraní, kvalita efektů, posun kamery, dosah klepnutí, potvrzení Ukončit, vývojové odemčení misí. Každá hodnota má výchozí stav a povolený rozsah. `user://settings.json`. |
+| `main/progress.gd` | `Progress`: splněné mise, rekordy (víc zachráněných, při shodě kratší čas), počty pokusů, poslední mise a rozehraný pokus. `user://progress.json`. |
+| `main/campaign.gd` | `Campaign`: pořadí misí a jejich údaje čtené ze scén bez vytvoření. |
+| `ui/menu_screens.gd`, `ui/settings_panel.gd`, `ui/menu_backdrop.gd` | Obrazovky menu, nastavení (sdílené s pauzou ve hře) a pozadí. |
+| `ui/paper_ui.gd` | `PaperUi`: společný papírový vzhled HUDu i menu. |
+
+**Rozehraný pokus** se neukládá jako stav světa, ale jako `replay_log`
+a tik. Při „Pokračovat“ ho `SimReplay` přehraje na čerstvé simulaci;
+otisk stavu (počty, postavy, maska terénu) ověří, že výsledek sedí. Když
+nesedí (jiná verze levelu), pokus se zahodí a mise začne znovu. Ukládá se
+při odchodu z mise do menu, při přechodu aplikace na pozadí a při zavření
+okna. Obnovená mise začne v pauze.
+
+**Změna formátu:** každý soubor nese verzi. Neznámé nebo poškozené položky
+se nahradí výchozími; soubor z novější verze hry se před přepsáním
+odloží vedle (`.v2`…). Starší `settings.cfg` (jen ztlumení) se převezme.
+
+Hra dostane `settings` a `progress` od `App`; spuštěná samostatně (editor,
+testy) má výchozí nastavení a postup jen v paměti, nic nezapisuje.
+Nastavení se uplatňuje hned (signál `GameSettings.changed`), simulaci
+neovlivní: kvalita efektů mění jen ozdoby `PaperWorld`, velikost rozhraní
+zvětší lišty a herní plocha se posune pod ně.
 
 ---
 
@@ -306,19 +356,19 @@ Podklady jsou v `assets/origami/` s původem, licencí a manifestem
 
 ```
 project.godot        nastavení projektu
-main/                hlavní scéna a herní smyčka
+main/                aplikace (App), herní smyčka, nastavení, postup, ukládání
 sim/                 logika hry (žádná grafika!)
   states/            jeden soubor = jeden stav lumíka
 level_tools/         nástroje pro stavbu levelů v editoru
 levels/              samotné levely (scény)
 view/                grafika: terén, lumíci, efekty, kamera, shadery
                      (paper_* = 2D origami, clay_* = 2.5D prototyp)
-ui/                  rozhraní (HUD, menu)
+ui/                  rozhraní: HUD, menu, nastavení, společný papírový vzhled
 tests/               automatické testy simulace (běží bez grafiky)
 docs/                dokumentace
 ```
 
-Plánované: `audio/` (zvuky a hudba), `assets/` (textury, modely).
+Podklady (textury, modely, zvuky) jsou v `assets/` se zámky kontrolních součtů.
 
 Protože simulace nepotřebuje grafiku, jde celý level „odehrát“
 v testu za pár sekund (`tests/test_level_01.gd`). Tak se hlídá,
@@ -337,7 +387,7 @@ a první sestavení pro Mac. Tabulka zachycuje původní rámec.
 | M1 | **Jádro** ✅ | Simulace, 4 dovednosti, testovací level, HUD, shader terénu. |
 | M2 | Všechny mechaniky | Lezec, padák, bombič + atomovka, horník; voda, láva, pasti; jednosměrné zdi. |
 | M3 | Grafika 2026 | Materiály terénu, světla, glow, HD lumíci, částice, paralaxa. |
-| M4 | Obsah | Menu, výběr levelů, ukládání postupu, 15–20 levelů, zvuk a hudba. |
+| M4 | Obsah | Menu, výběr levelů, ukládání postupu ✅, zvuk ✅; 15–20 levelů, hudba. |
 | M5 | Vyladění | Replay, přetáčení, dotyk a gamepad, export PC / Android / web. |
 
 ---

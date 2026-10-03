@@ -413,7 +413,11 @@ func _on_menu_action(action: String) -> void:
 			_suspend_if_running()
 			progress.save()
 			settings.save()
-			leave_requested.emit(action)
+			if leave_requested.get_connections().is_empty():
+				# Samostatně spuštěná scéna hry (editor): přejít do aplikace s menu.
+				get_tree().change_scene_to_file.call_deferred("res://main/app.tscn")
+			else:
+				leave_requested.emit(action)
 
 
 ## Rozehraný pokus uloží pro „Pokračovat“ (jen když už běží a neskončil).

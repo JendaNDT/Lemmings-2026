@@ -22,7 +22,8 @@ Vydání 1.0 zahrne osm dovedností, 15–20 vlastních levelů, menu, nastaven�
 - Procházejí regresní kontroly mechanik, terénu, celého řešení a skutečné scény s HUD.
 - Dovednosti i vypouštění mají společný záznam. Technický replay přes JSON opakuje průběh při různém tempu snímků; uživatelské rozhraní replaye je pozdější etapa.
 - Přenosné kontroly byly ověřeny v čisté kopii s oddělenou instalací nástrojů. CI pro Linux a macOS je připravené; vzdálený výsledek CI dosud nebyl ověřen.
-- Výchozí scéna je od 3. října 2D origami ([ověření](ORIGAMI_OVERENI.md)). 2.5D scéna prošla výtvarnou úpravou ve verzi 0.4.0; [technický záznam](GRAFIKA_04.md). Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
+- Aplikace startuje hlavním menu (`main/app.tscn`, etapa 6) a ukládá postup i nastavení ([ověření](ETAPA_6_OVERENI.md)).
+- Herní scéna je od 3. října 2D origami ([ověření](ORIGAMI_OVERENI.md)). 2.5D scéna prošla výtvarnou úpravou ve verzi 0.4.0; [technický záznam](GRAFIKA_04.md). Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
 - Příprava etapy 3: hotová první sada modelínových materiálů, modelů,
   animací zapojených do dosavadní hry. Podrobnosti v [podkladech prototypu](PODKLADY_PROTOTYPU.md).
 
@@ -91,7 +92,8 @@ Připravit pohodlné nastavování objektů v editoru a validaci chybějících 
 
 **Stav (3. 10. 2026): technicky hotovo v cloudu.** Pravidla, editor
 (`LemmingTrap`, druhy terénu, kontrola levelu), origami vzhled a mise 6;
-[ověření etapy 5](ETAPA_5_OVERENI.md). Zbývá vyzkoušet na zařízení a doplnit zvuky.
+[ověření etapy 5](ETAPA_5_OVERENI.md). Zvuky doplněny ([popis](ZVUK.md)); zbývá vyzkoušet
+na zařízení.
 
 ## Etapa 6 — Menu, nastavení a ukládání
 
@@ -100,6 +102,12 @@ Přidat hlavní menu, pokračování, výběr levelů, pauzovací menu a výsled
 Ukládání musí zvládat přerušený zápis, poškozený soubor a změnu formátu. Nastavení zahrne hlasitost, zobrazení, ovládání, velikost UI a kvalitu efektů. Prověřit uvolňování scén a zdrojů při přechodech a restartech.
 
 **Podmínka dokončení:** lze projít cestu od spuštění přes dokončení levelu až po návrat další den se zachovaným postupem.
+
+**Stav (3. 10. 2026): technicky hotovo v cloudu.** Hlavní menu s papírovou
+krajinou, výběr misí s odemykáním, nastavení (zvuk, zobrazení, ovládání,
+hra), pauzovací menu, výsledek s další misí, rozehraná mise přes replay,
+bezpečné ukládání; automatický průchod „spuštění → výhra → další den“
+prošel. [Ověření etapy 6](ETAPA_6_OVERENI.md). Zbývá vyzkoušet na zařízení.
 
 ## Etapa 7 — Reprezentativní demo a 2D výtvarný směr
 

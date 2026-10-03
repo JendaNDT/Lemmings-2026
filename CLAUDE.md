@@ -55,6 +55,11 @@
   `assets/audio.lock.json`, mix `sfx.json`); hraje je `GameAudio`, simulaci jen čte.
   Hudbu doplní autor později (sběrnice Music).
   Pracovní fázi animace řídí tiky, nikoli čas enginu.
+- Hlavní scéna je `main/app.tscn` (`App`: menu, spouštění a uvolňování hry).
+  Postup a nastavení zapisovat jen přes `SaveFile` (`Progress`, `GameSettings`);
+  nová položka nastavení potřebuje výchozí hodnotu a rozsah v `GameSettings`.
+  Nová mise potřebuje jedinečné `level_id` (po vydání neměnit) a zařazení
+  do `Campaign.SCENES`. Rozehraná mise se ukládá jen jako `replay_log` + tik.
 - Mobilní ovládání je v `TouchControls`, profil v `DeviceProfile` a nastavení
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.

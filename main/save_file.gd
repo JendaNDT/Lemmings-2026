@@ -81,14 +81,22 @@ static func _read_one(path: String) -> Dictionary:
 	var newline := text.find("\n")
 	if newline < 0:
 		return {}
-	var header: Variant = JSON.parse_string(text.substr(0, newline))
+	var header: Variant = _parse(text.substr(0, newline))
 	var body := text.substr(newline + 1).trim_suffix("\n")
-	if not header is Dictionary or header.get("game") != GAME:
+	if not header is Dictionary or str(header.get("game")) != GAME:
 		return {}
 	var format: Variant = header.get("format")
-	if not (format is float or format is int) or header.get("sha256") != body.sha256_text():
+	if not (format is float or format is int) or str(header.get("sha256")) != body.sha256_text():
 		return {}
-	var data: Variant = JSON.parse_string(body)
+	var data: Variant = _parse(body)
 	if not data is Dictionary:
 		return {}
 	return {"format": int(format), "data": data}
+
+
+## JSON bez hlášení chyby do logu (poškozený soubor je očekávaný stav).
+static func _parse(text: String) -> Variant:
+	var json := JSON.new()
+	if json.parse(text) != OK:
+		return null
+	return json.data

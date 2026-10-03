@@ -12,31 +12,35 @@ také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**Etapa 5 je technicky hotová:** voda, láva, pasti a jednosměrné zdi
-v simulaci, editoru i origami vzhledu, nová mise „6 · Voda, láva a past“
-(řešitelná 8/10, požadavek 6). Ve 2. kole vylepšená voda, láva a animace
-postaviček (topení, hoření, chůze, pád, dopad). [Ověření etapy 5](docs/ETAPA_5_OVERENI.md).
-Ve 3. kole vzhledu čitelnější postavičky, hloubka a světlo jako u papírového
-dioramatu a živá krajina ([popis](docs/ORIGAMI_OVERENI.md)).
+**Etapa 6 je technicky hotová:** hlavní menu nad papírovou krajinou,
+výběr misí se zámky a rekordy, nastavení (zvuk, zobrazení, ovládání, hra),
+pauzovací menu (Menu / Esc / Zpět), výsledek s další misí a ukládání
+postupu i rozehrané mise (obnova přes replay). Průchod „spuštění → výhra →
+další den“ prošel automaticky. [Ověření etapy 6](docs/ETAPA_6_OVERENI.md).
 
-**Zvuky jsou hotové** (efekty, okolí, rozhraní; hudba později):
-[popis a ukázka](docs/ZVUK.md). Ztlumení klávesou T nebo tlačítkem v liště.
+Etapa 5 (voda, láva, pasti, jednosměrné zdi, mise 6) a zvuky jsou hotové:
+[etapa 5](docs/ETAPA_5_OVERENI.md), [vzhled](docs/ORIGAMI_OVERENI.md),
+[zvuky](docs/ZVUK.md).
 
 Další kroky:
-1. **Poslechnout ukázku zvuků** a říct, co upravit (hlasitost, charakter).
-2. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5), zahrát misi 6
-   a říct, co se líbí – vzhled je posouzený jen z cloudových snímků.
-3. **Vyzkoušet APK 0.5.0 na telefonu** (origami, mise 6, zvuky):
-   [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.5.0/android/Lemmings-2026-Android-0.5.0.apk).
-   Nejdřív odinstalovat 0.4.0 (jiný testovací podpis). [Návod](docs/ANDROID_DEMO.md).
-4. Etapa 6: menu, nastavení (hlasitosti) a ukládání postupu.
-5. Doladit obtížnost mise 6 a vzhled vody a lávy podle tvého názoru.
+1. **Vyzkoušet APK na telefonu** a říct, jak se menu ovládá a jak hra běží
+   (v Nastavení → Zobrazení jde zapnout počítadlo FPS). [Návod](docs/ANDROID_DEMO.md).
+2. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5) – menu, mise 6,
+   zvuky a uložení postupu po novém spuštění.
+3. Poslechnout zvuky a doladit obtížnost mise 6 podle tvého názoru.
+4. Etapa 7 bod 5: nápověda pro nového hráče a další mise.
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Etapa 6 – menu, nastavení, ukládání:** `App` (nová hlavní scéna
+  `main/app.tscn`), `MenuScreens`, `SettingsPanel`, `MenuBackdrop`,
+  `PaperUi`; `SaveFile` (atomický zápis, záloha, SHA-256, verze formátu),
+  `GameSettings`, `Progress`, `Campaign` se stabilními ID misí; pauzovací
+  menu a výsledek v HUDu; kvalita efektů v `PaperWorld`. Kontrola:
+  86 GDScriptů, 13 sad, 395 kontrol; přechody menu ↔ hra bez úniku uzlů.
 - **Android APK 0.5.0** ve větvi `downloads/android-0.5.0`: origami grafika,
   mise 1–6, zvuky; versionCode 6, ARM32/ARM64, bez oprávnění. Ověřený
   podpis v2/v3, zarovnání, manifest a spuštění herních souborů z APK
@@ -230,6 +234,12 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - `view/game_audio.gd`, `assets/audio/` (+ `source/build_sfx.py`), `docs/ZVUK.md` – zvuky
 - `level_tools/lemming_trap.gd`, `level_tools/level_validator.gd` – past a kontrola levelu
 - `tests/test_hazards.gd`, `docs/ETAPA_5_OVERENI.md` – ověření etapy 5
+- `main/app.tscn` (`App`) – hlavní scéna: menu, spouštění a uvolňování misí
+- `main/save_file.gd`, `main/game_settings.gd`, `main/progress.gd`, `main/campaign.gd` –
+  bezpečné ukládání, nastavení, postup a pořadí misí
+- `ui/menu_screens.gd`, `ui/settings_panel.gd`, `ui/menu_backdrop.gd`, `ui/paper_ui.gd` – menu
+- `tests/test_save.gd`, `tests/test_menu.gd`, `scripts/qa_menu.gd`,
+  `docs/ETAPA_6_OVERENI.md` – ověření etapy 6
 - `view/terrain.gdshader` – vzhled terénu
 - `view/lemmings_view.gd` – kreslení lumíků
 - `ui/hud.gd` – herní rozhraní

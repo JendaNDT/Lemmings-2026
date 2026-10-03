@@ -6,6 +6,23 @@ Architektura: [`docs/ARCHITEKTURA.md`](docs/ARCHITEKTURA.md) ·
 Stav projektu: [`PROJECT_STATUS.md`](PROJECT_STATUS.md) ·
 Plán vývoje: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md)
 
+## Novinka: menu, nastavení a ukládání postupu (etapa 6)
+
+Hra startuje **hlavním menu** nad papírovou krajinou: *Začít hrát /
+Pokračovat*, *Mise* (výběr se zámky – další mise se otevře po splnění
+předchozí), *Nastavení* (hlasitosti, velikost rozhraní, kvalita efektů,
+ovládání). Ve hře je tlačítko **Menu** (nebo **Esc**, na Androidu **Zpět**)
+s pauzou, nastavením a návratem do menu. Výsledek mise nabídne
+**další misi**. Splněné mise, rekordy a nastavení se ukládají; rozehraná
+mise se při odchodu uloží a **Pokračovat** ji obnoví přesně tam, kde jsi
+skončil (i druhý den).
+
+![Hlavní menu](docs/images/etapa6-hlavni-menu.jpg)
+
+![Výběr misí, výsledek, pauza a nastavení](docs/images/etapa6-obrazovky.jpg)
+
+Popis a ověření: [`docs/ETAPA_6_OVERENI.md`](docs/ETAPA_6_OVERENI.md).
+
 ## Výchozí zobrazení — 2D origami
 
 Hra se nově spouští v **papírovém 2D origami stylu** podle přijatého
@@ -102,9 +119,11 @@ ověření. Aktuální výsledky: [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERE
    [godotengine.org/download](https://godotengine.org/download).
 2. Spusť Godot → **Import** → vyber soubor `project.godot` z tohohle repozitáře.
    První import papírových textur chvíli trvá.
-3. Stiskni **F5** (nebo ▶ vpravo nahoře). Spustí se origami scéna.
-   Starší zobrazení otevřeš přes `main/game_3d.tscn` nebo `main/game.tscn`
-   a **F6** (spustit aktuální scénu).
+3. Stiskni **F5** (nebo ▶ vpravo nahoře). Spustí se hlavní menu
+   (`main/app.tscn`). Samotnou origami misi bez menu spustíš otevřením
+   `main/game_origami.tscn` a **F6**; starší zobrazení jsou
+   `main/game_3d.tscn` a `main/game.tscn`. Při spuštění bez menu se postup
+   neukládá.
 
 ## Vytvoření vlastního sestavení
 
@@ -181,10 +200,15 @@ kontrolní průchod jsou v [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERENI.md).
 | Zrychlení 3× | **F** |
 | Vypouštění pomaleji / rychleji | **−** / **=** (nebo na numerické klávesnici) |
 | Restart levelu | **R** |
-| Výběr zkušební mise | nabídka vlevo v dolní liště |
+| Menu (pauza, nastavení, výběr misí) | **Esc**, tlačítko **Menu** vlevo dole, na Androidu **Zpět** |
 | Hromadné ukončení | **N** nebo **Ukončit**, poté potvrzení; **Esc** zruší dialog |
 | Stop-motion ↔ plynulý pohyb postav (jen vzhled) | **M** |
 | Zvuk zapnout / ztlumit | **T** nebo tlačítko s reproduktorem v dolní liště |
+
+Postup a nastavení se ukládají do uživatelské složky Godotu
+(na Macu `~/Library/Application Support/Godot/app_userdata/Lemmings 2026/`,
+na Androidu do soukromých dat aplikace): `progress.json` a `settings.json`
+se zálohami `.bak`. Smazat postup jde v **Nastavení → Hra**.
 
 ## Jak upravit level
 
@@ -193,7 +217,9 @@ Otevři `levels/level_01.tscn`. Pravidla levelu (počet lumíků, dovednosti,
 – vyber jeden a body mnohoúhelníku můžeš tahat myší. Druh tvaru (`Kind`)
 může být hlína, ocel, výřez, voda, láva nebo jednosměrná zeď; past je uzel
 `LemmingTrap` postavený na zem. Chyby v levelu hlásí žlutý trojúhelník
-u kořenového uzlu (ukázka: `levels/level_hazards.tscn`).
+u kořenového uzlu (ukázka: `levels/level_hazards.tscn`). Nová mise
+potřebuje vlastní **Level Id** (malá písmena a pomlčky) a zařazení
+do `Campaign.SCENES` v `main/campaign.gd`.
 
 ## Právní poznámka
 
