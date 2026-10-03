@@ -81,4 +81,5 @@ func snapshot(sim: LevelSim) -> Array:
 		sim.tick_count, sim.spawned, sim.saved, sim.lost, sim.finished, sim.release_rate,
 		sim.skills.duplicate(), actors, sim.mask.data.duplicate(), sim.mask.version,
 		sim.replay_log, sim.time_left_ticks(), sim.is_won(), sim.nuking,
+		sim.trap_ready.duplicate(), sim.trap_fired.duplicate(),
 	]

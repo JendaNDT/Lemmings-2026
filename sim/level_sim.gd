@@ -8,8 +8,17 @@ extends RefCounted
 ## - Příkazy se provedou mezi tiky, okamžitě i během pauzy, v pořadí přijetí.
 ## - Stejný level + stejné příkazy ve stejných ticích = vždy stejný výsledek
 ##   (díky tomu půjde udělat replay, přetáčení času a ověřování řešení).
+## - Pořadí v jednom tiku pro každého lumíka: odpočet bomby → činnost stavu →
+##   pád pod level → láva → voda → past → východ. Lumíci se zpracují v pořadí
+##   vypuštění; past sežere jen prvního, ostatní projdou, než se znovu nabije.
 
 enum Command { ASSIGN_SKILL, RELEASE_RATE, NUKE }
+## Stavy, ze kterých už nevede cesta zpět: nepřidělují se dovednosti,
+## nezapaluje se bomba, nekontroluje se východ ani nebezpečí.
+const DYING_STATES := [
+	Lemming.State.SPLATTING, Lemming.State.EXITING,
+	Lemming.State.DROWNING, Lemming.State.BURNING,
+]
 
 var spec: LevelSpec
 var mask: TerrainMask
@@ -23,6 +32,9 @@ var saved := 0
 var lost := 0
 var finished := false
 var nuking := false
+## Pasti: tik, od kterého je past znovu připravená, a tik posledního sežrání.
+var trap_ready := PackedInt32Array()
+var trap_fired := PackedInt32Array()
 ## Kopie přijatých příkazů; pořadí v poli rozhoduje i uvnitř stejného tiku.
 var replay_log: Array[Dictionary]:
 	get:
@@ -57,7 +69,13 @@ func _init(level_spec: LevelSpec, terrain: TerrainMask) -> void:
 		Lemming.State.CLIMBER: ClimberState.new(),
 		Lemming.State.FLOATER: FloaterState.new(),
 		Lemming.State.MINER: MinerState.new(),
+		Lemming.State.DROWNING: DrowningState.new(),
+		Lemming.State.BURNING: BurningState.new(),
 	}
+	trap_ready.resize(spec.traps.size())
+	trap_ready.fill(0)
+	trap_fired.resize(spec.traps.size())
+	trap_fired.fill(-1)
 
 
 ## Jeden krok logiky.
@@ -84,7 +102,7 @@ func tick() -> void:
 		if lem.y >= mask.height:
 			emit_event("fell_out", lem)
 			remove_lemming(lem, false)
-		else:
+		elif not _check_hazards(lem):
 			_check_exit(lem)
 	_update_finished()
 
@@ -114,7 +132,7 @@ func can_assign(lem: Lemming, skill: int) -> bool:
 		return false
 	if (lem.id < 0 or lem.id >= lemmings.size() or lemmings[lem.id] != lem
 			or int(skills.get(skill, 0)) <= 0
-			or lem.state in [Lemming.State.SPLATTING, Lemming.State.EXITING]):
+			or lem.state in DYING_STATES):
 		return false
 	match skill:
 		Lemming.Skill.CLIMBER:
@@ -201,8 +219,7 @@ func _arm_next_nuke() -> void:
 	if not nuking or tick_count < _next_nuke_tick:
 		return
 	for lem in lemmings:
-		if lem.removed or lem.bomb_ticks >= 0 or lem.state in [
-				Lemming.State.SPLATTING, Lemming.State.EXITING]:
+		if lem.removed or lem.bomb_ticks >= 0 or lem.state in DYING_STATES:
 			continue
 		lem.bomb_ticks = SimConst.BOMB_TICKS
 		emit_event("assign", lem)
@@ -257,8 +274,10 @@ func is_blocked(lem: Lemming) -> bool:
 # --- Události pro grafiku a zvuk -----------------------------------------------
 
 ## Simulace jen „hlásí“, co se stalo. Grafika a zvuk si to vyzvednou a zareagují.
-func emit_event(type: String, lem: Lemming) -> void:
-	_events.append({"type": type, "x": lem.x, "y": lem.y, "dir": lem.dir, "id": lem.id})
+## `value` nese doplňující číslo (např. index pasti).
+func emit_event(type: String, lem: Lemming, value: int = 0) -> void:
+	_events.append({"type": type, "x": lem.x, "y": lem.y, "dir": lem.dir, "id": lem.id,
+		"value": value})
 
 
 func take_events() -> Array[Dictionary]:
@@ -318,8 +337,39 @@ func _spawn_if_due() -> void:
 	_next_spawn_tick = tick_count + spawn_interval_ticks()
 
 
+## Láva, voda a pasti. Kontroluje se svislý úsek, kterým lumík v tomto tiku
+## prošel (pád až 3 px za tik nepřeskočí tenkou hladinu). Vrací true, když
+## lumíka zasáhly – pak se už nekontroluje východ.
+func _check_hazards(lem: Lemming) -> bool:
+	if lem.state in DYING_STATES:
+		return false
+	var top := mini(lem.prev_y, lem.y) - 1
+	var bottom := maxi(lem.prev_y, lem.y)
+	var water := false
+	for y in range(top, bottom + 1):
+		var special := mask.hazard_at(lem.x, y)
+		if special == TerrainMask.Special.LAVA:
+			set_state(lem, Lemming.State.BURNING)
+			return true
+		water = water or special == TerrainMask.Special.WATER
+	if water:
+		set_state(lem, Lemming.State.DROWNING)
+		return true
+	var feet := Vector2i(lem.x, lem.y - 1)
+	for index in spec.traps.size():
+		var rect: Rect2i = spec.traps[index]["rect"]
+		if tick_count < trap_ready[index] or not rect.has_point(feet):
+			continue
+		trap_ready[index] = tick_count + int(spec.traps[index]["rearm"])
+		trap_fired[index] = tick_count
+		emit_event("trap", lem, index)
+		remove_lemming(lem, false)
+		return true
+	return false
+
+
 func _check_exit(lem: Lemming) -> void:
-	if lem.state in [Lemming.State.BLOCKER, Lemming.State.SPLATTING, Lemming.State.EXITING]:
+	if lem.state == Lemming.State.BLOCKER or lem.state in DYING_STATES:
 		return
 	for e in spec.exits:
 		var near_x := absi(lem.x - e.x) <= SimConst.EXIT_REACH_X

@@ -10,6 +10,9 @@ const TERRA := [Color("be5131"), Color("cb7936"), Color("e4903f"), Color("e0aa60
 const PAPER := [Color("f2e2c8"), Color("e5ccaf")]
 const WORKER := [Color("2a7b7c"), Color("f0a640"), Color("f6dcb8")]
 const GOLD := [Color("fbe2a0"), Color("f8bf62"), Color("fff4d6")]
+const WATER := [Color("cfe5ea"), Color("7fb6c9"), Color("f0f4f0")]
+const EMBER := [Color("f8c063"), Color("e4903f"), Color("be5131"), Color("4a3a33")]
+const LEAF := [Color("9a9a4e"), Color("b5b45e"), Color("d0614b"), Color("2a7b7c")]
 
 
 class Scrap:
@@ -68,6 +71,15 @@ func handle_events(events: Array[Dictionary]) -> void:
 				_burst(p + Vector2(0, -6), 10, GOLD, Vector2(0, -14), 14.0, 1.0, 0.8, -0.15)
 			"assign":
 				_burst(p + Vector2(0, -11), 6, GOLD, Vector2(0, -8), 10.0, 0.5, 0.6, 0.2)
+			"drown":
+				# Šplouchnutí: kapky z modrého papíru odletí nahoru a spadnou zpět.
+				_burst(p + Vector2(0, -0.5), 12, WATER, Vector2(0, -30), 20.0, 0.7, 0.8, 0.8)
+			"burn":
+				# Jiskry a popel stoupají vzhůru (záporná tíže).
+				_burst(p + Vector2(0, -4), 14, EMBER, Vector2(0, -16), 14.0, 1.2, 0.7, -0.25)
+			"trap":
+				# Past cvakla: lístky a kousky kabátku.
+				_burst(p + Vector2(0, -5), 12, LEAF + WORKER, Vector2(0, -20), 22.0, 0.8, 0.8)
 
 
 func _burst(at: Vector2, count: int, colors: Array, base: Vector2, spread: float,

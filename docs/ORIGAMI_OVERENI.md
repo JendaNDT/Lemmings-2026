@@ -7,6 +7,9 @@ napojení (kamera, převody souřadnic, dotyky, HUD).
 
 ![Skutečný snímek hry: první mise, ražení přes sloup](images/origami-hra-1.png)
 
+Etapa 5 doplnila vodu, lávu, pasti a jednosměrné zdi:
+[ověření etapy 5](ETAPA_5_OVERENI.md).
+
 Záznam (17 s, 1280 × 720): [`images/origami-zaznam.mp4`](images/origami-zaznam.mp4)
 — chůze, přiblížení kolečkem, ražení, posun tažením, rozkládání schodů,
 kopání, oddálení, přiblížení dvěma prsty a vstup do východu.

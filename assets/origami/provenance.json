@@ -14,8 +14,8 @@
   "generator_sha256": {
     "build_all.py": "b2f9ff4eca6e610ba5fe3f32c7a0ae7d73fe2ce05653ff22f0137b6f87e449e4",
     "build_backgrounds.py": "9c107f6ffb3cc8feee8178d049130a4a8343b1ce4236759ef0a486f86e0854eb",
-    "build_character.py": "463d607349db359f1f1b626c3320792f909b44f726bccc0ac6e5e6aa4982f178",
-    "build_props.py": "f82eaa486871545e9d098d814284b0bb746c6f45800fd83469e078e89069876a",
+    "build_character.py": "84225fbeeb72a0269e20ecff3d203b96a3f59c17a5a8f7847afce093ae1c1bbb",
+    "build_props.py": "f64534d859f114d5ed19358e512c93aafff0d6bedde28cca0c495faf1f07ced9",
     "build_ui.py": "da7f69fd92a71cb57d227ba45d3ea5c1404f452d26cdf8246d04c41fe137a112",
     "palette.py": "1a3b727081553d16b4ee031e35daaa477841478a504a706464a8be147b389027",
     "paperlib.py": "ce91f8a6b9a09f227c117f08f4466555097736384e5c5ef8480b36856543ff71"

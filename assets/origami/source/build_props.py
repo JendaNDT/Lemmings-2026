@@ -236,12 +236,72 @@ def plants(fiber, rng, out: Path) -> list:
     return out_specs
 
 
+def flytrap(fiber, rng, out: Path) -> dict:
+    """Past: papírová masožravá rostlina. Dva stejné laloky (levý je zrcadlený)
+    se otáčejí kolem kloubu na stonku; Godot je otevírá a zavírá podle tiků."""
+    from build_backgrounds import leaf
+    s = PROP_SCALE
+    mouth = "#c85a45"
+    mouth_dark = "#a4442f"
+    # Lalok: kloub vlevo dole, vnitřní hrana se zuby míří doleva (k druhému laloku).
+    lw, lh = 8.5, 11.4
+    px, py = 2.0, 10.8
+    lobe = Canvas(int(lw * s), int(lh * s), fiber=fiber)
+    n = 24
+    inner = [((px + 0.4 * t) * s, (py - 9.9 * t) * s) for t in (i / n for i in range(n + 1))]
+    outer = [((px + 0.4 * t + 5.0 * math.sin(math.pi * t) ** 0.75 * (1.0 - 0.2 * t)) * s, (py - 9.9 * t) * s)
+             for t in (i / n for i in range(n, -1, -1))]
+    body = tear(inner + outer, 0.7, rng, step=5)
+    lobe.shape(body, P.LEAF_SAGE_LIGHT, fiber=0.08, shadow=(4, 6, 4, 0.32), bevel=(2.5, 0.2, 0.18))
+    # Stinná půlka laloku a jeho žilky.
+    half = [((px + 0.4 * t + 2.6 * math.sin(math.pi * t) ** 0.75) * s, (py - 9.9 * t) * s)
+            for t in (i / n for i in range(n, -1, -1))]
+    lobe.shape(tear(half[::-1] + outer[::-1][::-1], 0.5, rng, step=5), P.LEAF_SAGE, fiber=0.08)
+    # Červená „tlama“ podél vnitřní hrany.
+    band = inner + [((px + 0.4 * t + 1.7 * math.sin(math.pi * t) ** 0.6) * s, (py - 9.9 * t) * s)
+                    for t in (i / n for i in range(n, -1, -1))]
+    lobe.shape(tear(band, 0.4, rng, step=4), mouth, fiber=0.06)
+    for k in range(5):
+        t = 0.2 + k * 0.15
+        a = ((px + 0.6 + 0.4 * t) * s, (py - 9.9 * t) * s)
+        b = ((px + 0.4 * t + 3.8 * math.sin(math.pi * t) ** 0.75) * s, (py - 9.9 * t + 1.2) * s)
+        lobe.crease(a, b, 1.6, mouth_dark if k % 2 else P.LEAF_SAGE, 0.35)
+    # Zuby: krémové trojúhelníky přes vnitřní hranu.
+    teeth = []
+    for k in range(8):
+        t = 0.2 + k * 0.1
+        x, y = (px + 0.4 * t) * s, (py - 9.9 * t) * s
+        teeth.append([(x + 0.2 * s, y - 0.35 * s), (x - 1.6 * s, y - 0.05 * s), (x + 0.2 * s, y + 0.35 * s)])
+    for tooth in teeth:
+        lobe.shape(tooth, P.FLOWER, fiber=0.05, shadow=(2, 3, 2, 0.25))
+    lobe.core(body, 3.0, 0.5)
+    lobe.save(out / "props" / "trap_lobe.png")
+    # Stonek s listy přitisknutými k zemi; kotva je střed spodní hrany.
+    bw, bh = 14.0, 6.0
+    ax, ay = 7.0, 5.8
+    base = Canvas(int(bw * s), int(bh * s), fiber=fiber)
+    for ang, length in ((math.pi + 0.32, 6.2), (-0.32, 6.0), (math.pi + 0.9, 4.0), (-0.85, 4.2)):
+        outline, half_leaf, rib = leaf(ax * s, (ay - 0.3) * s, length * s, length * 0.36 * s, ang, 0.2)
+        base.shape(outline, P.LEAF_SAGE_LIGHT, fiber=0.08, shadow=(3, 4, 3, 0.3))
+        base.shape(half_leaf, P.LEAF_SAGE, fiber=0.08)
+        base.crease(rib[0], rib[1], 1.6, P.GRASS_TOP, 0.4)
+        base.core(outline, 2.5, 0.45)
+    stem = [((ax - 0.5) * s, ay * s), ((ax - 0.35) * s, (ay - 3.6) * s), ((ax + 0.35) * s, (ay - 3.6) * s),
+            ((ax + 0.5) * s, ay * s)]
+    base.shape(tear(stem, 0.4, rng, step=4), P.LEAF_SAGE, fiber=0.08, shadow=(3, 3, 2, 0.3))
+    base.shape(ellipse(ax * s, (ay - 3.5) * s, 0.9 * s, 0.6 * s, 20), P.LEAF_SAGE_LIGHT, fiber=0.06)
+    base.save(out / "props" / "trap_base.png")
+    return {"base": "props/trap_base.png", "lobe": "props/trap_lobe.png", "scale": s,
+            "anchor": [ax, ay], "hinge": [0.0, -3.4], "lobe_pivot": [px, py]}
+
+
 def build(out: Path, seed: int = 2027):
     from paperlib import fiber_field
     fiber = fiber_field(512, 512, np.random.default_rng(seed))
     data = {"hatch": hatch(fiber, np.random.default_rng(seed + 1), out),
             "exit": exit_house(fiber, np.random.default_rng(seed + 2), out),
-            "plants": plants(fiber, np.random.default_rng(seed + 3), out)}
+            "plants": plants(fiber, np.random.default_rng(seed + 3), out),
+            "trap": flytrap(fiber, np.random.default_rng(seed + 4), out)}
     (out / "props" / "props.json").write_text(json.dumps(data, indent=2) + "\n")
 
 

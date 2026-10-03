@@ -26,6 +26,16 @@ Ověření a meze: [`docs/ORIGAMI_OVERENI.md`](docs/ORIGAMI_OVERENI.md).
 Pro porovnání zůstávají dřívější scény `main/game_3d.tscn` (2.5D)
 a `main/game.tscn` (jednoduché 2D).
 
+**Nově voda, láva, pasti a jednosměrné zdi** (etapa 5) a mise
+„6 · Voda, láva a past“: voda topí, láva pálí, masožravá rostlina sežere
+jednoho a chvíli se dobíjí, zeď se šipkami prorazíš jen ve směru šipek.
+Most z cihel přes vodu i lávu vydrží.
+
+![Mise 6 v origami zobrazení](docs/images/etapa5-prehled.jpg)
+
+Záznam: [`docs/images/etapa5-mise6.mp4`](docs/images/etapa5-mise6.mp4) ·
+pravidla a ověření: [`docs/ETAPA_5_OVERENI.md`](docs/ETAPA_5_OVERENI.md).
+
 ## Platformy
 
 První testovací sestavení míří na **macOS (Apple Silicon i Intel)**. Stejné
@@ -170,7 +180,10 @@ kontrolní průchod jsou v [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERENI.md).
 
 Otevři `levels/level_01.tscn`. Pravidla levelu (počet lumíků, dovednosti,
 čas) jsou v Inspectoru u kořenového uzlu. Terén tvoří uzly `TerrainShape`
-– vyber jeden a body mnohoúhelníku můžeš tahat myší.
+– vyber jeden a body mnohoúhelníku můžeš tahat myší. Druh tvaru (`Kind`)
+může být hlína, ocel, výřez, voda, láva nebo jednosměrná zeď; past je uzel
+`LemmingTrap` postavený na zem. Chyby v levelu hlásí žlutý trojúhelník
+u kořenového uzlu (ukázka: `levels/level_hazards.tscn`).
 
 ## Právní poznámka
 

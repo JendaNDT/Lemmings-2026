@@ -12,6 +12,8 @@ const CLIPS := {
 	Lemming.State.EXITING: "exit",
 	Lemming.State.CLIMBER: "walk", Lemming.State.FLOATER: "fall",
 	Lemming.State.MINER: "mine",
+	# Ve 2.5D porovnávací scéně nemají voda a láva vlastní klip.
+	Lemming.State.DROWNING: "splat", Lemming.State.BURNING: "splat",
 }
 const TOOLS := {
 	Lemming.State.BUILDER: preload("res://assets/clay/models/clay_brick.glb"),
@@ -77,8 +79,13 @@ func sync(lem: Lemming, alpha: float) -> void:
 			cycle = SimConst.SPLAT_TICKS
 		Lemming.State.EXITING:
 			cycle = SimConst.EXIT_TICKS
+		Lemming.State.DROWNING:
+			cycle = SimConst.DROWN_TICKS
+		Lemming.State.BURNING:
+			cycle = SimConst.BURN_TICKS
 	var fraction := ticks / cycle + offset
-	if lem.state in [Lemming.State.SHRUGGING, Lemming.State.SPLATTING, Lemming.State.EXITING]:
+	if lem.state in [Lemming.State.SHRUGGING, Lemming.State.SPLATTING, Lemming.State.EXITING,
+			Lemming.State.DROWNING, Lemming.State.BURNING]:
 		fraction = minf(fraction, 0.999)
 	else:
 		fraction = fposmod(fraction, 1.0)

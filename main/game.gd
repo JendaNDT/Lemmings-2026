@@ -10,10 +10,11 @@ const MISSIONS := [
 	preload("res://levels/level_miner.tscn"),
 	preload("res://levels/level_bomber.tscn"),
 	preload("res://levels/level_playground.tscn"),
+	preload("res://levels/level_hazards.tscn"),
 ]
 const MISSION_TITLES: Array[String] = [
 	"1 · První kroky", "2 · Lezec a padák", "3 · Šikmý tunel",
-	"4 · Cesta skrz zeď", "5 · Všech osm dovedností",
+	"4 · Cesta skrz zeď", "5 · Všech osm dovedností", "6 · Voda, láva a past",
 ]
 
 ## Který level se hraje. Dá se přepnout v Inspectoru.

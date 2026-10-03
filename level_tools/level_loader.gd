@@ -1,3 +1,4 @@
+@tool
 class_name LevelLoader
 extends RefCounted
 ## Převádí scénu levelu (uzly z editoru) na čistá data pro simulaci.
@@ -18,6 +19,10 @@ static func build_spec(level: LevelDefinition) -> LevelSpec:
 			spec.hatches.append(_cell_of(node, level))
 		elif node is LemmingExit:
 			spec.exits.append(_cell_of(node, level))
+		elif node is LemmingTrap:
+			var trap := node as LemmingTrap
+			var cell := _cell_of(trap, level)
+			spec.traps.append({"at": cell, "rect": trap.trigger_rect(cell), "rearm": trap.rearm_ticks})
 	return spec
 
 

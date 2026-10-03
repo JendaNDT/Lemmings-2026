@@ -89,6 +89,10 @@ Připravit pohodlné nastavování objektů v editoru a validaci chybějících 
 
 **Podmínka dokončení:** level s těmito prvky lze sestavit bez doprogramování konkrétní scény. Jejich nebezpečné oblasti jsou vizuálně srozumitelné.
 
+**Stav (3. 10. 2026): technicky hotovo v cloudu.** Pravidla, editor
+(`LemmingTrap`, druhy terénu, kontrola levelu), origami vzhled a mise 6;
+[ověření etapy 5](ETAPA_5_OVERENI.md). Zbývá vyzkoušet na zařízení a doplnit zvuky.
+
 ## Etapa 6 — Menu, nastavení a ukládání
 
 Přidat hlavní menu, pokračování, výběr levelů, pauzovací menu a výsledky s přechodem dál. Zavést stabilní identifikátory levelů a ukládat odemčení, výsledky a nastavení.

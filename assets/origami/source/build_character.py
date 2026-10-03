@@ -315,9 +315,32 @@ ANIMS = {
         (1.0, pose(leg_front=0, leg_back=0, arm_front=-160, arm_back=0, torso=0, head=0, cap=0),
          [0.5, -0.1, 0, 0.55, 0.55]),
     ]},
+    # Topení: ruce mávají nad hladinou, postavička se pomalu potápí (SimConst.DROWN_TICKS).
+    "drown": {"cycle": 16, "loop": False, "keys": [
+        (0.0, pose(leg_front=-10, leg_back=12, arm_front=-112, arm_back=128, torso=0, head=-8, cap=-6),
+         [0, 0.4, 0, 1, 1]),
+        (0.3, pose(leg_front=12, leg_back=-10, arm_front=-140, arm_back=104, torso=4, head=8, cap=10),
+         [0, 1.6, -6, 1, 1]),
+        (0.6, pose(leg_front=-12, leg_back=10, arm_front=-106, arm_back=136, torso=-4, head=-10, cap=-8),
+         [0, 3.0, 6, 1, 1]),
+        (1.0, pose(leg_front=0, leg_back=0, arm_front=-150, arm_back=150, torso=0, head=0, cap=0),
+         [0, 5.0, 0, 1, 1]),
+    ]},
+    # Hoření: poskočí s rukama nahoře, pak se zmačká jako spálený papír (SimConst.BURN_TICKS).
+    "burn": {"cycle": 14, "loop": False, "keys": [
+        (0.0, pose(leg_front=-20, leg_back=20, arm_front=-150, arm_back=150, torso=-4, head=-10, cap=-20),
+         [0, -0.8, 0, 1, 1]),
+        (0.3, pose(leg_front=20, leg_back=-20, arm_front=-120, arm_back=170, torso=6, head=10, cap=-35),
+         [0, -1.4, 5, 1, 1]),
+        (0.65, pose(leg_front=-30, leg_back=30, arm_front=-60, arm_back=60, torso=20, head=20, cap=-50),
+         [0, 0, -4, 0.85, 0.7]),
+        (1.0, pose(leg_front=-50, leg_back=50, arm_front=-30, arm_back=30, torso=35, head=30, cap=-70),
+         [0, 0, 0, 0.7, 0.35]),
+    ]},
 }
 # Stav simulace → animace (Lemming.State v pořadí výčtu).
-STATE_ANIMS = ["fall", "walk", "splat", "exit", "block", "build", "shrug", "bash", "dig", "climb", "float", "mine"]
+STATE_ANIMS = ["fall", "walk", "splat", "exit", "block", "build", "shrug", "bash", "dig", "climb", "float", "mine",
+               "drown", "burn"]
 
 
 def pack(parts):

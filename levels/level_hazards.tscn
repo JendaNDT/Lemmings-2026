@@ -1,0 +1,73 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://level_tools/lemming_trap.gd" id="5_trap"]
+
+[node name="Hazards" type="Node2D"]
+script = ExtResource("1_def")
+title = "6 · Voda, láva a past"
+size = Vector2i(560, 200)
+lemming_count = 10
+save_required = 6
+release_rate = 50
+time_limit_seconds = 300
+climbers = 1
+builders = 2
+bashers = 1
+diggers = 1
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 100, 60, 99, 130, 100, 230, 100, 300, 99, 372, 100, 440, 98, 560, 100, 560, 200, 0, 200)
+script = ExtResource("2_shape")
+
+[node name="LeftRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 18, 9, 16, 15, 30, 13, 60, 16, 100, 0, 100)
+script = ExtResource("2_shape")
+
+[node name="OneWayWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(140, 49, 148, 45, 158, 46, 164, 49, 164, 100, 140, 100)
+script = ExtResource("2_shape")
+kind = 6
+
+[node name="PoolCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(230, 96, 252, 96, 252, 104, 230, 104)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Pool" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(230, 104, 252, 104, 252, 136, 230, 136)
+script = ExtResource("2_shape")
+kind = 3
+
+[node name="LavaCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(372, 96, 404, 96, 404, 103, 372, 103)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Lava" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(372, 103, 404, 103, 404, 118, 372, 118)
+script = ExtResource("2_shape")
+kind = 4
+
+[node name="Corridor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(330, 124, 548, 124, 548, 152, 330, 152)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(60, 62)
+script = ExtResource("3_hatch")
+
+[node name="Trap" type="Marker2D" parent="."]
+position = Vector2(430, 152)
+script = ExtResource("5_trap")
+rearm_ticks = 120
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(520, 152)
+script = ExtResource("4_exit")

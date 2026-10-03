@@ -12,18 +12,16 @@ také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**2D origami je hotové jako výchozí hratelná scéna** (`main/game_origami.tscn`).
-Ověřeno v cloudu: automatické testy, celý první level přes myš i dotyk
-(20/20), přesnost výkopů proti masce na skutečném snímku, telefonní poměr
-20:9. Výsledky a rozdíly proti mockupu: [ověření origami](docs/ORIGAMI_OVERENI.md).
+**Etapa 5 je technicky hotová:** voda, láva, pasti a jednosměrné zdi
+v simulaci, editoru i origami vzhledu, nová mise „6 · Voda, láva a past“
+(řešitelná 8/10, požadavek 6). [Ověření etapy 5](docs/ETAPA_5_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5) a říct, co se líbí
-   a co ne – vzhled je posouzený jen z cloudových snímků.
-2. Nové APK a Mac balíček s origami grafikou (export; APK 0.4.0 je stará grafika).
-3. Říct, zda nechat stop-motion jako výchozí (klávesa M přepíná),
-   a doladit vzhled podle tvého názoru (detail krajiny, velikost postav).
-4. Pak mechaniky etapy 5 (voda, láva, pasti) a zvuk.
+1. **Zvuky** (na řadě podle tvého přání).
+2. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5), zahrát misi 6
+   a říct, co se líbí – vzhled je posouzený jen z cloudových snímků.
+3. Nové APK a Mac balíček s origami grafikou a misí 6 (APK 0.4.0 je stará grafika).
+4. Doladit obtížnost mise 6 a vzhled vody a lávy podle tvého názoru.
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
@@ -84,6 +82,18 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - Android APK 0.4.0 ve větvi `downloads/android-0.4.0`, zdroje
   v původní vývojové větvi; předchozí APK jsou zachovaná
 
+- **Etapa 5 – nebezpečí:** voda (topení), láva (hoření), past (sežere
+  jednoho a dobíjí se), jednosměrné zdi (razič a horník jen ve směru šipek);
+  pevné pořadí v tiku, cihly přes vodu a lávu jsou suchý most
+- Editor: druhy terénu Water/Lava/One Way, uzel `LemmingTrap`, kontrola
+  levelu `LevelValidator` (žlutý trojúhelník u kořene levelu)
+- Origami vzhled: vlnitá papírová voda, láva s plameny, šipky na zdi,
+  masožravá rostlina, animace topení a hoření, uzavřené jeskyně
+- Mise 6 „Voda, láva a past“ ověřená čistou simulací i přes origami scénu
+  a dotyk (8/10, shoda s replayem); snímky a 19s záznam
+- Kontrola: 71 GDScriptů, 10 sad, 281 ověření (`test_hazards` 45,
+  `test_origami` 50); mise 1 na telefonu znovu 20/20, terén 0 neshod
+
 - **Papírovější vzhled (2. kolo):** terén z vystřižených kusů s bílými
   natrženými okraji a měkkými stíny, světlá jádra a tloušťka papíru v celé
   grafice, zrnitost a vinětace, stop-motion pohyb postav (klávesa M)
@@ -110,11 +120,11 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 
 ## 📝 TODO
 ### MVP (nutné pro v1)
-- Voda / láva / pasti, jednosměrné zdi
 - Menu a výběr levelů, ukládání postupu
 - 15–20 vlastních levelů
 - Zvuky a hudba
-- Prostředí pro další mise kampaně (nové motivy krajiny, voda, láva)
+- Prostředí pro další mise kampaně (nové motivy krajiny)
+- Voda s břehy a hladší dno lávy (zatím svislé stěny jezírka)
 
 ### Backlog (později)
 - Světla, glow, materiály terénu (M3)
@@ -125,6 +135,7 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - Editor levelů ve hře
 
 ## 🐛 Známé bugy
+- 2.5D porovnávací scéna nekreslí vodu, lávu ani pasti (jen nespadne).
 - Origami grafika zatím neběžela na Macu ani Androidu; výkon na skutečné
   GPU není změřený (cloud kreslí softwarově, ~0,2 s na snímek).
 - Proti mockupu je generovaná krajina jednodušší a postavy jsou při
@@ -162,6 +173,9 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - **Paralaxa:** rozdílný posun a zoom dekorativních vrstev; terén a postavy
   sdílejí jednu soustavu a simulační masku. HUD je pevný.
 - **Kopání:** vodorovně, šikmo dolů a svisle dolů; vzhůru vedou schody.
+- **Nebezpečí:** kanál A masky nese druh buňky (voda, láva, šipky). Pořadí
+  v tiku: bomba → stav → pád pod level → láva → voda → past → východ.
+  Cihla ve vodě či lávě je suchá; past sežere jen prvního, pak se dobíjí.
 
 - **Platformy:** dnes testovací macOS, později Windows a Android;
   společná simulace a obsah, odlišnosti ve vstupu, grafických profilech a exportu.
@@ -181,7 +195,9 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - `sim/states/*.gd` – stavy lumíků (jeden soubor = jeden stav)
 - `sim/sim_const.gd` – všechna laditelná čísla
 - `level_tools/` – nástroje pro tvorbu levelů v editoru
-- `levels/level_01.tscn` – první level
+- `levels/level_01.tscn` – první level; `levels/level_hazards.tscn` – mise 6
+- `level_tools/lemming_trap.gd`, `level_tools/level_validator.gd` – past a kontrola levelu
+- `tests/test_hazards.gd`, `docs/ETAPA_5_OVERENI.md` – ověření etapy 5
 - `view/terrain.gdshader` – vzhled terénu
 - `view/lemmings_view.gd` – kreslení lumíků
 - `ui/hud.gd` – herní rozhraní

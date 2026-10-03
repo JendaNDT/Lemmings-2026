@@ -6,8 +6,12 @@ extends Node2D
 ## Jak postavit level v editoru Godotu:
 ## 1. Terén = uzly TerrainShape (mnohoúhelníky). Kreslí se nástrojem pro polygony.
 ##    Druh „Dirt“ = hlína, „Steel“ = ocel, „Erase“ = vyřízne díru do předchozích tvarů.
+##    „Water“ a „Lava“ = voda a láva, „One Way Left/Right“ = jednosměrná zeď.
 ## 2. Líheň = uzel LemmingHatch, východ = uzel LemmingExit (postav ho přesně na zem).
+##    Past = uzel LemmingTrap (také na zem).
 ## 3. Jednotky jsou „logické pixely“ – lumík je vysoký 10 px.
+## 4. Varování u kořene levelu (žlutý trojúhelník) hlásí chybějící líheň,
+##    východ ve vzduchu, past mimo zem a podobná opomenutí.
 
 @export var title := "Nový level"
 ## Velikost levelu v logických pixelech (bílý rámeček v editoru).
@@ -43,6 +47,10 @@ func skill_counts() -> Dictionary:
 		Lemming.Skill.MINER: miners,
 		Lemming.Skill.DIGGER: diggers,
 	}
+
+
+func _get_configuration_warnings() -> PackedStringArray:
+	return LevelValidator.problems_for(self)
 
 
 func _draw() -> void:

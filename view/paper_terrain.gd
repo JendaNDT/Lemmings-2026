@@ -13,14 +13,24 @@ const CAVE_REACH_Y := 60
 const CAVE_REACH_X := 120
 ## Mech roste jen na runech, nad kterými je aspoň tolik volného místa.
 const SKY_GAP := 24
+## Vzdálenost od hladiny vody a lávy v texturě nebezpečí: 128 + 12 × px
+## (kladně pod hladinou, záporně nad ní; plameny a záře sahají 10 px nad lávu).
+const SURFACE_ZERO := 128
+const SURFACE_STEP := 12
+const SURFACE_REACH := 10
 
 var mask: TerrainMask
 var updates := 0
+## Přední vrstva hladiny (kreslí se nad postavami): obdélník s vodou a lávou.
+var surface: Node2D
+var hazard_rect := Rect2i()
 var _mask_image: Image
 var _mask_texture: ImageTexture
 var _static_texture: ImageTexture
+var _hazard_texture: ImageTexture
 var _version := -1
 var _material: ShaderMaterial
+var _surface_material: ShaderMaterial
 
 
 func _init() -> void:
@@ -30,6 +40,22 @@ func _init() -> void:
 	_material.set_shader_parameter("noise_tex", NOISE)
 	material = _material
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_surface_material = ShaderMaterial.new()
+	_surface_material.shader = SHADER
+	_surface_material.set_shader_parameter("paper_tex", PAPER)
+	_surface_material.set_shader_parameter("noise_tex", NOISE)
+	_surface_material.set_shader_parameter("debug_mode", 2)
+	surface = Node2D.new()
+	surface.name = "HazardSurface"
+	surface.material = _surface_material
+	surface.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	surface.draw.connect(_draw_surface)
+
+
+func _notification(what: int) -> void:
+	# Bez PaperWorld (např. v testu) přední vrstva nikdy nevstoupí do stromu.
+	if what == NOTIFICATION_PREDELETE and is_instance_valid(surface) and surface.get_parent() == null:
+		surface.free()
 
 
 func setup(terrain: TerrainMask) -> void:
@@ -39,13 +65,26 @@ func setup(terrain: TerrainMask) -> void:
 	_mask_image.generate_mipmaps()
 	_mask_texture = ImageTexture.create_from_image(_mask_image)
 	_static_texture = ImageTexture.create_from_image(build_static(mask))
+	var hazards := build_hazards(mask)
+	_hazard_texture = ImageTexture.create_from_image(hazards)
+	hazard_rect = _hazard_bounds(hazards)
 	_version = mask.version
-	_material.set_shader_parameter("mask_tex", _mask_texture)
-	_material.set_shader_parameter("mask_soft", _mask_texture)
-	_material.set_shader_parameter("static_tex", _static_texture)
-	_material.set_shader_parameter("mask_size", Vector2(mask.width, mask.height))
-	_material.set_shader_parameter("band_offset", float(mask.width % 6))
+	for target: ShaderMaterial in [_material, _surface_material]:
+		target.set_shader_parameter("mask_tex", _mask_texture)
+		target.set_shader_parameter("mask_soft", _mask_texture)
+		target.set_shader_parameter("static_tex", _static_texture)
+		target.set_shader_parameter("hazard_tex", _hazard_texture)
+		target.set_shader_parameter("hazard_soft", _hazard_texture)
+		target.set_shader_parameter("mask_size", Vector2(mask.width, mask.height))
+		target.set_shader_parameter("band_offset", float(mask.width % 6))
 	queue_redraw()
+	surface.queue_redraw()
+
+
+## Herní čas pro vlny a plameny (ve stop-motion po celých ticích).
+func set_time(ticks: float) -> void:
+	_material.set_shader_parameter("sim_time", ticks)
+	_surface_material.set_shader_parameter("sim_time", ticks)
 
 
 ## Kontrolní režim: jen bílý pevný terén (pro porovnání s maskou na snímku).
@@ -69,7 +108,69 @@ func _draw() -> void:
 		draw_texture_rect(_mask_texture, Rect2(Vector2.ZERO, Vector2(mask.width, mask.height)), false)
 
 
+## Přední průsvitná vrstva vody a hřebeny lávy jen v oblasti nebezpečí.
+func _draw_surface() -> void:
+	if _mask_texture == null or hazard_rect.size == Vector2i.ZERO:
+		return
+	# Výřez textury masky: UV zůstane v souřadnicích celé masky, shader počítá stejně.
+	var rect := Rect2(hazard_rect)
+	surface.draw_texture_rect_region(_mask_texture, rect, rect)
+
+
+## R = voda, G = láva: vzdálenost od hladiny (SURFACE_ZERO ± SURFACE_STEP × px),
+## 0 = nic. B = jednosměrná zeď doleva, A = doprava (255). Hladina leží
+## na horní hraně nejvyšší buňky sloupce, takže kresba sedí na pravidla.
+static func build_hazards(source: TerrainMask) -> Image:
+	var w := source.width
+	var h := source.height
+	var bpp := TerrainMask.BYTES_PER_PIXEL
+	var out := PackedByteArray()
+	out.resize(w * h * 4)
+	out.fill(0)
+	for x in w:
+		for channel in 2:
+			var kind := TerrainMask.Special.WATER if channel == 0 else TerrainMask.Special.LAVA
+			var top := -1
+			for y in h:
+				var i := y * w + x
+				if source.data[i * bpp + 3] != kind:
+					top = -1
+					continue
+				if top < 0:
+					top = y
+					for k in range(1, SURFACE_REACH + 1):
+						var above := ((y - k) * w + x) * 4 + channel
+						if y - k >= 0 and out[above] == 0:
+							out[above] = SURFACE_ZERO - SURFACE_STEP * k
+				out[i * 4 + channel] = mini(SURFACE_ZERO + SURFACE_STEP * (y - top + 1), 255)
+		for y in h:
+			var i := y * w + x
+			var special := source.data[i * bpp + 3]
+			if special == TerrainMask.Special.ONE_WAY_LEFT:
+				out[i * 4 + 2] = 255
+			elif special == TerrainMask.Special.ONE_WAY_RIGHT:
+				out[i * 4 + 3] = 255
+	return Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, out)
+
+
+## Obdélník s vodou a lávou (včetně prostoru pro plameny nad hladinou).
+static func _hazard_bounds(image: Image) -> Rect2i:
+	var rect := Rect2i()
+	var found := false
+	var data := image.get_data()
+	var w := image.get_width()
+	for i in data.size() / 4:
+		if data[i * 4] == 0 and data[i * 4 + 1] == 0:
+			continue
+		var cell := Rect2i(i % w, i / w, 1, 1)
+		rect = cell if not found else rect.merge(cell)
+		found = true
+	return rect.grow(2).intersection(Rect2i(0, 0, w, image.get_height())) if found else Rect2i()
+
+
 ## R = původní zem, G = vnitřek jeskyně, A = hloubka pod povrchem vystaveným nebi (×16).
+## Jeskyně je prázdné místo sevřené zemí (viz CAVE_REACH_*) nebo uzavřená dutina,
+## kam se od horního ani bočních okrajů levelu nedá dostat. Pod vodou a lávou mech neroste.
 static func build_static(source: TerrainMask) -> Image:
 	var w := source.width
 	var h := source.height
@@ -119,6 +220,32 @@ static func build_static(source: TerrainMask) -> Image:
 			if left_dist[x] <= CAVE_REACH_X and right - x <= CAVE_REACH_X \
 					and above[i] <= CAVE_REACH_Y and below[i] <= CAVE_REACH_Y:
 				out[i * 4 + 1] = 255
+	# Uzavřené dutiny: prázdná místa nedosažitelná od horního a bočních okrajů.
+	var open := PackedByteArray()
+	open.resize(w * h)
+	var queue := PackedInt32Array()
+	for x in w:
+		if not solid[x]:
+			open[x] = 1
+			queue.append(x)
+	for y in range(1, h):
+		for x in [0, w - 1]:
+			var i: int = y * w + x
+			if not solid[i] and not open[i]:
+				open[i] = 1
+				queue.append(i)
+	var head := 0
+	while head < queue.size():
+		var i := queue[head]
+		head += 1
+		var x := i % w
+		for next in [i - w, i + w, i - 1 if x > 0 else -1, i + 1 if x < w - 1 else -1]:
+			if next >= 0 and next < w * h and not solid[next] and not open[next]:
+				open[next] = 1
+				queue.append(next)
+	for i in w * h:
+		if not solid[i] and not open[i]:
+			out[i * 4 + 1] = 255
 	# Hloubka pod povrchem: mech jen tam, kde je nad runem dost volného nebe
 	# a nejde o dno jeskyně.
 	for x in w:
@@ -136,5 +263,7 @@ static func build_static(source: TerrainMask) -> Image:
 				gap = 0
 			else:
 				run_start = -1
-				gap = mini(gap + 1, 100000)
+				var special := source.data[i * bpp + 3]
+				var liquid := special == TerrainMask.Special.WATER or special == TerrainMask.Special.LAVA
+				gap = 0 if liquid else mini(gap + 1, 100000)
 	return Image.create_from_data(w, h, false, Image.FORMAT_RGBA8, out)

@@ -1,7 +1,7 @@
 class_name PaperProps
 extends Node2D
-## Papírová líheň a východ v herní rovině (stejná transformace jako terén).
-## Dvířka a vlajka se hýbou podle simulačního času; pauza je zastaví.
+## Papírová líheň, východ a pasti v herní rovině (stejná transformace jako terén).
+## Dvířka, vlajka i čelisti pastí se hýbou podle simulačního času; pauza je zastaví.
 
 const DATA_PATH := "res://assets/origami/props/props.json"
 const HATCH := preload("res://assets/origami/props/hatch.png")
@@ -10,6 +10,11 @@ const HATCH_POST := preload("res://assets/origami/props/hatch_post.png")
 const HATCH_LADDER := preload("res://assets/origami/props/hatch_ladder.png")
 const EXIT := preload("res://assets/origami/props/exit.png")
 const EXIT_FLAG := preload("res://assets/origami/props/exit_flag.png")
+const TRAP_BASE := preload("res://assets/origami/props/trap_base.png")
+const TRAP_LOBE := preload("res://assets/origami/props/trap_lobe.png")
+## Rozevření čelistí připravené pasti (radiány) a doba otevírání před dobitím.
+const TRAP_OPEN := 0.72
+const TRAP_REOPEN_TICKS := 8.0
 const GLOW := Color(1.0, 0.86, 0.5)
 
 var sim: LevelSim
@@ -70,6 +75,8 @@ func _place_plants() -> void:
 
 func _surface(x: int) -> int:
 	for y in range(1, sim.mask.height):
+		if sim.mask.special_at(x, y) in [TerrainMask.Special.WATER, TerrainMask.Special.LAVA]:
+			return -1
 		if sim.mask.is_solid(x, y):
 			return y if y >= 12 and not sim.mask.has_solid_in_rect(x, y - 12, 1, 11) else -1
 	return -1
@@ -92,6 +99,8 @@ func _draw() -> void:
 		var anchor := Vector2(info["anchor"][0], info["anchor"][1])
 		var size := tex.get_size() / float(data["hatch"]["scale"])
 		draw_texture_rect(tex, Rect2(Vector2(plant.x + 0.5, plant.y) - anchor, size), false)
+	for i in sim.spec.traps.size():
+		_draw_trap(i, now)
 	for i in sim.spec.hatches.size():
 		_draw_hatch(Vector2(sim.spec.hatches[i]), _supports[i], now)
 	for point in sim.spec.exits:
@@ -118,6 +127,41 @@ func _draw_hatch(at: Vector2, support: float, now: float) -> void:
 	draw_texture_rect(HATCH_DOOR, Rect2(Vector2.ZERO, half), false)
 	draw_set_transform(at + Vector2(5.5, 0.0), -angle, Vector2.ONE)
 	draw_texture_rect(HATCH_DOOR, Rect2(Vector2(-half.x, 0.0), half), false)
+	draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+## Rozevření čelistí pasti `index` v čase `now` (0 = zavřeno).
+func trap_opening(index: int, now: float) -> float:
+	var fired := float(sim.trap_fired[index])
+	var sway := sin(now * 0.21 + index * 1.3) * 0.05
+	if fired < 0.0:
+		return TRAP_OPEN + sway
+	var since := now - fired
+	var ready := float(sim.trap_ready[index])
+	if now >= ready:
+		return TRAP_OPEN + sway
+	# Cvaknutí za jeden tik, žvýkání, a před dobitím se past zase otevře.
+	var snap := clampf((since + 1.0) / 2.0, 0.0, 1.0)
+	var reopen := smoothstep(0.0, 1.0,
+		clampf((now - (ready - TRAP_REOPEN_TICKS)) / TRAP_REOPEN_TICKS, 0.0, 1.0))
+	var chew := 0.06 * maxf(sin(since * 1.6), 0.0) if since < 14.0 else 0.0
+	return lerpf(TRAP_OPEN, 0.0, snap) * (1.0 - reopen) + TRAP_OPEN * reopen + chew
+
+
+func _draw_trap(index: int, now: float) -> void:
+	var info: Dictionary = data["trap"]
+	var s := float(info["scale"])
+	var at := Vector2(sim.spec.traps[index]["at"]) + Vector2(0.5, 0.0)
+	var anchor := Vector2(info["anchor"][0], info["anchor"][1])
+	draw_texture_rect(TRAP_BASE, Rect2(at - anchor, TRAP_BASE.get_size() / s), false)
+	var hinge := at + Vector2(info["hinge"][0], info["hinge"][1])
+	var pivot := Vector2(info["lobe_pivot"][0], info["lobe_pivot"][1])
+	var size := TRAP_LOBE.get_size() / s
+	var angle := trap_opening(index, now)
+	# Pravý lalok se otáčí po směru hodin, levý je jeho zrcadlo.
+	for side in [1.0, -1.0]:
+		draw_set_transform_matrix(Transform2D(angle * side, Vector2(side, 1.0), 0.0, hinge))
+		draw_texture_rect(TRAP_LOBE, Rect2(-pivot, size), false)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 
 

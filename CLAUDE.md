@@ -34,6 +34,9 @@
   + zaregistrovat v `LevelSim._init()` + případně `Lemming.State` / `Lemming.Skill`
   a `LevelSim._state_for_skill()`.
 - Laditelná čísla patří do `sim/sim_const.gd`.
+- Voda, láva a jednosměrné zdi jsou v kanálu A masky (`TerrainMask.Special`),
+  pasti v `LevelSpec.traps`; pořadí v tiku je popsané v `LevelSim`. Zobrazení je
+  jen čte. Nové levely kontroluje `LevelValidator` (test všech misí).
 - Komentáře a texty v UI česky. Klávesy přes `physical_keycode`.
 - Nepoužívat assety ani levely z originální hry.
 - `ClaySpace` je jediný převod do 3D, `PaperCamera` jediný převod logika ↔

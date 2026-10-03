@@ -16,7 +16,8 @@ func tick(lem: Lemming, sim: LevelSim) -> void:
 	var width := absi(front - back) + 1
 	var top := lem.y - SimConst.LEMMING_HEIGHT
 	if front < 0 or front >= mask.width or mask.has_steel_in_rect(
-			x0, top, width, SimConst.LEMMING_HEIGHT + 1):
+			x0, top, width, SimConst.LEMMING_HEIGHT + 1) or mask.has_one_way_against(
+			x0, top, width, SimConst.LEMMING_HEIGHT + 1, lem.dir):
 		sim.emit_event("steel", lem)
 		lem.dir = -lem.dir
 		sim.set_state(lem, Lemming.State.WALKER)

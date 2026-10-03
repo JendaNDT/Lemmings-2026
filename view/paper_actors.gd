@@ -16,6 +16,8 @@ const STEP_TICKS := 2
 ## Chvění dílů ve stupních (±) a kořene v logických pixelech (±).
 const BOIL_DEGREES := 2.5
 const BOIL_OFFSET := 0.05
+## Ohořelý papír: postavička v lávě postupně ztmavne.
+const CHAR := Color(0.3, 0.2, 0.16)
 
 var sim: LevelSim
 var alpha := 1.0
@@ -236,10 +238,20 @@ func _draw() -> void:
 func _draw_actor(lem: Lemming, view: ActorView) -> void:
 	var p := actor_position(lem)
 	var fade := 1.0
-	if lem.state == Lemming.State.EXITING:
-		fade = 1.0 - clampf((pose_ticks(lem) - 4.0) / float(SimConst.EXIT_TICKS - 4), 0.0, 1.0)
+	var tint := Color.WHITE
+	match lem.state:
+		Lemming.State.EXITING:
+			fade = 1.0 - clampf((pose_ticks(lem) - 4.0) / float(SimConst.EXIT_TICKS - 4), 0.0, 1.0)
+		Lemming.State.DROWNING:
+			# Potopí se za přední pruhy vody a v druhé půlce zmizí.
+			fade = 1.0 - clampf((pose_ticks(lem) / float(SimConst.DROWN_TICKS) - 0.5) * 2.0, 0.0, 1.0)
+		Lemming.State.BURNING:
+			var k := pose_ticks(lem) / float(SimConst.BURN_TICKS)
+			tint = Color.WHITE.lerp(CHAR, clampf(k / 0.6, 0.0, 1.0))
+			fade = 1.0 - clampf((k - 0.7) / 0.3, 0.0, 1.0)
 	var grounded := lem.state not in [
-		Lemming.State.FALLER, Lemming.State.FLOATER, Lemming.State.CLIMBER]
+		Lemming.State.FALLER, Lemming.State.FLOATER, Lemming.State.CLIMBER,
+		Lemming.State.DROWNING, Lemming.State.BURNING]
 	if grounded and lem.state != Lemming.State.SPLATTING:
 		draw_set_transform(p + Vector2(0, 0.1), 0.0, Vector2(2.5, 0.5))
 		draw_circle(Vector2.ZERO, 1.0, Color(0.1, 0.06, 0.03, 0.22 * fade))
@@ -265,7 +277,7 @@ func _draw_actor(lem: Lemming, view: ActorView) -> void:
 		draw_set_transform_matrix(xf)
 		var shade := float(skeleton[name].get("shade", 1.0))
 		draw_texture_rect_region(ATLAS, Rect2(-pivot / _scale, region.size / _scale), region,
-			Color(shade, shade, shade, fade))
+			Color(shade * tint.r, shade * tint.g, shade * tint.b, fade))
 	if lem.bomb_ticks > 0:
 		var seconds := ceili(lem.bomb_ticks / float(SimConst.TICKS_PER_SECOND))
 		draw_set_transform(p + Vector2(0, -13.2), 0.0, Vector2(0.125, 0.125))

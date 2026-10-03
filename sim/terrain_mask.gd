@@ -1,3 +1,4 @@
+@tool
 class_name TerrainMask
 extends RefCounted
 ## Logická mapa terénu: pro každý pixel víme, jestli je pevný, ocelový nebo postavený.
@@ -10,9 +11,13 @@ extends RefCounted
 ##   R = pevný terén (0 / 255)
 ##   G = ocel – nejde prokopat (0 / 255)
 ##   B = postavené cihly od stavitele (0 / 255) – jen kvůli vzhledu
-##   A = zatím nevyužito
+##   A = zvláštní vlastnost buňky (Special): voda, láva, jednosměrná zeď
 
-enum Kind { DIRT, STEEL, ERASE }
+enum Kind { DIRT, STEEL, ERASE, WATER, LAVA, ONE_WAY_LEFT, ONE_WAY_RIGHT }
+## Výčet v kanálu A (ne bity). Voda a láva leží v prázdných buňkách,
+## jednosměrná zeď je obyčejná hlína, kterou razič a horník prorazí jen
+## ve směru šipky. Kopání ani výbuch zvláštní vlastnost nemění.
+enum Special { NONE, WATER, LAVA, ONE_WAY_LEFT, ONE_WAY_RIGHT }
 
 const BYTES_PER_PIXEL := 4
 const ON := 255
@@ -55,6 +60,35 @@ func is_steel(x: int, y: int) -> bool:
 	if y < 0 or y >= height:
 		return false
 	return data[(y * width + x) * BYTES_PER_PIXEL + 1] != 0
+
+
+## Zvláštní vlastnost buňky (Special); mimo level NONE.
+func special_at(x: int, y: int) -> int:
+	if x < 0 or x >= width or y < 0 or y >= height:
+		return Special.NONE
+	return data[(y * width + x) * BYTES_PER_PIXEL + 3]
+
+
+## Voda nebo láva v prázdné buňce. Cihla položená do vody je suchá stavba;
+## když ji někdo vykope, voda se „vrátí“ (stejně jako ji kreslí grafika).
+func hazard_at(x: int, y: int) -> int:
+	if x < 0 or x >= width or y < 0 or y >= height:
+		return Special.NONE
+	var i := (y * width + x) * BYTES_PER_PIXEL
+	if data[i] != 0 or data[i + 3] > Special.LAVA:
+		return Special.NONE
+	return data[i + 3]
+
+
+## Je v obdélníku pevná jednosměrná zeď, kterou nejde prorazit směrem `dir`?
+func has_one_way_against(x0: int, y0: int, w: int, h: int, dir: int) -> bool:
+	var against := Special.ONE_WAY_LEFT if dir > 0 else Special.ONE_WAY_RIGHT
+	for y in range(maxi(y0, 0), mini(y0 + h, height)):
+		for x in range(maxi(x0, 0), mini(x0 + w, width)):
+			var i := (y * width + x) * BYTES_PER_PIXEL
+			if data[i] != 0 and data[i + 3] == against:
+				return true
+	return false
 
 
 func has_solid_in_rect(x0: int, y0: int, w: int, h: int) -> bool:
@@ -110,6 +144,9 @@ func add_brick_row(x_from: int, x_to: int, y: int) -> void:
 		if data[i] == 0:
 			data[i] = ON
 			data[i + 2] = ON
+			# Cihla je obyčejná stavba, ne zbytek jednosměrné zdi.
+			if data[i + 3] >= Special.ONE_WAY_LEFT:
+				data[i + 3] = Special.NONE
 			changed = true
 	if changed:
 		_mark_changed(Rect2i(mini(x_from, x_to), y, absi(x_to - x_from) + 1, 1))
@@ -174,14 +211,26 @@ func _erase(x: int, y: int) -> bool:
 
 func _paint(x: int, y: int, kind: Kind) -> void:
 	var i := (y * width + x) * BYTES_PER_PIXEL
+	var solid := 0
+	var steel := 0
+	var special: int = Special.NONE
 	match kind:
 		Kind.DIRT:
-			data[i] = ON
-			data[i + 1] = 0
+			solid = ON
 		Kind.STEEL:
-			data[i] = ON
-			data[i + 1] = ON
-		Kind.ERASE:
-			data[i] = 0
-			data[i + 1] = 0
+			solid = ON
+			steel = ON
+		Kind.WATER:
+			special = Special.WATER
+		Kind.LAVA:
+			special = Special.LAVA
+		Kind.ONE_WAY_LEFT:
+			solid = ON
+			special = Special.ONE_WAY_LEFT
+		Kind.ONE_WAY_RIGHT:
+			solid = ON
+			special = Special.ONE_WAY_RIGHT
+	data[i] = solid
+	data[i + 1] = steel
 	data[i + 2] = 0
+	data[i + 3] = special

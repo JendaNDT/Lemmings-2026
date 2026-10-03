@@ -1,3 +1,4 @@
+@tool
 class_name LevelSpec
 extends RefCounted
 ## Pravidla jednoho levelu v čisté podobě (bez Godot uzlů).
@@ -16,3 +17,6 @@ var skills := {}
 ## Místa, kde lumíci vypadávají (líhně) a kam mají dojít (východy).
 var hatches: Array[Vector2i] = []
 var exits: Array[Vector2i] = []
+## Pasti: {"at": Vector2i bod na zemi, "rect": Rect2i spouště,
+## "rearm": tiky do další připravenosti}.
+var traps: Array[Dictionary] = []

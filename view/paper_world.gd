@@ -3,7 +3,8 @@ extends Node2D
 ## 2D origami prezentace společné simulace. Herní pravidla sem nepatří.
 ##
 ## Pořadí kreslení: nebe → čtyři paralaxní vrstvy → herní rovina (terén,
-## líheň a východ, postavy, ústřižky) → popředí. HUD je samostatná CanvasLayer.
+## líheň, východ a pasti, postavy, přední pruhy vody a lávy, ústřižky) →
+## popředí. HUD je samostatná CanvasLayer.
 ## Herní rovina má jedinou transformaci z PaperCamera; vrstvy ji jen čtou.
 
 const LAYER_DIR := "res://assets/origami/layers/"
@@ -68,6 +69,8 @@ func _ready() -> void:
 	actors = PaperActors.new()
 	actors.name = "Actors"
 	plane.add_child(actors)
+	# Přední pruhy vody: ponořená část postavy je „pod hladinou“.
+	plane.add_child(terrain.surface)
 	fx = PaperFx.new()
 	fx.name = "Fx"
 	plane.add_child(fx)
@@ -106,6 +109,11 @@ func setup(sim: LevelSim) -> void:
 
 func update_frame(alpha: float, events: Array[Dictionary], delta: float) -> void:
 	terrain.sync()
+	# Vlny a plameny: ve stop-motion se mění po dvou ticích jako postavy.
+	if _sim != null:
+		var ticks := _sim.tick_count
+		terrain.set_time(float(ticks - posmod(ticks, PaperActors.STEP_TICKS)) if actors.stop_motion
+			else ticks + alpha)
 	actors.alpha = alpha
 	actors.update_views()
 	props.alpha = alpha

@@ -76,9 +76,9 @@ U nás je to stejné:
 | Soubor | Co dělá |
 |---|---|
 | `sim_const.gd` | Všechna čísla na jednom místě (rychlosti, výšky, počty cihel…). Ladění pocitu ze hry = změna čísla tady. |
-| `terrain_mask.gd` | Logická mapa terénu. Umí: je tu zem? je tu ocel? vykopej, postav cihlu. |
+| `terrain_mask.gd` | Logická mapa terénu. Umí: je tu zem? je tu ocel? voda/láva? jednosměrná zeď? vykopej, postav cihlu. |
 | `lemming.gd` | Data jednoho lumíka: pozice, směr, stav, počítadla. |
-| `level_spec.gd` | Pravidla levelu: kolik lumíků, kolik zachránit, dovednosti, čas. |
+| `level_spec.gd` | Pravidla levelu: kolik lumíků, kolik zachránit, dovednosti, čas, pasti. |
 | `level_sim.gd` | Srdce hry: vypouští lumíky, každý krok je posune, hlídá východ a konec levelu. |
 | `states/*.gd` | Jeden soubor = jeden stav lumíka. |
 
@@ -96,14 +96,18 @@ U nás je to stejné:
 ```
 
 Hotové stavy: chodec, padající, splácnutí, odchod východem,
-blokař, stavitel (+ krčení rameny), razič, kopáč, lezec, plachtění a horník.
+blokař, stavitel (+ krčení rameny), razič, kopáč, lezec, plachtění, horník,
+topení a hoření.
 
 Lezení a padák jsou navíc trvalé vlastnosti postavy; odpočet bomby běží
 souběžně s aktuálním stavem. Bombič tedy není samostatný pohybový stav.
 Hromadné ukončení je třetí společný příkaz (`NUKE`); jeho průběh řídí
 simulační tiky. Kombinace a priority popisuje `ETAPA_4_OVERENI.md`.
 
-Plánované: utopení a pasti.
+Nebezpečí (etapa 5): voda → topení, láva → hoření, past sežere jednoho
+a dobíjí se (`trap_ready`, `trap_fired` v `LevelSim`). Pořadí v tiku pro
+každého lumíka: bomba → stav → pád pod level → láva → voda → past → východ.
+Podrobnosti v `ETAPA_5_OVERENI.md`.
 
 ### Pravidla simulace (nesmí se porušit)
 
@@ -147,7 +151,7 @@ Každý pixel mapy má 4 bajty (rovnou formát textury, žádné převody):
 | R | pevný terén |
 | G | ocel (nejde prokopat) |
 | B | postaveno stavitelem (jen kvůli vzhledu) |
-| A | rezerva (voda, láva, jednosměrné zdi…) |
+| A | druh buňky `TerrainMask.Special`: 0 nic, 1 voda, 2 láva, 3/4 jednosměrná zeď doleva/doprava |
 
 ---
 
@@ -253,8 +257,8 @@ a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
 |---|---|
 | `PaperCamera` | Jediná herní transformace logika → obrazovka, zoom 1×–3,2× kolem kurzoru či středu prstů, hranice levelu, klávesy, okraj, kolečko, tažení. |
 | `PaperParallax` | Čtyři vodorovně navazující vrstvy (nebe, hory, vesnice, blízký les). Posun i zoom odvozené z kamery: `měřítko = výška/1200 × zoom^exponent`. Spodní řádek se protáhne dolů, takže nevzniká prázdný okraj. |
-| `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: listy trhaného papíru složené z vystřižených kusů (natržené švy, překryv, mírný náklon), bílé vláknité okraje, mech z lístků se stíny, ocel s mřížkou jako nalepený díl, harmonikové schody, světlou zadní stěnu výkopu a tmavší jeskyni. Měkké stíny dávají mipmapy masky (levné rozmazání). |
-| `PaperProps` | Líheň (chatka na kůlech, padací dvířka), východ (domek, vlající vlajka) a drobné rostlinky svázané s maskou. |
+| `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: listy trhaného papíru složené z vystřižených kusů (natržené švy, překryv, mírný náklon), bílé vláknité okraje, mech z lístků se stíny, ocel s mřížkou jako nalepený díl, harmonikové schody, světlou zadní stěnu výkopu a tmavší jeskyni (i uzavřené dutiny). Měkké stíny dávají mipmapy masky (levné rozmazání). Vodu a lávu (vlnité pruhy, plameny) a šipky jednosměrných zdí čte z textury nebezpečí sestavené z kanálu A masky; přední pruhy hladiny kreslí uzel `HazardSurface` nad postavami. |
+| `PaperProps` | Líheň (chatka na kůlech, padací dvířka), východ (domek, vlající vlajka), pasti (masožravá rostlina, čelisti podle `trap_fired`/`trap_ready`) a drobné rostlinky svázané s maskou. |
 | `PaperActors` | Origami postavy z dílů atlasu; přechody 3 tiky, otočka jako „otočení papírku“. Výchozí stop-motion: póza po 2 ticích, poloha po celých ticích, jemné deterministické chvění dílů; plynulý režim = funkce `state_ticks + alpha` (klávesa M). |
 | `PaperFx` | Papírové ústřižky z událostí, rozkládání cihly; čas efektů běží s herním časem. |
 | `PaperForeground` | Nízké trsy rostlin u spodní lišty; zprůhlední, když je za nimi postava, líheň nebo východ. Vstup nepřijímají. |

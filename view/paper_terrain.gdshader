@@ -11,9 +11,16 @@ uniform sampler2D static_tex : filter_linear, repeat_disable;
 uniform sampler2D paper_tex : filter_linear_mipmap, repeat_enable;
 // Hladký periodický šum (4 kanály) pro trhané hrany a vlnění vrstev.
 uniform sampler2D noise_tex : filter_linear, repeat_enable;
+// Nebezpečí (PaperTerrain.build_hazards): R voda, G láva = vzdálenost od
+// hladiny 128 ± 12 × px; B/A jednosměrná zeď doleva/doprava.
+uniform sampler2D hazard_tex : filter_nearest, repeat_disable;
+uniform sampler2D hazard_soft : filter_linear, repeat_disable;
 uniform vec2 mask_size = vec2(640.0, 200.0);
 uniform float band_offset = 0.0;
-// 1 = jen pevný terén bíle (kontrola přesnosti), 0 = běžné vykreslení.
+// Herní čas v ticích (vlny, plameny); ve stop-motion po krocích.
+uniform float sim_time = 0.0;
+// 1 = jen pevný terén bíle (kontrola přesnosti), 2 = přední pruhy vody a lávy
+// (kreslí se nad postavami), 0 = běžné vykreslení.
 uniform int debug_mode = 0;
 
 const vec3 TERRA = vec3(0.745, 0.318, 0.192);
@@ -34,6 +41,16 @@ const vec3 STAIR_LIGHT = vec3(0.949, 0.886, 0.784);
 const vec3 STAIR_MID = vec3(0.898, 0.800, 0.686);
 const vec3 STAIR_DARK = vec3(0.702, 0.612, 0.518);
 const vec3 RIM = vec3(0.976, 0.902, 0.769);
+const vec3 WATER = vec3(0.498, 0.714, 0.788);
+const vec3 WATER_LIGHT = vec3(0.741, 0.867, 0.894);
+const vec3 WATER_DARK = vec3(0.243, 0.471, 0.573);
+const vec3 FOAM = vec3(0.941, 0.957, 0.941);
+const vec3 LAVA = vec3(0.86, 0.33, 0.12);
+const vec3 LAVA_LIGHT = vec3(0.96, 0.58, 0.2);
+const vec3 LAVA_DEEP = vec3(0.6, 0.16, 0.09);
+const vec3 FLAME = vec3(0.98, 0.72, 0.28);
+const vec3 FLAME_CORE = vec3(1.0, 0.92, 0.66);
+const vec3 ONE_WAY = vec3(0.427, 0.6, 0.53);
 
 float hash(vec2 v) {
 	return fract(sin(dot(v, vec2(127.1, 311.7))) * 43758.5453);
@@ -94,10 +111,104 @@ float fiber_rim(float dist, vec2 p, float width) {
 	return (1.0 - smoothstep(w * 0.35, w, dist)) * (0.75 + 0.5 * paper(p, 18.0));
 }
 
+// Skládání „přes“ (průsvitná vrstva přes průsvitný podklad).
+vec4 over(vec4 top, vec4 bottom) {
+	float a = top.a + bottom.a * (1.0 - top.a);
+	if (a < 0.0001) {
+		return vec4(0.0);
+	}
+	return vec4((top.rgb * top.a + bottom.rgb * bottom.a * (1.0 - top.a)) / a, a);
+}
+
+// Hloubka pod hladinou v px (záporná nad ní) z buňky textury nebezpečí;
+// -99 = žádná voda/láva. Hladina je na horní hraně nejvyšší buňky.
+float liquid_depth(float v, float py) {
+	if (v < 0.5 / 255.0) {
+		return -99.0;
+	}
+	float idx = floor((v * 255.0 - 128.0) / 12.0 + 0.5);
+	return (idx > 0.0 ? idx - 1.0 : idx) + fract(py);
+}
+
+float wave(float x, float t, float i) {
+	return sin(x * 0.53 + t * 0.31 + i * 1.7) * 0.32 + sin(x * 0.19 - t * 0.17 + i * 2.9) * 0.28;
+}
+
+// Voda a láva z vlnitých papírových pruhů; každý nižší pruh leží před vyšším.
+// front_only: jen pruhy od druhého dál (přední vrstva nad postavami).
+vec4 liquid(vec2 p, float depth, bool lava, bool front_only) {
+	float t = sim_time * (lava ? 0.45 : 1.0);
+	float spacing = lava ? 3.2 : 2.6;
+	float s = -1.0;
+	float edge = 0.0;
+	float next_edge = 99.0;
+	for (int i = 0; i < 6; i++) {
+		float e = float(i) * spacing + wave(p.x, t, float(i)) * (i == 0 ? 1.0 : 0.75) - (i == 0 ? 0.25 : 0.0);
+		if (depth >= e) {
+			s = float(i);
+			edge = e;
+		} else if (next_edge > 98.0) {
+			next_edge = e;
+		}
+	}
+	if (s < 0.0 || (front_only && s < 1.0)) {
+		return vec4(0.0);
+	}
+	float k = clamp(s / 5.0, 0.0, 1.0);
+	vec3 c;
+	if (lava) {
+		c = mix(mix(LAVA_LIGHT, LAVA_DEEP, k), LAVA, mod(s, 2.0) * 0.35);
+	} else {
+		c = mix(mix(WATER_LIGHT, WATER_DARK, sqrt(k)), WATER, mod(s, 2.0) * 0.3);
+	}
+	c *= 1.0 + (paper(p, 60.0) - 0.5) * 0.2 + (paper(p + vec2(s * 37.0, 0.0), 24.0) - 0.5) * 0.08;
+	// Světlé vláknité jádro na horní hraně pruhu: pěna, u lávy žhavý okraj.
+	float rim = clamp(fiber_rim(depth - edge, p + vec2(0.0, s * 13.0), s < 0.5 ? 0.9 : 0.6), 0.0, 1.0);
+	c = mix(c, lava ? FLAME_CORE : FOAM, rim * (s < 0.5 ? 0.85 : 0.5));
+	// Těsně nad přednějším pruhem je zadní pruh ve stínu.
+	c *= 1.0 - (1.0 - smoothstep(0.0, 1.4, next_edge - depth)) * 0.16;
+	return vec4(c, front_only ? 0.72 : (lava ? 1.0 : 0.95));
+}
+
+// Papírové plameny nad lávou: sloupce mění výšku po dvou ticích.
+vec4 flames(vec2 p, float up) {
+	vec4 out_col = vec4(0.0);
+	float step_t = floor(sim_time / 2.0);
+	for (int row = 0; row < 2; row++) {
+		float w = row == 0 ? 3.6 : 2.6;
+		float x = p.x + float(row) * 1.7;
+		float column = floor(x / w);
+		float fx = fract(x / w) * 2.0 - 1.0;
+		float h = (row == 0 ? 2.2 : 1.2) + (row == 0 ? 3.6 : 2.0) * hash(vec2(column, step_t + float(row) * 31.0));
+		float lean = (hash(vec2(column + 7.0, step_t)) - 0.5) * 0.6;
+		float profile = h * pow(max(1.0 - abs(fx + lean * up / h), 0.0), 1.3);
+		float shape = 1.0 - smoothstep(profile - 0.18, profile + 0.18, up);
+		float core = 1.0 - smoothstep(profile * 0.5 - 0.15, profile * 0.5 + 0.15, up);
+		vec3 c = row == 0 ? mix(LAVA_LIGHT, FLAME, smoothstep(0.0, h, up)) : FLAME;
+		c = mix(c, FLAME_CORE, core * 0.8) * (1.0 + (paper(p, 20.0) - 0.5) * 0.12);
+		out_col = over(vec4(c, shape), out_col);
+	}
+	return out_col;
+}
+
+// Šipka jednosměrné zdi (krokev „>“ nebo „<“) v mřížce 6 px.
+float chevron(vec2 p, bool right) {
+	vec2 f = fract(p / 6.0 + vec2(0.0, 0.5 * mod(floor(p.x / 6.0), 2.0)));
+	float fx = right ? f.x : 1.0 - f.x;
+	float v = fx + abs(f.y - 0.5) * 1.1;
+	// Samostatné šipky: ramena končí před okrajem buňky, nenavazují v klikatici.
+	float arms = 1.0 - smoothstep(0.3, 0.36, abs(f.y - 0.5));
+	return (1.0 - smoothstep(0.08, 0.14, abs(v - 0.68))) * arms;
+}
+
 void fragment() {
 	vec2 p = UV * mask_size;
 	vec4 m = texture(mask_tex, UV);
 	vec4 st = texture(static_tex, UV);
+	vec4 hz = texelFetch(hazard_tex, clamp(ivec2(floor(p)), ivec2(0), ivec2(mask_size) - 1), 0);
+	float water_depth = liquid_depth(hz.r, p.y);
+	float lava_depth = liquid_depth(hz.g, p.y);
+	bool has_liquid = water_depth > -98.0 || lava_depth > -98.0;
 	float fib = paper(p, 96.0) - 0.5;
 	// Šum hrany je omezený na ±0,4: středy buněk (hodnota 0 nebo 1) se nezmění.
 	float jitter = (noise(p, 24.0).r - 0.5) * 0.6 + (noise(p, 7.0).g - 0.5) * 0.18 + fib * 0.1;
@@ -108,7 +219,13 @@ void fragment() {
 	float drop = soft(p - vec2(1.3, 1.9), 1.2).r * 0.55 + soft(p - vec2(2.4, 3.4), 2.3).r * 0.45;
 	if (debug_mode == 1) {
 		COLOR = vec4(vec3(step(thr, m.r)), 1.0);
-	} else if (m.r < 0.002 && st.r < 0.5 && st.g < 0.5) {
+	} else if (debug_mode == 2) {
+		// Přední pruhy: stejné barvy jako hlavní průchod, jen průsvitné, aby
+		// ponořená část postavy byla „pod vodou“. Terén zůstává navrchu.
+		vec4 front = water_depth > -98.0 ? liquid(p, water_depth, false, true)
+			: (lava_depth > -98.0 ? liquid(p, lava_depth, true, true) : vec4(0.0));
+		COLOR = vec4(front.rgb, front.a * (1.0 - inside));
+	} else if (m.r < 0.002 && st.r < 0.5 && st.g < 0.5 && !has_liquid) {
 		// Volný prostor bez zadní stěny: jen stín, zbytek výpočtu se přeskočí.
 		COLOR = vec4(0.0, 0.0, 0.0, drop * 0.36);
 	} else {
@@ -242,6 +359,19 @@ void fragment() {
 		stair *= 1.0 + fib * 0.12;
 		col = mix(col, stair, brick);
 
+		// --- Jednosměrná zeď: šalvějový papír s nalepenými šipkami ------------
+		vec4 hs = texture(hazard_soft, UV);
+		float one_way = inside * max(hs.b, hs.a) * (1.0 - steel) * (1.0 - brick);
+		if (one_way > 0.001) {
+			bool right = hs.a >= hs.b;
+			float arrow = chevron(p, right);
+			float arrow_shadow = chevron(p - vec2(0.5, 0.7), right) * (1.0 - arrow);
+			vec3 wall = mix(col, ONE_WAY * (1.0 + fib * 0.25), 0.6);
+			wall *= 1.0 - arrow_shadow * 0.3;
+			wall = mix(wall, RIM * (1.0 + fib * 0.2), arrow * 0.9);
+			col = mix(col, wall, one_way);
+		}
+
 		// Velmi tenká hrana střihu (tloušťka papíru) na samém obrysu.
 		float outline = inside * (1.0 - smoothstep(thr, thr + 0.12, m.r));
 		col *= 1.0 - outline * 0.18;
@@ -261,6 +391,25 @@ void fragment() {
 		vec4 outside = vec4(0.0, 0.0, 0.0, drop * 0.36);
 		vec4 back_rgba = vec4(back_col * (1.0 - drop * 0.25), 1.0);
 		outside = mix(outside, back_rgba, back);
+
+		// --- Voda a láva (jen v prázdném prostoru, terén je vždy před nimi) ---
+		if (lava_depth > -98.0) {
+			float up = -lava_depth;
+			// Teplá záře nad hladinou a papírové plameny.
+			float glow = up > 0.0 ? exp(-up * 0.32) * 0.42 : 0.0;
+			outside = over(vec4(LAVA_LIGHT, glow), outside);
+			if (up > 0.0) {
+				outside = over(flames(p, up), outside);
+			}
+			vec4 lv = liquid(p, lava_depth, true, false);
+			lv.rgb *= 1.0 - drop * 0.2;
+			outside = over(lv, outside);
+		}
+		if (water_depth > -98.0) {
+			vec4 wt = liquid(p, water_depth, false, false);
+			wt.rgb *= 1.0 - drop * 0.3;
+			outside = over(wt, outside);
+		}
 		COLOR = mix(outside, vec4(col, 1.0), inside);
 	}
 }

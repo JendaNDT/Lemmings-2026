@@ -30,6 +30,7 @@ func _run() -> void:
 	await process_frame
 	_test_solution(scene)
 	_test_other_missions(scene)
+	_test_hazard_mission(scene)
 	finish()
 
 
@@ -491,6 +492,85 @@ func _test_other_missions(scene: PackedScene) -> void:
 		check(sim.finished and sim.is_won() and same,
 			"mise %d v origami scéně přes dotyk: %d/%d, shoda s replayem" % [
 				index + 1, sim.saved, sim.spec.lemming_count])
+	game.free()
+
+
+## Mise 6 v origami scéně: klepnutím lezec, stavitel, kopáč a razič; vykreslení
+## vody, lávy, šipek a pasti jen čte simulaci (shoda s replayem čisté simulace).
+func _test_hazard_mission(scene: PackedScene) -> void:
+	var game := scene.instantiate()
+	root.add_child(game)
+	game.set_process(false)
+	var world: PaperWorld = game.get_node("PaperWorld")
+	world.camera.input_enabled = false
+	var hud: Hud = game.get_node("Hud")
+	game.call("_choose_mission", 5)
+	var sim: LevelSim = game.get("_sim")
+	check(sim.spec.title.begins_with("6 ·") and sim.spec.traps.size() == 1
+		and world.terrain.hazard_rect.has_point(Vector2i(240, 110))
+		and world.terrain.hazard_rect.has_point(Vector2i(390, 110)),
+		"mise 6 se načte s pastí a oblastí vody i lávy pro přední vrstvu")
+	var hazards := PaperTerrain.build_hazards(sim.mask)
+	var surface := hazards.get_pixel(240, 104)
+	var above := hazards.get_pixel(240, 103)
+	var arrow := hazards.get_pixel(150, 80)
+	check(is_equal_approx(surface.r * 255.0, PaperTerrain.SURFACE_ZERO + PaperTerrain.SURFACE_STEP)
+		and is_equal_approx(above.r * 255.0, PaperTerrain.SURFACE_ZERO - PaperTerrain.SURFACE_STEP)
+		and hazards.get_pixel(390, 110).g > 0.5 and arrow.a > 0.99 and arrow.b < 0.01,
+		"textura nebezpečí: hladina na horní hraně vody, láva a šipky doprava")
+	var done := {}
+	var opened := false
+	var frames := 0
+	while not sim.finished and frames < 12000:
+		game.call("_process", 1.0 / 30.0)
+		frames += 1
+		if not opened and sim.trap_fired[0] >= 0:
+			opened = world.props.trap_opening(0, float(sim.trap_fired[0]) + 1.0) < 0.1 \
+				and world.props.trap_opening(0, float(sim.trap_ready[0])) > 0.6
+		if sim.lemmings.is_empty():
+			continue
+		var hero := sim.lemmings[0]
+		var ready := hero.state == Lemming.State.WALKER and hero.dir == 1 and not hero.removed
+		var target: Lemming = null
+		var skill := -1
+		if not done.has(Lemming.Skill.CLIMBER) and not hero.removed:
+			target = hero
+			skill = Lemming.Skill.CLIMBER
+		elif not done.has(Lemming.Skill.BUILDER) and ready and hero.x >= 224 and hero.y == 100:
+			target = hero
+			skill = Lemming.Skill.BUILDER
+		elif done.has(Lemming.Skill.BUILDER) and not done.has(Lemming.Skill.DIGGER) and ready \
+				and hero.x >= 350 and hero.y == 100:
+			target = hero
+			skill = Lemming.Skill.DIGGER
+		elif not done.has(Lemming.Skill.BASHER) and sim.tick_count >= 400:
+			for lem in sim.lemmings:
+				if lem.id != 0 and not lem.removed and lem.state == Lemming.State.WALKER \
+						and lem.dir == 1 and lem.x >= 134 and lem.x < 140:
+					target = lem
+					skill = Lemming.Skill.BASHER
+					break
+		if target == null:
+			continue
+		var before := sim.skills[skill] as int
+		hud.skill_selected.emit(skill)
+		world.camera.focus = Vector2(target.x, target.y)
+		world.camera.refresh()
+		var at := world.camera.logic_to_screen(Vector2(target.x + 0.5, target.y - 5))
+		game.call("_try_assign_touch", at)
+		if sim.skills[skill] < before:
+			done[skill] = sim.tick_count
+	var fresh_level := (load("res://levels/level_hazards.tscn") as PackedScene).instantiate()
+	var fresh := LevelSim.new(LevelLoader.build_spec(fresh_level), LevelLoader.build_mask(fresh_level))
+	fresh_level.free()
+	var replay := SimReplay.new(fresh, sim.replay_log)
+	while replay.step():
+		pass
+	var same := replay.error.is_empty() and snapshot(fresh) == snapshot(sim)
+	check(sim.finished and sim.is_won() and done.size() == 4 and same,
+		"mise 6 v origami scéně přes dotyk: %d/%d, shoda s replayem" % [
+			sim.saved, sim.spec.lemming_count])
+	check(opened, "past se po sežrání zavře a před dobitím zase otevře")
 	game.free()
 
 

@@ -15,11 +15,12 @@ func tick(lem: Lemming, sim: LevelSim) -> void:
 	var top := lem.y - SimConst.LEMMING_HEIGHT
 	var height := SimConst.LEMMING_HEIGHT
 
-	# Ocel (nebo okraj levelu) v cestě → konec, otočka.
+	# Ocel, okraj levelu nebo jednosměrná zeď proti směru → konec, otočka.
 	var reach_x := lem.x + lem.dir * SimConst.BASHER_REACH
 	var hit_x := mini(lem.x + lem.dir, reach_x)
 	var hit_w := SimConst.BASHER_REACH
-	if reach_x < 0 or reach_x >= mask.width or mask.has_steel_in_rect(hit_x, top, hit_w, height):
+	if reach_x < 0 or reach_x >= mask.width or mask.has_steel_in_rect(hit_x, top, hit_w, height) \
+			or mask.has_one_way_against(hit_x, top, hit_w, height, lem.dir):
 		sim.emit_event("steel", lem)
 		lem.dir = -lem.dir
 		sim.set_state(lem, Lemming.State.WALKER)

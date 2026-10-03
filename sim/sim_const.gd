@@ -59,6 +59,12 @@ const DIGGER_TICKS_PER_ROW := 2
 const SPLAT_TICKS := 16
 const EXIT_TICKS := 10
 const SHRUG_TICKS := 8
+const DROWN_TICKS := 16
+const BURN_TICKS := 14
+
+## Past (např. masožravka): po sežrání postavy se tolik tiků „dobíjí“
+## a mezitím nechá ostatní projít. Hodnotu lze přepsat u každé pasti v editoru.
+const TRAP_REARM_TICKS := 40
 
 ## Za jak dlouho po startu vyleze první lumík.
 const HATCH_OPEN_TICKS := 34

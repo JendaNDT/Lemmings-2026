@@ -19,6 +19,8 @@ enum State {
 	CLIMBER,
 	FLOATER,
 	MINER,
+	DROWNING,
+	BURNING,
 }
 
 ## Dovednosti, které hráč přiděluje (pořadí jako v originále).
