@@ -22,7 +22,7 @@ Vydání 1.0 zahrne osm dovedností, 15–20 vlastních levelů, menu, nastaven�
 - Procházejí regresní kontroly mechanik, terénu, celého řešení a skutečné scény s HUD.
 - Dovednosti i vypouštění mají společný záznam. Technický replay přes JSON opakuje průběh při různém tempu snímků; uživatelské rozhraní replaye je pozdější etapa.
 - Přenosné kontroly byly ověřeny v čisté kopii s oddělenou instalací nástrojů. CI pro Linux a macOS je připravené; vzdálený výsledek CI dosud nebyl ověřen.
-- Výchozí 2.5D scéna prošla první výtvarnou úpravou ve verzi 0.4.0; [technický záznam](GRAFIKA_04.md). Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
+- Výchozí scéna je od 3. října 2D origami ([ověření](ORIGAMI_OVERENI.md)). 2.5D scéna prošla výtvarnou úpravou ve verzi 0.4.0; [technický záznam](GRAFIKA_04.md). Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
 - Příprava etapy 3: hotová první sada modelínových materiálů, modelů,
   animací zapojených do dosavadní hry. Podrobnosti v [podkladech prototypu](PODKLADY_PROTOTYPU.md).
 

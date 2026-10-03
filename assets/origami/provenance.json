@@ -13,7 +13,7 @@
   },
   "generator_sha256": {
     "build_all.py": "b2f9ff4eca6e610ba5fe3f32c7a0ae7d73fe2ce05653ff22f0137b6f87e449e4",
-    "build_backgrounds.py": "62abad3d261293a848943571e6dac1f534c65b4f2326093112b798c74868c428",
+    "build_backgrounds.py": "d0e132578222ce8ca1e25467e7bef03bdd9f329343630fead9dbbfc34e8b1992",
     "build_character.py": "df033fc912cd62d4fda97cd9082a34ce47cd6d86b4a5434acf34b488b922febb",
     "build_props.py": "f7bc76dca62521cddbf0e5b012f72a9806d145ee6b2412d2e3467167028d42a2",
     "build_ui.py": "da7f69fd92a71cb57d227ba45d3ea5c1404f452d26cdf8246d04c41fe137a112",

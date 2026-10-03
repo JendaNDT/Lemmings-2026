@@ -29,6 +29,7 @@ func _run() -> void:
 	game.free()
 	await process_frame
 	_test_solution(scene)
+	_test_other_missions(scene)
 	finish()
 
 
@@ -420,6 +421,55 @@ func _test_solution(scene: PackedScene) -> void:
 		pass
 	check(replay.error.is_empty() and snapshot(fresh) == snapshot(sim),
 		"zobrazení nezměnilo výsledek: replay čisté simulace je totožný")
+	game.free()
+
+
+## Další zkušební mise v origami scéně: přidělení klepnutím, výsledek a shoda s replayem.
+func _test_other_missions(scene: PackedScene) -> void:
+	var game := scene.instantiate()
+	root.add_child(game)
+	game.set_process(false)
+	var world: PaperWorld = game.get_node("PaperWorld")
+	world.camera.input_enabled = false
+	var hud: Hud = game.get_node("Hud")
+	var levels := ["climb_float", "miner", "bomber"]
+	for index in [1, 2, 3]:
+		game.call("_choose_mission", index)
+		var sim: LevelSim = game.get("_sim")
+		var assigned := false
+		var frames := 0
+		while not sim.finished and frames < 12000:
+			game.call("_process", 1.0 / 30.0)
+			frames += 1
+			for lem in sim.lemmings:
+				if lem.removed:
+					continue
+				var wanted: Array[int] = []
+				if index == 1 and not lem.can_climb:
+					wanted = [Lemming.Skill.CLIMBER, Lemming.Skill.FLOATER]
+				elif index == 2 and not assigned and lem.state == Lemming.State.WALKER and lem.x == 80:
+					wanted = [Lemming.Skill.MINER]
+				elif index == 3 and not assigned and lem.state == Lemming.State.WALKER and lem.x == 168:
+					wanted = [Lemming.Skill.BLOCKER, Lemming.Skill.BOMBER]
+				for skill in wanted:
+					hud.skill_selected.emit(skill)
+					world.camera.focus = Vector2(lem.x, lem.y)
+					world.camera.refresh()
+					var at := world.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5))
+					game.call("_try_assign_touch", at)
+				if index > 1 and not wanted.is_empty():
+					assigned = lem.state != Lemming.State.WALKER
+		var path := "res://levels/level_%s.tscn" % levels[index - 1]
+		var level := load(path).instantiate() as LevelDefinition
+		var fresh := LevelSim.new(LevelLoader.build_spec(level), LevelLoader.build_mask(level))
+		level.free()
+		var replay := SimReplay.new(fresh, sim.replay_log)
+		while replay.step():
+			pass
+		var same := replay.error.is_empty() and snapshot(fresh) == snapshot(sim)
+		check(sim.finished and sim.is_won() and same,
+			"mise %d v origami scéně přes dotyk: %d/%d, shoda s replayem" % [
+				index + 1, sim.saved, sim.spec.lemming_count])
 	game.free()
 
 

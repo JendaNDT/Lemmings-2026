@@ -93,8 +93,8 @@ def layer_sky(fiber, rng, out: Path):
     c.shape(sun, P.SUN, fiber=0.08, shadow=(4, 5, 4, 0.12), rim=(2, P.SUN_LIGHT, 0.6))
     c.shape(tear(ellipse(1950, 140, 52, 52, 70), 1.5, rng), P.SUN_LIGHT, fiber=0.06)
     # Mraky: kupovité laloky z kruhů, spodek zarovnaný, pod nimi stínová vrstva.
-    for cx, cy, w, h in [(380, 250, 420, 150), (980, 150, 280, 95), (1500, 285, 330, 110),
-                         (2150, 250, 400, 140), (2620, 125, 250, 85)]:
+    for cx, cy, w, h in [(380, 300, 300, 105), (980, 200, 190, 66), (1480, 330, 230, 78),
+                         (2180, 290, 280, 98), (2620, 170, 170, 60)]:
         lobes = []
         n = max(4, int(w / 70))
         for i in range(n):
@@ -116,6 +116,15 @@ def layer_sky(fiber, rng, out: Path):
             polys = [[(px, min(py, cy + dy)) for px, py in poly] for poly in polys]
             c.shape(polys, col, fiber=0.05, shadow=(8, 10, 7, 0.10) if layer == 0 else None)
         c.crease((cx - w * 0.3, cy - h * 0.18), (cx + w * 0.25, cy - h * 0.15), 3, P.CLOUD_SHADE, 0.35)
+    # Skládaní papíroví ptáčci (dvě křídla s přehybem).
+    for bx, by, size, flip in [(1250, 120, 26, 1), (1330, 165, 20, -1), (610, 230, 18, 1)]:
+        wing_l = [(bx, by), (bx - size * flip, by - size * 0.7), (bx - size * 0.35 * flip, by + size * 0.15)]
+        wing_r = [(bx, by), (bx + size * 0.9 * flip, by - size * 0.45), (bx + size * 0.3 * flip, by + size * 0.2)]
+        body = [(bx - size * 0.5 * flip, by + size * 0.1), (bx + size * 0.7 * flip, by - size * 0.05),
+                (bx + size * 0.2 * flip, by + size * 0.3)]
+        c.shape(body, P.LEAF_RUST, fiber=0.05, shadow=(3, 4, 3, 0.12))
+        c.shape(wing_l, P.LEAF_RUST_LIGHT, fiber=0.05)
+        c.shape(wing_r, mix(P.LEAF_RUST, "#000000", 0.12), fiber=0.05)
     c.save(out / "layers" / "sky_decor.png")
 
 

@@ -134,11 +134,15 @@ func _draw_exit(at: Vector2, now: float) -> void:
 	var info: Dictionary = data["exit"]
 	var s := float(info["scale"])
 	var anchor := Vector2(info["anchor"][0], info["anchor"][1])
+	# Teplá záře ze dveří jen nad prahem (pulzuje podle herního času).
 	var glow := 0.18 + 0.06 * sin(now * 0.35)
-	draw_set_transform(at + Vector2(0.5, -6.0), 0.0, Vector2(1.0, 1.35))
-	draw_circle(Vector2.ZERO, 9.0, Color(GLOW, glow * 0.5))
-	draw_circle(Vector2.ZERO, 6.0, Color(GLOW, glow))
-	draw_set_transform_matrix(Transform2D.IDENTITY)
+	for layer in [[10.0, 0.5], [6.5, 1.0]]:
+		var radius: float = layer[0]
+		var arc := PackedVector2Array()
+		for k in 17:
+			var angle := PI + k * PI / 16.0
+			arc.append(at + Vector2(0.5 + cos(angle) * radius, sin(angle) * radius * 1.5))
+		draw_colored_polygon(arc, Color(GLOW, glow * float(layer[1])))
 	draw_texture_rect(EXIT, Rect2(at - anchor, EXIT.get_size() / s), false)
 	var flag: Dictionary = info["flag"]
 	var pole := at + Vector2(flag["pole_top"][0], flag["pole_top"][1])

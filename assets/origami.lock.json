@@ -41,7 +41,7 @@
     },
     {
       "path": "assets/origami/layers/sky_decor.png",
-      "sha256": "cfc404152434a0bd74019421d6a8ac0fc5aee6acc9fddf414debd40ceedc5b5f"
+      "sha256": "650a3cd62963703ba5d984aae543056fc533a6f43d6aca2e022c977373ffa44b"
     },
     {
       "path": "assets/origami/paper/noise_smooth.png",
@@ -93,7 +93,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "7c9564330a05f7f68551d166b97a04bd9dd01896286ecf3403adb7d945456098"
+      "sha256": "3463beb993b4e3203099a542587014141709cf8e69de5aa9c08374715bf83e4f"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -105,7 +105,7 @@
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
-      "sha256": "62abad3d261293a848943571e6dac1f534c65b4f2326093112b798c74868c428"
+      "sha256": "d0e132578222ce8ca1e25467e7bef03bdd9f329343630fead9dbbfc34e8b1992"
     },
     {
       "path": "assets/origami/source/build_character.py",

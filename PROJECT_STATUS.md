@@ -3,29 +3,30 @@
 
 ## 🎯 Co to je
 Moderní předělávka hry Lemmings (1991) s grafikou odpovídající roku 2026.
-Stack: Godot 4.7, společné jádro v GDScriptu, renderer Forward+.
-Výchozí zobrazení je **2.5D**: 2D simulace + prostorový terén a postavy.
+Stack: Godot 4.7, společné jádro v GDScriptu.
+Výchozí zobrazení je **2D origami**: papírový terén z masky simulace,
+skládané postavičky s animacemi a krajina s paralaxním posunem i zoomem.
+2.5D a jednoduché 2D zobrazení zůstávají pro porovnání.
 První testovací sestavení je pro **macOS (Apple Silicon a Intel)**,
-nově také testovací APK pro Android, do budoucna Windows.
+také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**Aktuální směr: čistě 2D origami s paralaxním posunem a zoomem.** Autor
-přijal [nový mockup](docs/MOCKUP_ORIGAMI.md) jako jediný výtvarný podklad
-pro pokračování. Na jeho přání byly odstraněny staré koncepty, náhledy,
-videa a samostatný modelínový výřez v3. Technické podklady dosavadní hry
-zůstávají, aby hra fungovala do nahrazení rendereru.
+**2D origami je hotové jako výchozí hratelná scéna** (`main/game_origami.tscn`).
+Ověřeno v cloudu: automatické testy, celý první level přes myš i dotyk
+(20/20), přesnost výkopů proti masce na skutečném snímku, telefonní poměr
+20:9. Výsledky a rozdíly proti mockupu: [ověření origami](docs/ORIGAMI_OVERENI.md).
 
-Pořadí další práce: grafické vrstvy, postavička a animace, scéna Godotu.
-Zatím je hotový pouze nový obrázek. Paralaxa, origami animace ani nový
-renderer nejsou implementované; APK stále obsahuje dosavadní 2.5D hru.
-Nynější úkol je zveřejnění návrhu a úklid, nikoli převod celé hry.
+Další kroky:
+1. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5) a říct, co se líbí
+   a co ne – vzhled je posouzený jen z cloudových snímků.
+2. Nové APK a Mac balíček s origami grafikou (export; APK 0.4.0 je stará grafika).
+3. Doladit vzhled podle tvého názoru (bohatší detail krajiny, velikost postav).
+4. Pak mechaniky etapy 5 (voda, láva, pasti) a zvuk.
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
-[Ověření etapy 4](docs/ETAPA_4_OVERENI.md),
-[plán dvanácti etap](docs/PLAN_VYVOJE.md).
-Mechaniky etapy 5 následují po výtvarné práci. Nativní běh a výkon na Macu
-a Androidu zbývají ověřit, Windows jsou odložené na závěr.
+[Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
+Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
 - Návrh architektury (`docs/ARCHITEKTURA.md`)
@@ -82,6 +83,21 @@ a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 - Android APK 0.4.0 ve větvi `downloads/android-0.4.0`, zdroje
   v původní vývojové větvi; předchozí APK jsou zachovaná
 
+- **2D origami zobrazení jako výchozí scéna** (`main/game_origami.tscn`,
+  `view/paper_*`): papírový terén ze shaderu nad maskou (vrstvy, mech, ocel,
+  harmonikové schody, výkopy, jeskyně), origami postavy z dílů se 13 animacemi
+  podle simulačních tiků, líheň a východ, rostlinky, papírové ústřižky
+- Paralaxa: 4 vodorovně navazující vrstvy krajiny + popředí, rozdílný posun
+  i zoom, žádné prázdné okraje; jediná herní transformace `PaperCamera`
+- Papírový HUD a 8 nových ikon; dotyky ve 2D (klepnutí, posun, dva prsty)
+- Podklady `assets/origami/` z vlastního opakovatelného generátoru
+  (Python, pevné seedy), původ, licence, manifest 48 souborů
+- Kontrola: 66 GDScriptů, 9 sad, 227 ověření; nová sada `test_origami` (41),
+  včetně dalších tří misí přes origami scénu a dotyk (6/6, 6/6, 3/4)
+- Grafický průchod (Linux, software OpenGL): 20/20 myší i dotykem,
+  terén přesně podle masky (0 neshod), snímky a 17s záznam
+- Kontrola verze přijímá i opravné vydání Godot 4.7.x stable (např. 4.7.1)
+
 - Origami mockup uložený s přesným promptem, původem a SHA-256
 - Starší grafické návrhy a oddělená studie odstraněny na přání autora
 - Po úklidu: 56 GDScriptů, osm sad, 186 ověření; import a spuštění prošly
@@ -93,7 +109,7 @@ a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 - Menu a výběr levelů, ukládání postupu
 - 15–20 vlastních levelů
 - Zvuky a hudba
-- Finální 2D papírové postavy, animace a prostředí celé kampaně
+- Prostředí pro další mise kampaně (nové motivy krajiny, voda, láva)
 
 ### Backlog (později)
 - Světla, glow, materiály terénu (M3)
@@ -104,6 +120,10 @@ a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 - Editor levelů ve hře
 
 ## 🐛 Známé bugy
+- Origami grafika zatím neběžela na Macu ani Androidu; výkon na skutečné
+  GPU není změřený (cloud kreslí softwarově, ~0,2 s na snímek).
+- Proti mockupu je generovaná krajina jednodušší a postavy jsou při
+  výchozím zoomu menší; podrobně v `docs/ORIGAMI_OVERENI.md`.
 - Při průchodu prvního levelu v grafickém cloudovém běhu nebyla nalezena
   chyba bránící hraní. Nejde o vyčerpávající kontrolu všech mechanik.
 - Nativní spuštění na macOS čeká na uživatelské ověření; Windows až na
@@ -128,7 +148,11 @@ a Androidu zbývají ověřit, Windows jsou odložené na závěr.
   se na konci pouze zastaví. Splnění cíle samo o sobě level předčasně neukončí.
 - **Klávesy:** podle fyzické pozice (funguje i na české klávesnici).
 - **Grafický směr:** 2D origami; jediná předloha v `docs/MOCKUP_ORIGAMI.md`.
-  Současný 2.5D renderer zůstává do nahrazení funkční, není cílovým stylem.
+  Je to výchozí zobrazení. 2.5D renderer zůstává jen pro porovnání.
+- **Origami podklady:** generované vlastními skripty (opakovatelně), z mockupu
+  se nekopírují pixely. Postava = díly + klíčové pózy v JSON, ne snímky.
+- **Terén ve 2D:** kreslí ho shader přímo z masky; šum hrany max. ±0,4 buňky,
+  takže viditelný terén ve středech buněk vždy odpovídá kolizím.
 - **Pořadí grafické práce:** mockup → vrstvy → postavička a animace → scéna.
 - **Paralaxa:** rozdílný posun a zoom dekorativních vrstev; terén a postavy
   sdílejí jednu soustavu a simulační masku. HUD je pevný.
@@ -139,8 +163,12 @@ a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 - **Právní:** vlastní obsah, žádné převzaté assety z originálu. Při zveřejnění jiný název.
 
 ## 📁 Stav souborů
+- `main/game_origami.tscn`, `view/paper_*.gd`, `view/paper_terrain.gdshader` – výchozí 2D origami
+- `assets/origami/` (+ `source/` generátor), `assets/origami.lock.json` – origami podklady
+- `scripts/qa_origami.gd` – grafický průchod, snímky, záznam a kontrola terénu
+- `docs/ORIGAMI_OVERENI.md` – výsledky a meze origami zobrazení
 - `main/game.tscn`, `main/game.gd` – hlavní scéna, herní smyčka, ovládání
-- `main/game_3d.tscn`, `view/clay_*.gd` – výchozí 2.5D scéna a její prezentace
+- `main/game_3d.tscn`, `view/clay_*.gd` – 2.5D scéna pro porovnání
 - `assets/clay/`, `assets/clay.lock.json` – podklady a ověření integrity
 - `sim/level_sim.gd` – pravidla levelu, vypouštění, východ, konec
 - `sim/sim_replay.gd` – kontrola a technické přehrávání příkazů

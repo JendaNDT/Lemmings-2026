@@ -50,13 +50,20 @@ vec4 noise(vec2 p, float scale) {
 }
 
 vec3 band_color(float index) {
-	float k = mod(index + band_offset, 6.0);
+	// Nepravidelné střídání: sousední listy nikdy nemají stejnou barvu.
+	float k = mod(index * 2.0 + floor(hash(vec2(index, 3.0)) * 1.999) + band_offset, 6.0);
 	if (k < 1.0) return TERRA;
 	if (k < 2.0) return OCHRE;
 	if (k < 3.0) return TERRA_DARK;
 	if (k < 4.0) return OCHRE_LIGHT;
-	if (k < 5.0) return TERRA;
-	return SAND;
+	if (k < 5.0) return SAND;
+	return TERRA;
+}
+
+// Horní hrana listu k: pravidelná mřížka posunutá o ±35 % výšky listu,
+// takže listy mají různou tloušťku.
+float band_top(float k, float h) {
+	return k * h + (hash(vec2(k, 11.0)) - 0.5) * h * 0.7;
 }
 
 void fragment() {
@@ -83,7 +90,7 @@ void fragment() {
 		// --- Vrstvy trhaného papíru (terakota, okr, písek) -----------------
 		// Široké listy trhaného papíru: horní list překrývá dolní, má světlý
 		// vláknitý okraj a vrhá na něj stín.
-		float band_h = 21.0;
+		float band_h = 22.0;
 		float wob = (noise(vec2(p.x, 3.0), 260.0).b - 0.5) * 16.0
 			+ (noise(vec2(p.x, 40.0), 60.0).r - 0.5) * 4.0;
 		float yy = p.y + wob;
@@ -92,12 +99,21 @@ void fragment() {
 			+ (noise(vec2(p.x, bi * 5.0), 4.0).a - 0.5) * 0.3 + fib * 0.08;
 		yy += tear_edge;
 		bi = floor(yy / band_h);
-		float bf = fract(yy / band_h) * band_h;  // px od horní hrany listu
+		float top = band_top(bi, band_h);
+		if (yy < top) {
+			bi -= 1.0;
+		} else if (yy >= band_top(bi + 1.0, band_h)) {
+			bi += 1.0;
+		}
+		top = band_top(bi, band_h);
+		float bottom = band_top(bi + 1.0, band_h);
+		float bf = yy - top;  // px od horní hrany listu
+		float to_bottom = bottom - yy;
 		float block = floor((p.x + wob * 2.0) / 52.0);
 		vec3 col = band_color(bi);
 		col *= 0.95 + 0.08 * hash(vec2(block, bi));
 		col *= 1.0 + (noise(p, 40.0).a - 0.5) * 0.12;
-		float rim_band = smoothstep(band_h - 0.55, band_h - 0.15, bf);
+		float rim_band = 1.0 - smoothstep(0.15, 0.55, to_bottom);
 		float band_shadow = (1.0 - smoothstep(0.0, 1.8, bf)) * 0.24;
 		col *= 1.0 - band_shadow;
 		col = mix(col, RIM, rim_band * 0.7);

@@ -22,3 +22,6 @@ Výchozí 2D origami zobrazení používá vlastní sadu `assets/origami/`
 Na `assets/clay/` už nezávisí; HUD převzal z `assets/art_v2/` jen font Nunito.
 Scéna `main/game_3d.tscn` ale `assets/clay/` i model z `assets/art_v2/`
 stále používá, proto je nemažeme. Odstranit je lze až spolu s 2.5D scénou.
+Staré ikony dovedností (`assets/clay/ui/icons/`, SVG v `assets/art_v2/ui/`)
+už žádný kód nepoužívá – HUD má nové ikony v `assets/origami/ui/icons/`.
+Ponechali jsme je kvůli zamčeným manifestům; smazat je lze při úklidu 2.5D.

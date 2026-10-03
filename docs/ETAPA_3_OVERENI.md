@@ -1,6 +1,7 @@
 # Etapa 3 — hratelný 2.5D prototyp
 
-Dokončeno v cloudu 2. října 2026. Výchozí scéna je `main/game_3d.tscn`.
+Dokončeno v cloudu 2. října 2026. Tehdy výchozí scéna byla `main/game_3d.tscn`;
+od 3. října je výchozí 2D origami ([ověření](ORIGAMI_OVERENI.md)).
 Celý první level funguje s prostorovým terénem, postavami, animacemi,
 světlem, kamerou a původním HUD. Grafický průchod zachránil **20 z 20**.
 

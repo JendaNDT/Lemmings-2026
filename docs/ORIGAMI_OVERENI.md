@@ -34,9 +34,11 @@ nebyly kopírovány pixely; převzaty jsou změřené barvy a výtvarné princip
 
 ## A. Automatické testy (headless, Linux)
 
-`python scripts/check.py` s Godotem 4.7 stable: viz tabulka v
-[PROJECT_STATUS](../PROJECT_STATUS.md). Nová sada `tests/test_origami.gd`
-(38 kontrol) ověřuje:
+`python scripts/check.py` s Godotem 4.7 stable: **66 GDScriptů, 9 sad,
+227 kontrol, vše v pořádku** (před touto prací 56 / 8 / 186). Integrita
+podkladů: 50 + 13 + 48 souborů souhlasí s manifesty; `build_all.py --check`
+potvrdil, že generátor dává bit po bitu stejné soubory. Nová sada
+`tests/test_origami.gd` (41 kontrol) ověřuje:
 
 - přesnou vratnost převodu logika ↔ obrazovka a shodu s herní transformací
   pro poměry 16:9, 20:9, 4:3, 1:1 a tři velikosti levelu,
@@ -53,7 +55,10 @@ nebyly kopírovány pixely; převzaty jsou změřené barvy a výtvarné princip
 - pauzu animace i simulace, animaci podle tiků, otočku postavy,
 - zprůhlednění popředí nad postavou,
 - **celou první misi přes origami scénu a dotykové přidělení: 20/20**
-  a totožný stav (snímek celé simulace včetně masky) s replayem čisté simulace.
+  a totožný stav (snímek celé simulace včetně masky) s replayem čisté simulace,
+- další zkušební mise v origami scéně přes dotyk: lezec a padák 6/6,
+  šikmý tunel 6/6, cesta skrz zeď 3/4 (požadavek splněn), vždy shodné
+  s replayem čisté simulace.
 
 ## B. Grafický průchod v cloudu (Linux, Xvfb, software OpenGL llvmpipe)
 
@@ -62,20 +67,25 @@ nebyly kopírovány pixely; převzaty jsou změřené barvy a výtvarné princip
 | Průchod | Výsledek |
 |---|---|
 | Desktop 1600 × 900 okno (viewport 1920 × 1080), klávesy 1–4, klik myší, kolečko, tažení pravým tlačítkem, gesto dvěma prsty | 20/20 zachráněno, 3 ze 3 přidělení napoprvé, dva prsty přiblížily bez herního příkazu |
-| Telefon 20:9 (1600 × 720), klepnutí na dlaždice a postavy, posun jedním prstem, přiblížení dvěma prsty | MOBILE_RESULT |
+| Telefon 20:9 (1600 × 720), klepnutí na dlaždice a postavy, posun jedním prstem, přiblížení dvěma prsty | 20/20 zachráněno, 3 ze 3 přidělení klepnutím napoprvé, dva prsty přiblížily bez herního příkazu; terén 50 592 buněk, 0 neshod |
 | Přesnost terénu: kontrolní režim shaderu kreslí jen pevný terén; střed každé viditelné buňky porovnán s maskou po ražení, schodech, kopání, výbuchovém kruhu a přidaných cihlách při zoomu 3,2× | 34 720 buněk, 0 neshod |
-| Galerie všech póz v enginu (hřiště) | GALLERY_RESULT |
+| Všech 12 stavů postavy vykreslených skutečným `PaperActors` a galerie dovedností na hřišti | pózy odpovídají náhledu generátoru (stejný výpočet kloubů), nářadí, deštník i odpočet bomby se zobrazují |
 
 Snímky: [start](images/origami-hra-start.jpg) ·
 [ražení zblízka](images/origami-hra-1.png) ·
 [přehled po kopání](images/origami-hra-prehled.jpg) ·
 [telefon 20:9](images/origami-hra-mobil.jpg) ·
-[detail póz](images/origami-postavy.jpg).
+[všech 12 póz z enginu](images/origami-postavy.jpg) ·
+[porovnání s mockupem](images/origami-porovnani.jpg).
+
+![Všech 12 stavů postavy vykreslených v Godotu](images/origami-postavy.jpg)
 
 Software renderer v cloudu kreslí jeden snímek přibližně za 0,2 s
 (1920 × 1080, CPU). To není měření výkonu na skutečné grafické kartě.
 
 ## C. Vizuální posouzení proti mockupu (subjektivní)
+
+![Nahoře předloha, dole skutečná hra](images/origami-porovnani.jpg)
 
 Shoduje se: paleta a materiály (tyrkys/okr/krém postav, terakotové a okrové
 vrstvy, šalvějový mech, břidlicová ocel s mřížkou, krémové harmonikové
