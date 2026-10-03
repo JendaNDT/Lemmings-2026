@@ -132,10 +132,11 @@ u jezírka a vykope se do chodby před lávou; ostatní pustí razič zdí se
 ## B. Grafický průchod v cloudu (Linux, Xvfb, software OpenGL)
 
 Snímky výše a záznam pocházejí ze skutečné scény `main/game_origami.tscn`
-(1600 × 900); stejný plán řešení jako v testech dal 8/10. Po změnách
-shaderu prošel znovu telefonní průchod mise 1 (`qa_origami.gd --mobile`,
-1600 × 720): **20/20, 3 ze 3 přidělení klepnutím, přiblížení dvěma prsty
-bez herního příkazu, terén 50 592 buněk proti masce, 0 neshod.**
+(1600 × 900); stejný plán řešení jako v testech dal 8/10. Po obou kolech
+změn shaderu a animací prošel znovu telefonní průchod mise 1
+(`qa_origami.gd --mobile`, 1600 × 720): **20/20, 3 ze 3 přidělení
+klepnutím, přiblížení dvěma prsty bez herního příkazu, terén 50 592 buněk
+proti masce, 0 neshod.**
 
 ## C. Vizuální posouzení (subjektivní)
 
