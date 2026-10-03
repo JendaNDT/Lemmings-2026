@@ -1,6 +1,6 @@
 # Plán vývoje Lemmings 2026 — 2.5D
 
-Aktualizováno: 2. října 2026. Jde o plán budoucí implementace, nikoli o seznam hotových funkcí. Tato verze nahrazuje dřívější plán čistě 2D grafiky.
+Aktualizováno: 3. října 2026. Jde o plán budoucí implementace, nikoli o seznam hotových funkcí. Tato verze nahrazuje dřívější plán čistě 2D grafiky.
 
 ## Cíl a rozsah
 
@@ -19,7 +19,7 @@ Vydání 1.0 zahrne osm dovedností, 15–20 vlastních levelů, menu, nastaven�
 - Procházejí regresní kontroly mechanik, terénu, celého řešení a skutečné scény s HUD.
 - Dovednosti i vypouštění mají společný záznam. Technický replay přes JSON opakuje průběh při různém tempu snímků; uživatelské rozhraní replaye je pozdější etapa.
 - Přenosné kontroly byly ověřeny v čisté kopii s oddělenou instalací nástrojů. CI pro Linux a macOS je připravené; vzdálený výsledek CI dosud nebyl ověřen.
-- Výchozí grafika používá technický 2.5D prototyp. Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
+- Výchozí 2.5D scéna prošla první výtvarnou úpravou ve verzi 0.4.0; [skutečné snímky a ověření](GRAFIKA_04.md). Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
 - Příprava etapy 3: hotová první sada modelínových materiálů, modelů,
   animací a samostatná galerie. Podrobnosti v [podkladech prototypu](PODKLADY_PROTOTYPU.md).
 
@@ -105,12 +105,12 @@ Ukládání musí zvládat přerušený zápis, poškozený soubor a změnu form
 
 ## Etapa 7 — Reprezentativní demo a výtvarný směr
 
-**Výtvarná revize:** současná ukázka neodpovídá kvalitě schváleného mockupu.
-Při hraní autor označil grafiku za nevyhovující. Doporučení je přesunout
-výtvarné dotažení jedné skutečné mise před další rozšiřování hry: oblé
-hrany terénu včetně kopání, výraznější postava, světlo, prostorové pozadí
-a čitelné rozhraní. Přesun je zatím návrh; nepovažovat technické splnění
-etap 3 a 4 za schválení současné grafické kvality.
+**Výtvarná revize:** autor označil původní grafiku za nevyhovující a
+schválil přesun práce na skutečné scéně dopředu. Ve verzi 0.4.0 jsou
+zapojené oblé hrany terénu včetně kopání, výraznější postava, nové světlo,
+prostorové pozadí a rozhraní. Podrobnosti: [grafika 0.4.0](GRAFIKA_04.md).
+Jde o první výtvarnou úpravu; tato etapa jako celek ještě není dokončená
+(chybí mimo jiné zvuk a první uživatelské hraní nového provedení).
 
 Rozpracovat již zvolený modelínový styl z etapy 3 do reprezentativní kvality.
 
@@ -171,4 +171,6 @@ Nejdřív ověřit základ a simulaci, připravit grafické podklady, následně
 
 Každý dílčí úkol má určit změněné vrstvy, konkrétní ukázku výsledku a kontroly odpovídající riziku. Po větší implementační změně aktualizovat stav projektu a relevantní architekturu. Termíny a rozpočet zpřesnit po technickém prototypu a prvním dokončeném 3D assetu; do té doby nejsou ověřené podklady pro spolehlivý odhad.
 
-**Nejbližší vývojový úkol:** etapa 4 – lezec, padák, horník, bombič a hromadné ukončení. Samostatně zbývá ověřit skutečný vzhled a výkon hotového 2.5D prototypu na MacBooku; cloudový test nepotvrzuje nativní běh macOS.
+**Nejbližší vývojový úkol:** posoudit novou grafiku 0.4.0 při hraní na cílovém
+zařízení a podle výsledku doladit vzhled a výkon. Mechanicky navazuje etapa 5,
+nebezpečí a objekty. Cloudové testy nepotvrzují nativní běh na Macu ani Androidu.

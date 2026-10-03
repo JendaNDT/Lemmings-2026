@@ -1,29 +1,30 @@
-# Android demo 0.3.0
+# Android demo 0.4.0
 
 Vývojové APK se všemi osmi dovednostmi: původní mise, tři nové zkušební
 mise a hřiště se všemi schopnostmi. Společné jádro je stejné pro všechny
-platformy. Grafika je stále provizorní a nedosahuje schváleného mockupu.
+platformy. Verze 0.4.0 přidává první výtvarnou úpravu skutečné scény;
+[snímky, podklady a ověření](GRAFIKA_04.md).
 
 ## Stažení a instalace
 
-[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.3.0/android/Lemmings-2026-Android-0.3.0.apk).
+[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.4.0/android/Lemmings-2026-Android-0.4.0.apk).
 
-Soubor `Lemmings-2026-Android-0.3.0.apk` je v samostatné větvi
-`downloads/android-0.3.0`, spolu s návodem a SHA-256 kontrolním součtem.
-Místní kopie je v `/workspace/artifacts/lemmings-android-0.3.0/`.
+Soubor `Lemmings-2026-Android-0.4.0.apk` je v samostatné větvi
+`downloads/android-0.4.0`, spolu s návodem a SHA-256 kontrolním součtem.
+Místní kopie je v `/workspace/artifacts/lemmings-android-0.4.0/`.
 Stáhnout na telefon nebo tablet,
 otevřít a případně povolit instalaci z použitého prohlížeče či správce souborů.
 Hra se jmenuje **Lemmings 2026 Demo** a běží na šířku.
 
 - Android 7.0 / API 24 a novější, OpenGL ES 3.0.
 - Architektury `arm64-v8a` a `armeabi-v7a` v jednom APK.
-- Verze 0.3.0, versionCode 4, balíček `org.lemmings2026.demo`.
+- Verze 0.4.0, versionCode 5, balíček `org.lemmings2026.demo`.
 - Target SDK 36; aplikace nepožaduje žádná Android oprávnění.
 - Testovací podpis Android Debug, schémata v2/v3. Není určený pro vydání
   do Google Play; soukromý klíč je mimo repozitář i předávané artefakty.
 
-Podpis je stejný jako u 0.2.1, takže APK lze instalovat jako aktualizaci.
-SHA-256: `867208599aad64b213ab360b466278ed810cef7c837eaa309dea73df9807cfe9`.
+Podpis je stejný jako u 0.3.0, takže APK lze instalovat jako aktualizaci.
+SHA-256: `125fad60fc480ce8c9715ffd4c6e755d5123575f265170196d8a13c25341914d`.
 
 ## Ovládání a profil
 
@@ -46,18 +47,19 @@ pro tento renderer. Herní logika se podle platformy nevětví.
 
 ## Ověření a omezení
 
-- Prošlo 184 automatických kontrol v osmi sadách, parser a linter
-  53 GDScriptů, import v čisté kopii a výchozí spuštění.
-- Nových 10 kontrol ověřuje dotyk, posun, pinch, zrušení, HUD, jediný
+- Prošlo 186 automatických kontrol v osmi sadách, parser a linter
+  56 GDScriptů, import v čisté kopii a výchozí spuštění.
+- Deset kontrol ověřuje dotyk, posun, pinch, zrušení, HUD, jediný
   příkaz při emulaci myši a pauzu při odchodu na pozadí.
 - Skutečné vykreslování v Compatibility rendereru na Linuxu se softwarovým
   ovladačem llvmpipe a simulovanými dotykovými událostmi dokončilo level:
   **20 zachráněných, 0 ztracených**, včetně výběru dovedností přes HUD.
   Nové mise zachránily 6/6, 6/6 a 3/4; všechny nové dovednosti byly
   přidělené přes skutečnou lištu a dotyk. Tento nový průchod prošel také
-  nad herními soubory vytaženými přímo z APK 0.3.0.
+  nad herními soubory vytaženými přímo z APK 0.4.0.
 - Ověřený podpis APK, CRC souborů, manifest, obě ARM architektury,
-  16KiB zarovnání APK a shoda podpisu s předchozí verzí.
+  16KiB zarovnání APK a shoda podpisu s předchozí verzí. Licence písma
+  Nunito je přiložená přímo v APK, editovatelné zdroje Blenderu se nebalí.
 
 Linuxové vykreslování nepotvrzuje instalaci ani běh Android Activity.
 V tomto cloudu nebylo dostupné připojené Android zařízení ani použitelný

@@ -9,6 +9,7 @@ var actors: Dictionary = {}
 var _sim: LevelSim
 var _props: Node3D
 var _selection: MeshInstance3D
+var _backdrop: ClayBackdrop
 
 
 func _ready() -> void:
@@ -23,6 +24,8 @@ func _ready() -> void:
 	_props = Node3D.new()
 	add_child(_props)
 	_lighting()
+	_backdrop = ClayBackdrop.new()
+	add_child(_backdrop)
 	_selection = MeshInstance3D.new()
 	var ring := TorusMesh.new()
 	ring.inner_radius = 0.29
@@ -50,7 +53,8 @@ func setup(sim: LevelSim) -> void:
 		prop.free()
 	fx.clear()
 	terrain.setup(sim.mask)
-	var focus := Vector2(sim.spec.width * 0.5, sim.spec.height * 0.5)
+	_backdrop.setup(sim.spec.width, sim.spec.height)
+	var focus := Vector2(sim.spec.width * 0.5, sim.spec.height * 0.43)
 	if not sim.spec.hatches.is_empty():
 		focus.x = sim.spec.hatches[0].x
 	camera.setup(Vector2(sim.spec.width, sim.spec.height), focus)
@@ -58,6 +62,12 @@ func setup(sim: LevelSim) -> void:
 		_add_prop("clay_hatch", point, 1.3)
 	for point in sim.spec.exits:
 		_add_prop("clay_exit", point, 1.2)
+		var glow := OmniLight3D.new()
+		glow.position = ClaySpace.to_world(Vector2(point) + Vector2(0, -6), 0.4)
+		glow.light_color = Color("ffc781")
+		glow.light_energy = 0.18
+		glow.omni_range = 2.8
+		_props.add_child(glow)
 	_selection.visible = false
 
 
@@ -96,10 +106,10 @@ func _lighting() -> void:
 	var world := WorldEnvironment.new()
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color("c8dfe6")
+	env.background_color = Color("8bbbd2")
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_color = Color("dceaff")
-	env.ambient_light_energy = 0.25 if DeviceProfile.touch_mode() else 0.48
+	env.ambient_light_energy = 0.25 if DeviceProfile.touch_mode() else 0.40
 	env.tonemap_mode = Environment.TONE_MAPPER_ACES
 	env.ssao_enabled = not DeviceProfile.touch_mode() \
 		and RenderingServer.get_current_rendering_method() == "forward_plus"
@@ -112,27 +122,12 @@ func _lighting() -> void:
 	world.environment = env
 	add_child(world)
 	var sun := DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-38, -25, 0)
+	sun.rotation_degrees = Vector3(-38, -30, 0)
 	sun.light_color = Color("fff0d8")
-	sun.light_energy = 0.6 if DeviceProfile.touch_mode() else 1.1
+	sun.light_energy = 0.58 if DeviceProfile.touch_mode() else 0.85
 	sun.light_angular_distance = 2.5
 	sun.shadow_enabled = true
 	sun.shadow_bias = 0.03
-	sun.shadow_normal_bias = 0.4
+	sun.shadow_normal_bias = 0.12
 	sun.directional_shadow_max_distance = 110
 	add_child(sun)
-	# Vzdálené kulisy jsou za celým terénem a nezasahují do herní roviny.
-	for index in 7:
-		var hill := MeshInstance3D.new()
-		var mesh := SphereMesh.new()
-		mesh.radius = 1
-		mesh.height = 2
-		hill.mesh = mesh
-		var material := StandardMaterial3D.new()
-		material.albedo_color = Color("9fbfc5") if index % 2 == 0 else Color("aecbd0")
-		material.roughness = 1
-		hill.material_override = material
-		hill.position = Vector3(index * 14 - 10, -26, -16 - index % 2 * 4)
-		hill.scale = Vector3(12, 6 + index % 3, 3)
-		hill.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		add_child(hill)

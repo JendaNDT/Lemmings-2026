@@ -15,6 +15,14 @@ def verify(root):
         assert path.resolve().is_relative_to((root / 'assets/clay').resolve())
         assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
     print(f"[OK] {len(receipt['files'])} podkladů souhlasí s manifestem")
+    art = json.loads((root / 'assets/art_v2.lock.json').read_text())
+    assert art['license'] == 'LicenseRef-Lemmings2026-Project-Internal AND OFL-1.1'
+    assert art['files']
+    for entry in art['files']:
+        path = root / entry['path']
+        assert path.resolve().is_relative_to((root / 'assets/art_v2').resolve())
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
+    print(f"[OK] {len(art['files'])} nových výtvarných podkladů souhlasí s manifestem")
 
 
 if __name__ == '__main__':

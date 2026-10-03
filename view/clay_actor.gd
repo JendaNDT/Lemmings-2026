@@ -2,7 +2,7 @@ class_name ClayActor
 extends Node3D
 ## Póza se hledá podle simulačního času; AnimationPlayer nikdy neposouvá logiku.
 
-const MODEL := preload("res://assets/clay/models/clay_worker.glb")
+const MODEL := preload("res://assets/art_v2/models/clay_worker.glb")
 const PICKAXE := preload("res://assets/clay/models/clay_pickaxe.glb")
 const CLIPS := {
 	Lemming.State.FALLER: "fall", Lemming.State.WALKER: "walk",
@@ -33,7 +33,7 @@ var _skill_visuals: ClaySkillVisuals
 
 func _init() -> void:
 	model = MODEL.instantiate() as Node3D
-	model.scale = Vector3.ONE * (SimConst.LEMMING_HEIGHT * ClaySpace.UNIT / 1.205)
+	model.scale = Vector3.ONE * (SimConst.LEMMING_HEIGHT * ClaySpace.UNIT / 1.27)
 	add_child(model)
 	player = model.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	player.callback_mode_process = AnimationMixer.ANIMATION_CALLBACK_MODE_PROCESS_MANUAL
@@ -49,7 +49,7 @@ func _init() -> void:
 func sync(lem: Lemming, alpha: float) -> void:
 	position = ClaySpace.to_world(Vector2(
 		lerpf(lem.prev_x, lem.x, alpha) + 0.5, lerpf(lem.prev_y, lem.y, alpha)))
-	rotation.y = PI * 0.5 * lem.dir
+	rotation.y = 0.85 * lem.dir
 	if _state != lem.state:
 		_state = lem.state
 		clip = CLIPS[lem.state]

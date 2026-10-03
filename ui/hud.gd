@@ -12,15 +12,27 @@ signal mission_selected(index: int)
 signal nuke_requested
 signal nuke_decided(confirmed: bool)
 
-const TOP_BAR_HEIGHT := 56.0
-const BOTTOM_BAR_HEIGHT := 144.0
+const TOP_BAR_HEIGHT := 72.0
+const BOTTOM_BAR_HEIGHT := 160.0
 const ACCENT := Color("a6ddb1")
 const TEXT := Color("fff1d5")
 const TEXT_DIM := Color("c4d1c5")
 const SKILL_ICONS := {
+	Lemming.Skill.CLIMBER: "climber", Lemming.Skill.FLOATER: "floater",
+	Lemming.Skill.BOMBER: "bomber",
 	Lemming.Skill.BLOCKER: "blocker", Lemming.Skill.BUILDER: "builder",
 	Lemming.Skill.BASHER: "basher", Lemming.Skill.DIGGER: "digger",
 	Lemming.Skill.MINER: "miner",
+}
+const SKILL_TIPS := {
+	Lemming.Skill.CLIMBER: "Trvale umožní lézt po stěnách. Pod stropem se otočí a spadne.",
+	Lemming.Skill.FLOATER: "Trvalý padák chrání před dlouhým pádem. Lze kombinovat s lezcem.",
+	Lemming.Skill.BOMBER: "Za 5 herních sekund vybuchne. Do té doby pokračuje v práci.",
+	Lemming.Skill.BLOCKER: "Zastaví se a obrací ostatní lumíky.",
+	Lemming.Skill.BUILDER: "Postaví dvanáct stoupajících schodů.",
+	Lemming.Skill.BASHER: "Razí vodorovný tunel. Ocel ho zastaví.",
+	Lemming.Skill.MINER: "Kope šikmo dolů. Ocel ho zastaví.",
+	Lemming.Skill.DIGGER: "Kope svisle dolů. Ocel ho zastaví.",
 }
 
 var _sim: LevelSim
@@ -148,24 +160,25 @@ func _build() -> void:
 	# Horní lišta: název levelu a počítadla.
 	var top := PanelContainer.new()
 	_root.add_child(top)
-	_place(top, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, TOP_BAR_HEIGHT)
+	_place(top, 0.0, 0.0, 1.0, 0.0, 12.0, 10.0, -12.0, TOP_BAR_HEIGHT)
 	var top_row := HBoxContainer.new()
 	top.add_child(top_row)
-	_title = _label("", 22, TEXT)
+	_title = _label("", 26, TEXT)
 	top_row.add_child(_title)
 	top_row.add_child(_spacer())
-	_stats = _label("", 22, TEXT)
+	_stats = _label("", 21, TEXT)
 	top_row.add_child(_stats)
 
 	# Dva řádky udrží všech osm dovedností dostupných i na telefonu.
 	var bottom := PanelContainer.new()
 	_root.add_child(bottom)
-	_place(bottom, 0.0, 1.0, 1.0, 1.0, 0.0, -BOTTOM_BAR_HEIGHT, 0.0, 0.0)
+	_place(bottom, 0.0, 1.0, 1.0, 1.0, 12.0, -BOTTOM_BAR_HEIGHT, -12.0, -10.0)
 	var rows := VBoxContainer.new()
 	rows.add_theme_constant_override("separation", 6)
 	bottom.add_child(rows)
 	_build_controls(rows)
 	_skills_box = HBoxContainer.new()
+	_skills_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	_skills_box.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_skills_box.add_theme_constant_override("separation", 6)
 	rows.add_child(_skills_box)
@@ -258,8 +271,8 @@ func _build_confirmation() -> void:
 
 
 func _add_skill_button(skill: int, hotkey: int) -> void:
-	var button := _button("", Vector2(100, 68))
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var button := _button("", Vector2(136, 78))
+	button.tooltip_text = SKILL_TIPS[skill]
 	button.toggle_mode = true
 	button.pressed.connect(func() -> void: skill_selected.emit(skill))
 	var col := VBoxContainer.new()
@@ -267,22 +280,23 @@ func _add_skill_button(skill: int, hotkey: int) -> void:
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	button.add_child(col)
 	col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var count := _label("0", 26, TEXT)
+	var count := _label("0", 20, TEXT)
 	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var number_row := HBoxContainer.new()
 	number_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	number_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if SKILL_ICONS.has(skill):
 		var icon := TextureRect.new()
-		icon.texture = load("res://assets/clay/ui/icons/%s.svg" % SKILL_ICONS[skill])
+		var folder := "art_v2/ui" if skill <= Lemming.Skill.BOMBER else "clay/ui/icons"
+		icon.texture = load("res://assets/%s/%s.svg" % [folder, SKILL_ICONS[skill]])
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon.custom_minimum_size = Vector2(30, 30)
+		icon.custom_minimum_size = Vector2(40, 40)
 		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		number_row.add_child(icon)
 	number_row.add_child(count)
 	col.add_child(number_row)
-	var caption := _label("%d · %s" % [hotkey, Lemming.SKILL_NAMES[skill]], 15, TEXT_DIM)
+	var caption := _label("%d · %s" % [hotkey, Lemming.SKILL_NAMES[skill]], 16, TEXT_DIM)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(caption)
 	_skills_box.add_child(button)
@@ -327,19 +341,25 @@ func _spacer() -> Control:
 
 func _make_theme() -> Theme:
 	var t := Theme.new()
+	var font := FontVariation.new()
+	font.base_font = preload("res://assets/art_v2/ui/Nunito.ttf")
+	font.variation_opentype = {0x77676874: 750.0}  # OpenType tag „wght“.
+	t.default_font = font
 	t.default_font_size = 20
-	var panel_box := _box(Color(0.05, 0.06, 0.1, 0.85), Color(1, 1, 1, 0.06), 0, 10)
+	var panel_box := _box(Color("172837ec"), Color("738c9e"), 20, 10)
 	t.set_stylebox("panel", "PanelContainer", panel_box)
-	t.set_stylebox("normal", "Button", _box(Color(0.12, 0.14, 0.2, 0.95), Color(1, 1, 1, 0.08), 12, 8))
-	t.set_stylebox("hover", "Button", _box(Color(0.18, 0.21, 0.29, 0.95), Color(1, 1, 1, 0.22), 12, 8))
-	t.set_stylebox("pressed", "Button", _box(Color(0.12, 0.3, 0.18, 0.95), ACCENT, 12, 8))
-	t.set_stylebox("hover_pressed", "Button", _box(Color(0.15, 0.36, 0.22, 0.95), ACCENT, 12, 8))
+	t.set_stylebox("normal", "Button", _box(Color("293c4c"), Color("637788"), 14, 8))
+	t.set_stylebox("hover", "Button", _box(Color("365268"), Color("a3bac5"), 14, 8))
+	t.set_stylebox("pressed", "Button", _box(Color("1c5145"), Color("80e0b4"), 14, 8))
+	t.set_stylebox("hover_pressed", "Button", _box(Color("276456"), ACCENT, 14, 8))
 	t.set_stylebox("disabled", "Button", _box(Color(0.1, 0.1, 0.12, 0.6), Color(1, 1, 1, 0.04), 12, 8))
 	t.set_stylebox("focus", "Button", StyleBoxEmpty.new())
 	t.set_color("font_color", "Button", TEXT)
 	t.set_color("font_hover_color", "Button", Color.WHITE)
 	t.set_color("font_pressed_color", "Button", ACCENT)
 	t.set_font_size("font_size", "Button", 22)
+	for style in ["normal", "hover", "pressed", "disabled", "focus"]:
+		t.set_stylebox(style, "OptionButton", t.get_stylebox(style, "Button"))
 	return t
 
 
@@ -351,4 +371,7 @@ func _box(bg: Color, border: Color, radius: int, margin: float) -> StyleBoxFlat:
 	s.set_corner_radius_all(radius)
 	s.set_content_margin_all(margin)
 	s.anti_aliasing = true
+	s.shadow_color = Color(0.02, 0.04, 0.05, 0.18)
+	s.shadow_size = 4
+	s.shadow_offset = Vector2(0, 2)
 	return s

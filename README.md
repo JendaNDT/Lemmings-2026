@@ -14,12 +14,12 @@ výchozí je `main/game_3d.tscn`.
 
 ## Testovací verze pro Android
 
-[**Stáhnout Android APK 0.3.0 (60 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.3.0/android/Lemmings-2026-Android-0.3.0.apk)
+[**Stáhnout Android APK 0.4.0 (60 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.4.0/android/Lemmings-2026-Android-0.4.0.apk)
 
 Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.3.0).
+[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.4.0).
 
-APK `Lemmings-2026-Android-0.3.0.apk` obsahuje původní misi, tři ukázky nových dovedností
+APK `Lemmings-2026-Android-0.4.0.apk` obsahuje původní misi, tři ukázky nových dovedností
 a hřiště se všemi osmi schopnostmi. Mise se vybírají vlevo v dolní liště.
 Je určené pro telefony a tablety s Androidem 7.0+ a OpenGL ES 3.0,
 včetně 32bitového a 64bitového ARM. Stáhni APK přímo na zařízení a otevři
@@ -36,9 +36,18 @@ Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 Pro opakování exportu nastav v editoru Godotu Android SDK a Java SDK,
 nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
 
-Grafika je stále provizorní; schválený modelínový mockup ukazuje cílový
-vzhled, kterého současná hra ještě nedosahuje. Novinky a řešení ukázek:
-[`etapa 4`](docs/ETAPA_4_OVERENI.md).
+## Nová grafika 0.4.0
+
+První výtvarná úprava hratelné scény: oblé hrany a čerstvé řezy terénu,
+modelovaný zelený lem, výraznější postavička, krajina s oblaky a hradem,
+sladěné světlo a nové rozhraní. Pravidla a řešení misí zůstávají stejná.
+
+![Skutečný snímek hry 0.4.0, desktopový Forward+ renderer](docs/images/art-pass-0.4.0.png)
+
+Snímek pochází z běžící hry. Jde o první provedení směru podle schváleného
+mockupu; finální výtvarná práce celé kampaně a zvuk ještě nejsou hotové.
+Změny a ověření: [`grafika 0.4.0`](docs/GRAFIKA_04.md).
+Řešení zkušebních misí: [`etapa 4`](docs/ETAPA_4_OVERENI.md).
 
 ## Spuštění hotové verze na Macu
 
@@ -133,4 +142,5 @@ Otevři `levels/level_01.tscn`. Pravidla levelu (počet lumíků, dovednosti,
 ## Právní poznámka
 
 Fanouškovský projekt. Značka Lemmings patří jejímu vlastníkovi (Sony).
-Veškerý obsah tady je vlastní tvorba.
+Herní modely a levely jsou vlastní tvorba. Písmo Nunito používá licenci
+SIL Open Font License 1.1; její znění je v `assets/art_v2/ui/OFL.txt`.

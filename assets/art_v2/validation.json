@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "validator": "GLB JSON/buffer structure inspection, Blender 4.3.2 export and Godot import",
+  "triangles": 10272,
+  "triangle_budget": 15000,
+  "bones": 16,
+  "animations": 11,
+  "external_model_resources": 0,
+  "scope": "static structure; runtime and raster evidence in docs/GRAFIKA_04.md"
+}

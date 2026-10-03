@@ -1,5 +1,5 @@
 # Lemmings 2026 – Project Status
-*Naposled aktualizováno: 02. 10. 2026*
+*Naposled aktualizováno: 03. 10. 2026*
 
 ## 🎯 Co to je
 Moderní předělávka hry Lemmings (1991) s grafikou odpovídající roku 2026.
@@ -14,13 +14,15 @@ Vývoj a kontroly probíhají v cloudu.
 hromadné ukončení s potvrzením, tři nové zkušební mise a hřiště se všemi
 schopnostmi. Podrobnosti: [`ověření etapy 4`](docs/ETAPA_4_OVERENI.md).
 
-Podle číselného pořadí navazuje etapa 5 (nebezpečí a objekty). Jenda ale
-upozornil, že současná grafika je nevyhovující. Doporučeným dalším krokem
-je proto výtvarné dotažení jedné celé scény podle schváleného mockupu.
-Přesun této práce dopředu zatím nebyl potvrzen. Současný technický prototyp
-**nedosahuje cílového modelínového vzhledu**; samotná sada textur nestačí.
-Reprezentativní kvalita byla původně v etapě 7, finální grafika celé hry
-v etapě 8. Stav „hotovo“ u technických etap není schválení výtvarné kvality.
+Autor schválil přesun výtvarné práce dopředu. **Verze 0.4.0 nyní obsahuje
+první výtvarnou úpravu hratelné scény**: zaoblený terén i řezy, modelovanou
+zeleň, výraznější postavu, krajinu, světlo a rozhraní. Skutečné snímky,
+původ podkladů a výsledky: [`grafika 0.4.0`](docs/GRAFIKA_04.md).
+
+Další výtvarné ladění má vycházet z hraní této verze na telefonu/MacBooku.
+Technicky navazuje etapa 5 (nebezpečí a objekty). Reprezentativní demo se
+zvukem v etapě 7 ani finální grafika celé kampaně v etapě 8 ještě hotové
+nejsou. Schválení mockupu není schválením všech následujících sestavení.
 
 Kompletní pořadí dvanácti etap je v [`plánu vývoje`](docs/PLAN_VYVOJE.md).
 Nativní spuštění a výkon na MacBooku a Androidu čekají na ověření;
@@ -72,8 +74,15 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
 - Etapa 4: osm dovedností, kombinace trvalých vlastností, odpočty a hromadné ukončení
 - Tři nové řešitelné zkušební mise (6/6, 6/6, 3/4) a hřiště se všemi schopnostmi
 - Osm dovedností v mobilní liště, výběr scén, potvrzení ukončení a restart vybrané mise
-- Aktuální kontrola: 53 GDScriptů, osm sad, 184 ověření; původní mise stále 20/20
+- Kontrola etapy 4: 53 GDScriptů, osm sad, 184 ověření; původní mise stále 20/20
 - Nové mise prošly dotykovým průchodem v Compatibility rendereru na Linuxu
+
+- Výtvarná úprava 0.4.0: nový GLB se stejnou kostrou a animacemi, oblý terén,
+  dekorace svázané s maskou, prostorová krajina, Nunito a osm ikon dovedností
+- Aktuální kontrola: 56 GDScriptů, osm sad, 186 ověření; první mise 20/20
+  v obou rendererech, nové mise 6/6, 6/6 a 3/4 přes dotyk v Compatibility
+- Android APK 0.4.0 ve větvi `downloads/android-0.4.0`, zdroje a skutečné snímky
+  v původní vývojové větvi; předchozí APK jsou zachovaná
 
 ## 📝 TODO
 ### MVP (nutné pro v1)
@@ -151,4 +160,5 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
 - `docs/ETAPA_1_OVERENI.md` – důkazy a omezení první fáze
 - `docs/PODKLADY_PROTOTYPU.md` – obsah a ověření samostatné grafické sady
 - `docs/ETAPA_3_OVERENI.md` – průchod 2.5D, geometrie, výkon a sestavení
-- `docs/ANDROID_DEMO.md` – první Android APK, dotykový profil a meze ověření
+- `docs/ANDROID_DEMO.md` – aktuální Android APK, dotykový profil a meze ověření
+- `docs/GRAFIKA_04.md` – první výtvarná úprava scény, podklady a skutečné snímky

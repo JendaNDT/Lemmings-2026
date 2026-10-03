@@ -2,7 +2,7 @@ class_name ClayCamera
 extends Camera3D
 ## Pevný ortografický směr, posun a zoom. Výběr se promítá do roviny postav.
 
-const TILT := 0.2094395102  # 12 stupňů, žádná volná rotace kamery.
+const TILT := 0.3141592654  # 18 stupňů: viditelná hloubka při zachování bočního pohledu.
 const SCROLL_SPEED := 1400.0
 
 var focus := Vector2.ZERO
@@ -22,7 +22,7 @@ func setup(level_size: Vector2, initial_focus: Vector2) -> void:
 	current = true
 	_level_size = level_size
 	focus = initial_focus
-	zoom_factor = 1.4 if DeviceProfile.touch_mode() else 1.0
+	zoom_factor = 1.4
 	_dragging = false
 	refresh()
 

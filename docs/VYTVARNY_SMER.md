@@ -58,8 +58,14 @@ Samostatná sada 0.1.0 obsahuje:
    odrazy, SSAO a pohybovou studií deformace hlíny.
 
 Skutečné snímky a popis ověření jsou v [podkladech prototypu](PODKLADY_PROTOTYPU.md).
-Modely jsou zapojené do prvního prototypu; finální detail a sladění celé
-scény s mockupem naváže při tvorbě reprezentativního dema.
+Modely jsou zapojené do hry. Autor následně schválil přesun výtvarné práce
+na skutečné scéně dopředu. Verze 0.4.0 přidává novou postavu, oblé hrany,
+modelovaný povrch, krajinu, světlo a lištu. [Změny a ověření](GRAFIKA_04.md).
+
+![Skutečná hratelná scéna 0.4.0, Forward+](images/art-pass-0.4.0.png)
+
+Tento snímek je z Godotu. Představuje první výtvarnou úpravu hratelné scény;
+nenahrazuje uživatelské posouzení ani dokončení grafiky celé kampaně.
 
 ## Plastelína při kopání
 

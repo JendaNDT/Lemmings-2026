@@ -18,7 +18,7 @@
 - Připojení pro zápis ani cílová složka zatím nejsou nastavené. Neoznačovat
   nahrávání za funkční nebo soubor za nahraný bez ověření skutečného přenosu.
 - Propojení Disku je na přání Jendy odložené. Aktuální APK předávat přes
-  existující GitHub repozitář v samostatné větvi `downloads/android-0.3.0`.
+  existující GitHub repozitář v samostatné větvi `downloads/android-0.4.0`.
   Odkaz na soubor uvnitř cloudového pracovního prostoru mu nestačí ke stažení.
 - Současně udržovat aktuální zdrojový kód na původní pracovní větvi
   `ccr-ee49bb72-jyyh2r`. Instalační APK patří pouze do větve pro stažení.
@@ -39,7 +39,10 @@
   oblastí se pouze čtou. Každý renderer sleduje revize samostatně.
 - Podklady v `assets/clay/` mají kontrolní součty v `assets/clay.lock.json`.
   Při záměrné úpravě eviduj odvození; nepřepisuj kontrolní součet jen kvůli
-  umlčení nečekané změny. Pracovní fázi animace řídí tiky, nikoli čas enginu.
+  umlčení nečekané změny. Nový model, font a ikony jsou v `assets/art_v2/`
+  s vlastním `assets/art_v2.lock.json`, původem a licencemi. Oba manifesty
+  ověřuje `scripts/check_assets.py`. Font OFL musí být distribuovaný s licencí.
+  Pracovní fázi animace řídí tiky, nikoli čas enginu.
 - Mobilní ovládání je v `TouchControls`, profil v `DeviceProfile` a nastavení
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.

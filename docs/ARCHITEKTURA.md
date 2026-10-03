@@ -208,16 +208,24 @@ ale vypíná původní 2D prezentaci. `ClayWorld` spojuje následující části
 | Část | Odpovědnost |
 |---|---|
 | `ClaySpace` | Jeden logický pixel = 0,1 m; +Y logiky směřuje dolů, +Y světa nahoru. |
-| `ClayMesher` | Přesné přední/zadní plochy buněk a boky proti prázdnu, hloubka 2,4 m. |
+| `ClayMesher` | Zaoblená přední plocha, zadní plocha a boky proti prázdnu, hloubka 2,4 m. |
 | `ClayTerrain` | Oblasti 32 × 32, samostatně sledované revize, sdílená maska a čtyři materiály. |
+| `ClayDressing` | Zeleň, rostliny, kamínky a nýty v MultiMesh; oporu kontroluje živá maska. |
+| `ClayBackdrop` | Oddělená krajina, mraky a hrad za herní rovinou; sdílené meshe. |
 | `ClayActor` | Importovaný GLB, orientace, interpolace a ruční hledání pózy podle simulačního času. |
-| `ClayCamera` | Pevný sklon 12°, ortografický zoom a průsečík paprsku s rovinou postav. |
+| `ClayCamera` | Pevný sklon 18°, ortografický zoom a průsečík paprsku s rovinou postav. |
 | `ClayFx` | Nejvýše 96 dekorativních hrudek a osm krátkých povrchových deformací. |
 
 Maska zůstává jediným zdrojem kolizí. Její mutace zvýší celkovou revizi
 a revize dotčených oblastí včetně sousedů o jednu buňku dál. Žádný renderer
-změny nespotřebovává. Obdélníky stejných materiálů se slučují; boky přes
-hranici oblasti čtou sousední buňky, takže nevznikají vnitřní stěny.
+změny nespotřebovává. Renderer navíc porovnává změněné buňky a obnovuje
+oblasti v okolí osmi buněk kvůli zaoblení a dekoracím. Plochý vnitřek se
+slučuje do obdélníků; na obvodu zůstávají jednotlivé buňky. Pole vzdálenosti
+zaobluje přední hranu do hloubky 0,16 m v pásu tří buněk, rohy siluety se
+posouvají nejvýše o 0,22 buňky v každé ose. Obsazení středů buněk souhlasí
+s maskou; nejde již o přesnou pravoúhlou siluetu. Boky přes hranici oblasti
+čtou sousední buňky, takže nevznikají vnitřní stěny. Tráva si pamatuje
+původní povrch, po kopání nepřirůstá uvnitř tunelu.
 UV používají souřadnice celého levelu, aby textura na švech neposkakovala.
 
 Pracovní klipy jsou časované podle konstant raziče, kopáče a stavitele;
@@ -225,7 +233,10 @@ jejich kontaktní fáze odpovídá tiku změny masky. Pauza zastaví i pózu a e
 Povrchové promáčknutí mění normály/stínování, hrudky se protahují a odlétají;
 nejde o měkkou fyziku terénu. Trvalý otvor je skutečně přestavěný mesh.
 
-Podklady jsou v `assets/clay/`, původ a kontrolní součty v `assets/clay.lock.json`.
+Původní podklady jsou v `assets/clay/`, původ a kontrolní součty
+v `assets/clay.lock.json`. Nový odvozený model, ikony a Nunito jsou oddělené
+v `assets/art_v2/` a `assets/art_v2.lock.json`; původní balíček se nemění.
+Aktuální výtvarná kontrola je v [`GRAFIKA_04.md`](GRAFIKA_04.md).
 Po změnách se kontroluje geometrie, projekce, celý level i výkon; postup
 je v [`ETAPA_3_OVERENI.md`](ETAPA_3_OVERENI.md).
 

@@ -30,7 +30,7 @@ func _test_geometry() -> void:
 	var terrain := ClayTerrain.new()
 	root.add_child(terrain)
 	terrain.setup(mask)
-	check(_mesh_matches(terrain), "mesh přesně pokrývá masku včetně jeskyně a oceli")
+	check(_mesh_matches(terrain), "zaoblený mesh zachová středy buněk, jeskyni, ocel a uzavřené boky")
 	var before := terrain.total_rebuilds
 	terrain.sync()
 	check(terrain.total_rebuilds == before, "beze změny se nepřestaví žádná oblast")
@@ -54,15 +54,33 @@ func _test_geometry() -> void:
 	terrain.sync()
 	second.sync()
 	check(_mesh_matches(terrain) and _mesh_matches(second), "dva čtenáři nespotřebují změny terénu")
+	mask.erase_rect(27, 30, 1, 1)
+	terrain.sync()
+	var same := true
+	for index in terrain.chunks.size():
+		var a := terrain.chunks[index].mesh
+		# Původní travní povrch musí být stejný; v nových tunelech tráva neroste.
+		var rebuilt := ClayMesher.build(mask, terrain.grass, index, terrain.materials)
+		var b := rebuilt if rebuilt.get_surface_count() > 0 else null
+		if a == null or b == null:
+			same = same and a == b
+			continue
+		same = same and a.get_surface_count() == b.get_surface_count()
+		for surface in a.get_surface_count():
+			same = same and a.surface_get_arrays(surface) == b.surface_get_arrays(surface)
+	check(same, "zaoblení na sousední oblasti je shodné s úplnou obnovou celé mapy")
+	mask.erase_rect(0, 0, mask.width, mask.height)
+	terrain.sync()
+	check(terrain.dressing.all(func(node): return node.get_child_count() == 0),
+		"po odstranění země nezůstanou ve vzduchu rostliny ani kamínky")
 	terrain.free()
 	second.free()
 
 
 func _mesh_matches(terrain: ClayTerrain) -> bool:
 	var mask := terrain.mask
-	var coverage := PackedInt32Array()
+	var coverage := PackedByteArray()
 	coverage.resize(mask.width * mask.height)
-	var edge_area := 0.0
 	for chunk in terrain.chunks:
 		if chunk.mesh == null:
 			continue
@@ -71,44 +89,64 @@ func _mesh_matches(terrain: ClayTerrain) -> bool:
 			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 			var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
 			var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+			var material := chunk.mesh.surface_get_material(surface) as ShaderMaterial
+			var kind: int = material.get_shader_parameter("material_kind")
+			for point in vertices:
+				if not point.is_finite() or point.z < -ClaySpace.DEPTH - 0.001 or point.z > 0.001:
+					return false
 			for tri in range(0, indices.size(), 3):
 				var a := vertices[indices[tri]]
 				var b := vertices[indices[tri + 1]]
 				var c := vertices[indices[tri + 2]]
-				var cross := (b - a).cross(c - a)
-				if cross.dot(normals[indices[tri]]) >= 0:
+				if (b - a).cross(c - a).dot(normals[indices[tri]]) >= 0:
+					printerr("WINDING ", a, " ", b, " ", c)
 					return false
-				if absf(normals[indices[tri]].z) < 0.5:
-					edge_area += cross.length() * 0.5
+				if normals[indices[tri]].z > 0:
+					if not _raster_triangle(mask, coverage, kind,
+							ClaySpace.to_logic(a), ClaySpace.to_logic(b), ClaySpace.to_logic(c)):
+						return false
+			# Každý boční čtyřúhelník musí skutečně oddělovat hmotu od prázdna.
 			for index in range(0, vertices.size(), 4):
-				if normals[index].z < 0.9:
+				if absf(normals[index].z) > 0.001:
 					continue
-				var a := ClaySpace.to_logic(vertices[index]).round()
-				var c := ClaySpace.to_logic(vertices[index + 2]).round()
-				var material := chunk.mesh.surface_get_material(surface) as ShaderMaterial
-				var kind: int = material.get_shader_parameter("material_kind")
-				for y in range(int(a.y), int(c.y)):
-					for x in range(int(a.x), int(c.x)):
-						var cell := y * mask.width + x
-						coverage[cell] += 1
-						if mask.data[cell * 4 + 1] != 0 and kind != 2:
-							return false
-						if mask.data[cell * 4 + 2] != 0 and kind != 3:
-							return false
-	var edges := 0
+				var mid := ClaySpace.to_logic((vertices[index] + vertices[index + 1]) * 0.5)
+				var n := Vector2(normals[index].x, -normals[index].y)
+				if not _occupied(mask, mid - n * 0.45) or _occupied(mask, mid + n * 0.45):
+					printerr("SIDE ", mid, " n=", n)
+					return false
 	for y in mask.height:
 		for x in mask.width:
-			var solid := mask.data[(y * mask.width + x) * 4] != 0
-			if coverage[y * mask.width + x] != int(solid):
+			if coverage[y * mask.width + x] != int(mask.data[(y * mask.width + x) * 4] > 0):
+				printerr("COVERAGE ", x, ",", y)
 				return false
-			if not solid:
+	return true
+
+
+func _raster_triangle(mask: TerrainMask, coverage: PackedByteArray, kind: int,
+		a: Vector2, b: Vector2, c: Vector2) -> bool:
+	for y in range(maxi(0, floori(minf(a.y, minf(b.y, c.y)))),
+			mini(mask.height, ceili(maxf(a.y, maxf(b.y, c.y))))):
+		for x in range(maxi(0, floori(minf(a.x, minf(b.x, c.x)))),
+				mini(mask.width, ceili(maxf(a.x, maxf(b.x, c.x))))):
+			var p := Vector2(x + 0.5, y + 0.5)
+			var d := Vector3((b - a).cross(p - a), (c - b).cross(p - b), (a - c).cross(p - c))
+			if not ((d.x >= -0.001 and d.y >= -0.001 and d.z >= -0.001)
+					or (d.x <= 0.001 and d.y <= 0.001 and d.z <= 0.001)):
 				continue
-			for offset in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
-				var p: Vector2i = Vector2i(x, y) + offset
-				if not Rect2i(0, 0, mask.width, mask.height).has_point(p) \
-						or mask.data[(p.y * mask.width + p.x) * 4] == 0:
-					edges += 1
-	return absf(edge_area - edges * ClaySpace.UNIT * ClaySpace.DEPTH) < 0.01
+			var at := y * mask.width + x
+			coverage[at] = 1
+			if mask.data[at * 4] == 0 or (mask.data[at * 4 + 1] > 0 and kind != 2) \
+					or (mask.data[at * 4 + 2] > 0 and kind != 3):
+				printerr("MATERIAL ", x, ",", y, " kind=", kind)
+				return false
+	return true
+
+
+func _occupied(mask: TerrainMask, point: Vector2) -> bool:
+	var x := floori(point.x)
+	var y := floori(point.y)
+	return x >= 0 and y >= 0 and x < mask.width and y < mask.height \
+		and mask.data[(y * mask.width + x) * 4] > 0
 
 
 func _test_camera(camera: ClayCamera) -> void:

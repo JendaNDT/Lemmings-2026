@@ -1,0 +1,6 @@
+Project-authored models, animation derivatives and icons:
+LicenseRef-Lemmings2026-Project-Internal. Created for this project from
+its original clay-kit-v1 source, with no third-party model inputs.
+
+Nunito font: Copyright 2014 The Nunito Project Authors,
+SIL Open Font License 1.1. Full license in ui/OFL.txt.

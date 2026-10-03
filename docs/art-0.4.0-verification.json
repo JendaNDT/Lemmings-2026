@@ -1,0 +1,81 @@
+{
+  "game_version": "0.4.0",
+  "date": "2026-10-03",
+  "checks": {
+    "gdscripts": 56,
+    "suites": 8,
+    "checks": 186,
+    "passed": true
+  },
+  "first_mission": {
+    "cpu_frame_max_usec": 29401,
+    "cpu_frame_p95_usec": 13478,
+    "input_assignments": [
+      true,
+      true,
+      true
+    ],
+    "input_mode": "touch",
+    "lost": 0,
+    "note": "CPU timings exclude drawing; software GPU is not target-device FPS",
+    "renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+    "saved": 20,
+    "terrain_max_usec": 28723,
+    "terrain_p95_usec": 27275,
+    "ticks": 1014,
+    "won": true
+  },
+  "apk_missions": [
+    {
+      "commands": 12,
+      "lost": 0,
+      "mission": 1,
+      "saved": 6,
+      "ticks": 668,
+      "won": true
+    },
+    {
+      "commands": 1,
+      "lost": 0,
+      "mission": 2,
+      "saved": 6,
+      "ticks": 971,
+      "won": true
+    },
+    {
+      "commands": 2,
+      "lost": 1,
+      "mission": 3,
+      "saved": 3,
+      "ticks": 773,
+      "won": true
+    },
+    {
+      "confirmation_closed": true,
+      "eight_skills": 8
+    }
+  ],
+  "apk": {
+    "version": "0.4.0",
+    "version_code": 5,
+    "size_bytes": 63050671,
+    "sha256": "125fad60fc480ce8c9715ffd4c6e755d5123575f265170196d8a13c25341914d",
+    "certificate_sha256": "531d30c1e4839e3ab620c5e8def6de4952f8f985874e94128b67f5f98d89c9fa",
+    "same_certificate_as_0_3_0": true,
+    "signature_v2_v3": true,
+    "zipalign_16k": true,
+    "crc_ok": true,
+    "abis": [
+      "arm64-v8a",
+      "armeabi-v7a"
+    ],
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "permissions": [],
+    "font_license_included": true,
+    "native_android_run": false
+  },
+  "desktop_capture": "docs/images/art-pass-0.4.0.png",
+  "native_android_run": false,
+  "native_macos_run": false
+}
