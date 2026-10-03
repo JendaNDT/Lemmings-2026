@@ -1,0 +1,320 @@
+{
+ "sounds": {
+  "assign": {
+   "files": [
+    "sfx/assign.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.03,
+   "min_interval": 0.04,
+   "voices": 3,
+   "bus": "SFX",
+   "positional": true
+  },
+  "select": {
+   "files": [
+    "sfx/select.wav"
+   ],
+   "volume_db": -5,
+   "pitch_spread": 0.04,
+   "min_interval": 0.03,
+   "voices": 2,
+   "bus": "UI",
+   "positional": false
+  },
+  "click": {
+   "files": [
+    "sfx/click.wav"
+   ],
+   "volume_db": -5,
+   "pitch_spread": 0.05,
+   "min_interval": 0.03,
+   "voices": 2,
+   "bus": "UI",
+   "positional": false
+  },
+  "deny": {
+   "files": [
+    "sfx/deny.wav"
+   ],
+   "volume_db": -7,
+   "pitch_spread": 0.02,
+   "min_interval": 0.15,
+   "voices": 1,
+   "bus": "UI",
+   "positional": false
+  },
+  "tick": {
+   "files": [
+    "sfx/tick.wav"
+   ],
+   "volume_db": -9,
+   "pitch_spread": 0.06,
+   "min_interval": 0.03,
+   "voices": 2,
+   "bus": "UI",
+   "positional": false
+  },
+  "pause": {
+   "files": [
+    "sfx/pause.wav"
+   ],
+   "volume_db": -7,
+   "pitch_spread": 0.0,
+   "min_interval": 0.05,
+   "voices": 1,
+   "bus": "UI",
+   "positional": false
+  },
+  "resume": {
+   "files": [
+    "sfx/resume.wav"
+   ],
+   "volume_db": -7,
+   "pitch_spread": 0.0,
+   "min_interval": 0.05,
+   "voices": 1,
+   "bus": "UI",
+   "positional": false
+  },
+  "hatch": {
+   "files": [
+    "sfx/hatch.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.0,
+   "min_interval": 0.5,
+   "voices": 2,
+   "bus": "SFX",
+   "positional": true
+  },
+  "spawn": {
+   "files": [
+    "sfx/spawn.wav"
+   ],
+   "volume_db": -11,
+   "pitch_spread": 0.08,
+   "min_interval": 0.08,
+   "voices": 3,
+   "bus": "SFX",
+   "positional": true
+  },
+  "dig": {
+   "files": [
+    "sfx/dig_0.wav",
+    "sfx/dig_1.wav"
+   ],
+   "volume_db": -7,
+   "pitch_spread": 0.08,
+   "min_interval": 0.07,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "bash": {
+   "files": [
+    "sfx/bash_0.wav",
+    "sfx/bash_1.wav"
+   ],
+   "volume_db": -6,
+   "pitch_spread": 0.08,
+   "min_interval": 0.07,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "mine": {
+   "files": [
+    "sfx/mine.wav"
+   ],
+   "volume_db": -6,
+   "pitch_spread": 0.08,
+   "min_interval": 0.07,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "brick": {
+   "files": [
+    "sfx/brick.wav"
+   ],
+   "volume_db": -5,
+   "pitch_spread": 0.06,
+   "min_interval": 0.06,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "brick_warning": {
+   "files": [
+    "sfx/brick_warning.wav"
+   ],
+   "volume_db": -3,
+   "pitch_spread": 0.0,
+   "min_interval": 0.2,
+   "voices": 2,
+   "bus": "SFX",
+   "positional": true
+  },
+  "steel": {
+   "files": [
+    "sfx/steel.wav"
+   ],
+   "volume_db": -5,
+   "pitch_spread": 0.05,
+   "min_interval": 0.1,
+   "voices": 3,
+   "bus": "SFX",
+   "positional": true
+  },
+  "splat": {
+   "files": [
+    "sfx/splat.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.06,
+   "min_interval": 0.06,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "exit": {
+   "files": [
+    "sfx/exit.wav"
+   ],
+   "volume_db": -3,
+   "pitch_spread": 0.02,
+   "min_interval": 0.06,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "explode": {
+   "files": [
+    "sfx/explode.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.06,
+   "min_interval": 0.05,
+   "voices": 6,
+   "bus": "SFX",
+   "positional": true
+  },
+  "fell_out": {
+   "files": [
+    "sfx/fell_out.wav"
+   ],
+   "volume_db": -7,
+   "pitch_spread": 0.05,
+   "min_interval": 0.1,
+   "voices": 3,
+   "bus": "SFX",
+   "positional": true
+  },
+  "drown": {
+   "files": [
+    "sfx/drown.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.06,
+   "min_interval": 0.06,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "drowned": {
+   "files": [
+    "sfx/drowned.wav"
+   ],
+   "volume_db": -5,
+   "pitch_spread": 0.08,
+   "min_interval": 0.06,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "burn": {
+   "files": [
+    "sfx/burn.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.06,
+   "min_interval": 0.06,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "burned": {
+   "files": [
+    "sfx/burned.wav"
+   ],
+   "volume_db": -5,
+   "pitch_spread": 0.06,
+   "min_interval": 0.06,
+   "voices": 4,
+   "bus": "SFX",
+   "positional": true
+  },
+  "trap": {
+   "files": [
+    "sfx/trap.wav"
+   ],
+   "volume_db": 1,
+   "pitch_spread": 0.04,
+   "min_interval": 0.06,
+   "voices": 3,
+   "bus": "SFX",
+   "positional": true
+  },
+  "nuke": {
+   "files": [
+    "sfx/nuke.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.0,
+   "min_interval": 0.5,
+   "voices": 1,
+   "bus": "UI",
+   "positional": false
+  },
+  "win": {
+   "files": [
+    "sfx/win.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.0,
+   "min_interval": 1.0,
+   "voices": 1,
+   "bus": "UI",
+   "positional": false
+  },
+  "lose": {
+   "files": [
+    "sfx/lose.wav"
+   ],
+   "volume_db": -1,
+   "pitch_spread": 0.0,
+   "min_interval": 1.0,
+   "voices": 1,
+   "bus": "UI",
+   "positional": false
+  }
+ },
+ "loops": {
+  "wind": {
+   "file": "loops/wind.wav",
+   "volume_db": -17,
+   "bus": "Ambient"
+  },
+  "lava": {
+   "file": "loops/lava.wav",
+   "volume_db": -8,
+   "bus": "Ambient"
+  },
+  "water": {
+   "file": "loops/water.wav",
+   "volume_db": -10,
+   "bus": "Ambient"
+  }
+ }
+}

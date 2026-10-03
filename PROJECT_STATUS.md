@@ -19,8 +19,11 @@ postaviček (topení, hoření, chůze, pád, dopad). [Ověření etapy 5](docs/
 Ve 3. kole vzhledu čitelnější postavičky, hloubka a světlo jako u papírového
 dioramatu a živá krajina ([popis](docs/ORIGAMI_OVERENI.md)).
 
+**Zvuky jsou hotové** (efekty, okolí, rozhraní; hudba později):
+[popis a ukázka](docs/ZVUK.md). Ztlumení klávesou T nebo tlačítkem v liště.
+
 Další kroky:
-1. **Zvuky** (na řadě podle tvého přání).
+1. **Poslechnout ukázku zvuků** a říct, co upravit (hlasitost, charakter).
 2. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5), zahrát misi 6
    a říct, co se líbí – vzhled je posouzený jen z cloudových snímků.
 3. Nové APK a Mac balíček s origami grafikou a misí 6 (APK 0.4.0 je stará grafika).
@@ -31,6 +34,11 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Zvuky:** 29 papírových efektů (dovednosti, nebezpečí, líheň, východ,
+  rozhraní, znělky) a 3 okolní smyčky z vlastního generátoru
+  (`assets/audio/`), `GameAudio` s prostorovým umístěním, omezením
+  opakování a ztlumením (T / tlačítko, pamatuje si ho); kontrola 74 GDScriptů,
+  11 sad, 327 ověření (`test_audio` 23); záznam mise 6 se zvukem
 - Návrh architektury (`docs/ARCHITEKTURA.md`)
 - Struktura projektu Godot 4.7
 - Simulace s pevným krokem (17 tiků/s), deterministická, záznam příkazů pro replay
@@ -138,7 +146,7 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 ### MVP (nutné pro v1)
 - Menu a výběr levelů, ukládání postupu
 - 15–20 vlastních levelů
-- Zvuky a hudba
+- Hudba (zvuky jsou hotové)
 - Prostředí pro další mise kampaně (nové motivy krajiny)
 - Pravidelnější hřeben plamenů nad lávou při oddálení doladit podle názoru
 
@@ -212,6 +220,7 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - `sim/sim_const.gd` – všechna laditelná čísla
 - `level_tools/` – nástroje pro tvorbu levelů v editoru
 - `levels/level_01.tscn` – první level; `levels/level_hazards.tscn` – mise 6
+- `view/game_audio.gd`, `assets/audio/` (+ `source/build_sfx.py`), `docs/ZVUK.md` – zvuky
 - `level_tools/lemming_trap.gd`, `level_tools/level_validator.gd` – past a kontrola levelu
 - `tests/test_hazards.gd`, `docs/ETAPA_5_OVERENI.md` – ověření etapy 5
 - `view/terrain.gdshader` – vzhled terénu

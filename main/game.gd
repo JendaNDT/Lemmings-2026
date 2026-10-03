@@ -32,6 +32,8 @@ var _accumulator := 0.0
 var _result_shown := false
 var _touch: TouchControls
 var _pause_before_confirmation := false
+## Zvuky (efekty podle událostí simulace, okolí, rozhraní). Hudba přijde později.
+var _audio: GameAudio
 
 @onready var _world: Node2D = $World
 @onready var _terrain_view: TerrainView = $World/TerrainView
@@ -49,10 +51,14 @@ func _ready() -> void:
 	_hud.release_rate_step.connect(_change_release_rate)
 	_hud.pause_pressed.connect(_toggle_pause)
 	_hud.speed_pressed.connect(_toggle_speed)
-	_hud.restart_pressed.connect(_load_level)
+	_hud.restart_pressed.connect(_restart)
 	_hud.mission_selected.connect(_choose_mission)
 	_hud.nuke_requested.connect(_request_nuke)
 	_hud.nuke_decided.connect(_decide_nuke)
+	_hud.sound_pressed.connect(_toggle_sound)
+	_audio = GameAudio.new()
+	_audio.name = "Audio"
+	add_child(_audio)
 	_camera.top_padding = Hud.TOP_BAR_HEIGHT
 	_camera.bottom_padding = Hud.BOTTOM_BAR_HEIGHT
 	if _view != null:
@@ -96,13 +102,15 @@ func _load_level() -> void:
 		_camera.setup(Vector2(spec.width, spec.height), focus)
 	_hud.setup(_sim)
 	_hud.set_missions(MISSION_TITLES, maxi(0, MISSIONS.find(level_scene)))
+	_audio.setup(_sim, _logic_to_audio)
+	_hud.set_sound(not _audio.muted)
 
 	_paused = false
 	_fast = false
 	_accumulator = 0.0
 	_result_shown = false
 	var skills := _hud.visible_skills()
-	_select_skill(skills[0] if not skills.is_empty() else -1)
+	_select_skill(skills[0] if not skills.is_empty() else -1, false)
 
 
 func _process(delta: float) -> void:
@@ -120,6 +128,7 @@ func _process(delta: float) -> void:
 		_accumulator = minf(_accumulator, tick_time)
 
 	var events := _sim.take_events()
+	_audio.update(events, delta)
 	var alpha := clampf(_accumulator / tick_time, 0.0, 1.0)
 	if _view != null:
 		var visual_delta := 0.0 if _paused or _sim.finished else delta * \
@@ -142,6 +151,7 @@ func _process(delta: float) -> void:
 	if _sim.finished and not _result_shown:
 		_result_shown = true
 		_hud.show_result(_sim)
+		_audio.play_ui("win" if _sim.is_won() else "lose")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -171,7 +181,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_F:
 				_toggle_speed()
 			KEY_R:
-				_load_level()
+				_restart()
+			KEY_T:
+				_toggle_sound()
 			KEY_N:
 				_request_nuke()
 			KEY_M:
@@ -218,14 +230,33 @@ func _try_assign_touch(screen_point: Vector2) -> void:
 			best_distance = distance
 	if best != null:
 		_sim.assign_skill(best, _selected_skill)
+	elif _nearest_lemming_distance(screen_point) < 42.0:
+		# Klepnutí na postavu, které dovednost přidělit nejde (už ji má, došly kusy…).
+		_audio.play_ui("deny")
 
 
 func _try_assign(screen_point: Vector2) -> void:
 	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open():
 		return
 	var lem := _sim.find_lemming_at(logic_position(screen_point), _selected_skill)
-	if lem != null:
-		_sim.assign_skill(lem, _selected_skill)
+	if lem != null and not _sim.assign_skill(lem, _selected_skill):
+		_audio.play_ui("deny")
+
+
+func _nearest_lemming_distance(screen_point: Vector2) -> float:
+	var best := INF
+	for lem in _sim.lemmings:
+		if not lem.removed:
+			var position: Vector2 = _view.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5))
+			best = minf(best, screen_point.distance_to(position))
+	return best
+
+
+## Kde zvuk zní: místo v prostoru, ve kterém poslouchá obrazovka.
+func _logic_to_audio(point: Vector2) -> Vector2:
+	if _view != null:
+		return _view.camera.logic_to_screen(point)
+	return _lemmings_view.get_global_transform() * point
 
 
 func mouse_logic_position() -> Vector2:
@@ -238,27 +269,42 @@ func logic_position(screen_point: Vector2) -> Vector2:
 	return _lemmings_view.get_global_transform_with_canvas().affine_inverse() * screen_point
 
 
-func _select_skill(skill: int) -> void:
+func _select_skill(skill: int, by_player := true) -> void:
+	if by_player and skill != _selected_skill:
+		_audio.play_ui("select")
 	_selected_skill = skill
 	_hud.select_skill(skill)
 
 
 func _change_release_rate(delta: int) -> void:
-	_sim.change_release_rate(delta)
+	if _sim.change_release_rate(delta):
+		_audio.play_ui("tick")
 
 
 func _toggle_pause() -> void:
 	_paused = not _paused
+	_audio.play_ui("pause" if _paused else "resume")
 
 
 func _toggle_speed() -> void:
 	_fast = not _fast
+	_audio.play_ui("click")
+
+
+func _toggle_sound() -> void:
+	_hud.set_sound(not _audio.toggle_muted())
+
+
+func _restart() -> void:
+	_audio.play_ui("click")
+	_load_level()
 
 
 func _choose_mission(index: int) -> void:
 	if index < 0 or index >= MISSIONS.size():
 		return
 	level_scene = MISSIONS[index]
+	_audio.play_ui("click")
 	_load_level()
 
 
@@ -269,6 +315,7 @@ func _request_nuke() -> void:
 	_paused = true
 	if _touch != null:
 		_touch.clear()
+	_audio.play_ui("click")
 	_hud.show_nuke_confirmation()
 
 
@@ -278,4 +325,6 @@ func _decide_nuke(confirmed: bool) -> void:
 	_hud.close_nuke_confirmation()
 	if confirmed:
 		_sim.start_nuke()
+	else:
+		_audio.play_ui("click")
 	_paused = _pause_before_confirmation

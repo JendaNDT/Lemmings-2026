@@ -81,7 +81,7 @@ def write_manifest() -> None:
             "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
             "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
             "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",
-            "ui": "papírové panely HUDu (9 dílů) a 8 ikon dovedností (SVG)",
+            "ui": "papírové panely HUDu (9 dílů), 8 ikon dovedností a 2 ikony zvuku (SVG)",
             "source/previews": "kontaktní arch póz pro vizuální kontrolu (není ve hře)",
         },
         "limitations": [

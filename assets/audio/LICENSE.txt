@@ -1,0 +1,11 @@
+LicenseRef-Lemmings2026-Project-Internal
+
+Zvuková sada vznikla pro projekt Lemmings 2026 na zadání jeho autora.
+Všechny efekty a okolní smyčky jsou syntetizované vlastním skriptem
+source/build_sfx.py (NumPy a SciPy, pevné seedy) z šumu, filtrů a tónů.
+Nejsou v nich nahrávky, vzorky ani zvuky z původní hry Lemmings ani od
+externího dodavatele. Hudba zatím není součástí sady.
+
+Python, NumPy, SciPy a Godot jsou použité nástroje; jejich součásti se
+touto sadou nedistribuují. Veřejnou distribuční licenci výsledné hry
+stanoví autor před zveřejněním.

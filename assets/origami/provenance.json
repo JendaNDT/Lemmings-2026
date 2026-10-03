@@ -12,11 +12,11 @@
     "scipy": "1.17.1"
   },
   "generator_sha256": {
-    "build_all.py": "6060226f49c48a06d27d6bf35ea0e044040922602dfbe6ebd66855f87975d3bc",
+    "build_all.py": "3c1fdffb21e3bed522329d1caeaf96e596638ff893ea1ca3b56f8c1edc7f63b0",
     "build_backgrounds.py": "948cfd7122929b00b8c7799f39bf1fe141746cc707b66b4b36d6120cb53c8365",
     "build_character.py": "b4547bc991f198c2e636f69506f424263727bcf3de944f7952f147353d0b739c",
     "build_props.py": "f64534d859f114d5ed19358e512c93aafff0d6bedde28cca0c495faf1f07ced9",
-    "build_ui.py": "da7f69fd92a71cb57d227ba45d3ea5c1404f452d26cdf8246d04c41fe137a112",
+    "build_ui.py": "67c1b623eab9f544bd0341799088e97cfa403a40aad5849f296bbac07e1a8d8c",
     "palette.py": "1a3b727081553d16b4ee031e35daaa477841478a504a706464a8be147b389027",
     "paperlib.py": "ce91f8a6b9a09f227c117f08f4466555097736384e5c5ef8480b36856543ff71"
   },
@@ -30,7 +30,7 @@
     "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
     "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
     "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",
-    "ui": "papírové panely HUDu (9 dílů) a 8 ikon dovedností (SVG)",
+    "ui": "papírové panely HUDu (9 dílů), 8 ikon dovedností a 2 ikony zvuku (SVG)",
     "source/previews": "kontaktní arch póz pro vizuální kontrolu (není ve hře)"
   },
   "limitations": [

@@ -137,7 +137,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "3eeaf81e2c472503611d9589b3c11b0370c3fc3cb96e206b3f504c701f5ce12d"
+      "sha256": "337dd185a0fbd2c7b4534c9d62cf62c8c39d64f1a06d02e7001e1f9f0c249c67"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -145,7 +145,7 @@
     },
     {
       "path": "assets/origami/source/build_all.py",
-      "sha256": "6060226f49c48a06d27d6bf35ea0e044040922602dfbe6ebd66855f87975d3bc"
+      "sha256": "3c1fdffb21e3bed522329d1caeaf96e596638ff893ea1ca3b56f8c1edc7f63b0"
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
@@ -161,7 +161,7 @@
     },
     {
       "path": "assets/origami/source/build_ui.py",
-      "sha256": "da7f69fd92a71cb57d227ba45d3ea5c1404f452d26cdf8246d04c41fe137a112"
+      "sha256": "67c1b623eab9f544bd0341799088e97cfa403a40aad5849f296bbac07e1a8d8c"
     },
     {
       "path": "assets/origami/source/palette.py",
@@ -210,6 +210,14 @@
     {
       "path": "assets/origami/ui/icons/miner.svg",
       "sha256": "63ad83814e98523c0089df6f9b103b3b718c6fb0231c6d1fb1cbeff1cab7374b"
+    },
+    {
+      "path": "assets/origami/ui/icons/sound_off.svg",
+      "sha256": "c8dcab30d8ed0124f4b160af7d4049ee9a3bfbd8ab14ef02c4cc5857cd5fdc3d"
+    },
+    {
+      "path": "assets/origami/ui/icons/sound_on.svg",
+      "sha256": "8582347d801a3081949b771f887855b89e06351246da660bea62cdfc7e57a587"
     },
     {
       "path": "assets/origami/ui/label.png",

@@ -93,6 +93,13 @@ ICONS = {
 <rect x="38" y="21" width="5" height="7" rx="1"/>
 <path d="M32 32 L49 32 L40.5 45 Z"/>
 <rect x="6" y="54" width="52" height="5" rx="1.5"/>""",
+    # Zvuk zapnutý: reproduktor a dvě vlnky.
+    "sound_on": """<path d="M8 24 L18 24 L31 12 L31 52 L18 40 L8 40 Z"/>
+<path d="M38 24 C42 28 42 36 38 40" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M45 16 C53 24 53 40 45 48" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round"/>""",
+    # Zvuk vypnutý: reproduktor a křížek.
+    "sound_off": """<path d="M8 24 L18 24 L31 12 L31 52 L18 40 L8 40 Z"/>
+<path d="M39 23 L55 41 M55 23 L39 41" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>""",
 }
 
 

@@ -11,6 +11,7 @@ signal restart_pressed
 signal mission_selected(index: int)
 signal nuke_requested
 signal nuke_decided(confirmed: bool)
+signal sound_pressed
 
 const TOP_BAR_HEIGHT := 72.0
 const BOTTOM_BAR_HEIGHT := 160.0
@@ -49,6 +50,7 @@ var _pause_button: Button
 var _speed_button: Button
 var _mission_picker: OptionButton
 var _nuke_button: Button
+var _sound_button: Button
 var _confirm_layer: Panel
 var _result_layer: CenterContainer
 var _result_title: Label
@@ -118,6 +120,14 @@ func refresh(paused: bool, speed: float) -> void:
 	for skill: int in _skill_widgets:
 		(_skill_widgets[skill]["button"] as Button).disabled = \
 			_sim.finished or int(_sim.skills.get(skill, 0)) <= 0
+
+
+## Ikona tlačítka zvuku: reproduktor s vlnkami, nebo přeškrtnutý.
+func set_sound(enabled: bool) -> void:
+	if _sound_button == null:
+		return
+	_sound_button.icon = load(UI_DIR + "icons/%s.svg" % ("sound_on" if enabled else "sound_off"))
+	_sound_button.tooltip_text = "Zvuk je zapnutý (T)" if enabled else "Zvuk je vypnutý (T)"
 
 
 func set_missions(titles: Array[String], selected: int) -> void:
@@ -253,6 +263,12 @@ func _build_controls(rows: VBoxContainer) -> void:
 	_nuke_button.tooltip_text = "Zavře líheň a spustí postupné odpočty bomb. Vyžaduje potvrzení."
 	_nuke_button.pressed.connect(func() -> void: nuke_requested.emit())
 	row.add_child(_nuke_button)
+	_sound_button = _button("", Vector2(56, 44))
+	_sound_button.expand_icon = true
+	_sound_button.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_sound_button.pressed.connect(func() -> void: sound_pressed.emit())
+	row.add_child(_sound_button)
+	set_sound(true)
 
 
 func _build_confirmation() -> void:

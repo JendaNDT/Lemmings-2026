@@ -132,6 +132,9 @@ U každého podkladu evidovat původ, podmínky a exportní parametry.
 **Podmínka dokončení:** všechny činnosti mají jednotný čitelný obrazový
 a zvukový projev; zátěžový level splňuje změřený výkonnostní cíl.
 
+**Stav zvuku (3. 10. 2026):** zvukové efekty všech událostí, okolní
+smyčky a zvuky rozhraní jsou hotové ([zvuky](ZVUK.md)); hudbu doplní autor.
+
 ## Etapa 9 — Kampaň s 15–20 levely
 
 Postupovat od výuky jednotlivých pravidel ke kombinacím a výzvám. Každý level nejprve ověřit s jednoduchým vzhledem, potom dokončit dekorace. Vyvážit počty dovedností, potřebné záchrany a časové limity.

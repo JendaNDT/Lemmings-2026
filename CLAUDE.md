@@ -51,6 +51,9 @@
   `assets/origami.lock.json`). Všechny manifesty ověřuje
   `scripts/check_assets.py`; po úpravě podkladů spusť
   `python assets/origami/source/build_all.py`. Font OFL musí být distribuovaný s licencí.
+  Zvuky jsou v `assets/audio/` (generátor `source/build_sfx.py`, manifest
+  `assets/audio.lock.json`, mix `sfx.json`); hraje je `GameAudio`, simulaci jen čte.
+  Hudbu doplní autor později (sběrnice Music).
   Pracovní fázi animace řídí tiky, nikoli čas enginu.
 - Mobilní ovládání je v `TouchControls`, profil v `DeviceProfile` a nastavení
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná

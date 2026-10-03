@@ -36,6 +36,13 @@ Most z cihel přes vodu i lávu vydrží.
 Záznam: [`docs/images/etapa5-mise6.mp4`](docs/images/etapa5-mise6.mp4) ·
 pravidla a ověření: [`docs/ETAPA_5_OVERENI.md`](docs/ETAPA_5_OVERENI.md).
 
+**Zvuky:** papírové efekty dovedností, nebezpečí, líhně, východu
+a rozhraní, okolní vítr a smyčky vody a lávy, krátké znělky výhry
+a prohry. Hudba přijde později. Ukázka:
+[`docs/audio/zvukova-ukazka.m4a`](docs/audio/zvukova-ukazka.m4a) · mise 6
+se zvukem: [`docs/images/zvuk-mise6.mp4`](docs/images/zvuk-mise6.mp4) ·
+popis: [`docs/ZVUK.md`](docs/ZVUK.md).
+
 ## Platformy
 
 První testovací sestavení míří na **macOS (Apple Silicon i Intel)**. Stejné
@@ -175,6 +182,7 @@ kontrolní průchod jsou v [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERENI.md).
 | Výběr zkušební mise | nabídka vlevo v dolní liště |
 | Hromadné ukončení | **N** nebo **Ukončit**, poté potvrzení; **Esc** zruší dialog |
 | Stop-motion ↔ plynulý pohyb postav (jen vzhled) | **M** |
+| Zvuk zapnout / ztlumit | **T** nebo tlačítko s reproduktorem v dolní liště |
 
 ## Jak upravit level
 
