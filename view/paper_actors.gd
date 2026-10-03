@@ -3,15 +3,24 @@ extends Node2D
 ## Origami postavičky složené z dílů atlasu. Póza se počítá ze simulačního
 ## času (state_ticks + alpha), takže pauza a zrychlení platí i pro animace.
 ## Výpočet kloubů odpovídá náhledu v assets/origami/source/build_character.py.
+##
+## Stop-motion (výchozí): póza se mění jen každé STEP_TICKS tiky, poloha po
+## celých ticích a díly se při každém kroku nepatrně „chvějí“ jako ručně
+## posouvané papírové loutky. Kontakty nářadí zůstávají na tiku změny masky.
 
 const RIG_PATH := "res://assets/origami/actor/worker_rig.json"
 const ATLAS := preload("res://assets/origami/actor/worker_atlas.png")
 const FLIP_TICKS := 2.0
 const SELECT := Color("ffe39a")
+const STEP_TICKS := 2
+## Chvění dílů ve stupních (±) a kořene v logických pixelech (±).
+const BOIL_DEGREES := 2.5
+const BOIL_OFFSET := 0.05
 
 var sim: LevelSim
 var alpha := 1.0
 var hovered: Lemming
+var stop_motion := true
 var rig: Dictionary
 var _views := {}
 var _scale := 32.0
@@ -53,16 +62,22 @@ func anim_for(lem: Lemming) -> String:
 	return name
 
 
+## Čas ve stavu pro pózu: plynule (tiky + alpha), nebo po krocích stop-motion.
+func pose_ticks(lem: Lemming) -> float:
+	if stop_motion:
+		return float(lem.state_ticks - posmod(lem.state_ticks, STEP_TICKS))
+	return maxf(lem.state_ticks + alpha, 0.0)
+
+
 ## Fáze animace 0..1 ze simulačního času; kontakty nářadí odpovídají tikům masky.
 func phase_for(lem: Lemming, anim: Dictionary) -> float:
-	var ticks := maxf(lem.state_ticks + alpha, 0.0)
-	return ticks / float(anim["cycle"])
+	return pose_ticks(lem) / float(anim["cycle"])
 
 
 func update_views() -> void:
 	if sim == null:
 		return
-	var now := sim.tick_count + alpha
+	var now := float(sim.tick_count) if stop_motion else sim.tick_count + alpha
 	var alive := {}
 	for lem in sim.lemmings:
 		if lem.removed:
@@ -79,8 +94,13 @@ func update_views() -> void:
 			view.flip_start = now
 			view.dir = lem.dir
 		var flip := clampf((now - view.flip_start) / FLIP_TICKS, 0.0, 1.0)
-		view.facing = lerpf(view.flip_from, lem.dir, smoothstep(0.0, 1.0, flip)) if flip < 1.0 \
-			else float(lem.dir)
+		if flip >= 1.0:
+			view.facing = float(lem.dir)
+		elif stop_motion:
+			# Papírek se otočí ve dvou krocích, nikdy není vidět úplně z hrany.
+			view.facing = (signf(view.flip_from) if flip < 0.5 else float(lem.dir)) * 0.45
+		else:
+			view.facing = lerpf(view.flip_from, lem.dir, smoothstep(0.0, 1.0, flip))
 		var name := anim_for(lem)
 		if name != view.anim:
 			if view.anim != "":
@@ -93,7 +113,7 @@ func update_views() -> void:
 		var pose: Dictionary = sampled[0]
 		var root: Array = sampled[1]
 		var blend_ticks := float(rig["blend_ticks"])
-		var b := clampf((lem.state_ticks + alpha) / blend_ticks, 0.0, 1.0)
+		var b := clampf(pose_ticks(lem) / blend_ticks, 0.0, 1.0)
 		if view.blending and b < 1.0:
 			var k := smoothstep(0.0, 1.0, b)
 			for key in pose:
@@ -102,12 +122,29 @@ func update_views() -> void:
 				root[i] = lerpf(float(view.from_root[i]), float(root[i]), k)
 		else:
 			view.blending = false
+		if stop_motion:
+			_boil(lem, pose, root)
 		view.pose = pose
 		view.root = root
 		view.pose["_tool"] = sampled[2]
 	for id in _views.keys():
 		if not alive.has(id):
 			_views.erase(id)
+
+
+## Ruční chvění: v každém kroku jiné, ale deterministické (stejný krok = stejná póza).
+func _boil(lem: Lemming, pose: Dictionary, root: Array) -> void:
+	var step := (sim.tick_count + lem.id) / STEP_TICKS
+	var index := 0
+	for key in pose:
+		pose[key] = float(pose[key]) + (_noise(lem.id, step, index) - 0.5) * 2.0 * BOIL_DEGREES
+		index += 1
+	root[0] = float(root[0]) + (_noise(lem.id, step, 90) - 0.5) * 2.0 * BOIL_OFFSET
+	root[1] = float(root[1]) + (_noise(lem.id, step, 91) - 0.5) * 2.0 * BOIL_OFFSET
+
+
+static func _noise(id: int, step: int, index: int) -> float:
+	return float(posmod(hash([id, step, index]), 1000)) / 999.0
 
 
 ## Interpolace klíčů (kosinová), stejná jako sample() v generátoru.
@@ -169,6 +206,8 @@ func _resolve(name: String, pose: Dictionary, skeleton: Dictionary, out: Diction
 
 
 func actor_position(lem: Lemming) -> Vector2:
+	if stop_motion:
+		return Vector2(lem.x + 0.5, lem.y)
 	return Vector2(lerpf(lem.prev_x, lem.x, alpha) + 0.5, lerpf(lem.prev_y, lem.y, alpha))
 
 
@@ -198,7 +237,7 @@ func _draw_actor(lem: Lemming, view: ActorView) -> void:
 	var p := actor_position(lem)
 	var fade := 1.0
 	if lem.state == Lemming.State.EXITING:
-		fade = 1.0 - clampf((lem.state_ticks + alpha - 4.0) / float(SimConst.EXIT_TICKS - 4), 0.0, 1.0)
+		fade = 1.0 - clampf((pose_ticks(lem) - 4.0) / float(SimConst.EXIT_TICKS - 4), 0.0, 1.0)
 	var grounded := lem.state not in [
 		Lemming.State.FALLER, Lemming.State.FLOATER, Lemming.State.CLIMBER]
 	if grounded and lem.state != Lemming.State.SPLATTING:
@@ -221,7 +260,7 @@ func _draw_actor(lem: Lemming, view: ActorView) -> void:
 		var pivot := Vector2(info["pivot"][0], info["pivot"][1])
 		var xf := base * (xforms[name] as Transform2D)
 		if name == "tool" and int(anim.get("unfold_ticks", 0)) > 0:
-			var open := clampf((lem.state_ticks + alpha) / float(anim["unfold_ticks"]), 0.15, 1.0)
+			var open := clampf(pose_ticks(lem) / float(anim["unfold_ticks"]), 0.15, 1.0)
 			xf = xf * Transform2D(0.0, Vector2(open, 0.6 + 0.4 * open), 0.0, Vector2.ZERO)
 		draw_set_transform_matrix(xf)
 		var shade := float(skeleton[name].get("shade", 1.0))

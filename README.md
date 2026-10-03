@@ -12,7 +12,10 @@ Hra se nově spouští v **papírovém 2D origami stylu** podle přijatého
 [mockupu](docs/MOCKUP_ORIGAMI.md): tyrkysové skládané postavičky
 s okrovými čepicemi, terén z vrstev trhaného papíru, mech, papírová
 líheň a východ, harmonikové schody a krajina ve čtyřech paralaxních
-vrstvách s posunem i zoomem. Simulace a všechny mise jsou beze změny.
+vrstvách s posunem i zoomem. Terén tvoří vystřižené kusy papíru s bílými
+natrženými okraji a měkkými stíny, postavy se hýbou jako papírové loutky
+(stop-motion, klávesa **M** přepne na plynulý pohyb). Simulace a všechny
+mise jsou beze změny.
 
 ![Skutečný snímek hry v 2D origami (Linux, software OpenGL)](docs/images/origami-hra-1.png)
 
@@ -161,6 +164,7 @@ kontrolní průchod jsou v [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERENI.md).
 | Restart levelu | **R** |
 | Výběr zkušební mise | nabídka vlevo v dolní liště |
 | Hromadné ukončení | **N** nebo **Ukončit**, poté potvrzení; **Esc** zruší dialog |
+| Stop-motion ↔ plynulý pohyb postav (jen vzhled) | **M** |
 
 ## Jak upravit level
 

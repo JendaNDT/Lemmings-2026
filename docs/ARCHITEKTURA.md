@@ -253,14 +253,15 @@ a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
 |---|---|
 | `PaperCamera` | Jediná herní transformace logika → obrazovka, zoom 1×–3,2× kolem kurzoru či středu prstů, hranice levelu, klávesy, okraj, kolečko, tažení. |
 | `PaperParallax` | Čtyři vodorovně navazující vrstvy (nebe, hory, vesnice, blízký les). Posun i zoom odvozené z kamery: `měřítko = výška/1200 × zoom^exponent`. Spodní řádek se protáhne dolů, takže nevzniká prázdný okraj. |
-| `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: vrstvy trhaného papíru, mech na původním povrchu, ocel s mřížkou, harmonikové schody z cihel, světlou zadní stěnu výkopu a tmavší jeskyni, stín. |
+| `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: listy trhaného papíru složené z vystřižených kusů (natržené švy, překryv, mírný náklon), bílé vláknité okraje, mech z lístků se stíny, ocel s mřížkou jako nalepený díl, harmonikové schody, světlou zadní stěnu výkopu a tmavší jeskyni. Měkké stíny dávají mipmapy masky (levné rozmazání). |
 | `PaperProps` | Líheň (chatka na kůlech, padací dvířka), východ (domek, vlající vlajka) a drobné rostlinky svázané s maskou. |
-| `PaperActors` | Origami postavy z dílů atlasu; póza = funkce `state_ticks + alpha`, přechody 3 tiky, otočka jako „otočení papírku“. |
+| `PaperActors` | Origami postavy z dílů atlasu; přechody 3 tiky, otočka jako „otočení papírku“. Výchozí stop-motion: póza po 2 ticích, poloha po celých ticích, jemné deterministické chvění dílů; plynulý režim = funkce `state_ticks + alpha` (klávesa M). |
 | `PaperFx` | Papírové ústřižky z událostí, rozkládání cihly; čas efektů běží s herním časem. |
-| `PaperForeground` | Nízké trsy rostlin u spodní lišty; zprůhlední, když je za nimi postava. Vstup nepřijímají. |
+| `PaperForeground` | Nízké trsy rostlin u spodní lišty; zprůhlední, když je za nimi postava, líheň nebo východ. Vstup nepřijímají. |
+| Zrnitost (`paper_grain.gdshader`) | Násobící vrstva přes celou herní scénu pod HUDem: papírové žíhání a ztmavení rohů. |
 
 **Přesnost terénu.** Hrana leží na izočáře 0,5 bilineárně interpolované
-masky. Šum trhaného okraje je omezený na ±0,4, takže střed každé buňky
+masky (bez mipmap; rozmazané úrovně slouží jen ke stínům a okrajům). Šum trhaného okraje je omezený na ±0,4, takže střed každé buňky
 (hodnota 0 nebo 1) má vždy stejné obsazení jako simulace. Grafický QA
 průchod to kontroluje na skutečném snímku v kontrolním režimu shaderu.
 Statická textura si pamatuje původní povrch (mech nepřirůstá v tunelech)

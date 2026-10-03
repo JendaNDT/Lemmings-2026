@@ -24,7 +24,7 @@ from paperlib import Canvas, ellipse, fiber_field, mix, tear
 
 A = 32  # pixelů atlasu na logický pixel
 PAD = 10
-SHADOW = (0.11 * A, 0.13 * A, 2.0, 0.34)
+SHADOW = (0.13 * A, 0.16 * A, 2.6, 0.4)
 
 
 def part_canvas(polys_bbox, fiber):
@@ -41,9 +41,11 @@ def part_canvas(polys_bbox, fiber):
     return c, to_px, pivot
 
 
-def paper(c, to_px, pts, color, rng, *, shadow=True, rim=None, fiber=0.07, amp=0.5):
+def paper(c, to_px, pts, color, rng, *, shadow=True, rim=None, fiber=0.07, amp=0.5, bevel=True):
     poly = tear(to_px(pts), amp, rng, step=3, fine=0.2)
-    return c.shape(poly, color, fiber=fiber, shadow=SHADOW if shadow else None, rim=rim)
+    # Tloušťka papíru: světlá hrana vlevo nahoře, tmavší vpravo dole.
+    return c.shape(poly, color, fiber=fiber, shadow=SHADOW if shadow else None, rim=rim,
+                   bevel=(3.0, 0.3, 0.22) if bevel else None)
 
 
 def facet(c, to_px, pts, color, fiber=0.07):
@@ -119,6 +121,7 @@ def make_parts(fiber, rng):
     crease(c, tp, (0.2, -2.45), (-0.55, 0.45), "#fff0c8", 0.55, 1.8)
     crease(c, tp, (0.2, -2.45), (1.05, 0.5), "#a35f1c", 0.5, 1.8)
     crease(c, tp, (-2.85, 0.42), (3.0, 0.42), "#a35f1c", 0.35, 1.4)
+    c.core(tp(cap), 3.0, 0.45)
     parts["cap"] = (c, pivot)
 
     # --- nástroje (pivot v úchopu dlaně, osa nástroje = +y paže) --------------

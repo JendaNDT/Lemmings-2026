@@ -6,6 +6,7 @@ extends SceneTree
 ## Spuštění (s grafikou, např. pod Xvfb):
 ##   godot --path . --rendering-driver opengl3 --script res://scripts/qa_origami.gd \
 ##     -- --capture-dir=build/origami [--mobile] [--record=build/origami/frames] [--gallery]
+##        [--smooth]  (plynulý pohyb místo výchozího stop-motion)
 
 const FPS := 30.0
 
@@ -28,6 +29,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var gallery := false
+	var smooth := false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--capture-dir="):
 			_dir = arg.trim_prefix("--capture-dir=")
@@ -37,6 +39,8 @@ func _run() -> void:
 			_mobile = true
 		elif arg == "--gallery":
 			gallery = true
+		elif arg == "--smooth":
+			smooth = true
 	if _mobile:
 		# Telefon na šířku s poměrem 20:9 a mobilním základním rozlišením.
 		root.content_scale_size = Vector2i(1280, 720)
@@ -50,6 +54,8 @@ func _run() -> void:
 	_world = _game.get_node("PaperWorld")
 	_hud = _game.get_node("Hud")
 	_sim = _game.get("_sim")
+	_world.set_stop_motion(not smooth)
+	_report["stop_motion"] = not smooth
 	await process_frame
 	if gallery:
 		await _gallery()

@@ -339,20 +339,41 @@ func _test_animation_in_scene(game: Node, world: PaperWorld) -> void:
 	game.set("_paused", false)
 	game.call("_load_level")
 	var sim: LevelSim = game.get("_sim")
-	var lem := add_lemming(sim, 150, 70)
+	# Razič hned před sloupem, aby zůstal v práci několik tiků.
+	var lem := add_lemming(sim, 168, 70)
 	sim.set_state(lem, Lemming.State.BASHER)
 	game.call("_process", 0.0)
 	var actors := world.actors
-	var pose: Dictionary = actors.get("_views")[lem.id].pose.duplicate()
+	var views: Dictionary = actors.get("_views")
+	var pose: Dictionary = views[lem.id].pose.duplicate()
 	game.set("_paused", true)
 	for _i in 5:
 		game.call("_process", 0.2)
-	check(actors.get("_views")[lem.id].pose == pose and sim.tick_count == 0,
+	check(views[lem.id].pose == pose and sim.tick_count == 0,
 		"pauza zastaví pracovní animaci i simulaci")
 	game.set("_paused", false)
-	game.call("_process", 1.0 / SimConst.TICKS_PER_SECOND)
-	check(actors.get("_views")[lem.id].pose != pose and actors.anim_for(lem) == "bash",
+	game.call("_process", 2.0 / SimConst.TICKS_PER_SECOND)
+	check(views[lem.id].pose != pose and actors.anim_for(lem) == "bash",
 		"animace raziče běží podle simulačních tiků")
+	# Stop-motion: póza drží krok a poloha je přesně simulační, nezávisle na alpha.
+	check(actors.stop_motion, "stop-motion je výchozí vzhled pohybu")
+	var stepped: Dictionary = views[lem.id].pose.duplicate()
+	game.call("_process", 0.4 / SimConst.TICKS_PER_SECOND)
+	check(views[lem.id].pose == stepped
+		and actors.actor_position(lem) == Vector2(lem.x + 0.5, lem.y),
+		"stop-motion: mezi tiky se póza ani poloha nehýbou")
+	var key := InputEventKey.new()
+	key.physical_keycode = KEY_M
+	key.pressed = true
+	game.call("_unhandled_input", key)
+	check(not actors.stop_motion and not world.props.stepped and sim.replay_log.is_empty(),
+		"klávesa M přepne na plynulý pohyb bez herního příkazu")
+	game.call("_process", 0.0)
+	var smooth: Dictionary = views[lem.id].pose.duplicate()
+	game.call("_process", 0.3 / SimConst.TICKS_PER_SECOND)
+	check(views[lem.id].pose != smooth, "plynulý režim: póza se mění i mezi tiky")
+	game.call("_unhandled_input", key)
+	check(actors.stop_motion, "druhé stisknutí M vrátí stop-motion")
 	lem.has_floater = true
 	sim.set_state(lem, Lemming.State.FALLER)
 	check(actors.anim_for(lem) == "fall_umbrella", "padající s padákem drží složený deštník")

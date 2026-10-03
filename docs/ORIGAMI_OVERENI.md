@@ -11,6 +11,31 @@ Záznam (17 s, 1280 × 720): [`images/origami-zaznam.mp4`](images/origami-zaznam
 — chůze, přiblížení kolečkem, ražení, posun tažením, rozkládání schodů,
 kopání, oddálení, přiblížení dvěma prsty a vstup do východu.
 
+## Papírovější vzhled (2. kolo, 3. října 2026)
+
+Na přání autora (body 1–4 a pokus se stop-motion):
+
+1. **Zvednuté vrstvy:** terén vrhá měkký stín na krajinu i zadní stěny;
+   listy terénu stíní listy pod sebou. Rozmazání dávají mipmapy masky.
+2. **Bílé vláknité okraje:** natržené hrany listů, obrys terénu i stěny
+   výkopů mají světlé jádro papíru proměnné šířky; v generátoru dostaly
+   jádro hory, kopce, stromy, mraky, slunce, střechy a lístky, díly postav
+   a domky „tloušťku“ papíru (světlá hrana vlevo nahoře, tmavší vpravo dole).
+3. **Terén z vystřižených kusů:** každá vrstva se dělí na kusy různé šířky
+   s natrženými šikmými švy, překryvem, stínem, odstínem a mírným náklonem.
+   Ocel je nalepený díl se stínem, lístky mechu mají vlastní stíny.
+4. **Zrnitost a vinětace:** jemné papírové žíhání a ztmavení rohů přes
+   celou herní scénu (HUD zůstává čistý).
+5. **Stop-motion (výchozí, klávesa M přepíná):** póza postav se mění po
+   2 ticích, poloha po celých ticích, díly se při každém kroku nepatrně
+   chvějí; dvířka a vlajka se hýbou po ticích. Kontakt nástroje zůstává na
+   tiku změny masky. Je to jen vzhled, simulace se nemění.
+
+![Před a po: stejný okamžik první mise](images/origami-pred-po.jpg)
+
+Porovnání pohybu (vlevo stop-motion, vpravo plynule):
+[`images/origami-stopmotion.mp4`](images/origami-stopmotion.mp4).
+
 ## Co je hotové
 
 | Oblast | Stav |
@@ -35,10 +60,10 @@ nebyly kopírovány pixely; převzaty jsou změřené barvy a výtvarné princip
 ## A. Automatické testy (headless, Linux)
 
 `python scripts/check.py` s Godotem 4.7 stable: **66 GDScriptů, 9 sad,
-227 kontrol, vše v pořádku** (před touto prací 56 / 8 / 186). Integrita
+232 kontrol, vše v pořádku** (před origami 56 / 8 / 186). Integrita
 podkladů: 50 + 13 + 48 souborů souhlasí s manifesty; `build_all.py --check`
 potvrdil, že generátor dává bit po bitu stejné soubory. Nová sada
-`tests/test_origami.gd` (41 kontrol) ověřuje:
+`tests/test_origami.gd` (46 kontrol) ověřuje:
 
 - přesnou vratnost převodu logika ↔ obrazovka a shodu s herní transformací
   pro poměry 16:9, 20:9, 4:3, 1:1 a tři velikosti levelu,
@@ -53,6 +78,8 @@ potvrdil, že generátor dává bit po bitu stejné soubory. Nová sada
   dovednost, dotyk začatý v HUDu nepatří hře, emulovaná myš nezdvojí příkaz,
   skutečný dotyk a klik myší ve scéně, kolečko a tažení pravým tlačítkem,
 - pauzu animace i simulace, animaci podle tiků, otočku postavy,
+- stop-motion: mezi tiky se póza ani poloha nehýbou, klávesa M přepne
+  na plynulý pohyb (a zpět) bez herního příkazu,
 - zprůhlednění popředí nad postavou,
 - **celou první misi přes origami scénu a dotykové přidělení: 20/20**
   a totožný stav (snímek celé simulace včetně masky) s replayem čisté simulace,
@@ -82,6 +109,9 @@ Snímky: [start](images/origami-hra-start.jpg) ·
 
 Software renderer v cloudu kreslí jeden snímek přibližně za 0,2 s
 (1920 × 1080, CPU). To není měření výkonu na skutečné grafické kartě.
+Druhé kolo přidalo do shaderu terénu další vzorky textur (měkké stíny,
+kusy, okraje) a jeden celoobrazovkový průchod se zrnitostí; výkon na
+telefonu je potřeba změřit na zařízení.
 
 ## C. Vizuální posouzení proti mockupu (subjektivní)
 

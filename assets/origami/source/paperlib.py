@@ -165,10 +165,13 @@ class Canvas:
         return np.clip(base, 0, 1)
 
     def shape(self, polys, color, *, fiber: float = 0.06, shadow=None, rim=None,
-              tint_rng=None, gradient=None) -> np.ndarray:
+              tint_rng=None, gradient=None, core=None, bevel=None) -> np.ndarray:
         """Vystřižený tvar. shadow=(dx, dy, rozostření, krytí), rim=(šířka, barva, krytí).
 
         gradient=(barva_dole, y_od, y_do) jemně přechází barvu svisle.
+        core=(šířka, krytí): světlé vláknité jádro natrženého papíru podél okraje.
+        bevel=(px, světlo, stín): tloušťka papíru – světlá hrana vlevo nahoře,
+        tmavší vpravo dole.
         Vrací masku krytí v rámci obdélníku (pro další úpravy)."""
         if isinstance(polys, np.ndarray) or (polys and np.ndim(polys[0]) == 1):
             polys = [polys]
@@ -199,8 +202,39 @@ class Canvas:
             low = rgb(low) if isinstance(low, str) else low
             t = np.clip((np.arange(y0, y1) - ga) / max(gb - ga, 1), 0, 1)[:, None, None]
             tex = tex * (1 - t) + self.texture(low, x0, y0, h, w, fiber) * t
+        if bevel:
+            px, light, dark = bevel
+            inner_tl = np.clip(cov - ndimage.shift(cov, (px, px), order=1, mode="constant"), 0, 1)
+            inner_br = np.clip(cov - ndimage.shift(cov, (-px, -px), order=1, mode="constant"), 0, 1)
+            tex = tex * (1 - inner_br[..., None] * dark)
+            tex = tex + (1 - tex) * (inner_tl[..., None] * light)
         self.over(tex, cov, x0, y0)
+        if core:
+            self.core(polys, *core)
         return cov
+
+    def core(self, polys, width: float, alpha: float) -> None:
+        """Světlé vláknité jádro natrženého papíru podél okraje siluety.
+
+        Volá se po vykreslení všech ploch objektu, aby přehyby uvnitř zůstaly
+        bez bílé linky a světlá zůstala jen vnější hrana."""
+        if isinstance(polys, np.ndarray) or (polys and np.ndim(polys[0]) == 1):
+            polys = [polys]
+        pad = int(width * 2) + 3
+        x0, y0, x1, y1 = self._boxes(polys, pad)
+        w, h = x1 - x0, y1 - y0
+        if w <= 0 or h <= 0:
+            return
+        cov = coverage(polys, (x0, y0, w, h))
+        blurred = ndimage.gaussian_filter(cov, max(width * 0.55, 0.6))
+        band = np.clip((cov - blurred) * 2.6, 0, 1) * cov
+        if self.fiber is not None:
+            fy = np.arange(y0, y0 + h) % self.fiber.shape[0]
+            fx = np.arange(x0, x0 + w) % self.fiber.shape[1]
+            fib = self.fiber[np.ix_(fy, fx)]
+            band = np.clip(band * (0.65 + 0.9 * (fib * 0.5 + 0.5)) - 0.08, 0, 1)
+        paper_white = np.array([0.98, 0.95, 0.88], np.float32)
+        self.over(paper_white, band * alpha, x0, y0)
 
     def crease(self, a, b, width: float, color, alpha: float) -> None:
         """Rýha přehybu: tenká čára (světlá nebo tmavá)."""

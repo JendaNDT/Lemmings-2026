@@ -9,7 +9,7 @@
     },
     {
       "path": "assets/origami/actor/worker_atlas.png",
-      "sha256": "d8999f232f9ddaf34fa13cb617794e82cda7c0989cfae23218f4a088752cf0dd"
+      "sha256": "5ac597e73742ef6a6127ffc0d205d8a48c83e9d638f5c54ad36daac29adf2634"
     },
     {
       "path": "assets/origami/actor/worker_rig.json",
@@ -17,31 +17,31 @@
     },
     {
       "path": "assets/origami/layers/fg_fern_sage.png",
-      "sha256": "1a51a92e2028b0f689e3b641ef37a1e53d6d327ded5c7f304d327442afc86adf"
+      "sha256": "a5a5df2dc6a2c638dd0fafc805a50cca5b0d6c8c57c193ad89ec805d3f2c4f43"
     },
     {
       "path": "assets/origami/layers/fg_leaves_rust.png",
-      "sha256": "e5c81b900f054309287643e19fa4f8dd4c6b78019b0cc33165051f5d3e03d493"
+      "sha256": "931e7e579a13a6c2afb72c0c9e51c5185f2a41d1966269bde817cd677416758e"
     },
     {
       "path": "assets/origami/layers/fg_leaves_teal.png",
-      "sha256": "080e6ffd8fb0ef810fb55568e48479cca80c75397039926e1f42a956b0f759db"
+      "sha256": "1940ffd77d11f9d516a092dd72ad5d264954c3279865cb42d0979353dd36929a"
     },
     {
       "path": "assets/origami/layers/midground.png",
-      "sha256": "633d079022c63bd1e7fe2a5cd24375bba406cec8e36d3ae39cafa88015017f18"
+      "sha256": "cd561af6ea9aa6943613caeaae1025ed08ea7baa83d6bcb2c2028e7500e25328"
     },
     {
       "path": "assets/origami/layers/mountains.png",
-      "sha256": "69cdabef25c2654441f3ec11e0262019837190a64f073214c955a2983259f5f3"
+      "sha256": "a108550d3731c9a24355b46a2c79f3379706fce8e1fd9e82210f3f1f4e5c2b44"
     },
     {
       "path": "assets/origami/layers/near.png",
-      "sha256": "8d10be020d6a08ebc77ecac230944e3a685756a052b501044e446c7bee25d737"
+      "sha256": "9f1e9c47013adecd736544796738539713162526181dd896c678ce8f16562aa3"
     },
     {
       "path": "assets/origami/layers/sky_decor.png",
-      "sha256": "650a3cd62963703ba5d984aae543056fc533a6f43d6aca2e022c977373ffa44b"
+      "sha256": "cbe306485d85057e2d9bb2fd25596a40d307fed357af8ef89564a34392add0b3"
     },
     {
       "path": "assets/origami/paper/noise_smooth.png",
@@ -53,7 +53,7 @@
     },
     {
       "path": "assets/origami/props/exit.png",
-      "sha256": "56a12776c2ad0937d29870f9e1fb33b8e77151d6b44d0bbcb4115cbc46556321"
+      "sha256": "bd4161f55403815077b726ece028c57ee8a9cd2e22a05e97ba2bb63de4cc9e6e"
     },
     {
       "path": "assets/origami/props/exit_flag.png",
@@ -61,7 +61,7 @@
     },
     {
       "path": "assets/origami/props/hatch.png",
-      "sha256": "20f5fb74256fa1c2f684422101c203b4653f5a559c108f99089efaefac183309"
+      "sha256": "272774ee092660bbdc639a4393bf56402a98383925631f4b2785bdb32b66299f"
     },
     {
       "path": "assets/origami/props/hatch_door.png",
@@ -77,15 +77,15 @@
     },
     {
       "path": "assets/origami/props/plant_fern.png",
-      "sha256": "8f0b70314031adac4bd05825c673e2c7327a71270259b9b8fa22373398a7114b"
+      "sha256": "f2def9f3aa73c13c525d02db3ec643cfee43f02e61e7f5dfdb20f9125d972f0a"
     },
     {
       "path": "assets/origami/props/plant_flower.png",
-      "sha256": "5ba78bfe3bc01512b4b6fbd4999078a9132037baa5375bd2b1929db853ea86e8"
+      "sha256": "16abed2d18c37592d25ef45166034812a4f7850383287a5afc33eef271ff1040"
     },
     {
       "path": "assets/origami/props/plant_tuft.png",
-      "sha256": "c7d8afd76ca1c3f58c6a68d528815e59d36244800742f023d510ab9a3ed69fb4"
+      "sha256": "18af83f76e1bfbf117fdbfcf67cc3755c594cca2ee29f4cd6a73fc2f2ad43025"
     },
     {
       "path": "assets/origami/props/props.json",
@@ -93,7 +93,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "3463beb993b4e3203099a542587014141709cf8e69de5aa9c08374715bf83e4f"
+      "sha256": "9131f9db3dccb4d1d8b37f0fd4eb1dd80681702055767afafb82d384339eba33"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -105,15 +105,15 @@
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
-      "sha256": "d0e132578222ce8ca1e25467e7bef03bdd9f329343630fead9dbbfc34e8b1992"
+      "sha256": "9c107f6ffb3cc8feee8178d049130a4a8343b1ce4236759ef0a486f86e0854eb"
     },
     {
       "path": "assets/origami/source/build_character.py",
-      "sha256": "df033fc912cd62d4fda97cd9082a34ce47cd6d86b4a5434acf34b488b922febb"
+      "sha256": "463d607349db359f1f1b626c3320792f909b44f726bccc0ac6e5e6aa4982f178"
     },
     {
       "path": "assets/origami/source/build_props.py",
-      "sha256": "f7bc76dca62521cddbf0e5b012f72a9806d145ee6b2412d2e3467167028d42a2"
+      "sha256": "f82eaa486871545e9d098d814284b0bb746c6f45800fd83469e078e89069876a"
     },
     {
       "path": "assets/origami/source/build_ui.py",
@@ -125,11 +125,11 @@
     },
     {
       "path": "assets/origami/source/paperlib.py",
-      "sha256": "919011ba36e1c1569d897f44be9c5990627d30033e9210a274d6f24cfeb082eb"
+      "sha256": "ce91f8a6b9a09f227c117f08f4466555097736384e5c5ef8480b36856543ff71"
     },
     {
       "path": "assets/origami/source/previews/worker_poses.png",
-      "sha256": "3cf9e31c146558b1f629f63c9a2eb1ed8299804cfe214f5d84e89eae00d9ed92"
+      "sha256": "d33f0d7c6add49fe6869e2ff2c385835155ab930c20b9101c964d62e444f0436"
     },
     {
       "path": "assets/origami/ui/dialog.png",

@@ -27,6 +27,7 @@ var layers: Array[PaperParallax] = []
 var _sim: LevelSim
 var _sky: Node2D
 var _sky_texture: GradientTexture2D
+var _grain: Node2D
 
 
 func _ready() -> void:
@@ -74,6 +75,16 @@ func _ready() -> void:
 	foreground.name = "Foreground"
 	foreground.camera = camera
 	add_child(foreground)
+	# Zrnitost papíru a vinětace sjednotí všechny vrstvy; HUD zůstane čistý.
+	_grain = Node2D.new()
+	_grain.name = "Grain"
+	var grain_material := ShaderMaterial.new()
+	grain_material.shader = preload("res://view/paper_grain.gdshader")
+	grain_material.set_shader_parameter("paper_tex", PaperTerrain.PAPER)
+	_grain.material = grain_material
+	_grain.draw.connect(func() -> void:
+		_grain.draw_rect(Rect2(Vector2.ZERO, camera.viewport_size()), Color.WHITE))
+	add_child(_grain)
 
 
 func setup(sim: LevelSim) -> void:
@@ -109,10 +120,22 @@ func highlight(lem: Lemming) -> void:
 	actors.hovered = lem
 
 
+## Stop-motion pohyb postav a objektů (výchozí) ↔ plynulý pohyb mezi tiky.
+func set_stop_motion(enabled: bool) -> void:
+	actors.stop_motion = enabled
+	props.stepped = enabled
+
+
+func toggle_stop_motion() -> bool:
+	set_stop_motion(not actors.stop_motion)
+	return actors.stop_motion
+
+
 func _apply_camera() -> void:
 	camera.refresh()
 	plane.transform = camera.game_transform()
 	_sky.queue_redraw()
+	_grain.queue_redraw()
 
 
 func _draw_sky() -> void:

@@ -27,7 +27,7 @@ def planks(c, x0, y0, x1, y1, rng, vertical=True, base=P.WOOD, dark=P.WOOD_DARK,
             w = min(step * rng.uniform(0.8, 1.2), x1 - x)
             col = mix(base, dark, rng.uniform(0.0, 0.3))
             c.shape(tear([(x + 1, y0), (x + w - 1, y0), (x + w - 1, y1), (x + 1, y1)], 0.8, rng, step=6),
-                    col, fiber=0.10, shadow=(2, 2, 1.5, 0.25))
+                    col, fiber=0.10, shadow=(3, 3, 2, 0.3), bevel=(2.5, 0.22, 0.2))
             c.crease((x + w * 0.5, y0 + 6), (x + w * 0.5 + rng.uniform(-3, 3), y1 - 6), 1.2, dark, 0.25)
             x += w
     else:
@@ -113,7 +113,8 @@ def hatch(fiber, rng, out: Path) -> dict:
     ridge = (ax + 1 * s, body_t - 10 * s)
     roof = [(body_l - 4 * s, body_t + 1.2 * s), ridge, (body_r + 5 * s, body_t + 1.2 * s),
             (body_r + 5 * s, body_t + 2.4 * s), (body_l - 4 * s, body_t + 2.4 * s)]
-    c.shape(tear(roof, 1.0, rng, step=6), P.ROOF_TEAL, fiber=0.09, shadow=(5, 7, 4, 0.35))
+    roof_poly = tear(roof, 1.0, rng, step=6)
+    c.shape(roof_poly, P.ROOF_TEAL, fiber=0.09, shadow=(7, 10, 6, 0.4))
     c.shape([ridge, (body_r + 5 * s, body_t + 1.2 * s), (body_r + 5 * s, body_t + 2.4 * s),
              (ax + 3 * s, body_t + 2.4 * s)], P.ROOF_TEAL_DARK, fiber=0.09)
     c.shape([(body_l - 4 * s, body_t + 1.2 * s), ridge, (ax - 2 * s, body_t + 2.4 * s),
@@ -123,6 +124,7 @@ def hatch(fiber, rng, out: Path) -> dict:
         c.crease((ridge[0] - (ridge[0] - body_l + 4 * s) * t, ridge[1] + (body_t + 1.2 * s - ridge[1]) * t),
                  (ridge[0] - (ridge[0] - body_l + 4 * s) * t + 3 * s, body_t + 2.2 * s), 2.0,
                  P.ROOF_TEAL_DARK, 0.35)
+    c.core(roof_poly, 4.0, 0.5)
     banner(c, body_r + 1.5 * s, body_t + 3 * s, 6 * s, 9 * s, rng)
     path = out / "props" / "hatch.png"
     c.save(path)
@@ -155,7 +157,7 @@ def exit_house(fiber, rng, out: Path) -> dict:
     top = ay - 17 * s
     # Stěny z ivorové lepenky, pravá strana ve stínu (přehyb na rohu).
     c.shape(tear([(left, ay), (left, top), (right, top), (right, ay)], 0.8, rng, step=6),
-            P.IVORY, fiber=0.08, shadow=(6, 7, 5, 0.32))
+            P.IVORY, fiber=0.08, shadow=(8, 10, 7, 0.36), bevel=(3.0, 0.2, 0.16))
     c.shape([(ax + 7.5 * s, top), (right, top), (right, ay), (ax + 7.5 * s, ay)], P.IVORY_SHADE, fiber=0.08)
     for k in range(3):
         y = top + (k + 1) * 4.2 * s
@@ -174,8 +176,11 @@ def exit_house(fiber, rng, out: Path) -> dict:
     ridge = (ax + 0.5 * s, top - 9 * s)
     roof_l = [(left - 3 * s, top + 1.5 * s), ridge, (ax + 0.5 * s, top - 6.6 * s), (left - 1.2 * s, top + 2.6 * s)]
     roof_r = [ridge, (right + 3.5 * s, top + 1.5 * s), (right + 2 * s, top + 2.8 * s), (ax + 0.5 * s, top - 6.6 * s)]
-    c.shape(tear(roof_l, 0.8, rng, step=6), P.ROOF_TEAL_LIGHT, fiber=0.08, shadow=(4, 6, 4, 0.3))
-    c.shape(tear(roof_r, 0.8, rng, step=6), P.ROOF_TEAL, fiber=0.08, shadow=(4, 6, 4, 0.3))
+    roof_l = tear(roof_l, 0.8, rng, step=6)
+    roof_r = tear(roof_r, 0.8, rng, step=6)
+    c.shape(roof_l, P.ROOF_TEAL_LIGHT, fiber=0.08, shadow=(6, 9, 6, 0.36))
+    c.shape(roof_r, P.ROOF_TEAL, fiber=0.08, shadow=(6, 9, 6, 0.36))
+    c.core([roof_l, roof_r], 4.0, 0.5)
     c.crease(ridge, (ax + 0.5 * s, top - 6.6 * s), 2.0, P.ROOF_TEAL_DARK, 0.6)
     # Stožár vlajky (vlajku samotnou kreslí Godot – vlaje podle herního času).
     pole_x = right - 2 * s
@@ -213,9 +218,10 @@ def plants(fiber, rng, out: Path) -> list:
             length = rng.uniform(0.45, 0.85) * (h - 1) * s
             outline, half, rib = leaf(bx + rng.uniform(-0.12, 0.12) * w * s, by, length,
                                       length * rng.uniform(0.32, 0.45), ang, rng.uniform(-0.3, 0.3))
-            c.shape(outline, light, fiber=0.08, shadow=(3, 4, 3, 0.3))
+            c.shape(outline, light, fiber=0.08, shadow=(4, 6, 4, 0.34))
             c.shape(half, col, fiber=0.08)
             c.crease(rib[0], rib[1], 2.0, mix(light, "#ffffff", 0.25), 0.5)
+            c.core(outline, 3.0, 0.5)
         if flower:
             fx, fy = bx + 0.5 * s, by - (h - 2.6) * s
             c.crease((fx, fy), (bx, by), 4, P.LEAF_SAGE, 1.0)

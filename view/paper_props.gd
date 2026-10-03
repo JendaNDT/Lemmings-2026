@@ -14,6 +14,8 @@ const GLOW := Color(1.0, 0.86, 0.5)
 
 var sim: LevelSim
 var alpha := 1.0
+## Stop-motion: dvířka, vlajka a záře se mění po celých ticích.
+var stepped := true
 var data: Dictionary
 ## Rostlinky na povrchu: [x, y, druh]. Zmizí, když pod nimi zmizí zem.
 var plants: Array[Vector3i] = []
@@ -80,7 +82,7 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if sim == null:
 		return
-	var now := sim.tick_count + alpha
+	var now := float(sim.tick_count) if stepped else sim.tick_count + alpha
 	for plant in plants:
 		if not sim.mask.is_solid(plant.x - 1, plant.y) or not sim.mask.is_solid(plant.x + 1, plant.y) \
 				or sim.mask.is_solid(plant.x, plant.y - 2):

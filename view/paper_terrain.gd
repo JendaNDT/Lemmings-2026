@@ -35,10 +35,13 @@ func _init() -> void:
 func setup(terrain: TerrainMask) -> void:
 	mask = terrain
 	_mask_image = Image.create_from_data(mask.width, mask.height, false, Image.FORMAT_RGBA8, mask.data)
+	# Mipmapy masky = levné rozmazání pro měkké stíny a šířku vláknitých okrajů.
+	_mask_image.generate_mipmaps()
 	_mask_texture = ImageTexture.create_from_image(_mask_image)
 	_static_texture = ImageTexture.create_from_image(build_static(mask))
 	_version = mask.version
 	_material.set_shader_parameter("mask_tex", _mask_texture)
+	_material.set_shader_parameter("mask_soft", _mask_texture)
 	_material.set_shader_parameter("static_tex", _static_texture)
 	_material.set_shader_parameter("mask_size", Vector2(mask.width, mask.height))
 	_material.set_shader_parameter("band_offset", float(mask.width % 6))
@@ -56,6 +59,7 @@ func sync() -> void:
 		return
 	_version = mask.version
 	_mask_image.set_data(mask.width, mask.height, false, Image.FORMAT_RGBA8, mask.data)
+	_mask_image.generate_mipmaps()
 	_mask_texture.update(_mask_image)
 	updates += 1
 

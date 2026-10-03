@@ -173,6 +173,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				_load_level()
 			KEY_N:
 				_request_nuke()
+			KEY_M:
+				# Jen vzhled: stop-motion ↔ plynulý pohyb (prezentace, která ho umí).
+				if _view != null and _view.has_method("toggle_stop_motion"):
+					_view.toggle_stop_motion()
 			KEY_MINUS, KEY_KP_SUBTRACT:
 				_change_release_rate(-1)
 			KEY_EQUAL, KEY_KP_ADD:

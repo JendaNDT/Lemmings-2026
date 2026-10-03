@@ -92,6 +92,7 @@ def layer_sky(fiber, rng, out: Path):
     sun = tear(ellipse(1960, 150, 78, 78, 90), 2.2, rng, step=3)
     c.shape(sun, P.SUN, fiber=0.08, shadow=(4, 5, 4, 0.12), rim=(2, P.SUN_LIGHT, 0.6))
     c.shape(tear(ellipse(1950, 140, 52, 52, 70), 1.5, rng), P.SUN_LIGHT, fiber=0.06)
+    c.core(sun, 3.0, 0.55)
     # Mraky: kupovité laloky z kruhů, spodek zarovnaný, pod nimi stínová vrstva.
     for cx, cy, w, h in [(380, 300, 300, 105), (980, 200, 190, 66), (1480, 330, 230, 78),
                          (2180, 290, 280, 98), (2620, 170, 170, 60)]:
@@ -114,7 +115,8 @@ def layer_sky(fiber, rng, out: Path):
             polys.append(transform(base, dx, dy))
             # Spodní hrana mraku je rovná: nic pod základnou.
             polys = [[(px, min(py, cy + dy)) for px, py in poly] for poly in polys]
-            c.shape(polys, col, fiber=0.05, shadow=(8, 10, 7, 0.10) if layer == 0 else None)
+            c.shape(polys, col, fiber=0.05, shadow=(8, 10, 7, 0.10) if layer == 0 else None,
+                    core=(3.0, 0.5) if layer == 1 else None)
         c.crease((cx - w * 0.3, cy - h * 0.18), (cx + w * 0.25, cy - h * 0.15), 3, P.CLOUD_SHADE, 0.35)
     # Skládaní papíroví ptáčci (dvě křídla s přehybem).
     for bx, by, size, flip in [(1250, 120, 26, 1), (1330, 165, 20, -1), (610, 230, 18, 1)]:
@@ -164,10 +166,13 @@ def layer_mountains(fiber, rng, out: Path):
                     y2 = peak[1] + cap_h * (0.62 if i % 2 else 1.0) + rng.uniform(-6, 6)
                     cap.append((x2, y2))
                 cap.append((left_x, peak[1] + cap_h))
-                c.shape(tear(cap, 1.2, rng, step=3), mix(P.SNOW, lit, 1 - snow_t), fiber=0.05)
+                cap_poly = tear(cap, 1.2, rng, step=3)
+                c.shape(cap_poly, mix(P.SNOW, lit, 1 - snow_t), fiber=0.05)
                 ridge = [peak, (peak[0] + cap_h * 0.3, peak[1] + cap_h * 0.95),
                          (right_x, peak[1] + cap_h)]
                 c.shape(ridge + [(peak[0] + 2, peak[1] + 4)], mix(P.SNOW_SHADE, shade, 0.3), fiber=0.05)
+                c.core(cap_poly, 2.0, 0.35)
+            c.core(pts, 3.0, 0.5)
     # Mlžný pás u úpatí sjednotí přechod ke střední vrstvě.
     haze = [(0, base - 70), (TILE, base - 70), (TILE, h), (0, h)]
     c.shape(haze, P.MTN_FAR_SHADE, fiber=0.04, gradient=(P.HILL_BLUE, base - 70, h))
@@ -177,11 +182,11 @@ def layer_mountains(fiber, rng, out: Path):
 def house(c, x, base, w, hgt, rng, church=False):
     roof_h = hgt * 0.65
     wall = [(x, base), (x, base - hgt), (x + w, base - hgt), (x + w, base)]
-    c.shape(wall, P.WALL, fiber=0.06, shadow=(3, 3, 2, 0.15))
+    c.shape(wall, P.WALL, fiber=0.06, shadow=(3, 3, 2, 0.15), bevel=(1.5, 0.25, 0.18))
     c.shape([(x + w * 0.62, base), (x + w * 0.62, base - hgt), (x + w, base - hgt), (x + w, base)],
             P.WALL_SHADE, fiber=0.06)
     roof = [(x - w * 0.08, base - hgt + 2), (x + w * 0.5, base - hgt - roof_h), (x + w * 1.08, base - hgt + 2)]
-    c.shape(roof, P.ROOF, fiber=0.07, shadow=(2, 3, 2, 0.15))
+    c.shape(roof, P.ROOF, fiber=0.07, shadow=(2, 3, 2, 0.15), core=(2.0, 0.4))
     c.shape([(x + w * 0.5, base - hgt - roof_h), (x + w * 1.08, base - hgt + 2), (x + w * 0.62, base - hgt + 2)],
             P.ROOF_SHADE, fiber=0.07)
     for i in range(int(w // 22)):
@@ -246,7 +251,8 @@ def layer_mid(fiber, rng, out: Path):
             pts.append((x, y))
         pts.append((TILE + 40, h))
         col = [P.HILL_BLUE, P.HILL_SAGE_SHADE, P.HILL_SAGE][k]
-        c.shape(tear(pts, 2.5, rng, step=6, closed=True), col, fiber=0.06, shadow=(4, 6, 6, 0.10))
+        c.shape(tear(pts, 2.5, rng, step=6, closed=True), col, fiber=0.06, shadow=(5, 8, 7, 0.14),
+                core=(3.5, 0.45))
         if k == 0:
             for x in np.sort(rng.uniform(0, TILE, 70)):
                 yb = y_base - 60 * math.sin((x + 40) / ((TILE + 80) / 60) * 0.37) + 30
@@ -263,7 +269,7 @@ def layer_mid(fiber, rng, out: Path):
     viaduct(c, 1780, 2290, 360, 560, rng)
     cliff = [(2300, 470), (2340, 440), (2420, 430), (2520, 438), (2600, 452), (2640, 480), (2650, 720),
              (2290, 720)]
-    c.shape(tear(cliff, 3, rng, step=5), P.ROCK, fiber=0.08, shadow=(5, 6, 5, 0.12))
+    c.shape(tear(cliff, 3, rng, step=5), P.ROCK, fiber=0.08, shadow=(5, 6, 5, 0.12), core=(3.0, 0.4))
     c.shape(tear([(2470, 434), (2520, 438), (2600, 452), (2640, 480), (2650, 720), (2480, 720)], 3, rng,
                  step=5), P.ROCK_SHADE, fiber=0.08)
     for i in range(7):
@@ -282,8 +288,9 @@ def layer_mid(fiber, rng, out: Path):
             yb = ybase + 25 * math.sin(x * 0.004 + row) + rng.uniform(-10, 10)
             hh = rng.uniform(hmin, hmax)
             full, sh, tr = pine(x, yb, hh, hh * 0.45, 5, rng)
-            c.shape(full, col, fiber=0.06, shadow=(3, 4, 3, 0.12))
+            c.shape(full, col, fiber=0.06, shadow=(3, 5, 4, 0.16))
             c.shape(sh, shade, fiber=0.06)
+            c.core(full, 1.6, 0.4)
     # Neprůhledný spodek: travnatý svah, který lze v Godotu prodloužit dolů.
     bottom = [(-20, 650)]
     for i in range(41):
@@ -310,7 +317,8 @@ def layer_near(fiber, rng, out: Path):
     for side_x in range(0, TILE, 700):
         bank = [(side_x - 60, 470), (side_x + 40, 410), (side_x + 220, 400), (side_x + 330, 440),
                 (side_x + 300, 480), (side_x - 40, 490)]
-        c.shape(tear(bank, 3, rng, step=5), P.HILL_GREEN, fiber=0.07, shadow=(4, 6, 5, 0.18))
+        c.shape(tear(bank, 3, rng, step=5), P.HILL_GREEN, fiber=0.07, shadow=(5, 8, 6, 0.22),
+                core=(3.0, 0.45))
     for row, (count, hmin, hmax, ybase, col, shade) in enumerate([
         (36, 160, 260, 440, P.PINE_NEAR, P.PINE_NEAR_SHADE),
         (22, 220, 340, 470, P.PINE_DEEP, P.PINE_DEEP_SHADE),
@@ -323,8 +331,10 @@ def layer_near(fiber, rng, out: Path):
             hh = rng.uniform(hmin, hmax)
             full, sh, tr = pine(x, yb, hh, hh * 0.46, 6, rng)
             c.shape(tr, P.TRUNK, fiber=0.05)
-            c.shape(tear(full, 1.4, rng, step=4), col, fiber=0.07, shadow=(5, 7, 5, 0.2))
+            torn = tear(full, 1.4, rng, step=4)
+            c.shape(torn, col, fiber=0.07, shadow=(6, 9, 7, 0.26))
             c.shape(sh, shade, fiber=0.07)
+            c.core(torn, 2.2, 0.42)
     c.save(out / "layers" / "near.png")
 
 
@@ -356,8 +366,9 @@ def fg_clump(name, fiber, rng, out: Path, w, h, leaves, flowers=0):
         width = length * rng.uniform(0.28, 0.42)
         outline, half, rib = leaf(base_x + rng.uniform(-w * 0.18, w * 0.18), base_y, length, width, ang,
                                   rng.uniform(-0.35, 0.35))
-        c.shape(outline, light, fiber=0.08, shadow=(8, 10, 8, 0.28))
+        c.shape(outline, light, fiber=0.08, shadow=(9, 12, 9, 0.32))
         c.shape(half, col, fiber=0.08)
+        c.core(outline, 3.5, 0.5)
         c.crease(rib[0], rib[1], 3.0, mix(light, "#ffffff", 0.25), 0.55)
         # Postranní žilky naznačí přehyby.
         for t in (0.3, 0.5, 0.7):

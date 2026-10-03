@@ -21,7 +21,8 @@ Další kroky:
 1. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5) a říct, co se líbí
    a co ne – vzhled je posouzený jen z cloudových snímků.
 2. Nové APK a Mac balíček s origami grafikou (export; APK 0.4.0 je stará grafika).
-3. Doladit vzhled podle tvého názoru (bohatší detail krajiny, velikost postav).
+3. Říct, zda nechat stop-motion jako výchozí (klávesa M přepíná),
+   a doladit vzhled podle tvého názoru (detail krajiny, velikost postav).
 4. Pak mechaniky etapy 5 (voda, láva, pasti) a zvuk.
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
@@ -83,6 +84,10 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - Android APK 0.4.0 ve větvi `downloads/android-0.4.0`, zdroje
   v původní vývojové větvi; předchozí APK jsou zachovaná
 
+- **Papírovější vzhled (2. kolo):** terén z vystřižených kusů s bílými
+  natrženými okraji a měkkými stíny, světlá jádra a tloušťka papíru v celé
+  grafice, zrnitost a vinětace, stop-motion pohyb postav (klávesa M)
+- Kontrola po 2. kole: 66 GDScriptů, 9 sad, 232 ověření (`test_origami` 46)
 - **2D origami zobrazení jako výchozí scéna** (`main/game_origami.tscn`,
   `view/paper_*`): papírový terén ze shaderu nad maskou (vrstvy, mech, ocel,
   harmonikové schody, výkopy, jeskyně), origami postavy z dílů se 13 animacemi
