@@ -67,6 +67,10 @@ modelovaný povrch, krajinu, světlo a lištu. [Změny a ověření](GRAFIKA_04.
 Tento snímek je z Godotu. Představuje první výtvarnou úpravu hratelné scény;
 nenahrazuje uživatelské posouzení ani dokončení grafiky celé kampaně.
 
+**Autor následně upozornil, že 0.4.0 vůbec neodpovídá mockupu.** Tato
+implementace není schváleným výtvarným výsledkem. Původní předloha zůstává
+cílem; [porovnání rozdílů a oprava postupu](GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
+
 ## Plastelína při kopání
 
 Hmota drží tvar. Nástroj ji místně promáčkne a protáhne, oddělí měkkou

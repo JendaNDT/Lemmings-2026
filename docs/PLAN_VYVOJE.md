@@ -112,6 +112,11 @@ prostorové pozadí a rozhraní. Podrobnosti: [grafika 0.4.0](GRAFIKA_04.md).
 Jde o první výtvarnou úpravu; tato etapa jako celek ještě není dokončená
 (chybí mimo jiné zvuk a první uživatelské hraní nového provedení).
 
+**Následná reakce autora:** grafika 0.4.0 neodpovídá mockupu. Výtvarný cíl
+nebyl splněný. Nejprve zpracovat a přímo s předlohou porovnat jeden skutečný
+výřez scény v Godotu (terén, postava, světlo, kopání a schody); potom
+ověřené provedení rozšířit do celé mise. [Rozdíly a konkrétní postup](GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
+
 Rozpracovat již zvolený modelínový styl z etapy 3 do reprezentativní kvality.
 
 Vytvořit tři krátké levely: úvod, kombinaci dovedností a náročnější hlavolam. Na nich dokončit ukázku zamýšlené grafiky, jednu reprezentativní postavu, rozhraní, zvuk a nápovědu.
@@ -171,6 +176,7 @@ Nejdřív ověřit základ a simulaci, připravit grafické podklady, následně
 
 Každý dílčí úkol má určit změněné vrstvy, konkrétní ukázku výsledku a kontroly odpovídající riziku. Po větší implementační změně aktualizovat stav projektu a relevantní architekturu. Termíny a rozpočet zpřesnit po technickém prototypu a prvním dokončeném 3D assetu; do té doby nejsou ověřené podklady pro spolehlivý odhad.
 
-**Nejbližší vývojový úkol:** posoudit novou grafiku 0.4.0 při hraní na cílovém
-zařízení a podle výsledku doladit vzhled a výkon. Mechanicky navazuje etapa 5,
-nebezpečí a objekty. Cloudové testy nepotvrzují nativní běh na Macu ani Androidu.
+**Nejbližší vývojový úkol:** opravit výtvarné provedení podle schváleného
+mockupu, počínaje referenčním výřezem v Godotu. Autor už 0.4.0 označil za
+nevyhovující. Mechanicky navazuje etapa 5 až po této opravě. Cloudové testy
+nepotvrzují nativní běh na Macu ani Androidu.

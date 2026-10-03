@@ -38,6 +38,9 @@ nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
 
 ## Nová grafika 0.4.0
 
+**Výtvarná kontrola neprošla:** autor označil vzhled 0.4.0 za neodpovídající
+schválenému mockupu. Oprava je nejbližší prioritou; [rozbor a postup](docs/GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
+
 První výtvarná úprava hratelné scény: oblé hrany a čerstvé řezy terénu,
 modelovaný zelený lem, výraznější postavička, krajina s oblaky a hradem,
 sladěné světlo a nové rozhraní. Pravidla a řešení misí zůstávají stejná.

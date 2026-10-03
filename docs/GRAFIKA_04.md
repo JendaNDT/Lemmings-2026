@@ -4,6 +4,46 @@
 Cílem této verze je přiblížit skutečnou hru vybranému modelínovému mockupu.
 Jde o první provedení scény, nikoli o dokončení finální grafiky celé kampaně.
 
+**Výsledek výtvarné kontroly: nevyhovuje schválenému mockupu.** Autor po
+předání 0.4.0 výslovně upozornil na zásadní rozdíl. Technické kontroly níže
+platí, ale nedokládají splnění výtvarného cíle. Tato verze nesmí být novou
+referencí, která by nahradila původní schválenou předlohu.
+
+## Rozdíly proti předloze a oprava postupu
+
+Porovnány byly přímo `images/mockup-modelin-prvni-kroky.png` a skutečný
+záběr `images/art-pass-0.4.0.png`.
+
+| Oblast | Schválený mockup | Verze 0.4.0 |
+|---|---|---|
+| Hlína | Nepravidelná hmota s hlubšími záhyby, otisky a přechody kolem kamenů. | Převážně rovná plocha s jemným šumem, malými kamínky a úzkým zaoblením. |
+| Zelený povrch | Souvislé měkké převisy, různě velké listy, trsy a květy. | Pravidelná řada oválů a opakované stejné rostliny. |
+| Postava | Výrazná kulatá silueta, velký obličej, krátké končetiny a čitelná pracovní póza. | Drobnější postava s jinými proporcemi a nevýraznou pózou v celkovém záběru. |
+| Světlo | Teplé směrové světlo, měkké kontaktní stíny a čitelné prohlubně. | Slabý kontakt postav s podložkou, plochý povrch a malá hloubka stínování. |
+| Krajina | Členitá krajina s hloubkou, variacemi stromů, vodou, drobnými stavbami a měkčí dálkou. | Velké jednoduché kopce a opakované stromy; pozadí působí jako základní geometrie. |
+| Kompozice | Herní cesta, postavy a práce nástroje jsou dominantní; dekorace tvoří souvislý svět. | Velké prázdné plochy, malé postavy a oddělené jednoduché objekty. |
+
+Příčinou není prokázané omezení Godotu ani Androidu. Dosavadní provedení
+použilo příliš jednoduché modely a materiály a nedostatečné výtvarné
+porovnání před vydáním. Další úprava barev nebo hustoty šumu sama nestačí.
+
+Následující práce má tento konkrétní výstup a pořadí:
+
+1. Zpracovat jeden skutečný výřez v Godotu: postavičku, zelený povrch,
+   stěnu hlíny, otvor po kopání a krátké schody. Použít modely a materiály
+   se skutečně tvarovaným objemem a společným nasvícením podle předlohy.
+2. Zachytit stejný výřez z herní kamery v celku i detailu. Porovnat proporce,
+   siluetu, charakter povrchu, kontaktní stíny a barevnost s mockupem;
+   kontrola funkčnosti tyto podmínky nenahrazuje. Referenční výřez ještě
+   není vytvořený a nesmí být vykázaný jako hotový.
+3. Teprve ověřené provedení rozšířit na hratelnou misi, dopracovat krajinu
+   a rozhraní a prověřit kopání, stavění i mobilní grafický profil.
+
+Další předávaný vizuální výsledek musí být skutečný záběr Godotu. Nový
+generovaný celkový obrázek by neprokazoval opravu implementace. Původní
+mockup zůstává závaznou výtvarnou referencí; technické testy nemohou jeho
+shodu potvrdit a vzhled 0.4.0 autor neschválil.
+
 ![Skutečná hra 0.4.0 při stavění a kopání, Forward+](images/art-pass-0.4.0.png)
 
 ## Co je ve hře

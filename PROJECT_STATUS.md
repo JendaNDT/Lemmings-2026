@@ -19,10 +19,14 @@ první výtvarnou úpravu hratelné scény**: zaoblený terén i řezy, modelova
 zeleň, výraznější postavu, krajinu, světlo a rozhraní. Skutečné snímky,
 původ podkladů a výsledky: [`grafika 0.4.0`](docs/GRAFIKA_04.md).
 
-Další výtvarné ladění má vycházet z hraní této verze na telefonu/MacBooku.
-Technicky navazuje etapa 5 (nebezpečí a objekty). Reprezentativní demo se
-zvukem v etapě 7 ani finální grafika celé kampaně v etapě 8 ještě hotové
-nejsou. Schválení mockupu není schválením všech následujících sestavení.
+**Autor grafiku 0.4.0 odmítl jako neodpovídající schválenému mockupu.**
+Výtvarný cíl tedy není splněný. Prioritou je nový referenční výřez přímo
+v Godotu s odpovídajícím terénem, postavou a světlem; potom přenesení
+ověřeného provedení do celé mise. Konkrétní rozdíly a postup jsou v
+[`grafické revizi`](docs/GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
+Referenční výřez zatím vytvořený není. Další mechaniky etapy 5 následují
+až po této opravě. Reprezentativní demo se zvukem ani finální grafika
+celé kampaně nejsou hotové.
 
 Kompletní pořadí dvanácti etap je v [`plánu vývoje`](docs/PLAN_VYVOJE.md).
 Nativní spuštění a výkon na MacBooku a Androidu čekají na ověření;
