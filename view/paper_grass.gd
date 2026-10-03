@@ -1,6 +1,6 @@
 class_name PaperGrass
 extends Node2D
-## Papírová tráva rostoucí vzhůru z původního povrchu (nad zeleným lemem mechu).
+## Papírová tráva rostoucí vzhůru z původního povrchu (z pruhu zeleného drnu).
 ## Stébla se kývají ve větru: kořen stojí, špička se hýbe nejvíc. Trs zmizí,
 ## když pod ním zmizí zem nebo když na něj někdo položí cihlu. Jen vzhled:
 ## kreslí se za postavami, kolize dál řídí maska.

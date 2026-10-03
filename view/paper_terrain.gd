@@ -3,7 +3,7 @@ extends Node2D
 ## Papírový terén kreslený shaderem přímo z masky simulace.
 ##
 ## Maska je jediný zdroj kolizí; zde se jen čte. Statická textura si pamatuje
-## původní povrch (mech nepřirůstá v tunelech) a vnitřky jeskyní (zadní stěna).
+## původní povrch (drn nepřirůstá v tunelech) a vnitřky jeskyní (zadní stěna).
 
 const SHADER := preload("res://view/paper_terrain.gdshader")
 const PAPER := preload("res://assets/origami/paper/paper_fiber.png")
@@ -11,7 +11,7 @@ const NOISE := preload("res://assets/origami/paper/noise_smooth.png")
 ## Vnitřek jeskyně: pevná zem nad, pod i po stranách v těchto vzdálenostech.
 const CAVE_REACH_Y := 60
 const CAVE_REACH_X := 120
-## Mech roste jen na runech, nad kterými je aspoň tolik volného místa.
+## Drn leží jen na runech, nad kterými je aspoň tolik volného místa.
 const SKY_GAP := 24
 ## Vzdálenost od hladiny vody a lávy v texturě nebezpečí: 128 + 12 × px
 ## (kladně pod hladinou, záporně nad ní; plameny a záře sahají 10 px nad lávu).
@@ -24,7 +24,7 @@ var updates := 0
 ## Přední vrstva hladiny (kreslí se nad postavami): obdélník s vodou a lávou.
 var surface: Node2D
 var hazard_rect := Rect2i()
-## Buňky původního povrchu vystaveného nebi (kde roste mech); z nich roste tráva.
+## Buňky původního povrchu vystaveného nebi (kde leží drn); z nich roste tráva.
 var surface_points: Array[Vector2i] = []
 var _mask_image: Image
 var _mask_texture: ImageTexture
@@ -187,7 +187,7 @@ static func exposed_surface(static_image: Image) -> Array[Vector2i]:
 
 ## R = původní zem, G = vnitřek jeskyně, A = hloubka pod povrchem vystaveným nebi (×16).
 ## Jeskyně je prázdné místo sevřené zemí (viz CAVE_REACH_*) nebo uzavřená dutina,
-## kam se od horního ani bočních okrajů levelu nedá dostat. Pod vodou a lávou mech neroste.
+## kam se od horního ani bočních okrajů levelu nedá dostat. Pod vodou a lávou drn neleží.
 static func build_static(source: TerrainMask) -> Image:
 	var w := source.width
 	var h := source.height
@@ -263,7 +263,7 @@ static func build_static(source: TerrainMask) -> Image:
 	for i in w * h:
 		if not solid[i] and not open[i]:
 			out[i * 4 + 1] = 255
-	# Hloubka pod povrchem: mech jen tam, kde je nad runem dost volného nebe
+	# Hloubka pod povrchem: drn jen tam, kde je nad runem dost volného nebe
 	# a nejde o dno jeskyně.
 	for x in w:
 		var run_start := -1

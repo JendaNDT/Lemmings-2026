@@ -356,45 +356,46 @@ void fragment() {
 		float steel_drop = soft(p - vec2(0.9, 1.3), 1.0).g;
 		col *= 1.0 - steel_drop * (1.0 - smoothstep(0.4, 0.6, m.g)) * 0.32;
 
-		// --- Mech z lístků na původním povrchu -------------------------------
-		// Dvě řady oblých lístků (zadní tmavší a delší, přední světlejší) visí
-		// přes horní hranu; vrchní světlý pruh je plocha trávníku.
+		// --- Drn na původním povrchu ----------------------------------------
+		// Hladký pruh zeleného papíru položený přes horní hranu: nahoře světlá
+		// plocha trávníku, spodní okraj natržený se světlým vláknitým jádrem,
+		// pod ním měkký stín. Místy vykukuje tmavší spodní vrstva drnu.
+		// Stébla trávy rostoucí vzhůru kreslí PaperGrass.
 		float depth = st.a * 255.0 / 16.0;
 		float support = inside * (1.0 - steel) * (1.0 - brick) * step(0.5, st.r);
-		vec3 leaf = vec3(0.0);
-		float grass = 0.0;
-		float leaf_shadow = 0.0;
-		for (int row = 0; row < 2; row++) {
-			float rw = row == 0 ? 4.4 : 3.1;
-			// Mech je papírový lem přes hranu (nehýbe se); trávu nahoře kreslí PaperGrass.
-			float lx = (p.x + float(row) * 1.3) / rw + (noise(vec2(p.x, 5.0 + float(row) * 11.0), 70.0).r - 0.5) * 0.9;
-			float li = floor(lx);
-			float lf = fract(lx);
-			float h = hash(vec2(li, 2.0 + float(row)));
-			float lobe = sqrt(max(1.0 - pow(lf * 2.0 - 1.0, 2.0), 0.0));
-			// Oblé laloky mechu, jen mírně zašpičatělé (ne obrácená stébla).
-			float tipped = mix(lobe, 1.0 - abs(lf * 2.0 - 1.0), 0.22);
-			float len = (row == 0 ? 3.2 : 2.0) + (row == 0 ? 3.4 : 2.0) * h;
-			float lim = (row == 0 ? 0.9 : 0.7) + len * tipped;
-			float in_leaf = support * (1.0 - smoothstep(lim - 0.12, lim + 0.12, depth));
-			// Lístek je zvednutý: pod ním leží jeho měkký stín.
-			leaf_shadow = max(leaf_shadow, support * (1.0 - smoothstep(lim + 0.2, lim + 1.6, depth - 0.6)));
-			float pick = hash(vec2(li, 7.0 + float(row)));
-			vec3 c = row == 0 ? (pick < 0.5 ? GRASS_DARK : GRASS) : (pick < 0.5 ? GRASS : GRASS_LIT);
-			c *= lf < 0.5 ? 1.07 : 0.9;
-			float vein = (1.0 - smoothstep(0.0, 0.035, abs(lf - 0.5))) * smoothstep(0.6, 1.2, depth);
-			c = mix(c, GRASS_TOP, vein * 0.3);
-			// Okraj lístku: světlé jádro papíru.
-			float edge = smoothstep(lim - 0.45, lim - 0.12, depth);
-			c = mix(c, mix(GRASS_TOP, RIM, 0.4), edge * 0.45);
-			leaf = mix(leaf, c, in_leaf);
-			grass = max(grass, in_leaf);
-		}
-		leaf = mix(leaf, GRASS_TOP, 1.0 - smoothstep(0.35, 0.7, depth));
-		leaf *= 1.0 + fib * 0.18;
-		// Stín pod lístky na terakotě.
-		col *= 1.0 - leaf_shadow * (1.0 - grass) * 0.34;
-		col = mix(col, leaf, grass);
+		float thick = 3.0 + (noise(vec2(p.x, 17.0), 90.0).g - 0.5) * 1.4;
+		float torn = (noise(vec2(p.x, 23.0), 6.0).r - 0.5) * 1.1
+			+ (noise(vec2(p.x, 29.0), 1.8).a - 0.5) * 0.18 + fib * 0.1;
+		float lower = thick + torn;
+		float turf = support * (1.0 - smoothstep(lower - 0.1, lower + 0.1, depth));
+		float lower2 = lower + 0.55 + (noise(vec2(p.x, 41.0), 11.0).b - 0.35) * 1.3;
+		float under = support * (1.0 - smoothstep(lower2 - 0.1, lower2 + 0.1, depth)) * (1.0 - turf);
+		// Pruh je složený z kusů různé délky s lehce jiným odstínem.
+		float seam_x = p.x + (noise(vec2(p.y * 2.0, 53.0), 8.0).r - 0.5) * 2.0;
+		float piece_w = 38.0;
+		float piece_i = floor(seam_x / piece_w);
+		float piece_f = seam_x - piece_i * piece_w;
+		float piece_tint = hash(vec2(piece_i, 61.0));
+		vec3 turf_col = mix(GRASS_LIT, GRASS, smoothstep(0.4, max(lower, 0.5), depth) * 0.7);
+		turf_col *= 0.95 + 0.1 * piece_tint;
+		turf_col *= 1.0 + fib * 0.2 + (paper(p, 22.0) - 0.5) * 0.08;
+		// Světlá horní plocha trávníku a jemný přehyb pod ní.
+		turf_col = mix(turf_col, GRASS_TOP, (1.0 - smoothstep(0.2, 0.5, depth)) * 0.7);
+		turf_col *= 1.0 - (1.0 - smoothstep(0.0, 0.18, abs(depth - 0.95))) * 0.08;
+		// Šev mezi kusy: světlé jádro na hraně horního kusu.
+		float seam = fiber_rim(min(piece_f, piece_w - piece_f), p, 0.5) * 0.45;
+		// Natržený spodní okraj se světlým jádrem papíru.
+		float tear_rim = fiber_rim(lower - depth, p, 0.85);
+		turf_col = mix(turf_col, mix(GRASS_TOP, RIM, 0.5), clamp(max(tear_rim * 0.8, seam), 0.0, 1.0));
+		vec3 under_col = GRASS_DARK * (0.95 + 0.1 * piece_tint) * (1.0 + fib * 0.2);
+		under_col = mix(under_col, mix(GRASS, RIM, 0.3), fiber_rim(lower2 - depth, p, 0.6) * 0.5);
+		// Zvednutý drn vrhá měkký stín na hlínu pod sebou (podle hladké tloušťky,
+		// ne podle natržení, jinak by stín měl svislé pruhy).
+		float shadow_edge = thick + 1.0;
+		float turf_shadow = support * (1.0 - smoothstep(shadow_edge - 0.4, shadow_edge + 1.8, depth));
+		col *= 1.0 - turf_shadow * (1.0 - turf) * (1.0 - under) * 0.32;
+		col = mix(col, under_col, under);
+		col = mix(col, turf_col, turf);
 
 		// --- Ocelová (nerozbitná) výztuha -------------------------------------
 		float l1 = abs(fract((p.x + p.y) / 7.0) - 0.5);

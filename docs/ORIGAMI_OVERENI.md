@@ -51,8 +51,9 @@ Na přání autora (body: čitelnější postavičky, hloubka a světlo, živá 
 3. **Živá krajina:** mraky pomalu plují (každý jinou rychlostí), hejnko tří
    ptáčků mává křídly a přelétá oblohu, rostlinky, papírová tráva rostoucí
    vzhůru z povrchu i trsy v popředí se kývají ve větru (kořen stojí,
-   hýbe se špička; zelený lem mechu přes hranu terénu stojí a má oblé
-   lístky, aby nepůsobil jako obrácená tráva), občas se snese lístek nebo okvětní
+   hýbe se špička). Dřívější lem z lístků visících přes hranu působil jako
+   tráva vzhůru nohama; na přání autora ho nahradil hladký pruh zeleného
+   drnu s natrženým světlým spodním okrajem, tmavší spodní vrstvou a stínem, občas se snese lístek nebo okvětní
    plátek a chvíli poleží na zemi, plameny nad lávou jsou nepravidelné.
    Vše běží podle herního času: pauza to zastaví, stop-motion to posouvá
    po krocích.
@@ -61,7 +62,7 @@ Na přání autora (body: čitelnější postavičky, hloubka a světlo, živá 
 
 Záznam (13 s): [`images/origami-ziva-krajina.mp4`](images/origami-ziva-krajina.mp4).
 
-Tráva zblízka (roste vzhůru, kývá se špička, lem mechu stojí):
+Tráva zblízka (roste vzhůru z pruhu drnu, kývá se špička):
 [`images/origami-trava.mp4`](images/origami-trava.mp4).
 
 ![Papírová tráva roste vzhůru z povrchu](images/origami-trava.jpg)
@@ -85,7 +86,7 @@ Porovnání pohybu (vlevo stop-motion, vpravo plynule):
 |---|---|
 | Vrstvy krajiny | nebe (přechod), slunce a mraky, hory s přehyby a sněhem, střední pás (kopce, vesnice s kostelem, viadukt, vodopád, les), blízký les s řekou; každá vrstva je vodorovně navazující a obsahuje i místa zakrytá terénem |
 | Popředí | tři trsy papírových listů a květ; nízký rám u spodní lišty, zprůhlední nad postavou, líhní a východem |
-| Terén | shader z masky: listy trhaného papíru (terakota, okr, písek) se světlým vláknitým okrajem a stínem, mech z lístků na původním povrchu, ocel s mřížkou, harmonikové schody z cihel, světlá zadní stěna výkopu, tmavší jeskyně, vržený stín |
+| Terén | shader z masky: listy trhaného papíru (terakota, okr, písek) se světlým vláknitým okrajem a stínem, pruh zeleného drnu na původním povrchu (natržený spodní okraj, stín) a papírová tráva rostoucí vzhůru, ocel s mřížkou, harmonikové schody z cihel, světlá zadní stěna výkopu, tmavší jeskyně, vržený stín |
 | Objekty | papírová chatka na kůlech s žebříkem, praporkem a padacími dvířky (otevřou se před prvním vypuštěním), domek východu se zlatými dveřmi a vlající vlajkou, drobné rostlinky na povrchu (mizí s vykopanou zemí) |
 | Postavička | 9 dílů (čepice, hlava s kapucí, kabátek, 2 paže, 2 nohy, nářadí) s plochami přehybů, vláknem a vlastním stínem; nářadí: krumpáč, lopata, deštník rozevřený i složený, papírová cihla |
 | Animace | chůze, pád, pád se složeným deštníkem, lezení, plachtění (deštník se rozevře za 5 tiků), blokování, stavění, vodorovné ražení, šikmé a svislé kopání, krčení ramen, splácnutí, vstup do východu; přechody 3 tiky; otočka jako otočení papírku; odpočet bomby na papírovém štítku |
@@ -114,7 +115,7 @@ potvrdil, že generátor dává bit po bitu stejné soubory. Nová sada
 - zoom kolem kurzoru (bod pod kurzorem zůstane), meze zoomu, posun prstem,
 - pokrytí obrazovky vrstvami bez mezer, pořadí paralaxy pro posun i zoom
   a plynulost (žádný skok vrstvy při postupném zoomu),
-- statickou texturu terénu (mech jen na původním povrchu, ne v jeskyni),
+- statickou texturu terénu (drn jen na původním povrchu, ne v jeskyni),
   obnovu textury jen při změně masky a pouze čtení revizí,
 - úplnost animací pro všechny stavy a kontakt nástroje v tiku změny masky,
 - dotyky ve 2D: klepnutí po uvolnění, posun ani dva prsty nepřidělí
@@ -173,7 +174,7 @@ Rozdíly, které zůstávají:
   jednodušší: stromy a hory mají méně variací, mraky jsou kupovité tvary
   s rovným spodkem, chatka i domek mají méně detailů.
 - Terén v mockupu tvoří velké bloky s přední plochou; hra kreslí čistě
-  boční pohled se širokými trhanými vrstvami a mechem z lístků.
+  boční pohled se širokými trhanými vrstvami a pruhem drnu s trávou.
 - Postavy jsou při výchozím zoomu menší než v mockupu (asi 4–5 % výšky
   obrazovky); čitelné detaily obličeje vyniknou až při přiblížení.
 - Úlomky z kopání odlétají a mizí; mockup ukazuje trvalé hromádky.

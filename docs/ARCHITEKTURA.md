@@ -257,7 +257,7 @@ a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
 |---|---|
 | `PaperCamera` | Jediná herní transformace logika → obrazovka, zoom 1×–3,2× kolem kurzoru či středu prstů, hranice levelu, klávesy, okraj, kolečko, tažení. |
 | `PaperParallax` | Čtyři vodorovně navazující vrstvy (nebe, hory, vesnice, blízký les). Posun i zoom odvozené z kamery: `měřítko = výška/1200 × zoom^exponent`. Spodní řádek se protáhne dolů, takže nevzniká prázdný okraj. Hloubka ostrosti je předem v podkladech (generátor rozmaže vzdálenější vrstvy víc), shader přidá opar. Nebe nese pohyblivé výřezy: plující mraky a mávající ptáčky (`sky.json`), řízené herním časem. |
-| `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: listy trhaného papíru složené z vystřižených kusů (natržené švy, překryv, mírný náklon), bílé vláknité okraje, mech z lístků se stíny, ocel s mřížkou jako nalepený díl, harmonikové schody, světlou zadní stěnu výkopu a tmavší jeskyni (i uzavřené dutiny). Měkké stíny dávají mipmapy masky (levné rozmazání). Vodu a lávu (vlnité pruhy, plameny) a šipky jednosměrných zdí čte z textury nebezpečí sestavené z kanálu A masky; přední pruhy hladiny kreslí uzel `HazardSurface` nad postavami. |
+| `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: listy trhaného papíru složené z vystřižených kusů (natržené švy, překryv, mírný náklon), bílé vláknité okraje, hladký pruh drnu s natrženým okrajem a stínem, ocel s mřížkou jako nalepený díl, harmonikové schody, světlou zadní stěnu výkopu a tmavší jeskyni (i uzavřené dutiny). Měkké stíny dávají mipmapy masky (levné rozmazání). Vodu a lávu (vlnité pruhy, plameny) a šipky jednosměrných zdí čte z textury nebezpečí sestavené z kanálu A masky; přední pruhy hladiny kreslí uzel `HazardSurface` nad postavami. |
 | `PaperGrass` | Papírová tráva rostoucí vzhůru z původního povrchu (body z `PaperTerrain.exposed_surface`); stébla se kývají špičkou podle herního času, trs zmizí s vykopanou zemí nebo pod cihlou. Kreslí se za postavami. |
 | `PaperProps` | Líheň (chatka na kůlech, padací dvířka), východ (domek, vlající vlajka), pasti (masožravá rostlina, čelisti podle `trap_fired`/`trap_ready`) a drobné rostlinky svázané s maskou. |
 | `PaperActors` | Origami postavy z dílů atlasu; přechody 3 tiky, otočka jako „otočení papírku“. Výchozí stop-motion: póza i poloha po celých ticích, jemné deterministické chvění dílů po 2 ticích, zplácnutí při dopadu, plameny kolem hořící postavy; plynulý režim = funkce `state_ticks + alpha` (klávesa M). |
@@ -270,7 +270,7 @@ a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
 masky (bez mipmap; rozmazané úrovně slouží jen ke stínům a okrajům). Šum trhaného okraje je omezený na ±0,4, takže střed každé buňky
 (hodnota 0 nebo 1) má vždy stejné obsazení jako simulace. Grafický QA
 průchod to kontroluje na skutečném snímku v kontrolním režimu shaderu.
-Statická textura si pamatuje původní povrch (mech nepřirůstá v tunelech)
+Statická textura si pamatuje původní povrch (drn nepřirůstá v tunelech)
 a vnitřek jeskyní; revize masky se pouze čtou.
 
 **Paralaxa a vstup.** Výběr postav i převod dotyku používá jen

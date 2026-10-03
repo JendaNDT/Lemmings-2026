@@ -186,9 +186,9 @@ func _test_static_terrain() -> void:
 	paint_rect(mask, Rect2i(20, 30, 40, 12), TerrainMask.Kind.ERASE)
 	var image := PaperTerrain.build_static(mask)
 	check(image.get_pixel(10, 20).a8 == 0 and image.get_pixel(10, 22).a8 == 32,
-		"mech roste od původního povrchu dolů")
+		"drn leží od původního povrchu dolů")
 	check(image.get_pixel(30, 42).a8 == 255 and image.get_pixel(30, 35).g8 == 255,
-		"dno jeskyně nemá mech a vnitřek jeskyně má zadní stěnu")
+		"dno jeskyně nemá drn a vnitřek jeskyně má zadní stěnu")
 	check(image.get_pixel(10, 10).g8 == 0, "nebe nad terénem není jeskyně")
 	var terrain := PaperTerrain.new()
 	root.add_child(terrain)

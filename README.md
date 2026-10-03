@@ -10,7 +10,7 @@ Plán vývoje: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md)
 
 Hra se nově spouští v **papírovém 2D origami stylu** podle přijatého
 [mockupu](docs/MOCKUP_ORIGAMI.md): tyrkysové skládané postavičky
-s okrovými čepicemi, terén z vrstev trhaného papíru, mech, papírová
+s okrovými čepicemi, terén z vrstev trhaného papíru, pruh zeleného drnu s trávou, papírová
 líheň a východ, harmonikové schody a krajina ve čtyřech paralaxních
 vrstvách s posunem i zoomem. Terén tvoří vystřižené kusy papíru s bílými
 natrženými okraji a měkkými stíny, postavy se hýbou jako papírové loutky

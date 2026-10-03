@@ -99,8 +99,8 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - **Vzhled 3. kolo:** čitelnější postavičky (bližší výchozí pohled, světlý
   papírový okraj a stín), hloubka ostrosti krajiny a popředí, opar, teplé
   světlo s paprsky, delší stíny, tmavší tunely; plující mraky, mávající
-  ptáci, papírová tráva rostoucí vzhůru a kývající se rostliny i popředí
-  (lem mechu přes hranu stojí), padající lístky,
+  ptáci, papírová tráva rostoucí vzhůru a kývající se rostliny i popředí,
+  hladký pruh drnu s natrženým okrajem místo lemu z lístků, padající lístky,
   nepravidelné plameny nad lávou; kontrola 72 GDScriptů, 10 sad,
   304 ověření (`test_origami` 70)
 - **Vylepšení 2. kolo:** šikmé břehy jezírka a lávové jámy, odlesky,
@@ -115,7 +115,7 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
   grafice, zrnitost a vinětace, stop-motion pohyb postav (klávesa M)
 - Kontrola po 2. kole: 66 GDScriptů, 9 sad, 232 ověření (`test_origami` 46)
 - **2D origami zobrazení jako výchozí scéna** (`main/game_origami.tscn`,
-  `view/paper_*`): papírový terén ze shaderu nad maskou (vrstvy, mech, ocel,
+  `view/paper_*`): papírový terén ze shaderu nad maskou (vrstvy, drn, ocel,
   harmonikové schody, výkopy, jeskyně), origami postavy z dílů se 13 animacemi
   podle simulačních tiků, líheň a východ, rostlinky, papírové ústřižky
 - Paralaxa: 4 vodorovně navazující vrstvy krajiny + popředí, rozdílný posun
