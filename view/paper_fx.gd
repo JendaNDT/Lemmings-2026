@@ -23,6 +23,8 @@ class Scrap:
 	var color := Color.WHITE
 	var gravity := 1.0
 	var shape := 0
+	## Ústřižek dopadl na zem a chvíli leží (jen vzhled, maska se nemění).
+	var resting := false
 
 
 ## Rozkládání harmonikové cihly: [x, y, dir, tik vzniku].
@@ -95,9 +97,20 @@ func advance(delta: float) -> void:
 		if s.life <= 0.0:
 			_scraps.remove_at(i)
 			continue
+		if s.resting:
+			continue
 		s.vel.y += GRAVITY * s.gravity * delta
 		s.vel *= 1.0 - minf(delta * 1.5, 0.5)
-		s.pos += s.vel * delta
+		var next := s.pos + s.vel * delta
+		# Těžší ústřižky dopadnou na terén a zůstanou ležet jako hromádka.
+		if sim != null and s.gravity >= 1.0 and s.vel.y > 0.0 \
+				and sim.mask.is_solid(floori(next.x), floori(next.y + s.size * 0.3)):
+			s.resting = true
+			s.life = maxf(s.life, 3.5)
+			s.max_life = maxf(s.max_life, s.life)
+			s.angle = snappedf(s.angle, PI / 3.0)
+			continue
+		s.pos = next
 		s.angle += s.spin * delta
 	if sim != null:
 		var now := sim.tick_count + alpha
@@ -131,6 +144,11 @@ func _draw() -> void:
 					Color(color, 1.0 - k * 0.6))
 	for s in _scraps:
 		var fade := clampf(s.life / s.max_life * 1.6, 0.0, 1.0)
+		if s.resting:
+			fade = clampf(s.life / 1.2, 0.0, 1.0)
+			# Ležící ústřižek zmizí, když pod ním zmizí zem.
+			if sim != null and not sim.mask.is_solid(floori(s.pos.x), floori(s.pos.y + s.size * 0.3)):
+				fade = 0.0
 		var c := Color(s.color, fade)
 		var r := s.size * 0.5
 		var pts := PackedVector2Array()

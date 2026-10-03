@@ -59,13 +59,16 @@ func update(delta: float) -> void:
 		if sim != null:
 			var inset := rect.size * Vector2(-0.08, -0.1)
 			var grown := rect.grow_individual(inset.x, inset.y, inset.x, 0)
+			# Líheň a východ jsou herní cíle: trs se nad nimi také zprůhlední.
+			for point in sim.spec.exits + sim.spec.hatches:
+				busy = busy or grown.has_point(camera.logic_to_screen(Vector2(point) + Vector2(0, -6)))
 			for lem in sim.lemmings:
+				if busy:
+					break
 				if lem.removed:
 					continue
 				var p := camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5.0))
-				if grown.has_point(p):
-					busy = true
-					break
+				busy = grown.has_point(p)
 		var key: int = entry[0]
 		_fade[key] = move_toward(float(_fade.get(key, 1.0)), HIDDEN_ALPHA if busy else 1.0, delta * 3.0)
 	queue_redraw()

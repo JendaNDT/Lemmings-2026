@@ -55,8 +55,10 @@ def main():
     godot = executable(args.godot)
     logs = ROOT / "build" / "checks"
     logs.mkdir(parents=True, exist_ok=True)
+    # Povolená je řada 4.7 stable včetně opravných vydání (4.7.1 …); jiná
+    # hlavní/vedlejší verze, beta či rc kontrolu záměrně neprojde.
     version = run("godot-version", [godot, "--version"], ROOT, logs,
-                  success=r"^4\.7\.stable\.")
+                  success=r"^4\.7(?:\.[1-9]\d*)?\.stable\.")
     print(version.strip())
     with tempfile.TemporaryDirectory(prefix="lemmings-check-") as directory:
         project = Path(directory) / "project"

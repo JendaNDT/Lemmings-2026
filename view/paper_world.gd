@@ -87,7 +87,9 @@ func setup(sim: LevelSim) -> void:
 	var focus := Vector2(sim.spec.width * 0.5, sim.spec.height * 0.45)
 	if not sim.spec.hatches.is_empty():
 		focus = Vector2(sim.spec.hatches[0]) + Vector2(60, 40)
-	camera.setup(Vector2(sim.spec.width, sim.spec.height), focus, 1.5)
+	# Na telefonu je obrazovka fyzicky malá: začneme blíž, aby byly postavy čitelné.
+	camera.setup(Vector2(sim.spec.width, sim.spec.height), focus,
+		2.0 if DeviceProfile.touch_mode() else 1.5)
 	_apply_camera()
 
 

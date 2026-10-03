@@ -6,7 +6,9 @@ výslovně **mockup → posouzení vzhledu → scéna Godotu**.
 
 ![Generovaný výtvarný mockup: papírová krajina a skládané postavičky](images/mockup-origami-prvni-kroky.png)
 
-**Stav: autor návrh přijal jako jediný další výtvarný podklad.** Označil jej
+**Stav: autor návrh přijal jako jediný další výtvarný podklad. Podle něj
+je implementované výchozí 2D zobrazení hry; porovnání skutečných snímků
+s touto předlohou je v [`ORIGAMI_OVERENI.md`](ORIGAMI_OVERENI.md).** Označil jej
 za pěkný a požádal o nahrání na GitHub a odstranění předchozích návrhů.
 Jde o jeden
 generovaný obrázek, nikoli snímek hry, animaci nebo sadu oddělených vrstev.
@@ -19,21 +21,22 @@ generovaný obrázek, nikoli snímek hry, animaci nebo sadu oddělených vrstev.
   odlišenou nerozbitnou plochu a rozkládané harmonikové schody.
 - Papírovou líheň a východ, čitelnou spodní lištu osmi dovedností.
 - Vzdálené hory a oblohu, les a vesnici ve střední vzdálenosti,
-  ostrou herní vrstvu a rostliny v popředí. Tyto pásy určují zamýšlenou
-  hloubku budoucí paralaxy; nejsou ještě exportované zvlášť.
+  ostrou herní vrstvu a rostliny v popředí. Tyto pásy určily hloubku
+  paralaxních vrstev ve hře.
 
-## Až po posouzení vzhledu
+## Převod do hry (provedeno)
 
-Připravit samostatné obrazy vrstev včetně částí nyní zakrytých terénem,
-postavičku s animacemi a materiály řezu. V Godotu zachovat postavy,
+Samostatné obrazy vrstev včetně částí zakrytých terénem, postavička
+s animacemi a materiály řezu jsou v `assets/origami/` (vlastní generátor,
+z mockupu nebyly kopírovány pixely). V Godotu jsou postavy,
 schůdný terén a stavební schody v jedné 2D soustavě. Dekorativní vrstvy
 reagují rozdílně na posun a řízeně také na zoom; jejich transformace
 nesmějí ovlivnit kolize ani převod kliknutí. HUD zůstává na obrazovce.
 
 Kopání nadále pouze vodorovně, šikmo dolů a svisle dolů. Nahoru vedou
-stavitelovy schody. Simulace a dosavadní mechaniky se zachovají; zobrazení
-bude nově 2D. Kompozice obrázku není ověřenou řešitelnou mapou levelu.
-Před použitím se doladí čitelnost ikon, velikosti postav a okrajů cest.
+stavitelovy schody. Simulace a dosavadní mechaniky zůstaly beze změny.
+Kompozice obrázku není ověřenou řešitelnou mapou levelu; hra používá
+původní mise a jejich geometrii.
 
 ## Původ a ověření
 

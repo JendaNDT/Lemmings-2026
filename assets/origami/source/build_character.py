@@ -87,12 +87,12 @@ def make_parts(fiber, rng):
     parts["torso"] = (c, pivot)
 
     # --- paže: rukáv + dlaň (pivot v rameni, míří dolů) -----------------------
-    arm = [(-0.48, -0.2), (0.48, -0.2), (0.42, 1.55), (-0.42, 1.55)]
-    c, tp, pivot = part_canvas(arm + [(0.55, 2.3), (-0.55, 2.3)], fiber)
+    arm = [(-0.5, -0.2), (0.5, -0.2), (0.44, 1.85), (-0.44, 1.85)]
+    c, tp, pivot = part_canvas(arm + [(0.6, 2.75), (-0.6, 2.75)], fiber)
     paper(c, tp, arm, P.JACKET_LIGHT, rng, rim=EDGE)
-    facet(c, tp, [(0.05, -0.2), (0.48, -0.2), (0.42, 1.55), (0.05, 1.55)], P.JACKET)
-    paper(c, tp, [(-0.45, 1.45), (0.45, 1.45), (0.4, 1.7), (-0.4, 1.7)], P.JACKET_DARK, rng, shadow=False)
-    paper(c, tp, ellipse(0.0, 1.95, 0.4, 0.36, 20), P.HAND, rng, rim=EDGE, amp=0.15)
+    facet(c, tp, [(0.05, -0.2), (0.5, -0.2), (0.44, 1.85), (0.05, 1.85)], P.JACKET)
+    paper(c, tp, [(-0.47, 1.72), (0.47, 1.72), (0.42, 2.0), (-0.42, 2.0)], P.JACKET_DARK, rng, shadow=False)
+    paper(c, tp, ellipse(0.0, 2.3, 0.44, 0.4, 20), P.HAND, rng, rim=EDGE, amp=0.15)
     parts["arm"] = (c, pivot)
 
     # --- hlava: hranatý obličej + tyrkysová kapuce vzadu (pivot v krku) -------
@@ -197,7 +197,7 @@ SKELETON = {
     "leg_front": {"parent": "root", "joint": [0.35, -2.1], "part": "leg"},
     "head": {"parent": "torso", "joint": [0.15, -2.55], "part": "head"},
     "cap": {"parent": "head", "joint": [0.1, -2.25], "part": "cap"},
-    "tool": {"parent": "arm_front", "joint": [0.0, 1.95], "part": ""},
+    "tool": {"parent": "arm_front", "joint": [0.0, 2.3], "part": ""},
     "arm_front": {"parent": "torso", "joint": [0.25, -2.3], "part": "arm"},
 }
 DRAW_ORDER = ["arm_back", "leg_back", "leg_front", "torso", "head", "cap", "tool", "arm_front"]
@@ -230,11 +230,12 @@ ANIMS = {
         (0.5, pose(leg_front=10, leg_back=-8, arm_front=198, arm_back=165, torso=3, head=4, cap=8, tool=166),
          [0, -0.1, 0, 1, 1]),
     ]},
+    # Lezec je přitisknutý ke stěně vpravo: obě ruce vpředu nahoře, kolena střídavě nahoru.
     "climb": {"cycle": 8, "loop": True, "keys": [
-        (0.0, pose(leg_front=-55, leg_back=-15, arm_front=-175, arm_back=-140, torso=10, head=-8, cap=-4),
-         [0.35, 0, 0, 1, 1]),
-        (0.5, pose(leg_front=-15, leg_back=-55, arm_front=-140, arm_back=-175, torso=10, head=-8, cap=2),
-         [0.35, -0.15, 0, 1, 1]),
+        (0.0, pose(leg_front=-70, leg_back=-20, arm_front=-158, arm_back=-128, torso=14, head=-12, cap=-6),
+         [0.55, 0, -4, 1, 1]),
+        (0.5, pose(leg_front=-20, leg_back=-70, arm_front=-128, arm_back=-158, torso=14, head=-12, cap=0),
+         [0.55, -0.2, -4, 1, 1]),
     ]},
     "float": {"cycle": 20, "loop": True, "tool": "umbrella_open", "unfold_ticks": 5, "keys": [
         (0.0, pose(leg_front=-8, leg_back=10, arm_front=202, arm_back=24, torso=-2, head=-4, cap=-3, tool=158),
@@ -243,8 +244,9 @@ ANIMS = {
          [0, 0, 3, 1, 1]),
     ]},
     "block": {"cycle": 24, "loop": True, "keys": [
-        (0.0, pose(leg_front=-14, leg_back=14, arm_front=-92, arm_back=92, torso=0, head=0, cap=0), [0, 0.1, 0, 1, 1]),
-        (0.5, pose(leg_front=-14, leg_back=14, arm_front=-84, arm_back=84, torso=-1, head=-3, cap=-3),
+        (0.0, pose(leg_front=-17, leg_back=17, arm_front=-100, arm_back=100, torso=0, head=0, cap=0),
+         [0, 0.12, 0, 1, 1]),
+        (0.5, pose(leg_front=-17, leg_back=17, arm_front=-88, arm_back=88, torso=-1, head=-3, cap=-3),
          [0, 0.0, 0, 1, 1]),
     ]},
     # Stavitel: kontakt (položení cihly) v t = 0.5 ↔ SimConst.BUILDER_BRICK_PHASE.

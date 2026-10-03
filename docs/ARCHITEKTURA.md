@@ -4,10 +4,11 @@ Návrh, jak je hra postavená a proč. Psáno tak, aby se v tom vyznal
 i neprogramátor, a zároveň aby se podle toho dalo dál stavět
 (i s pomocí AI).
 
-**Aktualizace směru:** cílem je 2.5D zobrazení nad společnou 2D simulací.
-Výchozí scéna již používá 3D terén, postavy a pevnou ortografickou kameru.
-Původní 2D scéna zůstává pro porovnání. První distribuční test
-míří na macOS, později Windows a Android. Aktuální pořadí prací:
+**Aktualizace směru:** výchozí scéna `main/game_origami.tscn` je čistě
+2D papírové (origami) zobrazení nad společnou 2D simulací, s paralaxním
+posunem i zoomem (oddíl 7a). 2.5D prototyp `main/game_3d.tscn` a původní
+jednoduché 2D `main/game.tscn` zůstávají pro porovnání. První distribuční
+test míří na macOS, později Windows a Android. Aktuální pořadí prací:
 [`PLAN_VYVOJE.md`](PLAN_VYVOJE.md).
 
 ---
@@ -240,16 +241,45 @@ Technický záznam dosavadní verze je v [`GRAFIKA_04.md`](GRAFIKA_04.md).
 Po změnách se kontroluje geometrie, projekce, celý level i výkon; postup
 je v [`ETAPA_3_OVERENI.md`](ETAPA_3_OVERENI.md).
 
-### Navazující výtvarná práce — 2D origami
+## 7a. Grafika 2D origami — výchozí zobrazení
 
-Aktuální předloha je [origami mockup](MOCKUP_ORIGAMI.md). Nové zobrazení
-převezme 2D masku a stavy postav; simulační pravidla se nemění. Dekorace
-budou v samostatných vrstvách s rozdílným posunem a zoomem. Postavy,
-terén a schody musejí sdílet jednu herní transformaci, HUD zůstává pevný.
-Při změně zoomu nesmí ujíždět výběr postav nebo se odhalovat chybějící
-okraje obrazů. Obrázek zatím není rozdělený do vrstev ani implementovaný.
+`main/game_origami.tscn` dědí hlavní scénu stejně jako 2.5D varianta:
+sdílí herní smyčku, HUD a příkazy. `game.gd` zná prezentaci jen přes
+`presentation_path` a volá `setup()`, `update_frame()`, `highlight()`
+a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
+`PaperWorld` skládá tyto části:
 
----
+| Část | Odpovědnost |
+|---|---|
+| `PaperCamera` | Jediná herní transformace logika → obrazovka, zoom 1×–3,2× kolem kurzoru či středu prstů, hranice levelu, klávesy, okraj, kolečko, tažení. |
+| `PaperParallax` | Čtyři vodorovně navazující vrstvy (nebe, hory, vesnice, blízký les). Posun i zoom odvozené z kamery: `měřítko = výška/1200 × zoom^exponent`. Spodní řádek se protáhne dolů, takže nevzniká prázdný okraj. |
+| `PaperTerrain` | Shader `paper_terrain.gdshader` kreslí terén přímo z masky: vrstvy trhaného papíru, mech na původním povrchu, ocel s mřížkou, harmonikové schody z cihel, světlou zadní stěnu výkopu a tmavší jeskyni, stín. |
+| `PaperProps` | Líheň (chatka na kůlech, padací dvířka), východ (domek, vlající vlajka) a drobné rostlinky svázané s maskou. |
+| `PaperActors` | Origami postavy z dílů atlasu; póza = funkce `state_ticks + alpha`, přechody 3 tiky, otočka jako „otočení papírku“. |
+| `PaperFx` | Papírové ústřižky z událostí, rozkládání cihly; čas efektů běží s herním časem. |
+| `PaperForeground` | Nízké trsy rostlin u spodní lišty; zprůhlední, když je za nimi postava. Vstup nepřijímají. |
+
+**Přesnost terénu.** Hrana leží na izočáře 0,5 bilineárně interpolované
+masky. Šum trhaného okraje je omezený na ±0,4, takže střed každé buňky
+(hodnota 0 nebo 1) má vždy stejné obsazení jako simulace. Grafický QA
+průchod to kontroluje na skutečném snímku v kontrolním režimu shaderu.
+Statická textura si pamatuje původní povrch (mech nepřirůstá v tunelech)
+a vnitřek jeskyní; revize masky se pouze čtou.
+
+**Paralaxa a vstup.** Výběr postav i převod dotyku používá jen
+`PaperCamera`; vrstvy kamery nemění. Vzdálenější vrstvy se posouvají
+i zvětšují méně (exponenty 0,04 / 0,12 / 0,3 / 0,5), herní rovina 1, popředí
+mírně více. HUD je samostatná CanvasLayer.
+
+**Animace.** Generátor `assets/origami/source/build_character.py` zapisuje
+atlas, kostru a klíčové pózy (`worker_rig.json`); stejný výpočet kloubů
+má i náhled. Kontakt nástroje je na tiku změny masky: stavitel
+`BUILDER_BRICK_PHASE`, razič, horník a kopáč na začátku cyklu dělitelného
+krokem kopání. Pauza zastaví pózu, zrychlení ji zrychlí.
+
+Podklady jsou v `assets/origami/` s původem, licencí a manifestem
+`assets/origami.lock.json`. Výsledky ověření jsou v
+[`ORIGAMI_OVERENI.md`](ORIGAMI_OVERENI.md).
 
 ## 8. Moderní vylepšení hratelnosti
 
@@ -274,6 +304,7 @@ sim/                 logika hry (žádná grafika!)
 level_tools/         nástroje pro stavbu levelů v editoru
 levels/              samotné levely (scény)
 view/                grafika: terén, lumíci, efekty, kamera, shadery
+                     (paper_* = 2D origami, clay_* = 2.5D prototyp)
 ui/                  rozhraní (HUD, menu)
 tests/               automatické testy simulace (běží bez grafiky)
 docs/                dokumentace

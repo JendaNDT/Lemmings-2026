@@ -195,11 +195,47 @@ def exit_house(fiber, rng, out: Path) -> dict:
             "door_center": [0.5, -6.0]}
 
 
+def plants(fiber, rng, out: Path) -> list:
+    """Drobné rostlinky na povrch plošin: kotva je střed spodní hrany."""
+    from build_backgrounds import leaf
+    s = PROP_SCALE
+    specs = [
+        ("plant_tuft", 9, 7, [(P.GRASS_LIT, P.GRASS_TOP), (P.LEAF_SAGE, P.LEAF_SAGE_LIGHT)] * 3, False),
+        ("plant_fern", 10, 9, [(P.LEAF_TEAL, P.LEAF_TEAL_LIGHT), (P.LEAF_SAGE, P.LEAF_SAGE_LIGHT)] * 3, False),
+        ("plant_flower", 11, 9, [(P.LEAF_SAGE, P.LEAF_SAGE_LIGHT)] * 4, True),
+    ]
+    out_specs = []
+    for name, w, h, leaves, flower in specs:
+        c = Canvas(int(w * s), int(h * s), fiber=fiber)
+        bx, by = w * s / 2, h * s - 2
+        for col, light in leaves:
+            ang = -math.pi / 2 + rng.uniform(-1.0, 1.0)
+            length = rng.uniform(0.45, 0.85) * (h - 1) * s
+            outline, half, rib = leaf(bx + rng.uniform(-0.12, 0.12) * w * s, by, length,
+                                      length * rng.uniform(0.32, 0.45), ang, rng.uniform(-0.3, 0.3))
+            c.shape(outline, light, fiber=0.08, shadow=(3, 4, 3, 0.3))
+            c.shape(half, col, fiber=0.08)
+            c.crease(rib[0], rib[1], 2.0, mix(light, "#ffffff", 0.25), 0.5)
+        if flower:
+            fx, fy = bx + 0.5 * s, by - (h - 2.6) * s
+            c.crease((fx, fy), (bx, by), 4, P.LEAF_SAGE, 1.0)
+            for k in range(5):
+                a = k * math.tau / 5
+                petal = leaf(fx, fy, 1.4 * s, 0.9 * s, a, 0.0)
+                c.shape(petal[0], P.FLOWER, fiber=0.05, shadow=(2, 3, 2, 0.25))
+                c.shape(petal[1], P.FLOWER_SHADE, fiber=0.05)
+            c.shape(ellipse(fx, fy, 0.35 * s, 0.35 * s, 16), P.CAP, fiber=0.05)
+        c.save(out / "props" / f"{name}.png")
+        out_specs.append({"texture": f"props/{name}.png", "anchor": [w / 2, h - 2 / s]})
+    return out_specs
+
+
 def build(out: Path, seed: int = 2027):
     from paperlib import fiber_field
     fiber = fiber_field(512, 512, np.random.default_rng(seed))
     data = {"hatch": hatch(fiber, np.random.default_rng(seed + 1), out),
-            "exit": exit_house(fiber, np.random.default_rng(seed + 2), out)}
+            "exit": exit_house(fiber, np.random.default_rng(seed + 2), out),
+            "plants": plants(fiber, np.random.default_rng(seed + 3), out)}
     (out / "props" / "props.json").write_text(json.dumps(data, indent=2) + "\n")
 
 

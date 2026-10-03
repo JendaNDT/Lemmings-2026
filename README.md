@@ -6,21 +6,28 @@ Architektura: [`docs/ARCHITEKTURA.md`](docs/ARCHITEKTURA.md) ·
 Stav projektu: [`PROJECT_STATUS.md`](PROJECT_STATUS.md) ·
 Plán vývoje: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md)
 
-## Nový návrh — 2D origami
+## Výchozí zobrazení — 2D origami
 
-Autor zvolil pro další návrh papírový styl s paralaxním posunem i zoomem.
-[První mockup a další postup](docs/MOCKUP_ORIGAMI.md) — generovaný výtvarný
-návrh přijatý autorem jako nový výtvarný směr, zatím bez implementace.
+Hra se nově spouští v **papírovém 2D origami stylu** podle přijatého
+[mockupu](docs/MOCKUP_ORIGAMI.md): tyrkysové skládané postavičky
+s okrovými čepicemi, terén z vrstev trhaného papíru, mech, papírová
+líheň a východ, harmonikové schody a krajina ve čtyřech paralaxních
+vrstvách s posunem i zoomem. Simulace a všechny mise jsou beze změny.
 
-![Výtvarný mockup 2D origami, nikoli snímek hry](docs/images/mockup-origami-prvni-kroky.png)
+![Skutečný snímek hry v 2D origami (Linux, software OpenGL)](docs/images/origami-hra-1.png)
 
-## Současná implementace
+Krátký záznam chůze, ražení, stavění, kopání, posunu a zoomu:
+[`docs/images/origami-zaznam.mp4`](docs/images/origami-zaznam.mp4).
+Ověření a meze: [`docs/ORIGAMI_OVERENI.md`](docs/ORIGAMI_OVERENI.md).
+
+Pro porovnání zůstávají dřívější scény `main/game_3d.tscn` (2.5D)
+a `main/game.tscn` (jednoduché 2D).
+
+## Platformy
 
 První testovací sestavení míří na **macOS (Apple Silicon i Intel)**. Stejné
-herní jádro má nyní také testovací sestavení pro Android; Windows navážou později. Výchozí scéna
-už používá **2.5D zobrazení**: prostorový terén, animované postavy a světla
-nad původní 2D simulací. Původní `main/game.tscn` zůstává pro porovnání;
-výchozí je `main/game_3d.tscn`.
+herní jádro má také testovací sestavení pro Android; Windows navážou později.
+Výchozí scéna je `main/game_origami.tscn`.
 
 ## Testovací verze pro Android
 
@@ -49,8 +56,8 @@ nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
 ## Technický stav verze 0.4.0
 
 [Ověření dosavadní hry a používané soubory](docs/GRAFIKA_04.md).
-Toto APK ještě používá starou grafiku. Nové 2D origami existuje jako
-výtvarný mockup; jeho implementace je další samostatný krok.
+**APK 0.4.0 i dřívější Mac balíček ještě obsahují starou 2.5D grafiku.**
+Origami zobrazení je zatím ve zdrojích; nové sestavení vznikne exportem.
 Řešení zkušebních misí: [etapa 4](docs/ETAPA_4_OVERENI.md).
 
 ## Spuštění hotové verze na Macu
@@ -69,10 +76,13 @@ ověření. Aktuální výsledky: [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERE
 
 ## Jak to spustit
 
-1. Stáhni **Godot 4.7** (standardní verze, ne .NET) z
+1. Stáhni **Godot 4.7** (standardní verze, ne .NET; funguje i opravná 4.7.1) z
    [godotengine.org/download](https://godotengine.org/download).
 2. Spusť Godot → **Import** → vyber soubor `project.godot` z tohohle repozitáře.
-3. Stiskni **F5** (nebo ▶ vpravo nahoře).
+   První import papírových textur chvíli trvá.
+3. Stiskni **F5** (nebo ▶ vpravo nahoře). Spustí se origami scéna.
+   Starší zobrazení otevřeš přes `main/game_3d.tscn` nebo `main/game.tscn`
+   a **F6** (spustit aktuální scénu).
 
 ## Vytvoření vlastního sestavení
 
@@ -109,13 +119,28 @@ Pokud Godot není v PATH, použij `--godot /cesta/k/Godotu` nebo proměnnou
 ověří oficiální SHA-512 a vypíše cestu k binárce pro Linux x86_64 nebo macOS.
 Exportní šablony tento pomocný instalátor neinstaluje.
 
-Kontrola zahrnuje integritu podkladů, parser a linter všech GDScriptů, čistý
-import, mechaniky, řešení levelu, replay, herní smyčku s HUD, geometrii 3D
-terénu, výběr myší a časování animací. Běží v dočasné
-kopii, původní soubory nemění; logy ukládá do `build/checks/`. Selže také
-při chybě Godotu s návratovým kódem 0, chybějícím výsledku nebo timeoutu.
-Stejný postup používá připravené CI pro Linux a macOS. Součástí jsou také
-testy dotykových gest, ochrany před dvojím přidělením a pauzy na pozadí.
+Kontrola zahrnuje integritu podkladů (včetně origami sady), parser a linter
+všech GDScriptů, čistý import, mechaniky, řešení levelu, replay, herní smyčku
+s HUD, geometrii 3D terénu, výběr myší a časování animací. Sada
+`test_origami` ověřuje převod souřadnic, zoom kolem kurzoru, hranice mapy,
+paralaxu bez mezer a skoků, dotyky, animace podle tiků a celou první misi
+přes origami scénu (20/20, shoda s čistou simulací). Běží v dočasné kopii,
+původní soubory nemění; logy ukládá do `build/checks/`. Selže také při chybě
+Godotu s návratovým kódem 0, chybějícím výsledku nebo timeoutu. Stejný
+postup používá připravené CI pro Linux a macOS. Verze Godotu musí být řada
+4.7 stable; opravná vydání (4.7.1 …) jsou povolená, jiné verze ne.
+
+Grafický průchod origami s ukládáním snímků (potřebuje grafický výstup,
+v cloudu Xvfb):
+
+```bash
+godot --path . --rendering-driver opengl3 --script res://scripts/qa_origami.gd \
+  -- --capture-dir=build/origami/desktop [--mobile] [--record=build/origami/frames] [--gallery]
+```
+
+Podklady origami se znovu vygenerují příkazem
+`python assets/origami/source/build_all.py` (potřebuje NumPy, Pillow, SciPy);
+`--check` jen ověří, že generátor dává stejné soubory.
 
 Volba `--benchmark` navíc změří čistou simulaci 200 lumíků po dobu 1700 tiků
 a 3D prezentaci s 200 postavami a souběžnou prací po dobu 240 tiků.
@@ -128,8 +153,8 @@ kontrolní průchod jsou v [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERENI.md).
 |---|---|
 | Vybrat dovednost | klik na liště dole nebo klávesy **1–8** |
 | Přidělit dovednost | levý klik na lumíka |
-| Posun kamery | šipky / **WASD** / myš u okraje / tažení pravým tlačítkem |
-| Přiblížení | kolečko myši |
+| Posun kamery | šipky / **WASD** / myš u okraje / tažení pravým tlačítkem / jeden prst |
+| Přiblížení | kolečko myši nebo gesto na touchpadu (kolem kurzoru) / dva prsty |
 | Pauza | **mezerník** nebo **P** |
 | Zrychlení 3× | **F** |
 | Vypouštění pomaleji / rychleji | **−** / **=** (nebo na numerické klávesnici) |

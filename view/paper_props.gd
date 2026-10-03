@@ -15,14 +15,20 @@ const GLOW := Color(1.0, 0.86, 0.5)
 var sim: LevelSim
 var alpha := 1.0
 var data: Dictionary
+## Rostlinky na povrchu: [x, y, druh]. Zmizí, když pod nimi zmizí zem.
+var plants: Array[Vector3i] = []
 ## Délka kůlů a žebříku pod každou líhní (podle původního terénu).
 var _supports: Array[float] = []
+var _plant_textures: Array[Texture2D] = []
 
 
 func _init() -> void:
 	data = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	for item: Dictionary in data["plants"]:
+		_plant_textures.append(load("res://assets/origami/" + item["texture"]))
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	# Opakování by u horních hran prosvítalo spodním řádkem; dlaždice skládáme ručně.
+	texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
 
 
 func setup(level_sim: LevelSim) -> void:
@@ -33,7 +39,38 @@ func setup(level_sim: LevelSim) -> void:
 		while ground < sim.mask.height and not sim.mask.is_solid(hatch.x - 10, ground):
 			ground += 1
 		_supports.append(float(mini(ground - hatch.y, 80)))
+	_place_plants()
 	queue_redraw()
+
+
+## Rovná místa původního povrchu, dál od líhně a východu; výběr je deterministický.
+func _place_plants() -> void:
+	plants.clear()
+	var mask := sim.mask
+	var keep_clear: Array[Vector2i] = []
+	keep_clear.append_array(sim.spec.hatches)
+	keep_clear.append_array(sim.spec.exits)
+	var last_x := -100
+	for x in range(6, mask.width - 6):
+		if x - last_x < 24 or posmod(x * 7919 + 13, 97) > 9:
+			continue
+		var y := _surface(x)
+		if y < 0 or absi(_surface(x - 3) - y) > 1 or absi(_surface(x + 3) - y) > 1:
+			continue
+		var near := false
+		for point in keep_clear:
+			near = near or (absi(point.x - x) < 18 and absi(point.y - y) < 30)
+		if near:
+			continue
+		plants.append(Vector3i(x, y, posmod(x * 31 + y, _plant_textures.size())))
+		last_x = x
+
+
+func _surface(x: int) -> int:
+	for y in range(1, sim.mask.height):
+		if sim.mask.is_solid(x, y):
+			return y if y >= 12 and not sim.mask.has_solid_in_rect(x, y - 12, 1, 11) else -1
+	return -1
 
 
 func _process(_delta: float) -> void:
@@ -44,6 +81,15 @@ func _draw() -> void:
 	if sim == null:
 		return
 	var now := sim.tick_count + alpha
+	for plant in plants:
+		if not sim.mask.is_solid(plant.x - 1, plant.y) or not sim.mask.is_solid(plant.x + 1, plant.y) \
+				or sim.mask.is_solid(plant.x, plant.y - 2):
+			continue
+		var info: Dictionary = data["plants"][plant.z]
+		var tex := _plant_textures[plant.z]
+		var anchor := Vector2(info["anchor"][0], info["anchor"][1])
+		var size := tex.get_size() / float(data["hatch"]["scale"])
+		draw_texture_rect(tex, Rect2(Vector2(plant.x + 0.5, plant.y) - anchor, size), false)
 	for i in sim.spec.hatches.size():
 		_draw_hatch(Vector2(sim.spec.hatches[i]), _supports[i], now)
 	for point in sim.spec.exits:
@@ -55,17 +101,11 @@ func _draw_hatch(at: Vector2, support: float, now: float) -> void:
 	var s := float(info["scale"])
 	var anchor := Vector2(info["anchor"][0], info["anchor"][1])
 	# Kůly a žebřík až k původní zemi.
-	var post_w := HATCH_POST.get_width() / s
 	for post: Array in info["posts"]:
 		var top := at + Vector2(float(post[0]), float(post[1]))
-		var length := support - float(post[1])
-		draw_texture_rect_region(HATCH_POST, Rect2(top, Vector2(post_w, length)),
-			Rect2(0, 0, HATCH_POST.get_width(), length * s))
-	var ladder_size := Vector2(HATCH_LADDER.get_width(), HATCH_LADDER.get_height()) / s
-	var ladder_top := at + Vector2(float(info["ladder_x"]), 0.4)
-	draw_set_transform(ladder_top, -0.12, Vector2.ONE)
-	draw_texture_rect_region(HATCH_LADDER, Rect2(Vector2.ZERO, Vector2(ladder_size.x, support)),
-		Rect2(0, 0, HATCH_LADDER.get_width(), support * s))
+		_tile_down(HATCH_POST, top, support - float(post[1]), s)
+	draw_set_transform(at + Vector2(float(info["ladder_x"]), 0.4), -0.12, Vector2.ONE)
+	_tile_down(HATCH_LADDER, Vector2.ZERO, support, s)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
 	draw_texture_rect(HATCH, Rect2(at - anchor, HATCH.get_size() / s), false)
 	# Padací dvířka se otevřou těsně před prvním vypuštěním.
@@ -77,6 +117,17 @@ func _draw_hatch(at: Vector2, support: float, now: float) -> void:
 	draw_set_transform(at + Vector2(5.5, 0.0), -angle, Vector2.ONE)
 	draw_texture_rect(HATCH_DOOR, Rect2(Vector2(-half.x, 0.0), half), false)
 	draw_set_transform_matrix(Transform2D.IDENTITY)
+
+
+## Svislé skládání dlaždice (kůl, žebřík) do dané délky; poslední kus se ořízne.
+func _tile_down(tex: Texture2D, top: Vector2, length: float, s: float) -> void:
+	var size := tex.get_size() / s
+	var y := 0.0
+	while y < length - 0.01:
+		var piece := minf(size.y, length - y)
+		draw_texture_rect_region(tex, Rect2(top + Vector2(0, y), Vector2(size.x, piece)),
+			Rect2(0, 0, tex.get_width(), piece * s))
+		y += piece
 
 
 func _draw_exit(at: Vector2, now: float) -> void:

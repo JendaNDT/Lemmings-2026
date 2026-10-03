@@ -16,4 +16,9 @@ Licence fontu OFL musí zůstat součástí distribuce.
 
 Obě sady ověřuje `python scripts/check_assets.py`. Dosavadní technické
 zapojení popisuje [ověření etapy 3](ETAPA_3_OVERENI.md).
-Dokud nový renderer nepřevezme jejich funkci, tyto herní soubory nemažeme.
+
+Výchozí 2D origami zobrazení používá vlastní sadu `assets/origami/`
+(manifest `assets/origami.lock.json`, původ `assets/origami/provenance.json`).
+Na `assets/clay/` už nezávisí; HUD převzal z `assets/art_v2/` jen font Nunito.
+Scéna `main/game_3d.tscn` ale `assets/clay/` i model z `assets/art_v2/`
+stále používá, proto je nemažeme. Odstranit je lze až spolu s 2.5D scénou.

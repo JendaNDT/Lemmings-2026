@@ -64,13 +64,18 @@ void fragment() {
 	vec4 m = texture(mask_tex, UV);
 	vec4 st = texture(static_tex, UV);
 	float fib = paper(p, 96.0) - 0.5;
-	// Šum hrany: vždy menší než ±0,45 buňky (hodnota textury je v rozsahu 0..1).
+	// Šum hrany je omezený na ±0,4: středy buněk (hodnota 0 nebo 1) se nezmění.
 	float jitter = (noise(p, 24.0).r - 0.5) * 0.6 + (noise(p, 7.0).g - 0.5) * 0.18 + fib * 0.1;
-	float thr = 0.5 + clamp(jitter, -0.44, 0.44);
+	float thr = 0.5 + clamp(jitter, -0.4, 0.4);
 	float aa = max(fwidth(m.r) * 0.6, 0.01);
 	float inside = smoothstep(thr - aa, thr + aa, m.r);
+	// Stín vrhaný terénem doprava dolů na zadní stěnu i krajinu.
+	float drop = mask_r(p - vec2(0.7, 0.9)) * 0.55 + mask_r(p - vec2(1.5, 1.9)) * 0.45;
 	if (debug_mode == 1) {
 		COLOR = vec4(vec3(step(thr, m.r)), 1.0);
+	} else if (m.r < 0.002 && st.r < 0.5 && st.g < 0.5) {
+		// Volný prostor bez zadní stěny: jen stín, zbytek výpočtu se přeskočí.
+		COLOR = vec4(0.0, 0.0, 0.0, drop * 0.3);
 	} else {
 		float steel = inside * smoothstep(0.4, 0.6, m.g);
 		float brick = inside * smoothstep(0.4, 0.6, m.b) * (1.0 - steel);
@@ -177,8 +182,6 @@ void fragment() {
 		back_col *= 1.0 + fib * 0.35 + (paper(p, 30.0) - 0.5) * 0.12;
 		back_col *= 1.0 - near_top * 0.32;
 
-		// Stín vrhaný terénem doprava dolů na zadní stěnu i krajinu.
-		float drop = mask_r(p - vec2(0.7, 0.9)) * 0.55 + mask_r(p - vec2(1.5, 1.9)) * 0.45;
 		drop *= 1.0 - inside;
 
 		vec4 outside = vec4(0.0, 0.0, 0.0, drop * 0.3);

@@ -47,5 +47,28 @@
       0.5,
       -6.0
     ]
-  }
+  },
+  "plants": [
+    {
+      "texture": "props/plant_tuft.png",
+      "anchor": [
+        4.5,
+        6.916666666666667
+      ]
+    },
+    {
+      "texture": "props/plant_fern.png",
+      "anchor": [
+        5.0,
+        8.916666666666666
+      ]
+    },
+    {
+      "texture": "props/plant_flower.png",
+      "anchor": [
+        5.5,
+        8.916666666666666
+      ]
+    }
+  ]
 }

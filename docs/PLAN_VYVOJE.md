@@ -58,7 +58,7 @@ Připravit přenosné spouštění kontrol a CI bez závislosti na konkrétní c
 **Stav:** dosavadní 2.5D prototyp byl implementován a ověřen v cloudu.
 První level zachraňuje 20/20 přes herní vstup; geometrie odpovídá masce
 společné simulace. [Technické ověření](ETAPA_3_OVERENI.md).
-Tyto výsledky neoznačují nové 2D origami za implementované.
+Origami zobrazení má vlastní [ověření](ORIGAMI_OVERENI.md).
 
 Při nahrazení grafiky zachovat masku, inkrementální aktualizace, přesný
 výběr postav, kameru, dotyk a výsledky simulace. Kopání zůstává vodorovné,
@@ -67,7 +67,8 @@ Nahoru vedou stavitelovy schody.
 
 **Podmínka přenosu do nového zobrazení:** řešení levelu se shoduje se
 stávající simulací, viditelné hrany odpovídají masce a posun i zoom
-paralaxy zachovávají správné ovládání. Tato kontrola ještě neproběhla.
+paralaxy zachovávají správné ovládání. Splněno v cloudu pro 2D origami,
+viz [ověření](ORIGAMI_OVERENI.md); nativní zařízení zbývají.
 
 ## Etapa 4 — Všech osm dovedností
 
@@ -98,9 +99,9 @@ Ukládání musí zvládat přerušený zápis, poškozený soubor a změnu form
 
 ## Etapa 7 — Reprezentativní demo a 2D výtvarný směr
 
-**Stav:** autor přijal origami mockup jako jediný další výtvarný podklad.
-Výtvarná práce má přednost před dalšími mechanikami. Nyní je hotový
-obrázek; scéna se podle něj teprve vytvoří.
+**Stav:** body 1–4 jsou implementované a ověřené v cloudu (výchozí scéna
+`main/game_origami.tscn`, [ověření](ORIGAMI_OVERENI.md)). Zbývá bod 5
+(zvuk, nápověda, další mise) a ověření na skutečném Macu a Androidu.
 
 1. Vyrobit oddělené vrstvy oblohy, vzdálené krajiny, středních kulis,
    herního terénu a popředí včetně původně zakrytých částí.

@@ -91,17 +91,17 @@
    "region": [
     216,
     246,
-    56,
-    100
+    59,
+    115
    ],
    "pivot": [
-    27.6,
+    29.2,
     16.4
    ]
   },
   "leg": {
    "region": [
-    274,
+    277,
     246,
     80,
     92
@@ -113,7 +113,7 @@
   },
   "brick": {
    "region": [
-    356,
+    359,
     246,
     97,
     75
@@ -186,7 +186,7 @@
    "parent": "arm_front",
    "joint": [
     0.0,
-    1.95
+    2.3
    ],
    "part": ""
   },
@@ -397,18 +397,18 @@
     {
      "t": 0.0,
      "pose": {
-      "leg_front": -55,
-      "leg_back": -15,
-      "arm_front": -175,
-      "arm_back": -140,
-      "torso": 10,
-      "head": -8,
-      "cap": -4
+      "leg_front": -70,
+      "leg_back": -20,
+      "arm_front": -158,
+      "arm_back": -128,
+      "torso": 14,
+      "head": -12,
+      "cap": -6
      },
      "root": [
-      0.35,
+      0.55,
       0,
-      0,
+      -4,
       1,
       1
      ]
@@ -416,18 +416,18 @@
     {
      "t": 0.5,
      "pose": {
-      "leg_front": -15,
-      "leg_back": -55,
-      "arm_front": -140,
-      "arm_back": -175,
-      "torso": 10,
-      "head": -8,
-      "cap": 2
+      "leg_front": -20,
+      "leg_back": -70,
+      "arm_front": -128,
+      "arm_back": -158,
+      "torso": 14,
+      "head": -12,
+      "cap": 0
      },
      "root": [
-      0.35,
-      -0.15,
-      0,
+      0.55,
+      -0.2,
+      -4,
       1,
       1
      ]
@@ -491,17 +491,17 @@
     {
      "t": 0.0,
      "pose": {
-      "leg_front": -14,
-      "leg_back": 14,
-      "arm_front": -92,
-      "arm_back": 92,
+      "leg_front": -17,
+      "leg_back": 17,
+      "arm_front": -100,
+      "arm_back": 100,
       "torso": 0,
       "head": 0,
       "cap": 0
      },
      "root": [
       0,
-      0.1,
+      0.12,
       0,
       1,
       1
@@ -510,10 +510,10 @@
     {
      "t": 0.5,
      "pose": {
-      "leg_front": -14,
-      "leg_back": 14,
-      "arm_front": -84,
-      "arm_back": 84,
+      "leg_front": -17,
+      "leg_back": 17,
+      "arm_front": -88,
+      "arm_back": 88,
       "torso": -1,
       "head": -3,
       "cap": -3

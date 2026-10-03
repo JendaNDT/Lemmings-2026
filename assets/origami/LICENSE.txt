@@ -1,0 +1,16 @@
+LicenseRef-Lemmings2026-Project-Internal
+
+Origami sada vznikla pro projekt Lemmings 2026 na zadání jeho autora.
+Všechny obrazy (vrstvy krajiny, papírové textury, líheň, východ, díly
+postavičky, panely HUDu) jsou vygenerované vlastními skripty ve složce
+source/ s pevnými seedy; ikony dovedností jsou ručně psané SVG. Nebyly
+převzaty z původní hry Lemmings ani od externího dodavatele.
+
+Jedinou výtvarnou předlohou je obrázek docs/images/mockup-origami-prvni-kroky.png
+(viz docs/MOCKUP_ORIGAMI.md). Z něj nebyly vyřezány ani kopírovány pixely;
+převzaty jsou jen změřené barvy a výtvarné principy (papírové vrstvy,
+skládané postavičky, rozložení scény).
+
+Python, NumPy, Pillow, SciPy a Godot jsou použité nástroje; jejich součásti
+se touto sadou nedistribuují. Písmo HUDu (Nunito, OFL 1.1) je v assets/art_v2.
+Veřejnou distribuční licenci výsledné hry stanoví autor před zveřejněním.

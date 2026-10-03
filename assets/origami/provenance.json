@@ -1,0 +1,40 @@
+{
+  "package": "lemmings-origami-art",
+  "version": "1.0.0",
+  "game_version": "0.5.0",
+  "reference": "docs/images/mockup-origami-prvni-kroky.png (jediná přijatá předloha, jen vizuální vodítko)",
+  "authoring": "Procedurálně generováno vlastními skripty v assets/origami/source (Python + NumPy/Pillow/SciPy, pevné seedy); ikony jsou ručně psané SVG.",
+  "inputs": "Žádné cizí obrázky, fonty ani modely. Z mockupu nebyly vyřezány pixely; převzaty jsou pouze barvy (změřené mediánem) a výtvarné principy.",
+  "tools": {
+    "python": "3.11.15",
+    "numpy": "2.4.6",
+    "pillow": "12.3.0",
+    "scipy": "1.17.1"
+  },
+  "generator_sha256": {
+    "build_all.py": "b2f9ff4eca6e610ba5fe3f32c7a0ae7d73fe2ce05653ff22f0137b6f87e449e4",
+    "build_backgrounds.py": "62abad3d261293a848943571e6dac1f534c65b4f2326093112b798c74868c428",
+    "build_character.py": "df033fc912cd62d4fda97cd9082a34ce47cd6d86b4a5434acf34b488b922febb",
+    "build_props.py": "f7bc76dca62521cddbf0e5b012f72a9806d145ee6b2412d2e3467167028d42a2",
+    "build_ui.py": "da7f69fd92a71cb57d227ba45d3ea5c1404f452d26cdf8246d04c41fe137a112",
+    "palette.py": "1a3b727081553d16b4ee031e35daaa477841478a504a706464a8be147b389027",
+    "paperlib.py": "919011ba36e1c1569d897f44be9c5990627d30033e9210a274d6f24cfeb082eb"
+  },
+  "units": {
+    "layers": "1200 px textury = výška obrazovky při zoomu 1×; vodorovně navazující dlaždice",
+    "actor": "32 px atlasu = 1 logický pixel simulace; postava je vysoká 10 logických px",
+    "props": "24 px textury = 1 logický pixel; kotvy v props/props.json"
+  },
+  "contents": {
+    "layers": "obloha se sluncem a mraky, hory, střední pás s vesnicí, viaduktem a vodopádem, blízký les s řekou, tři trsy rostlin popředí",
+    "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
+    "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
+    "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",
+    "ui": "papírové panely HUDu (9 dílů) a 8 ikon dovedností (SVG)",
+    "source/previews": "kontaktní arch póz pro vizuální kontrolu (není ve hře)"
+  },
+  "limitations": [
+    "Ruční ilustrace v předloze má bohatší detail; generátor ji nekopíruje 1:1.",
+    "Vrstvy jsou navržené pro paralaxu se zoomem 1×–3,2×; mimo tento rozsah neověřeno."
+  ]
+}

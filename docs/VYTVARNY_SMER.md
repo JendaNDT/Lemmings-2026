@@ -17,10 +17,12 @@ byly z aktuálního stromu odstraněny.
 - HUD zůstává ukotvený na obrazovce. Popředí nesmí zakrývat interakce.
 
 Pořadí: **mockup → grafické vrstvy → postavička a animace → scéna Godotu**.
-Nyní existuje pouze celkový generovaný obrázek. Rozdělené podklady,
-animace a paralaxa se teprve implementují. Pracovní nápis „Papírové údolí“
-v obrázku nepřejmenovává projekt.
+Všechny kroky jsou provedené: výchozí scéna `main/game_origami.tscn` kreslí
+papírový terén z masky, origami postavy s animacemi všech stavů, líheň,
+východ a čtyři paralaxní vrstvy krajiny s popředím. Podklady jsou
+v `assets/origami/`, ověření v [`ORIGAMI_OVERENI.md`](ORIGAMI_OVERENI.md).
+Pracovní nápis „Papírové údolí“ v obrázku nepřejmenovává projekt.
 
-Současná hratelná verze stále potřebuje `assets/clay/` a `assets/art_v2/`.
-Jejich ponechání zachovává funkčnost hry; nepředstavují další výtvarné
-návrhy. Nahrazení herní grafiky není součástí úklidu podkladů.
+Scéna `main/game_3d.tscn` (2.5D) stále používá `assets/clay/`
+a `assets/art_v2/`; obě sady proto zůstávají. Font Nunito z `assets/art_v2/`
+používá i nový HUD. Nejsou to další výtvarné návrhy.
