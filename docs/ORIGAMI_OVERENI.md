@@ -49,8 +49,10 @@ Na přání autora (body: čitelnější postavičky, hloubka a světlo, živá 
    s jemnými paprsky, chladnější strana vpravo dole, delší stín terénu,
    tmavší úzké tunely a středy jeskyní.
 3. **Živá krajina:** mraky pomalu plují (každý jinou rychlostí), hejnko tří
-   ptáčků mává křídly a přelétá oblohu, rostlinky, mech na hranách terénu
-   i trsy v popředí se kývají ve větru, občas se snese lístek nebo okvětní
+   ptáčků mává křídly a přelétá oblohu, rostlinky, papírová tráva rostoucí
+   vzhůru z povrchu i trsy v popředí se kývají ve větru (kořen stojí,
+   hýbe se špička; zelený lem mechu přes hranu terénu stojí a má oblé
+   lístky, aby nepůsobil jako obrácená tráva), občas se snese lístek nebo okvětní
    plátek a chvíli poleží na zemi, plameny nad lávou jsou nepravidelné.
    Vše běží podle herního času: pauza to zastaví, stop-motion to posouvá
    po krocích.
@@ -59,9 +61,14 @@ Na přání autora (body: čitelnější postavičky, hloubka a světlo, živá 
 
 Záznam (13 s): [`images/origami-ziva-krajina.mp4`](images/origami-ziva-krajina.mp4).
 
-Ověření 3. kola: `check.py` 71 GDScriptů, 10 sad, 297 kontrol (nové kontroly
-výchozího pohledu, okraje postav, mraků, mávání ptáků, oparu a zastavení
-dekorací pauzou). Grafický průchod mise 1 znovu: počítač 1920 × 1080
+Tráva zblízka (roste vzhůru, kývá se špička, lem mechu stojí):
+[`images/origami-trava.mp4`](images/origami-trava.mp4).
+
+![Papírová tráva roste vzhůru z povrchu](images/origami-trava.jpg)
+
+Ověření 3. kola: `check.py` 72 GDScriptů, 10 sad, 304 kontrol (nové kontroly
+výchozího pohledu, okraje postav, mraků, mávání ptáků, oparu, zastavení
+dekorací pauzou a trávy vázané na masku). Grafický průchod mise 1 znovu: počítač 1920 × 1080
 klávesnicí a myší 20/20, terén 34 720 buněk bez neshody; telefon 20:9
 klepnutím 20/20, terén 50 592 buněk bez neshody; dva prsty bez herního
 příkazu. Generátor dál dává bit po bitu stejné soubory. Rozostření je

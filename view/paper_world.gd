@@ -2,7 +2,7 @@ class_name PaperWorld
 extends Node2D
 ## 2D origami prezentace společné simulace. Herní pravidla sem nepatří.
 ##
-## Pořadí kreslení: nebe → čtyři paralaxní vrstvy → herní rovina (terén,
+## Pořadí kreslení: nebe → čtyři paralaxní vrstvy → herní rovina (terén, tráva,
 ## líheň, východ a pasti, postavy, přední pruhy vody a lávy, ústřižky) →
 ## popředí. HUD je samostatná CanvasLayer.
 ## Herní rovina má jedinou transformaci z PaperCamera; vrstvy ji jen čtou.
@@ -21,6 +21,7 @@ const SKY := [Color("8fc3d6"), Color("b4d3d8"), Color("e6e4d2")]
 
 var camera: PaperCamera
 var terrain: PaperTerrain
+var grass: PaperGrass
 var props: PaperProps
 var actors: PaperActors
 var fx: PaperFx
@@ -69,6 +70,9 @@ func _ready() -> void:
 	terrain = PaperTerrain.new()
 	terrain.name = "Terrain"
 	plane.add_child(terrain)
+	grass = PaperGrass.new()
+	grass.name = "Grass"
+	plane.add_child(grass)
 	props = PaperProps.new()
 	props.name = "Props"
 	plane.add_child(props)
@@ -128,6 +132,7 @@ func _add_sky_life(sky: PaperParallax) -> void:
 func setup(sim: LevelSim) -> void:
 	_sim = sim
 	terrain.setup(sim.mask)
+	grass.setup(sim.mask, terrain.surface_points)
 	props.setup(sim)
 	actors.setup(sim)
 	fx.clear()
@@ -154,6 +159,7 @@ func update_frame(alpha: float, events: Array[Dictionary], delta: float) -> void
 		for layer in layers:
 			layer.time = now
 		foreground.time = now
+		grass.time = now
 		var vp := camera.viewport_size()
 		var top_left := camera.screen_to_logic(Vector2.ZERO)
 		fx.view_rect = Rect2(top_left, camera.screen_to_logic(vp) - top_left)

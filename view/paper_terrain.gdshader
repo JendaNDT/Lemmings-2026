@@ -366,15 +366,14 @@ void fragment() {
 		float leaf_shadow = 0.0;
 		for (int row = 0; row < 2; row++) {
 			float rw = row == 0 ? 4.4 : 3.1;
-			// Lístky se ve větru pomalu kývají: špičky víc než kořen (jen vzhled).
-			float sway = sin(sim_time * 0.23 + p.x * 0.045 + float(row) * 1.7) * 0.035 * depth;
-			float lx = (p.x + float(row) * 1.3) / rw + (noise(vec2(p.x, 5.0 + float(row) * 11.0), 70.0).r - 0.5) * 0.9
-				+ sway;
+			// Mech je papírový lem přes hranu (nehýbe se); trávu nahoře kreslí PaperGrass.
+			float lx = (p.x + float(row) * 1.3) / rw + (noise(vec2(p.x, 5.0 + float(row) * 11.0), 70.0).r - 0.5) * 0.9;
 			float li = floor(lx);
 			float lf = fract(lx);
 			float h = hash(vec2(li, 2.0 + float(row)));
 			float lobe = sqrt(max(1.0 - pow(lf * 2.0 - 1.0, 2.0), 0.0));
-			float tipped = mix(lobe, 1.0 - abs(lf * 2.0 - 1.0), 0.55);
+			// Oblé laloky mechu, jen mírně zašpičatělé (ne obrácená stébla).
+			float tipped = mix(lobe, 1.0 - abs(lf * 2.0 - 1.0), 0.22);
 			float len = (row == 0 ? 3.2 : 2.0) + (row == 0 ? 3.4 : 2.0) * h;
 			float lim = (row == 0 ? 0.9 : 0.7) + len * tipped;
 			float in_leaf = support * (1.0 - smoothstep(lim - 0.12, lim + 0.12, depth));

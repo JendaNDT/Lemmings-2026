@@ -99,9 +99,10 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - **Vzhled 3. kolo:** čitelnější postavičky (bližší výchozí pohled, světlý
   papírový okraj a stín), hloubka ostrosti krajiny a popředí, opar, teplé
   světlo s paprsky, delší stíny, tmavší tunely; plující mraky, mávající
-  ptáci, kývající se rostliny, mech i popředí, padající lístky,
-  nepravidelné plameny nad lávou; kontrola 71 GDScriptů, 10 sad,
-  297 ověření (`test_origami` 63)
+  ptáci, papírová tráva rostoucí vzhůru a kývající se rostliny i popředí
+  (lem mechu přes hranu stojí), padající lístky,
+  nepravidelné plameny nad lávou; kontrola 72 GDScriptů, 10 sad,
+  304 ověření (`test_origami` 70)
 - **Vylepšení 2. kolo:** šikmé břehy jezírka a lávové jámy, odlesky,
   kruhy a bubliny ve vodě, plovoucí klobouk po utonutí; láva s třemi
   řadami plamenů, jiskrami, kůrkou, bublinami a září na hlíně; topící se

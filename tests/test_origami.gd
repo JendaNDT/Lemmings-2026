@@ -2,6 +2,7 @@ extends SimTest
 ## 2D origami: převod souřadnic, zoom kolem bodu, hranice, paralaxa, dotyky,
 ## animace podle tiků a celé řešení mise přes skutečnou scénu.
 
+const HAZARD_LEVEL := preload("res://levels/level_hazards.tscn")
 const ASPECTS := [Vector2(1920, 1080), Vector2(1280, 720), Vector2(2400, 1080), Vector2(1024, 768),
 	Vector2(1080, 1080)]
 
@@ -28,6 +29,7 @@ func _run() -> void:
 	_test_animation_in_scene(game, world)
 	game.free()
 	_test_hazard_effects()
+	_test_grass()
 	await _test_living_scene(scene)
 	await process_frame
 	_test_solution(scene)
@@ -562,7 +564,7 @@ func _test_hazard_mission(scene: PackedScene) -> void:
 		game.call("_try_assign_touch", at)
 		if sim.skills[skill] < before:
 			done[skill] = sim.tick_count
-	var fresh_level := (load("res://levels/level_hazards.tscn") as PackedScene).instantiate()
+	var fresh_level := HAZARD_LEVEL.instantiate()
 	var fresh := LevelSim.new(LevelLoader.build_spec(fresh_level), LevelLoader.build_mask(fresh_level))
 	fresh_level.free()
 	var replay := SimReplay.new(fresh, sim.replay_log)
@@ -630,6 +632,44 @@ func _test_hazard_effects() -> void:
 	view = actors._views[faller.id]
 	check(squashed and float(view.root[4]) > 0.94, "dopad z pádu postavu krátce zplácne a narovná")
 	actors.free()
+
+
+## Tráva roste vzhůru z původního povrchu, kývá se jen špičkou a je vázaná na masku.
+func _test_grass() -> void:
+	var sim := fixture(5)
+	var surface := PaperTerrain.exposed_surface(PaperTerrain.build_static(sim.mask))
+	var on_top := surface.all(func(p: Vector2i) -> bool: return p.y == 80)
+	check(surface.size() == 160 and on_top, "tráva má místo jen na původním povrchu nad nebem")
+	var grass := PaperGrass.new()
+	grass.setup(sim.mask, surface)
+	check(grass.tufts.size() > 30 and grass.tufts.size() < 90, "trsy trávy rostou v části sloupců")
+	var tuft: Vector3i = grass.tufts[3]
+	grass.time = 0.0
+	var tip_a := grass.blade_tip(tuft, 0)
+	grass.time = 20.0
+	var tip_b := grass.blade_tip(tuft, 0)
+	check(tip_a.y < tuft.y and tip_b.y < tuft.y and absf(tip_a.x - tip_b.x) > 0.05,
+		"stéblo míří vzhůru a ve větru se hýbe jeho špička")
+	check(grass.tuft_visible(tuft), "trs na neporušené zemi je vidět")
+	sim.mask.add_brick_row(tuft.x - 1, tuft.x + 1, tuft.y - 1)
+	check(not grass.tuft_visible(tuft), "trs pod položenou cihlou zmizí")
+	var other: Vector3i = grass.tufts[10]
+	sim.mask.erase_rect(other.x - 1, other.y - 2, 3, 6)
+	check(not grass.tuft_visible(other), "trs zmizí s vykopanou zemí")
+	grass.free()
+	var level := HAZARD_LEVEL.instantiate()
+	var mask := LevelLoader.build_mask(level)
+	level.free()
+	var points := PaperTerrain.exposed_surface(PaperTerrain.build_static(mask))
+	var wet := points.filter(_under_liquid.bind(mask))
+	check(wet.is_empty(), "pod vodou ani lávou tráva neroste")
+
+
+## Leží bod povrchu na dně jezírka nebo lávové jámy mise 6 (nebo přímo pod hladinou)?
+func _under_liquid(p: Vector2i, mask: TerrainMask) -> bool:
+	var pool := p.x > 228 and p.x < 253 and p.y > 104
+	var pit := p.x > 370 and p.x < 406 and p.y > 103
+	return pool or pit or mask.special_at(p.x, p.y - 1) != TerrainMask.Special.NONE
 
 
 ## Čitelnost, hloubka a živá krajina: jen vzhled, řízený herním časem.

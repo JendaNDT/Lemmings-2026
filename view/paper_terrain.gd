@@ -24,6 +24,8 @@ var updates := 0
 ## Přední vrstva hladiny (kreslí se nad postavami): obdélník s vodou a lávou.
 var surface: Node2D
 var hazard_rect := Rect2i()
+## Buňky původního povrchu vystaveného nebi (kde roste mech); z nich roste tráva.
+var surface_points: Array[Vector2i] = []
 var _mask_image: Image
 var _mask_texture: ImageTexture
 var _static_texture: ImageTexture
@@ -64,7 +66,9 @@ func setup(terrain: TerrainMask) -> void:
 	# Mipmapy masky = levné rozmazání pro měkké stíny a šířku vláknitých okrajů.
 	_mask_image.generate_mipmaps()
 	_mask_texture = ImageTexture.create_from_image(_mask_image)
-	_static_texture = ImageTexture.create_from_image(build_static(mask))
+	var static_image := build_static(mask)
+	_static_texture = ImageTexture.create_from_image(static_image)
+	surface_points = exposed_surface(static_image)
 	var hazards := build_hazards(mask)
 	hazard_rect = _hazard_bounds(hazards)
 	# Mipmapy = rozmazaná láva pro teplou záři na okolním terénu.
@@ -168,6 +172,17 @@ static func _hazard_bounds(image: Image) -> Rect2i:
 		rect = cell if not found else rect.merge(cell)
 		found = true
 	return rect.grow(2).intersection(Rect2i(0, 0, w, image.get_height())) if found else Rect2i()
+
+
+## Horní buňky povrchu vystaveného nebi (R pevné, hloubka 0) ze statické textury.
+static func exposed_surface(static_image: Image) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	var data := static_image.get_data()
+	var w := static_image.get_width()
+	for i in data.size() / 4:
+		if data[i * 4] == 255 and data[i * 4 + 3] == 0:
+			out.append(Vector2i(i % w, i / w))
+	return out
 
 
 ## R = původní zem, G = vnitřek jeskyně, A = hloubka pod povrchem vystaveným nebi (×16).
