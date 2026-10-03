@@ -39,6 +39,21 @@ func logic_to_screen(point: Vector2) -> Vector2:
 	return unproject_position(ClaySpace.to_world(point))
 
 
+## Přiblížení kolem bodu obrazovky; bod pod ním zůstane na místě.
+func zoom_at(point: Vector2, ratio: float) -> void:
+	var before := screen_to_logic(point)
+	zoom_factor = clampf(zoom_factor * ratio, 1, 3.2)
+	refresh()
+	focus += before - screen_to_logic(point)
+	refresh()
+
+
+## Posun tak, aby bod z `from` putoval pod `to`.
+func pan_screen(from: Vector2, to: Vector2) -> void:
+	focus += screen_to_logic(from) - screen_to_logic(to)
+	refresh()
+
+
 func refresh() -> void:
 	var vp := get_viewport().get_visible_rect().size
 	var usable := maxf(vp.y - top_padding - bottom_padding, 100)
@@ -84,16 +99,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		if button.button_index in [MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE]:
 			_dragging = button.pressed
 		elif button.pressed and button.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
-			var before := screen_to_logic(button.position)
-			zoom_factor = clampf(zoom_factor *
-				(1.15 if button.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / 1.15), 1, 3.2)
-			refresh()
-			focus += before - screen_to_logic(button.position)
-			refresh()
+			zoom_at(button.position, 1.15 if button.button_index == MOUSE_BUTTON_WHEEL_UP else 1.0 / 1.15)
 	elif event is InputEventMouseMotion and _dragging:
 		var motion := event as InputEventMouseMotion
-		focus += screen_to_logic(motion.position - motion.relative) - screen_to_logic(motion.position)
-		refresh()
+		pan_screen(motion.position - motion.relative, motion.position)
 
 
 func _input(event: InputEvent) -> void:

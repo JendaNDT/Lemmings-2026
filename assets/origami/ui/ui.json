@@ -1,0 +1,30 @@
+{
+  "toolbar": {
+    "file": "ui/toolbar.png",
+    "margin": 34
+  },
+  "tile": {
+    "file": "ui/tile.png",
+    "margin": 26
+  },
+  "tile_hover": {
+    "file": "ui/tile_hover.png",
+    "margin": 26
+  },
+  "tile_selected": {
+    "file": "ui/tile_selected.png",
+    "margin": 26
+  },
+  "tile_disabled": {
+    "file": "ui/tile_disabled.png",
+    "margin": 26
+  },
+  "label": {
+    "file": "ui/label.png",
+    "margin": 30
+  },
+  "dialog": {
+    "file": "ui/dialog.png",
+    "margin": 42
+  }
+}

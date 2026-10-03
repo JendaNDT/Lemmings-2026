@@ -1,9 +1,12 @@
 class_name TouchControls
 extends RefCounted
 ## Gesta vlastní jen dotyky začaté v herní ploše. HUD obslouží Godot.
+## Kamera může být PaperCamera (2D) i ClayCamera (2.5D); stačí jí metody
+## pan_screen(), zoom_at() a vlastnosti top_padding / bottom_padding.
 
 const DRAG_THRESHOLD := 14.0
-var camera: ClayCamera
+const MAX_ZOOM_STEP := 1.5
+var camera
 var tapped := Callable()
 var _points: Dictionary = {}
 var _start := Vector2.ZERO
@@ -50,8 +53,7 @@ func _drag(event: InputEventScreenDrag) -> void:
 		if not _moved and event.position.distance_to(_start) < DRAG_THRESHOLD:
 			return
 		_moved = true
-		camera.focus += camera.screen_to_logic(previous) - camera.screen_to_logic(event.position)
-		camera.refresh()
+		camera.pan_screen(previous, event.position)
 		return
 	# Dva prsty současně posouvají i přibližují kolem svého středu.
 	var keys := _points.keys()
@@ -59,11 +61,10 @@ func _drag(event: InputEventScreenDrag) -> void:
 	var b: Vector2 = _points[keys[1]]
 	var old_center := (a + b) * 0.5
 	var old_distance := maxf(a.distance_to(b), 1)
-	var anchor := camera.screen_to_logic(old_center)
 	_points[event.index] = event.position
 	a = _points[keys[0]]
 	b = _points[keys[1]]
-	camera.zoom_factor = clampf(camera.zoom_factor * a.distance_to(b) / old_distance, 1, 3.2)
-	camera.refresh()
-	camera.focus += anchor - camera.screen_to_logic((a + b) * 0.5)
-	camera.refresh()
+	var ratio := clampf(a.distance_to(b) / old_distance, 1.0 / MAX_ZOOM_STEP, MAX_ZOOM_STEP)
+	# Bod pod středem prstů zůstane pod nimi i při současném posunu.
+	camera.zoom_at(old_center, ratio)
+	camera.pan_screen(old_center, (a + b) * 0.5)

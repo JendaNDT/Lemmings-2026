@@ -1,0 +1,51 @@
+{
+  "hatch": {
+    "texture": "props/hatch.png",
+    "anchor": [
+      20.0,
+      36.0
+    ],
+    "scale": 24,
+    "door": {
+      "texture": "props/hatch_door.png",
+      "left": [
+        -5.5,
+        0.0
+      ],
+      "right": [
+        5.5,
+        0.0
+      ]
+    },
+    "posts": [
+      [
+        -11.5,
+        1.4
+      ],
+      [
+        10.0,
+        1.4
+      ]
+    ],
+    "ladder_x": -16.5
+  },
+  "exit": {
+    "texture": "props/exit.png",
+    "anchor": [
+      18.0,
+      40.0
+    ],
+    "scale": 24,
+    "flag": {
+      "texture": "props/exit_flag.png",
+      "pole_top": [
+        10.8,
+        -36.6
+      ]
+    },
+    "door_center": [
+      0.5,
+      -6.0
+    ]
+  }
+}

@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://view/clay_world.gd" id="2_clay"]
 
 [node name="Game" instance=ExtResource("1_base")]
-use_3d = true
+presentation_path = NodePath("ClayWorld")
 
 [node name="ClayWorld" type="Node3D" parent="." index="3"]
 script = ExtResource("2_clay")

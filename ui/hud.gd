@@ -14,9 +14,13 @@ signal nuke_decided(confirmed: bool)
 
 const TOP_BAR_HEIGHT := 72.0
 const BOTTOM_BAR_HEIGHT := 160.0
-const ACCENT := Color("a6ddb1")
-const TEXT := Color("fff1d5")
-const TEXT_DIM := Color("c4d1c5")
+## Papírová paleta z origami mockupu: inkoust na slonovině, petrolejová lišta.
+const ACCENT := Color("e9a84e")
+const INK := Color("15333a")
+const INK_DIM := Color("4d6268")
+const TEXT := Color("f4e8d2")
+const TEXT_DIM := Color("c9d6cf")
+const UI_DIR := "res://assets/origami/ui/"
 const SKILL_ICONS := {
 	Lemming.Skill.CLIMBER: "climber", Lemming.Skill.FLOATER: "floater",
 	Lemming.Skill.BOMBER: "bomber",
@@ -53,6 +57,7 @@ var _result_text: Label
 var _skill_widgets := {}
 var _visible_skills: Array[int] = []
 var _selected_skill := -1
+var _margins := {}
 
 
 func _ready() -> void:
@@ -157,17 +162,22 @@ func _build() -> void:
 	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_root)
 
-	# Horní lišta: název levelu a počítadla.
-	var top := PanelContainer.new()
-	_root.add_child(top)
-	_place(top, 0.0, 0.0, 1.0, 0.0, 12.0, 10.0, -12.0, TOP_BAR_HEIGHT)
+	# Horní okraj: papírový štítek s názvem vlevo a proužek se stavem vpravo.
 	var top_row := HBoxContainer.new()
-	top.add_child(top_row)
-	_title = _label("", 26, TEXT)
-	top_row.add_child(_title)
+	top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(top_row)
+	_place(top_row, 0.0, 0.0, 1.0, 0.0, 14.0, 10.0, -14.0, TOP_BAR_HEIGHT - 6.0)
+	var title_tab := PanelContainer.new()
+	title_tab.add_theme_stylebox_override("panel", _paper("label", 12.0))
+	top_row.add_child(title_tab)
+	_title = _label("", 26, INK)
+	title_tab.add_child(_title)
 	top_row.add_child(_spacer())
-	_stats = _label("", 21, TEXT)
-	top_row.add_child(_stats)
+	var stats_tab := PanelContainer.new()
+	stats_tab.add_theme_stylebox_override("panel", _paper("label", 12.0))
+	top_row.add_child(stats_tab)
+	_stats = _label("", 21, INK)
+	stats_tab.add_child(_stats)
 
 	# Dva řádky udrží všech osm dovedností dostupných i na telefonu.
 	var bottom := PanelContainer.new()
@@ -190,6 +200,7 @@ func _build() -> void:
 	_result_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	var panel := PanelContainer.new()
 	panel.custom_minimum_size = Vector2(520, 0)
+	panel.add_theme_stylebox_override("panel", _paper("dialog", 30.0))
 	_result_layer.add_child(panel)
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 18)
@@ -197,7 +208,7 @@ func _build() -> void:
 	_result_title = _label("", 40, ACCENT)
 	_result_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_result_title)
-	_result_text = _label("", 22, TEXT)
+	_result_text = _label("", 22, INK)
 	_result_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_result_text)
 	var again := _button("Hrát znovu", Vector2(0, 64))
@@ -217,7 +228,7 @@ func _build_controls(rows: VBoxContainer) -> void:
 	_mission_picker.item_selected.connect(func(index: int) -> void: mission_selected.emit(index))
 	row.add_child(_mission_picker)
 	row.add_child(_spacer())
-	row.add_child(_label("Vypouštění", 16, TEXT_DIM))
+	row.add_child(_label("Vypouštění", 17, TEXT_DIM))
 	var minus := _button("−", Vector2(48, 44))
 	minus.pressed.connect(func() -> void: release_rate_step.emit(-1))
 	row.add_child(minus)
@@ -254,13 +265,14 @@ func _build_confirmation() -> void:
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_confirm_layer.add_child(center)
 	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", _paper("dialog", 30.0))
 	center.add_child(panel)
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 14)
 	panel.add_child(col)
-	col.add_child(_label("Ukončit pokus?", 30, TEXT))
+	col.add_child(_label("Ukončit pokus?", 30, INK))
 	col.add_child(_label("Líheň se zavře a lumíkům začne odpočet bomby.\n"
-		+ "Dosavadní záchrany zůstanou započítané.", 20, TEXT))
+		+ "Dosavadní záchrany zůstanou započítané.", 20, INK))
 	var cancel := _button("Pokračovat ve hře", Vector2(460, 56))
 	cancel.pressed.connect(func() -> void: nuke_decided.emit(false))
 	col.add_child(cancel)
@@ -271,34 +283,26 @@ func _build_confirmation() -> void:
 
 
 func _add_skill_button(skill: int, hotkey: int) -> void:
-	var button := _button("", Vector2(136, 78))
+	# Slonovinová papírová dlaždice: velká ikona, počet v rohu, popisek dole.
+	var button := _button("", Vector2(132, 80))
 	button.tooltip_text = SKILL_TIPS[skill]
 	button.toggle_mode = true
 	button.pressed.connect(func() -> void: skill_selected.emit(skill))
-	var col := VBoxContainer.new()
-	col.alignment = BoxContainer.ALIGNMENT_CENTER
-	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	button.add_child(col)
-	col.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var count := _label("0", 20, TEXT)
-	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var number_row := HBoxContainer.new()
-	number_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	number_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if SKILL_ICONS.has(skill):
-		var icon := TextureRect.new()
-		var folder := "art_v2/ui" if skill <= Lemming.Skill.BOMBER else "clay/ui/icons"
-		icon.texture = load("res://assets/%s/%s.svg" % [folder, SKILL_ICONS[skill]])
-		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon.custom_minimum_size = Vector2(40, 40)
-		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		number_row.add_child(icon)
-	number_row.add_child(count)
-	col.add_child(number_row)
-	var caption := _label("%d · %s" % [hotkey, Lemming.SKILL_NAMES[skill]], 16, TEXT_DIM)
+	var icon := TextureRect.new()
+	icon.texture = load(UI_DIR + "icons/%s.svg" % SKILL_ICONS[skill])
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	button.add_child(icon)
+	_place(icon, 0.5, 0.0, 0.5, 0.0, -30.0, 4.0, 26.0, 54.0)
+	var count := _label("0", 22, INK)
+	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	button.add_child(count)
+	_place(count, 1.0, 0.0, 1.0, 0.0, -44.0, 22.0, -10.0, 52.0)
+	var caption := _label("%d · %s" % [hotkey, Lemming.SKILL_NAMES[skill]], 15, INK_DIM)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	col.add_child(caption)
+	button.add_child(caption)
+	_place(caption, 0.0, 1.0, 1.0, 1.0, 2.0, -26.0, -2.0, -4.0)
 	_skills_box.add_child(button)
 	_skill_widgets[skill] = {"button": button, "count": count}
 
@@ -346,21 +350,50 @@ func _make_theme() -> Theme:
 	font.variation_opentype = {0x77676874: 750.0}  # OpenType tag „wght“.
 	t.default_font = font
 	t.default_font_size = 20
-	var panel_box := _box(Color("172837ec"), Color("738c9e"), 20, 10)
-	t.set_stylebox("panel", "PanelContainer", panel_box)
-	t.set_stylebox("normal", "Button", _box(Color("293c4c"), Color("637788"), 14, 8))
-	t.set_stylebox("hover", "Button", _box(Color("365268"), Color("a3bac5"), 14, 8))
-	t.set_stylebox("pressed", "Button", _box(Color("1c5145"), Color("80e0b4"), 14, 8))
-	t.set_stylebox("hover_pressed", "Button", _box(Color("276456"), ACCENT, 14, 8))
-	t.set_stylebox("disabled", "Button", _box(Color(0.1, 0.1, 0.12, 0.6), Color(1, 1, 1, 0.04), 12, 8))
+	t.set_stylebox("panel", "PanelContainer", _paper("toolbar", 12.0))
+	t.set_stylebox("normal", "Button", _paper("tile", 6.0))
+	t.set_stylebox("hover", "Button", _paper("tile_hover", 6.0))
+	t.set_stylebox("pressed", "Button", _paper("tile_selected", 6.0))
+	t.set_stylebox("hover_pressed", "Button", _paper("tile_selected", 6.0))
+	t.set_stylebox("disabled", "Button", _paper("tile_disabled", 6.0))
 	t.set_stylebox("focus", "Button", StyleBoxEmpty.new())
-	t.set_color("font_color", "Button", TEXT)
-	t.set_color("font_hover_color", "Button", Color.WHITE)
-	t.set_color("font_pressed_color", "Button", ACCENT)
+	t.set_color("font_color", "Button", INK)
+	t.set_color("font_hover_color", "Button", INK)
+	t.set_color("font_pressed_color", "Button", INK)
+	t.set_color("font_hover_pressed_color", "Button", INK)
+	t.set_color("font_disabled_color", "Button", Color(INK, 0.45))
 	t.set_font_size("font_size", "Button", 22)
 	for style in ["normal", "hover", "pressed", "disabled", "focus"]:
 		t.set_stylebox(style, "OptionButton", t.get_stylebox(style, "Button"))
+	for item in ["font_color", "font_hover_color", "font_pressed_color", "font_disabled_color"]:
+		t.set_color(item, "OptionButton", t.get_color(item, "Button"))
+	t.set_stylebox("panel", "PopupMenu", _paper("dialog", 14.0))
+	t.set_stylebox("hover", "PopupMenu", _box(Color(ACCENT, 0.6), Color.TRANSPARENT, 6, 4))
+	t.set_color("font_color", "PopupMenu", INK)
+	t.set_color("font_hover_color", "PopupMenu", INK)
+	t.set_color("font_color", "TooltipLabel", INK)
+	t.set_stylebox("panel", "TooltipPanel", _paper("label", 10.0))
 	return t
+
+
+## Papírový panel z assets/origami/ui (9 dílů); stín přesahuje mimo plochu prvku.
+func _paper(name: String, content: float) -> StyleBoxTexture:
+	var box := StyleBoxTexture.new()
+	box.texture = load(UI_DIR + name + ".png")
+	var margin: float = _ui_margins().get(name, 20.0)
+	box.set_texture_margin_all(margin)
+	box.set_expand_margin_all(12.0)
+	box.set_content_margin_all(content)
+	return box
+
+
+
+func _ui_margins() -> Dictionary:
+	if _margins.is_empty():
+		var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(UI_DIR + "ui.json"))
+		for key in data:
+			_margins[key] = float(data[key]["margin"])
+	return _margins
 
 
 func _box(bg: Color, border: Color, radius: int, margin: float) -> StyleBoxFlat:

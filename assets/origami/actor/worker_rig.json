@@ -1,0 +1,1058 @@
+{
+ "units": "logical simulation pixels; y down; facing +x; degrees clockwise",
+ "atlas": "actor/worker_atlas.png",
+ "atlas_scale": 32,
+ "parts": {
+  "umbrella_open": {
+   "region": [
+    0,
+    0,
+    257,
+    244
+   ],
+   "pivot": [
+    131.6,
+    208.4
+   ]
+  },
+  "umbrella_closed": {
+   "region": [
+    259,
+    0,
+    65,
+    187
+   ],
+   "pivot": [
+    32.4,
+    150.8
+   ]
+  },
+  "shovel": {
+   "region": [
+    326,
+    0,
+    68,
+    174
+   ],
+   "pivot": [
+    34.0,
+    38.8
+   ]
+  },
+  "pick": {
+   "region": [
+    396,
+    0,
+    148,
+    152
+   ],
+   "pivot": [
+    74.0,
+    26.0
+   ]
+  },
+  "torso": {
+   "region": [
+    546,
+    0,
+    139,
+    136
+   ],
+   "pivot": [
+    67.6,
+    102.8
+   ]
+  },
+  "head": {
+   "region": [
+    687,
+    0,
+    124,
+    118
+   ],
+   "pivot": [
+    62.8,
+    98.0
+   ]
+  },
+  "cap": {
+   "region": [
+    0,
+    246,
+    214,
+    118
+   ],
+   "pivot": [
+    104.4,
+    88.4
+   ]
+  },
+  "arm": {
+   "region": [
+    216,
+    246,
+    56,
+    100
+   ],
+   "pivot": [
+    27.6,
+    16.4
+   ]
+  },
+  "leg": {
+   "region": [
+    274,
+    246,
+    80,
+    92
+   ],
+   "pivot": [
+    29.2,
+    14.8
+   ]
+  },
+  "brick": {
+   "region": [
+    356,
+    246,
+    97,
+    75
+   ],
+   "pivot": [
+    48.4,
+    16.4
+   ]
+  }
+ },
+ "skeleton": {
+  "root": {
+   "parent": "",
+   "joint": [
+    0.0,
+    0.0
+   ]
+  },
+  "leg_back": {
+   "parent": "root",
+   "joint": [
+    -0.35,
+    -2.1
+   ],
+   "part": "leg",
+   "shade": 0.78
+  },
+  "arm_back": {
+   "parent": "torso",
+   "joint": [
+    -0.05,
+    -2.35
+   ],
+   "part": "arm",
+   "shade": 0.72
+  },
+  "torso": {
+   "parent": "root",
+   "joint": [
+    0.0,
+    -2.1
+   ],
+   "part": "torso"
+  },
+  "leg_front": {
+   "parent": "root",
+   "joint": [
+    0.35,
+    -2.1
+   ],
+   "part": "leg"
+  },
+  "head": {
+   "parent": "torso",
+   "joint": [
+    0.15,
+    -2.55
+   ],
+   "part": "head"
+  },
+  "cap": {
+   "parent": "head",
+   "joint": [
+    0.1,
+    -2.25
+   ],
+   "part": "cap"
+  },
+  "tool": {
+   "parent": "arm_front",
+   "joint": [
+    0.0,
+    1.95
+   ],
+   "part": ""
+  },
+  "arm_front": {
+   "parent": "torso",
+   "joint": [
+    0.25,
+    -2.3
+   ],
+   "part": "arm"
+  }
+ },
+ "draw_order": [
+  "arm_back",
+  "leg_back",
+  "leg_front",
+  "torso",
+  "head",
+  "cap",
+  "tool",
+  "arm_front"
+ ],
+ "animations": {
+  "walk": {
+   "cycle": 8,
+   "loop": true,
+   "tool": "",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -26,
+      "leg_back": 24,
+      "arm_front": 34,
+      "arm_back": -34,
+      "torso": 4,
+      "head": -2,
+      "cap": -2
+     },
+     "root": [
+      0,
+      0.18,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.25,
+     "pose": {
+      "leg_front": 0,
+      "leg_back": 0,
+      "arm_front": 0,
+      "arm_back": 0,
+      "torso": 6,
+      "head": 0,
+      "cap": 3
+     },
+     "root": [
+      0,
+      -0.12,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": 24,
+      "leg_back": -26,
+      "arm_front": -34,
+      "arm_back": 34,
+      "torso": 4,
+      "head": 2,
+      "cap": -2
+     },
+     "root": [
+      0,
+      0.18,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.75,
+     "pose": {
+      "leg_front": 0,
+      "leg_back": 0,
+      "arm_front": 0,
+      "arm_back": 0,
+      "torso": 6,
+      "head": 0,
+      "cap": 3
+     },
+     "root": [
+      0,
+      -0.12,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "fall": {
+   "cycle": 6,
+   "loop": true,
+   "tool": "",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -14,
+      "leg_back": 16,
+      "arm_front": -150,
+      "arm_back": 145,
+      "torso": -3,
+      "head": -6,
+      "cap": -10
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": 10,
+      "leg_back": -8,
+      "arm_front": -125,
+      "arm_back": 165,
+      "torso": 3,
+      "head": 4,
+      "cap": 8
+     },
+     "root": [
+      0,
+      -0.1,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "fall_umbrella": {
+   "cycle": 6,
+   "loop": true,
+   "tool": "umbrella_closed",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -14,
+      "leg_back": 16,
+      "arm_front": 205,
+      "arm_back": 145,
+      "torso": -3,
+      "head": -6,
+      "cap": -10,
+      "tool": 155
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": 10,
+      "leg_back": -8,
+      "arm_front": 198,
+      "arm_back": 165,
+      "torso": 3,
+      "head": 4,
+      "cap": 8,
+      "tool": 166
+     },
+     "root": [
+      0,
+      -0.1,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "climb": {
+   "cycle": 8,
+   "loop": true,
+   "tool": "",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -55,
+      "leg_back": -15,
+      "arm_front": -175,
+      "arm_back": -140,
+      "torso": 10,
+      "head": -8,
+      "cap": -4
+     },
+     "root": [
+      0.35,
+      0,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": -15,
+      "leg_back": -55,
+      "arm_front": -140,
+      "arm_back": -175,
+      "torso": 10,
+      "head": -8,
+      "cap": 2
+     },
+     "root": [
+      0.35,
+      -0.15,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "float": {
+   "cycle": 20,
+   "loop": true,
+   "tool": "umbrella_open",
+   "unfold_ticks": 5,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -8,
+      "leg_back": 10,
+      "arm_front": 202,
+      "arm_back": 24,
+      "torso": -2,
+      "head": -4,
+      "cap": -3,
+      "tool": 158
+     },
+     "root": [
+      0,
+      0,
+      -3,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": 8,
+      "leg_back": -6,
+      "arm_front": 198,
+      "arm_back": 8,
+      "torso": 2,
+      "head": 2,
+      "cap": 4,
+      "tool": 164
+     },
+     "root": [
+      0,
+      0,
+      3,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "block": {
+   "cycle": 24,
+   "loop": true,
+   "tool": "",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -14,
+      "leg_back": 14,
+      "arm_front": -92,
+      "arm_back": 92,
+      "torso": 0,
+      "head": 0,
+      "cap": 0
+     },
+     "root": [
+      0,
+      0.1,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": -14,
+      "leg_back": 14,
+      "arm_front": -84,
+      "arm_back": 84,
+      "torso": -1,
+      "head": -3,
+      "cap": -3
+     },
+     "root": [
+      0,
+      0.0,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "build": {
+   "cycle": 16,
+   "loop": true,
+   "tool": "brick",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -6,
+      "leg_back": 8,
+      "arm_front": 30,
+      "arm_back": -10,
+      "torso": 4,
+      "head": 0,
+      "cap": 0,
+      "tool": -30
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1,
+      1
+     ],
+     "tool": "brick"
+    },
+    {
+     "t": 0.25,
+     "pose": {
+      "leg_front": -24,
+      "leg_back": 14,
+      "arm_front": -55,
+      "arm_back": -45,
+      "torso": 30,
+      "head": -10,
+      "cap": -4,
+      "tool": 40
+     },
+     "root": [
+      0,
+      0.35,
+      0,
+      1,
+      1
+     ],
+     "tool": "brick"
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": -30,
+      "leg_back": 16,
+      "arm_front": -72,
+      "arm_back": -62,
+      "torso": 38,
+      "head": -14,
+      "cap": -6,
+      "tool": 70
+     },
+     "root": [
+      0,
+      0.45,
+      0,
+      1,
+      1
+     ],
+     "tool": ""
+    },
+    {
+     "t": 0.75,
+     "pose": {
+      "leg_front": -20,
+      "leg_back": 6,
+      "arm_front": -20,
+      "arm_back": -10,
+      "torso": 14,
+      "head": -4,
+      "cap": 2,
+      "tool": 0
+     },
+     "root": [
+      0,
+      0.12,
+      0,
+      1,
+      1
+     ],
+     "tool": ""
+    }
+   ]
+  },
+  "bash": {
+   "cycle": 8,
+   "loop": true,
+   "tool": "pick",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -20,
+      "leg_back": 18,
+      "arm_front": 262,
+      "arm_back": 255,
+      "torso": 14,
+      "head": -6,
+      "cap": -4,
+      "tool": 0
+     },
+     "root": [
+      0,
+      0.12,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.18,
+     "pose": {
+      "leg_front": -20,
+      "leg_back": 18,
+      "arm_front": 248,
+      "arm_back": 242,
+      "torso": 10,
+      "head": -4,
+      "cap": 0,
+      "tool": 0
+     },
+     "root": [
+      0,
+      0.12,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.6,
+     "pose": {
+      "leg_front": -14,
+      "leg_back": 14,
+      "arm_front": 160,
+      "arm_back": 150,
+      "torso": -8,
+      "head": 4,
+      "cap": 4,
+      "tool": -10
+     },
+     "root": [
+      0,
+      0.0,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.85,
+     "pose": {
+      "leg_front": -18,
+      "leg_back": 16,
+      "arm_front": 205,
+      "arm_back": 198,
+      "torso": 2,
+      "head": 0,
+      "cap": 0,
+      "tool": 0
+     },
+     "root": [
+      0,
+      0.06,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "mine": {
+   "cycle": 8,
+   "loop": true,
+   "tool": "pick",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -24,
+      "leg_back": 20,
+      "arm_front": 300,
+      "arm_back": 292,
+      "torso": 26,
+      "head": -10,
+      "cap": -6,
+      "tool": 0
+     },
+     "root": [
+      0,
+      0.3,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.2,
+     "pose": {
+      "leg_front": -22,
+      "leg_back": 20,
+      "arm_front": 290,
+      "arm_back": 282,
+      "torso": 22,
+      "head": -8,
+      "cap": -2,
+      "tool": 0
+     },
+     "root": [
+      0,
+      0.28,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.6,
+     "pose": {
+      "leg_front": -14,
+      "leg_back": 14,
+      "arm_front": 170,
+      "arm_back": 160,
+      "torso": -4,
+      "head": 4,
+      "cap": 4,
+      "tool": -10
+     },
+     "root": [
+      0,
+      0.05,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.85,
+     "pose": {
+      "leg_front": -18,
+      "leg_back": 16,
+      "arm_front": 230,
+      "arm_back": 222,
+      "torso": 10,
+      "head": 0,
+      "cap": 0,
+      "tool": 0
+     },
+     "root": [
+      0,
+      0.15,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "dig": {
+   "cycle": 8,
+   "loop": true,
+   "tool": "shovel",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -26,
+      "leg_back": 22,
+      "arm_front": -18,
+      "arm_back": -8,
+      "torso": 28,
+      "head": -12,
+      "cap": -6,
+      "tool": 8
+     },
+     "root": [
+      0,
+      0.4,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": -20,
+      "leg_back": 18,
+      "arm_front": -62,
+      "arm_back": -50,
+      "torso": 18,
+      "head": -4,
+      "cap": 2,
+      "tool": 30
+     },
+     "root": [
+      0,
+      0.25,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "shrug": {
+   "cycle": 8,
+   "loop": false,
+   "tool": "",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": 0,
+      "leg_back": 0,
+      "arm_front": -20,
+      "arm_back": 20,
+      "torso": 0,
+      "head": 0,
+      "cap": 0
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.45,
+     "pose": {
+      "leg_front": -4,
+      "leg_back": 4,
+      "arm_front": -128,
+      "arm_back": 128,
+      "torso": -2,
+      "head": -12,
+      "cap": -14
+     },
+     "root": [
+      0,
+      -0.15,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 1.0,
+     "pose": {
+      "leg_front": -4,
+      "leg_back": 4,
+      "arm_front": -118,
+      "arm_back": 118,
+      "torso": -2,
+      "head": -10,
+      "cap": -10
+     },
+     "root": [
+      0,
+      -0.1,
+      0,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  "splat": {
+   "cycle": 16,
+   "loop": false,
+   "tool": "",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -30,
+      "leg_back": 30,
+      "arm_front": -120,
+      "arm_back": 120,
+      "torso": 0,
+      "head": 0,
+      "cap": -20
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1.15,
+      0.8
+     ]
+    },
+    {
+     "t": 0.25,
+     "pose": {
+      "leg_front": -70,
+      "leg_back": 70,
+      "arm_front": -95,
+      "arm_back": 95,
+      "torso": 0,
+      "head": 10,
+      "cap": -40
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1.55,
+      0.3
+     ]
+    },
+    {
+     "t": 1.0,
+     "pose": {
+      "leg_front": -80,
+      "leg_back": 80,
+      "arm_front": -90,
+      "arm_back": 90,
+      "torso": 0,
+      "head": 12,
+      "cap": -55
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1.7,
+      0.22
+     ]
+    }
+   ]
+  },
+  "exit": {
+   "cycle": 10,
+   "loop": false,
+   "tool": "",
+   "unfold_ticks": 0,
+   "keys": [
+    {
+     "t": 0.0,
+     "pose": {
+      "leg_front": -14,
+      "leg_back": 12,
+      "arm_front": -150,
+      "arm_back": 10,
+      "torso": 2,
+      "head": -6,
+      "cap": -6
+     },
+     "root": [
+      0,
+      0,
+      0,
+      1,
+      1
+     ]
+    },
+    {
+     "t": 0.5,
+     "pose": {
+      "leg_front": 10,
+      "leg_back": -10,
+      "arm_front": -170,
+      "arm_back": -10,
+      "torso": -2,
+      "head": 4,
+      "cap": 6
+     },
+     "root": [
+      0.2,
+      -0.2,
+      0,
+      0.85,
+      0.85
+     ]
+    },
+    {
+     "t": 1.0,
+     "pose": {
+      "leg_front": 0,
+      "leg_back": 0,
+      "arm_front": -160,
+      "arm_back": 0,
+      "torso": 0,
+      "head": 0,
+      "cap": 0
+     },
+     "root": [
+      0.5,
+      -0.1,
+      0,
+      0.55,
+      0.55
+     ]
+    }
+   ]
+  }
+ },
+ "state_animations": [
+  "fall",
+  "walk",
+  "splat",
+  "exit",
+  "block",
+  "build",
+  "shrug",
+  "bash",
+  "dig",
+  "climb",
+  "float",
+  "mine"
+ ],
+ "blend_ticks": 3
+}
