@@ -176,7 +176,8 @@ Nejdřív ověřit základ a simulaci, připravit grafické podklady, následně
 
 Každý dílčí úkol má určit změněné vrstvy, konkrétní ukázku výsledku a kontroly odpovídající riziku. Po větší implementační změně aktualizovat stav projektu a relevantní architekturu. Termíny a rozpočet zpřesnit po technickém prototypu a prvním dokončeném 3D assetu; do té doby nejsou ověřené podklady pro spolehlivý odhad.
 
-**Nejbližší vývojový úkol:** opravit výtvarné provedení podle schváleného
-mockupu, počínaje referenčním výřezem v Godotu. Autor už 0.4.0 označil za
-nevyhovující. Mechanicky navazuje etapa 5 až po této opravě. Cloudové testy
+**Nejbližší vývojový úkol:** porovnat nový samostatný [výřez v3](VYTVARNY_VYREZ_V3.md)
+s mockupem, dokončit potřebné výtvarné úpravy a přenést provedení do
+hratelné mise s dynamickým terénem. Výřez už existuje v Godotu, zatím bez
+vizuálního schválení autora. Grafika 0.4.0 zůstává označená za nevyhovující. Mechanicky navazuje etapa 5 až po této opravě. Cloudové testy
 nepotvrzují nativní běh na Macu ani Androidu.

@@ -47,6 +47,20 @@
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.
 
+## Výtvarná reference
+- Autor odmítl grafiku 0.4.0 jako neodpovídající mockupu. Původní předloha
+  `docs/images/mockup-modelin-prvni-kroky.png` zůstává cílem.
+- Nový samostatný výřez je `studies/clay_reference.tscn`, podklady jsou
+  v `assets/reference_v3/`, hashe v `assets/reference_v3.lock.json`.
+  Studie zatím není autorem vizuálně schválená. Její statický terén a
+  řízená deformace hrudky nenahrazují simulaci ani dynamický `ClayMesher`.
+- Herní exporty výřez a jeho podklady vylučují. Samostatný projekt sestaví
+  `python scripts/package_reference.py`; grafický průchod a záznam provede
+  `scripts/qa_reference.gd`. Skutečné záběry jsou v `docs/VYTVARNY_VYREZ_V3.md`.
+- Nevykazovat funkční testy, úspěšný import ani vytvoření modelu jako
+  potvrzení shody se schváleným vzhledem. Nepředávat nový generovaný koncept
+  jako důkaz změny skutečné hry.
+
 ## Ověření změn
 V připraveném cloudu je Godot 4.7. V nové shell relaci nejprve:
 

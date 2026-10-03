@@ -1,0 +1,26 @@
+{
+  "status": "passed",
+  "scope": "static GLB structure; actual rendering verified separately",
+  "models": [
+    {
+      "file": "assets/reference_v3/models/clay_reference.glb",
+      "triangles": 290328,
+      "triangle_budget": 350000,
+      "finite_positions": 156754,
+      "embedded_resources_only": true,
+      "sha256": "19094b47cafc9ccc70958316750eae97b53a348018b043766b14215471056d4e",
+      "animated_clay_sample": true,
+      "step_blocks": 5
+    },
+    {
+      "file": "assets/reference_v3/models/clay_worker.glb",
+      "triangles": 14920,
+      "triangle_budget": 20000,
+      "finite_positions": 8901,
+      "embedded_resources_only": true,
+      "sha256": "02955cf84458c829c838a8b1b5964790125314f1aadd8cb70dcdfcb99c0b3abb",
+      "bones": 16,
+      "animations": 11
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "package": "lemmings-clay-reference-v3",
+  "version": "0.1.0",
+  "license": "LicenseRef-Lemmings2026-Project-Internal",
+  "files": [
+    {
+      "path": "assets/reference_v3/LICENSE.txt",
+      "sha256": "d523a4e779e70a5b3260c512cd2afc6bb83462ab0bb94d61bba48eb32c9e7291"
+    },
+    {
+      "path": "assets/reference_v3/animation_manifest.json",
+      "sha256": "55fec0faada4a74b3a920588469a8026823c4993af3dc062ae845fb673d663ac"
+    },
+    {
+      "path": "assets/reference_v3/models/clay_reference.glb",
+      "sha256": "19094b47cafc9ccc70958316750eae97b53a348018b043766b14215471056d4e"
+    },
+    {
+      "path": "assets/reference_v3/models/clay_worker.glb",
+      "sha256": "02955cf84458c829c838a8b1b5964790125314f1aadd8cb70dcdfcb99c0b3abb"
+    },
+    {
+      "path": "assets/reference_v3/provenance.json",
+      "sha256": "e42e25bd6bc14f499c4d10cc03e77f786ee43452dc64dc78a13a0dec7b6bb79a"
+    },
+    {
+      "path": "assets/reference_v3/source/.gdignore",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "assets/reference_v3/source/build_stage.py",
+      "sha256": "b3096e8fed2be01cbe394a980bb70454bcbc47ac3642db932a2fa5aed84853a6"
+    },
+    {
+      "path": "assets/reference_v3/source/build_worker.py",
+      "sha256": "a531f93e328c2f6c12240bfdbe147fea340414037be411bcec8d66a7112b16f3"
+    },
+    {
+      "path": "assets/reference_v3/source/clay_reference.blend",
+      "sha256": "f9841ba247b6abe0dbb118dd5bd1214f5b8736b5a9a9261f7c3c8c7eece4f785"
+    },
+    {
+      "path": "assets/reference_v3/source/clay_worker.blend",
+      "sha256": "db5fc5961963abb6e9bd4a0ea01038af27f91d227bb944692eb4aa95f5073a6f"
+    },
+    {
+      "path": "assets/reference_v3/stage_manifest.json",
+      "sha256": "4c9b7b317f170e1e8367cda060320e223bee185fdf66ab4264181dd00ee0168e"
+    },
+    {
+      "path": "assets/reference_v3/validation.json",
+      "sha256": "403fee09c3b6678e2b2932ba6fdb5eacc78e581072bcbc0a450be74cf5f2f81b"
+    }
+  ]
+}

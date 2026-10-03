@@ -24,8 +24,12 @@ Výtvarný cíl tedy není splněný. Prioritou je nový referenční výřez p�
 v Godotu s odpovídajícím terénem, postavou a světlem; potom přenesení
 ověřeného provedení do celé mise. Konkrétní rozdíly a postup jsou v
 [`grafické revizi`](docs/GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
-Referenční výřez zatím vytvořený není. Další mechaniky etapy 5 následují
-až po této opravě. Reprezentativní demo se zvukem ani finální grafika
+Nový samostatný **výtvarný výřez v3 je nyní vytvořený v Godotu**:
+modelovaný terén, nová postava, spojená zeleň, světlo a ukázka odtržení
+hmoty. Má vlastní ZIP pro Godot, skutečné záběry a záznam. Podrobnosti:
+[`výtvarný výřez v3`](docs/VYTVARNY_VYREZ_V3.md). Vizuální schválení autora
+ani přenos do dynamického terénu celé mise zatím neproběhly. Další mechaniky
+etapy 5 následují až po této výtvarné práci. Reprezentativní demo se zvukem ani finální grafika
 celé kampaně nejsou hotové.
 
 Kompletní pořadí dvanácti etap je v [`plánu vývoje`](docs/PLAN_VYVOJE.md).
@@ -87,6 +91,12 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
   v obou rendererech, nové mise 6/6, 6/6 a 3/4 přes dotyk v Compatibility
 - Android APK 0.4.0 ve větvi `downloads/android-0.4.0`, zdroje a skutečné snímky
   v původní vývojové větvi; předchozí APK jsou zachovaná
+
+- Samostatný výtvarný výřez v3: autorské objemy hlíny, zeleň, nová postava,
+  fyzické světlo, řízená deformace hrudky a pět modelovaných schodů
+- Nová sada má 12 souborů s kontrolními součty a editovatelnými zdroji Blenderu
+- Kontrola po přidání studie: 58 GDScriptů, osm sad, 186 herních ověření
+- Studie je oddělená od hry a vyloučená z herních exportů; její terén je statický
 
 ## 📝 TODO
 ### MVP (nutné pro v1)

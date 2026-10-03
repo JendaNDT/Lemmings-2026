@@ -85,3 +85,12 @@ Kopání vzhůru autor výslovně vyřadil; nahoru vedou stavitelovy schody.
 
 Detailní výroba grafiky celé kampaně naváže na ověřené kopání, stavění,
 kameru a výkon. Hlavní plán nadále obsahuje dvanáct etap.
+
+## Samostatný výtvarný výřez v3
+
+Po zamítnutí vzhledu 0.4.0 vznikla samostatná scéna Godotu s novým terénem,
+postavou, zelení a světlem. [Skutečné záběry, animace a projekt ke stažení](VYTVARNY_VYREZ_V3.md).
+Cílem této studie je posoudit konkrétní objem a materiál před přenesením
+do měnitelného terénu. Scéna má autorskou statickou geometrii a řízený
+cyklus odtržení hrudky; ještě není novým hratelným levelem. Původní mockup
+zůstává referencí a vizuální schválení této studie zatím neproběhlo.

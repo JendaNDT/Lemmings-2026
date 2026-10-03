@@ -1,0 +1,9 @@
+LicenseRef-Lemmings2026-Project-Internal
+
+Original scene, meshes, procedural surfaces and source authored for Lemmings 2026.
+The worker rig and clips derive from the project's original clay kit and art_v2.
+No third-party models or textures; no paid provider jobs.
+
+The separate Godot preview also uses the existing project tools and Nunito font.
+Nunito: Copyright 2014 The Nunito Project Authors. SIL Open Font License 1.1.
+Its full license accompanies the font at assets/art_v2/ui/OFL.txt.

@@ -34,8 +34,8 @@ Následující práce má tento konkrétní výstup a pořadí:
    se skutečně tvarovaným objemem a společným nasvícením podle předlohy.
 2. Zachytit stejný výřez z herní kamery v celku i detailu. Porovnat proporce,
    siluetu, charakter povrchu, kontaktní stíny a barevnost s mockupem;
-   kontrola funkčnosti tyto podmínky nenahrazuje. Referenční výřez ještě
-   není vytvořený a nesmí být vykázaný jako hotový.
+   kontrola funkčnosti tyto podmínky nenahrazuje. Nový referenční výřez je nyní vytvořený jako samostatná
+   [studie v3](VYTVARNY_VYREZ_V3.md); vizuální schválení zatím neproběhlo.
 3. Teprve ověřené provedení rozšířit na hratelnou misi, dopracovat krajinu
    a rozhraní a prověřit kopání, stavění i mobilní grafický profil.
 

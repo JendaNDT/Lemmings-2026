@@ -12,6 +12,20 @@ už používá **2.5D zobrazení**: prostorový terén, animované postavy a sv�
 nad původní 2D simulací. Původní `main/game.tscn` zůstává pro porovnání;
 výchozí je `main/game_3d.tscn`.
 
+## Výtvarný výřez v3
+
+[**Stáhnout samostatný projekt pro Godot**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/clay-reference-v3/Lemmings-Modelinovy-vyrez-v3.zip)
+
+Rozbal ZIP, v Godotu zvol **Import → project.godot → F5**. Studie obsahuje
+nové prostorové materiály, postavu, světlo a krátkou deformaci hlíny.
+Mezerník přepíná pauzu, Tab detail a R opakuje animaci.
+
+![Skutečná samostatná scéna Godotu](docs/images/reference-v3-overview.png)
+
+[Záznam animace](docs/videos/reference-v3.mp4) · [Rozsah, původ a ověření](docs/VYTVARNY_VYREZ_V3.md).
+Jde o výtvarnou studii se statickým terénem. Do hry a do APK 0.4.0 ještě
+zapojená není; shoda s mockupem nemá autorovo vizuální schválení.
+
 ## Testovací verze pro Android
 
 [**Stáhnout Android APK 0.4.0 (60 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.4.0/android/Lemmings-2026-Android-0.4.0.apk)

@@ -23,6 +23,14 @@ def verify(root):
         assert path.resolve().is_relative_to((root / 'assets/art_v2').resolve())
         assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
     print(f"[OK] {len(art['files'])} nových výtvarných podkladů souhlasí s manifestem")
+    reference = json.loads((root / 'assets/reference_v3.lock.json').read_text())
+    assert reference['license'] == 'LicenseRef-Lemmings2026-Project-Internal'
+    assert reference['files']
+    for entry in reference['files']:
+        path = root / entry['path']
+        assert path.resolve().is_relative_to((root / 'assets/reference_v3').resolve())
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
+    print(f"[OK] {len(reference['files'])} podkladů výtvarného výřezu souhlasí s manifestem")
 
 
 if __name__ == '__main__':
