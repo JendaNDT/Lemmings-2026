@@ -4,15 +4,23 @@ extends Node2D
 ## času (state_ticks + alpha), takže pauza a zrychlení platí i pro animace.
 ## Výpočet kloubů odpovídá náhledu v assets/origami/source/build_character.py.
 ##
-## Stop-motion (výchozí): póza se mění jen každé STEP_TICKS tiky, poloha po
-## celých ticích a díly se při každém kroku nepatrně „chvějí“ jako ručně
+## Stop-motion (výchozí): póza se mění po celých ticích (STEP_TICKS), poloha
+## také a díly se každé BOIL_TICKS tiky nepatrně „chvějí“ jako ručně
 ## posouvané papírové loutky. Kontakty nářadí zůstávají na tiku změny masky.
 
 const RIG_PATH := "res://assets/origami/actor/worker_rig.json"
 const ATLAS := preload("res://assets/origami/actor/worker_atlas.png")
 const FLIP_TICKS := 2.0
 const SELECT := Color("ffe39a")
-const STEP_TICKS := 2
+const STEP_TICKS := 1
+## Po kolika ticích se mění ruční chvění dílů (a vlny či plameny ve scéně).
+const BOIL_TICKS := 2
+## Dopad z pádu: krátké zplácnutí postavy (tiky).
+const LAND_TICKS := 3.0
+const FALLING_ANIMS := ["fall", "fall_umbrella", "float"]
+const FLAME_OUTER := Color("f3923a")
+const FLAME_MID := Color("fab84a")
+const FLAME_CORE := Color("fff0b0")
 ## Chvění dílů ve stupních (±) a kořene v logických pixelech (±).
 const BOIL_DEGREES := 2.5
 const BOIL_OFFSET := 0.05
@@ -40,6 +48,7 @@ class ActorView:
 	var dir := 1
 	var flip_from := 1.0
 	var flip_start := -100.0
+	var landed := -100.0
 
 
 func _init() -> void:
@@ -105,6 +114,8 @@ func update_views() -> void:
 			view.facing = lerpf(view.flip_from, lem.dir, smoothstep(0.0, 1.0, flip))
 		var name := anim_for(lem)
 		if name != view.anim:
+			if view.anim in FALLING_ANIMS and name not in FALLING_ANIMS and name != "splat":
+				view.landed = now
 			if view.anim != "":
 				view.from_pose = view.pose.duplicate()
 				view.from_root = view.root.duplicate()
@@ -124,6 +135,11 @@ func update_views() -> void:
 				root[i] = lerpf(float(view.from_root[i]), float(root[i]), k)
 		else:
 			view.blending = false
+		# Dopad: postavička se na okamžik zplácne a zase narovná.
+		var land := 1.0 - clampf((now - view.landed) / LAND_TICKS, 0.0, 1.0)
+		if land > 0.0:
+			root[3] = float(root[3]) * (1.0 + 0.14 * land)
+			root[4] = float(root[4]) * (1.0 - 0.22 * land)
 		if stop_motion:
 			_boil(lem, pose, root)
 		view.pose = pose
@@ -136,7 +152,7 @@ func update_views() -> void:
 
 ## Ruční chvění: v každém kroku jiné, ale deterministické (stejný krok = stejná póza).
 func _boil(lem: Lemming, pose: Dictionary, root: Array) -> void:
-	var step := (sim.tick_count + lem.id) / STEP_TICKS
+	var step := (sim.tick_count + lem.id) / BOIL_TICKS
 	var index := 0
 	for key in pose:
 		pose[key] = float(pose[key]) + (_noise(lem.id, step, index) - 0.5) * 2.0 * BOIL_DEGREES
@@ -225,7 +241,8 @@ func _draw() -> void:
 			continue
 		_draw_actor(lem, _views[lem.id])
 	draw_set_transform_matrix(Transform2D.IDENTITY)
-	if hovered != null and not hovered.removed:
+	# Umírající nebo odcházející postavě nejde nic přidělit: bez zvýraznění.
+	if hovered != null and not hovered.removed and hovered.state not in LevelSim.DYING_STATES:
 		var p := actor_position(hovered)
 		draw_set_transform(p, 0.0, Vector2(1.0, 0.32))
 		draw_arc(Vector2.ZERO, 4.2, 0.0, TAU, 32, SELECT, 0.9, true)
@@ -243,12 +260,12 @@ func _draw_actor(lem: Lemming, view: ActorView) -> void:
 		Lemming.State.EXITING:
 			fade = 1.0 - clampf((pose_ticks(lem) - 4.0) / float(SimConst.EXIT_TICKS - 4), 0.0, 1.0)
 		Lemming.State.DROWNING:
-			# Potopí se za přední pruhy vody a v druhé půlce zmizí.
-			fade = 1.0 - clampf((pose_ticks(lem) / float(SimConst.DROWN_TICKS) - 0.5) * 2.0, 0.0, 1.0)
+			# Potopí se za průsvitné přední pruhy vody a na konci zmizí.
+			fade = 1.0 - clampf((pose_ticks(lem) / float(SimConst.DROWN_TICKS) - 0.75) * 4.0, 0.0, 1.0)
 		Lemming.State.BURNING:
 			var k := pose_ticks(lem) / float(SimConst.BURN_TICKS)
-			tint = Color.WHITE.lerp(CHAR, clampf(k / 0.6, 0.0, 1.0))
-			fade = 1.0 - clampf((k - 0.7) / 0.3, 0.0, 1.0)
+			tint = Color.WHITE.lerp(CHAR, clampf(k / 0.55, 0.0, 1.0))
+			fade = 1.0 - clampf((k - 0.8) / 0.2, 0.0, 1.0)
 	var grounded := lem.state not in [
 		Lemming.State.FALLER, Lemming.State.FLOATER, Lemming.State.CLIMBER,
 		Lemming.State.DROWNING, Lemming.State.BURNING]
@@ -278,6 +295,8 @@ func _draw_actor(lem: Lemming, view: ActorView) -> void:
 		var shade := float(skeleton[name].get("shade", 1.0))
 		draw_texture_rect_region(ATLAS, Rect2(-pivot / _scale, region.size / _scale), region,
 			Color(shade * tint.r, shade * tint.g, shade * tint.b, fade))
+	if lem.state == Lemming.State.BURNING:
+		_draw_flames(lem, p)
 	if lem.bomb_ticks > 0:
 		var seconds := ceili(lem.bomb_ticks / float(SimConst.TICKS_PER_SECOND))
 		draw_set_transform(p + Vector2(0, -13.2), 0.0, Vector2(0.125, 0.125))
@@ -285,3 +304,34 @@ func _draw_actor(lem: Lemming, view: ActorView) -> void:
 		draw_rect(Rect2(-14, -22, 28, 28), Color("8a4a2c"), false, 2.0)
 		draw_string(_font, Vector2(-14, 0), str(seconds), HORIZONTAL_ALIGNMENT_CENTER, 28, 26,
 			Color("8a2f1c"))
+
+
+## Papírové plameny kolem hořící postavy: jazyky mění tvar po celých ticích,
+## nejdřív rostou, s mačkajícím se papírem slábnou.
+func _draw_flames(lem: Lemming, p: Vector2) -> void:
+	draw_set_transform_matrix(Transform2D.IDENTITY)
+	var k := clampf(pose_ticks(lem) / float(SimConst.BURN_TICKS), 0.0, 1.0)
+	var strength := smoothstep(0.0, 0.15, k) * (1.0 - smoothstep(0.75, 1.0, k))
+	if strength <= 0.0:
+		return
+	var step := sim.tick_count
+	var tongues := [[-2.4, 0.8], [-0.8, 1.2], [0.9, 1.1], [2.5, 0.75], [0.0, 0.9]]
+	for i in tongues.size():
+		var spec: Array = tongues[i]
+		var jitter := _noise(lem.id, step, 200 + i)
+		var height := (4.0 + 5.5 * jitter) * float(spec[1]) * strength * (1.0 - 0.45 * k)
+		var lean := (_noise(lem.id, step, 300 + i) - 0.5) * 2.2
+		var base := p + Vector2(float(spec[0]), 0.4 - k * 1.5 * float(i % 2))
+		for layer in 3:
+			var scale := [1.0, 0.68, 0.36][layer] as float
+			var color: Color = [FLAME_OUTER, FLAME_MID, FLAME_CORE][layer]
+			var w := 1.5 * scale * float(spec[1])
+			var h := height * scale
+			var tongue := PackedVector2Array([
+				base + Vector2(-w, 0.0),
+				base + Vector2(-w * 0.8 + lean * 0.3, -h * 0.45),
+				base + Vector2(lean, -h),
+				base + Vector2(w * 0.7 + lean * 0.4, -h * 0.5),
+				base + Vector2(w, 0.0),
+			])
+			draw_colored_polygon(tongue, Color(color, 0.92))

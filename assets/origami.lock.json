@@ -13,7 +13,7 @@
     },
     {
       "path": "assets/origami/actor/worker_rig.json",
-      "sha256": "5e9f423de2b8801bcb503bbfe8b867b5bc18d5a75d9cbeb871eda5b3e806c7bf"
+      "sha256": "47d38c44b3efed7c47fa7deceb46b1d598386ad657c2b23312b6464a7abaf31d"
     },
     {
       "path": "assets/origami/layers/fg_fern_sage.png",
@@ -101,7 +101,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "02a3fc0695b35addec0e61380b98af0de903d5303dd4dafbc27e42ec60f328d3"
+      "sha256": "950791089966b163fff09a2861209332f1df5b7609168df30e40be41685fb752"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -117,7 +117,7 @@
     },
     {
       "path": "assets/origami/source/build_character.py",
-      "sha256": "84225fbeeb72a0269e20ecff3d203b96a3f59c17a5a8f7847afce093ae1c1bbb"
+      "sha256": "b4547bc991f198c2e636f69506f424263727bcf3de944f7952f147353d0b739c"
     },
     {
       "path": "assets/origami/source/build_props.py",
@@ -137,7 +137,7 @@
     },
     {
       "path": "assets/origami/source/previews/worker_poses.png",
-      "sha256": "da63abf19e22d22420f427abaffcd15609b05ec2b4ad2ff8ce848e708002f0dd"
+      "sha256": "95c8a9ca181857790768380818b4ee677b9693a4d16bc01f9a404f00d96661b8"
     },
     {
       "path": "assets/origami/ui/dialog.png",

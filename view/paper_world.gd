@@ -112,7 +112,7 @@ func update_frame(alpha: float, events: Array[Dictionary], delta: float) -> void
 	# Vlny a plameny: ve stop-motion se mění po dvou ticích jako postavy.
 	if _sim != null:
 		var ticks := _sim.tick_count
-		terrain.set_time(float(ticks - posmod(ticks, PaperActors.STEP_TICKS)) if actors.stop_motion
+		terrain.set_time(float(ticks - posmod(ticks, PaperActors.BOIL_TICKS)) if actors.stop_motion
 			else ticks + alpha)
 	actors.alpha = alpha
 	actors.update_views()

@@ -35,22 +35,22 @@ script = ExtResource("2_shape")
 kind = 6
 
 [node name="PoolCut" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(230, 96, 252, 96, 252, 104, 230, 104)
+polygon = PackedVector2Array(224, 96, 256, 96, 256, 100, 254.5, 101, 253, 102.5, 251.5, 104, 229.5, 104, 228, 102.5, 226.5, 101, 225, 100)
 script = ExtResource("2_shape")
 kind = 2
 
 [node name="Pool" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(230, 104, 252, 104, 252, 136, 230, 136)
+polygon = PackedVector2Array(251.5, 104, 250.9, 106, 250.2, 108, 249.5, 110, 248.8, 112, 248.1, 114, 247.4, 116, 246.7, 118, 245.9, 120, 245, 122, 244.2, 124, 243.2, 126, 242.1, 128, 240.5, 130, 238.9, 128, 237.8, 126, 236.8, 124, 236, 122, 235.1, 120, 234.3, 118, 233.6, 116, 232.9, 114, 232.2, 112, 231.5, 110, 230.8, 108, 230.1, 106, 229.5, 104)
 script = ExtResource("2_shape")
 kind = 3
 
 [node name="LavaCut" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(372, 96, 404, 96, 404, 103, 372, 103)
+polygon = PackedVector2Array(366, 96, 410, 96, 410, 100, 408, 101, 406.5, 102, 405, 103, 371, 103, 369.5, 102, 368, 101, 366, 100)
 script = ExtResource("2_shape")
 kind = 2
 
 [node name="Lava" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(372, 103, 404, 103, 404, 118, 372, 118)
+polygon = PackedVector2Array(405, 103, 404.6, 106.3, 403.3, 109.5, 401.3, 112.4, 398.6, 114.7, 395.4, 116.5, 391.8, 117.6, 388, 118, 384.2, 117.6, 380.6, 116.5, 377.4, 114.7, 374.7, 112.4, 372.7, 109.5, 371.4, 106.3, 371, 103)
 script = ExtResource("2_shape")
 kind = 4
 

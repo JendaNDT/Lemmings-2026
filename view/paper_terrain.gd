@@ -66,8 +66,10 @@ func setup(terrain: TerrainMask) -> void:
 	_mask_texture = ImageTexture.create_from_image(_mask_image)
 	_static_texture = ImageTexture.create_from_image(build_static(mask))
 	var hazards := build_hazards(mask)
-	_hazard_texture = ImageTexture.create_from_image(hazards)
 	hazard_rect = _hazard_bounds(hazards)
+	# Mipmapy = rozmazaná láva pro teplou záři na okolním terénu.
+	hazards.generate_mipmaps()
+	_hazard_texture = ImageTexture.create_from_image(hazards)
 	_version = mask.version
 	for target: ShaderMaterial in [_material, _surface_material]:
 		target.set_shader_parameter("mask_tex", _mask_texture)

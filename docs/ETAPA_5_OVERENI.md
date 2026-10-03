@@ -6,16 +6,17 @@ Novou misi „6 · Voda, láva a past“ najdeš v nabídce misí vlevo dole.
 
 ![Mise 6: jednosměrná zeď, jezírko, láva a chodba s pastí](images/etapa5-prehled.jpg)
 
-Záznam (19 s): [`images/etapa5-mise6.mp4`](images/etapa5-mise6.mp4) —
+Záznam (27 s): [`images/etapa5-mise6.mp4`](images/etapa5-mise6.mp4) —
 lezec přeleze zeď se šipkami, most přes vodu, razič ve směru šipek,
-kopání vedle lávy a past, která cvakne a pak se znovu otevře.
+kopání vedle lávy, past, která cvakne a pak se znovu otevře, a na konci
+co se stane bez mostu (topení) a bez kopání (hoření).
 
 ## Pravidla
 
 | Prvek | Co dělá |
 |---|---|
-| **Voda** | Lumík, který do ní spadne nebo vejde, se 16 tiků topí a je ztracen. Padák ani lezení nepomůže. Pád 3 px za tik tenkou hladinu nepřeskočí. |
-| **Láva** | Stejně, jen hoří (14 tiků). Když se v jednom tiku potká voda i láva, rozhodne láva. |
+| **Voda** | Lumík, který do ní spadne nebo vejde, se 24 tiků topí a je ztracen. Během topení se každé 2 tiky plácne o 1 px dál od břehu (jen dokud je před ním voda). Padák ani lezení nepomůže. Pád 3 px za tik tenkou hladinu nepřeskočí. |
+| **Láva** | Stejně, jen hoří (20 tiků) na místě. Když se v jednom tiku potká voda i láva, rozhodne láva. |
 | **Cihly nad vodou a lávou** | Cihla položená do hladiny je suchá stavba: po mostě se dá přejít. Když cihlu někdo vykope, voda nebo láva je tam znovu. |
 | **Past** | Sežere prvního lumíka, jehož nohy vstoupí do spouště (výchozí 10 × 10 px nad bodem pasti). Pak se `rearm_ticks` tiků dobíjí a ostatní projdou. Ze dvou lumíků ve stejném tiku sežere toho, kdo vyšel z líhně dřív. |
 | **Jednosměrná zeď** | Pevná zem se šipkami. Razič a horník ji prorazí jen ve směru šipek; proti nim se otočí jako u oceli. Kopáč ani výbuch směr neřeší. Cihla ve vykopaném místě je obyčejná stavba. |
@@ -24,7 +25,9 @@ kopání vedle lávy a past, která cvakne a pak se znovu otevře.
 **Pořadí v jednom tiku** (pro každého lumíka v pořadí vypuštění):
 odpočet bomby → činnost stavu → pád pod level → láva → voda → past → východ.
 Nebezpečí se tedy vyhodnotí dřív než východ. Laditelná čísla jsou
-v `sim/sim_const.gd` (`DROWN_TICKS`, `BURN_TICKS`, `TRAP_REARM_TICKS`).
+v `sim/sim_const.gd` (`DROWN_TICKS`, `DROWN_DRIFT_TICKS`, `BURN_TICKS`,
+`TRAP_REARM_TICKS`). Konec topení a hoření ohlásí události `drowned`
+a `burned` (pro grafiku a budoucí zvuky).
 
 Technicky: kanál A masky terénu nese druh buňky (voda, láva, šipky doleva
 nebo doprava). Voda a láva jsou prázdné buňky se značkou, jednosměrná zeď je
@@ -66,14 +69,45 @@ neroste mech. 2.5D porovnávací scéna nebezpečí nekreslí (jen nespadne).
 
 ![Topení: přední pruhy vody překrývají nohy](images/etapa5-voda.jpg)
 
+## Vylepšení vzhledu a animací (2. kolo)
+
+Na přání autora (voda, láva a animace postaviček):
+
+- **Jezírko a lávová jáma** v misi 6 mají šikmé a oblé břehy místo svislých
+  stěn. Řešení mise se nezměnilo (8/10).
+- **Voda:** světlé odlesky pod hřebeny, jemné paprsky světla v hloubce,
+  kruhy na hladině při šplouchnutí i během topení, bubliny z ponořené
+  postavy praskají na hladině, po utonutí zůstane plavat klobouk.
+- **Láva:** tři řady papírových plamenů (vzadu červené, vpředu žluté)
+  s nepravidelnou výškou, jiskry stoupající nad hladinou, tmavší
+  chladnoucí kůrka driftující po hladině, bubliny, které vyrostou
+  a prasknou, teplá oranžová záře na okolní hlíně. Hřeben lávy navazuje
+  na plameny bez mezery.
+- **Topení:** zoufalé střídavé mávání s hlavou zakloněnou k nebi,
+  postupné potápění (skoro 10 px) a nakonec nad vodou jen ruka.
+- **Hoření:** poskakování s rukama nahoře, papírové plameny kolem postavy,
+  kouř a jiskry, postava ztmavne, zkroutí se a rozpadne na popel.
+- **Chůze** má osm póz na krok (dotyk, propnutí, míjení, odraz) s houpáním
+  těla a zpožděnou čepicí; **pád** má mávající ruce vedle klobouku;
+  **dopad** z pádu postavu na okamžik zplácne.
+- Stop-motion zůstává: póza se nově mění každý tik (dříve po dvou),
+  ruční chvění dílů, vlny a plameny dál po dvou ticích.
+- Umírající postava se při najetí kurzorem nezvýrazní (nejde jí nic přidělit).
+
+| | |
+|---|---|
+| ![Topení: bubliny a kruhy, postava klesá pod hladinu](images/etapa5-voda.jpg) | ![Po utonutí plave na hladině klobouk](images/etapa5-klobouk.jpg) |
+| ![Hoření: plameny kolem postavy a kouř](images/etapa5-lava.jpg) | ![Lávová jáma s plameny, kůrkou a září](images/etapa5-jama.jpg) |
+
 ## A. Automatické testy (headless, Linux)
 
-`python scripts/check.py`: **71 GDScriptů, 10 sad, 281 kontrol, vše
+`python scripts/check.py`: **71 GDScriptů, 10 sad, 290 kontrol, vše
 v pořádku** (před etapou 5: 66 / 9 / 232). Nová sada `tests/test_hazards.gd`
-(45 kontrol) ověřuje:
+(48 kontrol) ověřuje:
 
 - topení a hoření (doba, ztráta započtená jednou, padák nepomůže,
-  jednořádková hladina při pádu), přednost lávy před vodou,
+  jednořádková hladina při pádu), plácání dál od břehu, které se zastaví
+  u protějšího břehu, události konce topení, přednost lávy před vodou,
 - most z cihel přes vodu i lávu, návrat vody po vykopání cihly,
 - past: první lumík, dobíjení, průchod dalšího, opětovné sežrání,
   dva lumíci v jednom tiku, lumík nad spouští,
@@ -85,10 +119,11 @@ v pořádku** (před etapou 5: 66 / 9 / 232). Nová sada `tests/test_hazards.gd`
 - **misi 6 čistou simulací: 8 z 10 (požadavek 6), ztráty jen v pasti,
   totožný replay** a že bez mostu se první lumík utopí.
 
-`tests/test_origami.gd` (nyní 50 kontrol) navíc hraje **misi 6 přes origami scénu
+`tests/test_origami.gd` (nyní 56 kontrol) navíc hraje **misi 6 přes origami scénu
 a dotykové přidělení (8/10, shoda s replayem čisté simulace)**, kontroluje
-texturu nebezpečí (hladina, láva, šipky) a animaci pasti. Generátor
-podkladů zůstal deterministický (`build_all.py --check`).
+texturu nebezpečí (hladina, láva, šipky), animaci pasti, efekty (kruhy,
+bubliny jen jednou za tik a v pauze ne, plovoucí klobouk, kouř) a zplácnutí
+při dopadu. Generátor podkladů zůstal deterministický (`build_all.py --check`).
 
 Řešení mise 6, které testy používají: lezec první postavě, ta postaví most
 u jezírka a vykope se do chodby před lávou; ostatní pustí razič zdí se
@@ -105,10 +140,12 @@ bez herního příkazu, terén 50 592 buněk proti masce, 0 neshod.**
 ## C. Vizuální posouzení (subjektivní)
 
 Nebezpečná místa jsou na snímcích dobře čitelná: voda modrá s pěnou, láva
-s plameny, šipky na zdi jednoznačně ukazují směr, past je výrazná. Slabší
-místa: topící se postavička stojí u kraje jezírka (simulace ji zastaví
-v prvním sloupci vody), voda je zatím jen ve svislých stěnách bez břehů
-a láva má jednoduché obdélníkové dno.
+s plameny, šipky na zdi jednoznačně ukazují směr, past je výrazná. Po
+2. kole se topící postava odplácá od břehu, jezírko i jáma mají šikmé
+břehy a smrt ve vodě či lávě má výrazné efekty. Slabší místa: plameny nad
+lávou tvoří při větším oddálení dost pravidelný hřeben, kouř je jednoduchý
+šedý mnohoúhelník a postava je při výchozím zoomu malá, takže detaily
+animací vyniknou až po přiblížení.
 
 ## D. Zařízení
 

@@ -30,7 +30,7 @@ Na přání autora (body 1–4 a pokus se stop-motion):
 4. **Zrnitost a vinětace:** jemné papírové žíhání a ztmavení rohů přes
    celou herní scénu (HUD zůstává čistý).
 5. **Stop-motion (výchozí, klávesa M přepíná):** póza postav se mění po
-   2 ticích, poloha po celých ticích, díly se při každém kroku nepatrně
+   2 ticích (od etapy 5 každý tik, chvění dál po 2 ticích), poloha po celých ticích, díly se při každém kroku nepatrně
    chvějí; dvířka a vlajka se hýbou po ticích. Kontakt nástroje zůstává na
    tiku změny masky. Je to jen vzhled, simulace se nemění.
 

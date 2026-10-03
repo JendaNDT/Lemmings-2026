@@ -213,19 +213,34 @@ def pose(**kw):
 
 # Animace: cyklus v ticích, klíče (t 0..1, pose, root=[dx, dy, rot, sx, sy], tool).
 ANIMS = {
+    # Chůze po jednotlivých ticích: dotyk, propnutí dolů, míjení, odraz nahoru (×2).
+    # Čepice se zpožďuje za hlavou, tělo se v „dolu“ mírně zplácne.
     "walk": {"cycle": 8, "loop": True, "keys": [
-        (0.0, pose(leg_front=-26, leg_back=24, arm_front=34, arm_back=-34, torso=4, head=-2, cap=-2),
-         [0, 0.18, 0, 1, 1]),
-        (0.25, pose(leg_front=0, leg_back=0, arm_front=0, arm_back=0, torso=6, head=0, cap=3), [0, -0.12, 0, 1, 1]),
-        (0.5, pose(leg_front=24, leg_back=-26, arm_front=-34, arm_back=34, torso=4, head=2, cap=-2),
-         [0, 0.18, 0, 1, 1]),
-        (0.75, pose(leg_front=0, leg_back=0, arm_front=0, arm_back=0, torso=6, head=0, cap=3), [0, -0.12, 0, 1, 1]),
+        (0.0, pose(leg_front=-28, leg_back=26, arm_front=30, arm_back=-30, torso=4, head=-2, cap=-3),
+         [0, 0.1, 0, 1, 1]),
+        (0.125, pose(leg_front=-18, leg_back=18, arm_front=22, arm_back=-22, torso=7, head=1, cap=-1),
+         [0, 0.32, 0, 1.03, 0.96]),
+        (0.25, pose(leg_front=-4, leg_back=2, arm_front=4, arm_back=-4, torso=5, head=0, cap=4),
+         [0, -0.05, 0, 1, 1]),
+        (0.375, pose(leg_front=12, leg_back=-18, arm_front=-18, arm_back=18, torso=4, head=-1, cap=2),
+         [0, -0.22, 0, 0.98, 1.03]),
+        (0.5, pose(leg_front=26, leg_back=-28, arm_front=-30, arm_back=30, torso=4, head=-2, cap=-3),
+         [0, 0.1, 0, 1, 1]),
+        (0.625, pose(leg_front=18, leg_back=-18, arm_front=-22, arm_back=22, torso=7, head=1, cap=-1),
+         [0, 0.32, 0, 1.03, 0.96]),
+        (0.75, pose(leg_front=2, leg_back=-4, arm_front=-4, arm_back=4, torso=5, head=0, cap=4),
+         [0, -0.05, 0, 1, 1]),
+        (0.875, pose(leg_front=-18, leg_back=12, arm_front=18, arm_back=-18, torso=4, head=-1, cap=2),
+         [0, -0.22, 0, 0.98, 1.03]),
     ]},
+    # Pád: ruce střídavě mávají nad hlavou, nohy kopou, tělo se kolébá.
     "fall": {"cycle": 6, "loop": True, "keys": [
-        (0.0, pose(leg_front=-14, leg_back=16, arm_front=-150, arm_back=145, torso=-3, head=-6, cap=-10),
-         [0, 0, 0, 1, 1]),
-        (0.5, pose(leg_front=10, leg_back=-8, arm_front=-125, arm_back=165, torso=3, head=4, cap=8),
-         [0, -0.1, 0, 1, 1]),
+        (0.0, pose(leg_front=-18, leg_back=20, arm_front=-118, arm_back=136, torso=-3, head=-6, cap=-12),
+         [0, 0, -3, 1, 1]),
+        (0.33, pose(leg_front=12, leg_back=-6, arm_front=-96, arm_back=112, torso=3, head=4, cap=10),
+         [0, -0.12, 2, 1, 1]),
+        (0.66, pose(leg_front=-4, leg_back=12, arm_front=-136, arm_back=98, torso=0, head=-2, cap=-4),
+         [0, -0.05, 4, 1, 1]),
     ]},
     "fall_umbrella": {"cycle": 6, "loop": True, "tool": "umbrella_closed", "keys": [
         (0.0, pose(leg_front=-14, leg_back=16, arm_front=205, arm_back=145, torso=-3, head=-6, cap=-10, tool=155),
@@ -315,27 +330,47 @@ ANIMS = {
         (1.0, pose(leg_front=0, leg_back=0, arm_front=-160, arm_back=0, torso=0, head=0, cap=0),
          [0.5, -0.1, 0, 0.55, 0.55]),
     ]},
-    # Topení: ruce mávají nad hladinou, postavička se pomalu potápí (SimConst.DROWN_TICKS).
-    "drown": {"cycle": 16, "loop": False, "keys": [
-        (0.0, pose(leg_front=-10, leg_back=12, arm_front=-112, arm_back=128, torso=0, head=-8, cap=-6),
-         [0, 0.4, 0, 1, 1]),
-        (0.3, pose(leg_front=12, leg_back=-10, arm_front=-140, arm_back=104, torso=4, head=8, cap=10),
-         [0, 1.6, -6, 1, 1]),
-        (0.6, pose(leg_front=-12, leg_back=10, arm_front=-106, arm_back=136, torso=-4, head=-10, cap=-8),
+    # Topení (SimConst.DROWN_TICKS = 24): šplouchnutí, zoufalé střídavé mávání
+    # s hlavou zakloněnou k nebi, postupné potápění; nakonec nad vodou jen ruka.
+    "drown": {"cycle": 24, "loop": False, "keys": [
+        (0.0, pose(leg_front=-20, leg_back=22, arm_front=-150, arm_back=150, torso=-4, head=-10, cap=-16),
+         [0, 0.6, 0, 1.06, 0.94]),
+        (0.1, pose(leg_front=10, leg_back=-8, arm_front=-100, arm_back=165, torso=2, head=-14, cap=-6),
+         [0, 1.2, -7, 1, 1]),
+        (0.22, pose(leg_front=-10, leg_back=12, arm_front=-168, arm_back=100, torso=-3, head=-16, cap=-14),
+         [0, 1.8, 7, 1, 1]),
+        (0.34, pose(leg_front=12, leg_back=-10, arm_front=-104, arm_back=162, torso=3, head=-12, cap=-4),
+         [0, 2.4, -6, 1, 1]),
+        (0.46, pose(leg_front=-12, leg_back=10, arm_front=-165, arm_back=106, torso=-2, head=-16, cap=-12),
          [0, 3.0, 6, 1, 1]),
-        (1.0, pose(leg_front=0, leg_back=0, arm_front=-150, arm_back=150, torso=0, head=0, cap=0),
-         [0, 5.0, 0, 1, 1]),
+        (0.58, pose(leg_front=8, leg_back=-8, arm_front=-112, arm_back=158, torso=2, head=-10, cap=-4),
+         [0, 3.8, -5, 1, 1]),
+        (0.7, pose(leg_front=-6, leg_back=8, arm_front=-160, arm_back=118, torso=0, head=-14, cap=-10),
+         [0, 4.8, 4, 1, 1]),
+        (0.84, pose(leg_front=0, leg_back=0, arm_front=-176, arm_back=60, torso=0, head=-8, cap=-4),
+         [0, 6.6, -2, 1, 1]),
+        (1.0, pose(leg_front=0, leg_back=0, arm_front=-180, arm_back=20, torso=0, head=0, cap=0),
+         [0, 9.5, 0, 1, 1]),
     ]},
-    # Hoření: poskočí s rukama nahoře, pak se zmačká jako spálený papír (SimConst.BURN_TICKS).
-    "burn": {"cycle": 14, "loop": False, "keys": [
-        (0.0, pose(leg_front=-20, leg_back=20, arm_front=-150, arm_back=150, torso=-4, head=-10, cap=-20),
-         [0, -0.8, 0, 1, 1]),
-        (0.3, pose(leg_front=20, leg_back=-20, arm_front=-120, arm_back=170, torso=6, head=10, cap=-35),
-         [0, -1.4, 5, 1, 1]),
-        (0.65, pose(leg_front=-30, leg_back=30, arm_front=-60, arm_back=60, torso=20, head=20, cap=-50),
-         [0, 0, -4, 0.85, 0.7]),
-        (1.0, pose(leg_front=-50, leg_back=50, arm_front=-30, arm_back=30, torso=35, head=30, cap=-70),
-         [0, 0, 0, 0.7, 0.35]),
+    # Hoření (SimConst.BURN_TICKS = 20): poskok s rukama nahoře, poskakování
+    # po horké zemi, pak se papír zkroutí a zmačká (Godot ho ztmaví a rozpadne na popel).
+    "burn": {"cycle": 20, "loop": False, "keys": [
+        (0.0, pose(leg_front=-22, leg_back=22, arm_front=-155, arm_back=150, torso=-4, head=-12, cap=-24),
+         [0, -1.2, 0, 0.95, 1.08]),
+        (0.12, pose(leg_front=22, leg_back=-18, arm_front=-120, arm_back=172, torso=6, head=10, cap=-40),
+         [0, -2.2, 6, 1, 1]),
+        (0.24, pose(leg_front=-24, leg_back=20, arm_front=-170, arm_back=118, torso=-6, head=-8, cap=-30),
+         [0, -0.6, -6, 1.05, 0.95]),
+        (0.36, pose(leg_front=18, leg_back=-22, arm_front=-110, arm_back=165, torso=8, head=12, cap=-44),
+         [0, -1.8, 5, 1, 1]),
+        (0.5, pose(leg_front=-30, leg_back=30, arm_front=-70, arm_back=80, torso=18, head=20, cap=-55),
+         [0, -0.2, -4, 0.95, 0.85]),
+        (0.68, pose(leg_front=-45, leg_back=42, arm_front=-40, arm_back=45, torso=30, head=28, cap=-65),
+         [0, 0, 3, 0.85, 0.62]),
+        (0.84, pose(leg_front=-55, leg_back=52, arm_front=-25, arm_back=30, torso=38, head=34, cap=-75),
+         [0, 0, -2, 0.72, 0.42]),
+        (1.0, pose(leg_front=-60, leg_back=58, arm_front=-20, arm_back=25, torso=42, head=38, cap=-80),
+         [0, 0, 0, 0.6, 0.28]),
     ]},
 }
 # Stav simulace → animace (Lemming.State v pořadí výčtu).

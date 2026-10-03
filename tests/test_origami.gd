@@ -27,6 +27,7 @@ func _run() -> void:
 	await _test_scene_input(game, world)
 	_test_animation_in_scene(game, world)
 	game.free()
+	_test_hazard_effects()
 	await process_frame
 	_test_solution(scene)
 	_test_other_missions(scene)
@@ -572,6 +573,62 @@ func _test_hazard_mission(scene: PackedScene) -> void:
 			sim.saved, sim.spec.lemming_count])
 	check(opened, "past se po sežrání zavře a před dobitím zase otevře")
 	game.free()
+
+
+## Efekty nebezpečí: bubliny jednou za tik (pauza je zastaví), kruhy, plovoucí
+## klobouk, kouř; dopad z pádu krátce zplácne postavu. Jen vzhled.
+func _test_hazard_effects() -> void:
+	var sim := fixture(5)
+	sim.mask.erase_rect(70, 80, 20, 20)
+	paint_rect(sim.mask, Rect2i(70, 84, 20, 16), TerrainMask.Kind.WATER)
+	var lem := add_lemming(sim, 72, 84)
+	sim.set_state(lem, Lemming.State.DROWNING)
+	var fx := PaperFx.new()
+	fx.clear()
+	fx.sim = sim
+	fx.handle_events(sim.take_events())
+	var ripples := fx._puffs.filter(func(p: PaperFx.Puff) -> bool:
+		return p.kind == PaperFx.Puff.Kind.RIPPLE)
+	check(ripples.size() == 2, "šplouchnutí rozběhne po hladině dva kruhy")
+	var bubbles := 0
+	for _frame in 6:
+		fx.advance(0.0)
+	bubbles = fx._puffs.filter(func(p: PaperFx.Puff) -> bool:
+		return p.kind == PaperFx.Puff.Kind.BUBBLE).size()
+	check(bubbles <= 1, "v pauze (stejný tik) bubliny nepřibývají")
+	for _tick in 8:
+		sim.tick()
+		fx.advance(1.0 / 17.0)
+	bubbles = fx._puffs.filter(func(p: PaperFx.Puff) -> bool:
+		return p.kind == PaperFx.Puff.Kind.BUBBLE).size()
+	check(bubbles >= 3, "topící se postava pouští bubliny (%d)" % bubbles)
+	fx.handle_events([{"type": "drowned", "x": 75, "y": 84, "dir": 1, "id": 0, "value": 0}])
+	var hats := fx._puffs.filter(func(p: PaperFx.Puff) -> bool:
+		return p.kind == PaperFx.Puff.Kind.HAT)
+	check(hats.size() == 1 and absf((hats[0] as PaperFx.Puff).surface - 84.0) < 0.01,
+		"po utonutí zbude na hladině plovoucí klobouk")
+	fx.handle_events([{"type": "burned", "x": 75, "y": 80, "dir": 1, "id": 1, "value": 0}])
+	check(fx._puffs.any(func(p: PaperFx.Puff) -> bool: return p.kind == PaperFx.Puff.Kind.SMOKE),
+		"z uhořelé postavy stoupá kouř")
+	fx.free()
+	var actors := PaperActors.new()
+	var falls := fixture(5)
+	var faller := add_lemming(falls, 60, 70)
+	falls.set_state(faller, Lemming.State.FALLER)
+	actors.setup(falls)
+	actors.update_views()
+	while faller.state == Lemming.State.FALLER and falls.tick_count < 40:
+		falls.tick()
+		actors.update_views()
+	var view: PaperActors.ActorView = actors._views[faller.id]
+	var squashed := float(view.root[4]) < 0.9
+	falls.tick()
+	falls.tick()
+	falls.tick()
+	actors.update_views()
+	view = actors._views[faller.id]
+	check(squashed and float(view.root[4]) > 0.94, "dopad z pádu postavu krátce zplácne a narovná")
+	actors.free()
 
 
 func _touch(index: int, point: Vector2, pressed: bool) -> InputEventScreenTouch:

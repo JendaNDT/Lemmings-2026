@@ -13,6 +13,27 @@ const GOLD := [Color("fbe2a0"), Color("f8bf62"), Color("fff4d6")]
 const WATER := [Color("cfe5ea"), Color("7fb6c9"), Color("f0f4f0")]
 const EMBER := [Color("f8c063"), Color("e4903f"), Color("be5131"), Color("4a3a33")]
 const LEAF := [Color("9a9a4e"), Color("b5b45e"), Color("d0614b"), Color("2a7b7c")]
+const ASH := [Color("4a3a33"), Color("6b5a50"), Color("2f2622"), Color("8a7a6d")]
+const BUBBLE := Color("f0f6f4")
+const SMOKE := Color("5d5550")
+const RIPPLE := Color("f4f8f4")
+const RIG_PATH := "res://assets/origami/actor/worker_rig.json"
+const ATLAS := preload("res://assets/origami/actor/worker_atlas.png")
+
+
+## Bubliny, kouř, kruhy na hladině a plovoucí klobouk (jen vzhled).
+class Puff:
+	enum Kind { BUBBLE, SMOKE, RIPPLE, HAT }
+	var kind := Kind.BUBBLE
+	var pos := Vector2.ZERO
+	var vel := Vector2.ZERO
+	var life := 1.0
+	var max_life := 1.0
+	var size := 1.0
+	var phase := 0.0
+	## Hladina, na které bublina praskne (y v logických pixelech).
+	var surface := 0.0
+	var dir := 1.0
 
 
 class Scrap:
@@ -35,11 +56,27 @@ var unfolding: Array[Array] = []
 var sim: LevelSim
 var alpha := 1.0
 var _scraps: Array[Scrap] = []
+var _puffs: Array[Puff] = []
 var _rng := RandomNumberGenerator.new()
+var _last_tick := -1
+var _cap_region := Rect2()
+var _cap_pivot := Vector2.ZERO
+var _cap_scale := 32.0
+
+
+func _init() -> void:
+	var rig: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(RIG_PATH))
+	var cap: Dictionary = rig["parts"]["cap"]
+	_cap_region = Rect2(cap["region"][0], cap["region"][1], cap["region"][2], cap["region"][3])
+	_cap_pivot = Vector2(cap["pivot"][0], cap["pivot"][1])
+	_cap_scale = float(rig["atlas_scale"])
+	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 
 
 func clear() -> void:
 	_scraps.clear()
+	_puffs.clear()
+	_last_tick = -1
 	unfolding.clear()
 	_rng.seed = 2026
 	queue_redraw()
@@ -72,11 +109,31 @@ func handle_events(events: Array[Dictionary]) -> void:
 			"assign":
 				_burst(p + Vector2(0, -11), 6, GOLD, Vector2(0, -8), 10.0, 0.5, 0.6, 0.2)
 			"drown":
-				# Šplouchnutí: kapky z modrého papíru odletí nahoru a spadnou zpět.
-				_burst(p + Vector2(0, -0.5), 12, WATER, Vector2(0, -30), 20.0, 0.7, 0.8, 0.8)
+				# Šplouchnutí: kapky z modrého papíru odletí nahoru a spadnou zpět,
+				# po hladině se rozběhnou dva kruhy.
+				_burst(p + Vector2(0, -0.5), 14, WATER, Vector2(0, -34), 22.0, 0.7, 0.8, 0.8)
+				_ripple(p, 0.0)
+				_ripple(p, 0.25)
+			"drowned":
+				# Nad hladinou zbude jen plovoucí klobouk.
+				_ripple(p, 0.0)
+				var hat := Puff.new()
+				hat.kind = Puff.Kind.HAT
+				hat.pos = p + Vector2(0, -0.2)
+				hat.vel = Vector2(1.2 * d, 0.0)
+				hat.dir = d
+				hat.max_life = 3.0
+				hat.life = hat.max_life
+				hat.surface = p.y
+				_add_puff(hat)
 			"burn":
 				# Jiskry a popel stoupají vzhůru (záporná tíže).
 				_burst(p + Vector2(0, -4), 14, EMBER, Vector2(0, -16), 14.0, 1.2, 0.7, -0.25)
+			"burned":
+				# Z papírku zbude hromádka popela a obláček kouře.
+				_burst(p + Vector2(0, -2), 14, ASH, Vector2(0, -10), 10.0, 1.6, 0.8, 0.35)
+				for k in 3:
+					_smoke(p + Vector2(_rng.randf_range(-1.5, 1.5), -2.0 - k), 1.4)
 			"trap":
 				# Past cvakla: lístky a kousky kabátku.
 				_burst(p + Vector2(0, -5), 12, LEAF + WORKER, Vector2(0, -20), 22.0, 0.8, 0.8)
@@ -101,8 +158,98 @@ func _burst(at: Vector2, count: int, colors: Array, base: Vector2, spread: float
 		_scraps.append(s)
 
 
+func _add_puff(puff: Puff) -> void:
+	if _puffs.size() >= MAX_SCRAPS:
+		_puffs.remove_at(0)
+	_puffs.append(puff)
+
+
+func _ripple(at: Vector2, delay: float) -> void:
+	var ring := Puff.new()
+	ring.kind = Puff.Kind.RIPPLE
+	ring.pos = at
+	ring.max_life = 0.9 + delay
+	ring.life = ring.max_life
+	ring.phase = delay
+	_add_puff(ring)
+
+
+func _smoke(at: Vector2, life: float) -> void:
+	var puff := Puff.new()
+	puff.kind = Puff.Kind.SMOKE
+	puff.pos = at
+	puff.vel = Vector2(_rng.randf_range(-2.0, 2.0), _rng.randf_range(-11.0, -7.0))
+	puff.max_life = life * _rng.randf_range(0.8, 1.2)
+	puff.life = puff.max_life
+	puff.size = _rng.randf_range(0.8, 1.3)
+	puff.phase = _rng.randf() * TAU
+	_add_puff(puff)
+
+
+## Průběžné efekty podle stavu postav: bubliny topících se, kouř a jiskry
+## hořících. Spouští se jednou za simulační tik, takže je zastaví pauza.
+func _hazard_tick() -> void:
+	if sim == null or sim.tick_count == _last_tick:
+		return
+	_last_tick = sim.tick_count
+	for lem in sim.lemmings:
+		if lem.removed:
+			continue
+		var p := Vector2(lem.x + 0.5, lem.y)
+		var k := float(lem.state_ticks)
+		if lem.state == Lemming.State.DROWNING:
+			# Bubliny vycházejí z ponořené části postavy (ta klesá až ~9 px).
+			var depth := maxf(k / float(SimConst.DROWN_TICKS) * 9.5 - 6.0, 0.6)
+			if (sim.tick_count + lem.id) % 2 == 0:
+				var bubble := Puff.new()
+				bubble.kind = Puff.Kind.BUBBLE
+				bubble.pos = p + Vector2(_rng.randf_range(-2.0, 2.0), depth + _rng.randf_range(0.0, 2.5))
+				bubble.vel = Vector2(0.0, _rng.randf_range(-9.0, -6.0))
+				bubble.size = _rng.randf_range(0.35, 0.8)
+				bubble.max_life = 1.5
+				bubble.life = bubble.max_life
+				bubble.surface = p.y - 0.2
+				bubble.phase = _rng.randf() * TAU
+				_add_puff(bubble)
+			if lem.state_ticks % 6 == 3:
+				_ripple(p, 0.0)
+		elif lem.state == Lemming.State.BURNING:
+			if (sim.tick_count + lem.id) % 2 == 0:
+				_smoke(p + Vector2(_rng.randf_range(-1.5, 1.5), -7.0 + k * 0.2), 1.3)
+			_burst(p + Vector2(_rng.randf_range(-2.0, 2.0), -4.0), 1, EMBER, Vector2(0, -14), 8.0,
+				0.9, 0.5, -0.3)
+
+
 ## delta je herní čas (0 při pauze, ×3 při zrychlení).
 func advance(delta: float) -> void:
+	_hazard_tick()
+	for i in range(_puffs.size() - 1, -1, -1):
+		var puff := _puffs[i]
+		puff.life -= delta
+		if puff.life <= 0.0:
+			_puffs.remove_at(i)
+			continue
+		puff.phase += delta * 6.0
+		match puff.kind:
+			Puff.Kind.BUBBLE:
+				puff.pos += Vector2(sin(puff.phase) * 1.2, puff.vel.y) * delta
+				if puff.pos.y <= puff.surface:
+					# Bublina na hladině praskne malým kroužkem.
+					_puffs.remove_at(i)
+					var pop := Puff.new()
+					pop.kind = Puff.Kind.RIPPLE
+					pop.pos = Vector2(puff.pos.x, puff.surface + 0.2)
+					pop.size = 0.35
+					pop.max_life = 0.35
+					pop.life = pop.max_life
+					_add_puff(pop)
+			Puff.Kind.SMOKE:
+				puff.pos += puff.vel * delta
+				puff.vel *= 1.0 - minf(delta * 0.8, 0.5)
+				puff.size += delta * 2.2
+			Puff.Kind.HAT:
+				puff.pos.x += puff.vel.x * delta
+				puff.vel.x *= 1.0 - minf(delta * 0.7, 0.5)
 	for i in range(_scraps.size() - 1, -1, -1):
 		var s := _scraps[i]
 		s.life -= delta
@@ -154,6 +301,7 @@ func _draw() -> void:
 				draw_colored_polygon(PackedVector2Array([
 					Vector2(x0, y + 1.0), Vector2(mid, y - lift), Vector2(x1, y + 1.0)]),
 					Color(color, 1.0 - k * 0.6))
+	_draw_puffs()
 	for s in _scraps:
 		var fade := clampf(s.life / s.max_life * 1.6, 0.0, 1.0)
 		if s.resting:
@@ -169,3 +317,39 @@ func _draw() -> void:
 			var a := s.angle + k * TAU / corners + (0.4 if k == 1 and s.shape == 1 else 0.0)
 			pts.append(s.pos + Vector2(cos(a), sin(a)) * r)
 		draw_colored_polygon(pts, c)
+
+
+func _draw_puffs() -> void:
+	for puff in _puffs:
+		var t := 1.0 - puff.life / puff.max_life
+		match puff.kind:
+			Puff.Kind.BUBBLE:
+				var a := clampf(puff.life / 0.3, 0.0, 1.0) * 0.85
+				draw_arc(puff.pos, puff.size, 0.0, TAU, 12, Color(BUBBLE, a), 0.22, true)
+				draw_circle(puff.pos + Vector2(-0.3, -0.3) * puff.size, puff.size * 0.25, Color(BUBBLE, a))
+			Puff.Kind.SMOKE:
+				# Obláček z šedého papíru: nepravidelný mnohoúhelník, roste a bledne.
+				var pts := PackedVector2Array()
+				for k in 7:
+					var ang := k * TAU / 7.0
+					var r := puff.size * (0.85 + 0.25 * sin(ang * 3.0 + puff.phase * 0.2))
+					pts.append(puff.pos + Vector2(cos(ang), sin(ang)) * r)
+				draw_colored_polygon(pts, Color(SMOKE, 0.42 * (1.0 - t)))
+			Puff.Kind.RIPPLE:
+				var age := puff.max_life - puff.life - puff.phase
+				if age < 0.0:
+					continue
+				var local := clampf(age / (puff.max_life - puff.phase), 0.0, 1.0)
+				var radius := lerpf(0.6, 6.0 if puff.size >= 1.0 else 1.6, sqrt(local))
+				draw_set_transform(puff.pos, 0.0, Vector2(1.0, 0.24))
+				draw_arc(Vector2.ZERO, radius, 0.0, TAU, 28, Color(RIPPLE, 0.75 * (1.0 - local)), 0.9, true)
+				draw_set_transform_matrix(Transform2D.IDENTITY)
+			Puff.Kind.HAT:
+				# Klobouk se houpe na vlnách a nakonec se rozmočí.
+				var bob := sin(puff.phase * 0.5) * 0.35
+				var tilt := sin(puff.phase * 0.35) * 0.18
+				var fade := clampf(puff.life / 0.8, 0.0, 1.0)
+				draw_set_transform(puff.pos + Vector2(0.0, -1.4 + bob), tilt, Vector2(puff.dir, 1.0))
+				draw_texture_rect_region(ATLAS, Rect2(-_cap_pivot / _cap_scale - Vector2(0.0, -1.0),
+					_cap_region.size / _cap_scale), _cap_region, Color(1, 1, 1, fade))
+				draw_set_transform_matrix(Transform2D.IDENTITY)

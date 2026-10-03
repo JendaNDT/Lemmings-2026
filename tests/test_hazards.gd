@@ -44,12 +44,26 @@ func _test_water() -> void:
 	var drowned := _events_of(sim, "drown")
 	check(lem.state == Lemming.State.DROWNING and drowned.size() == 1 and lem.y >= 84
 		and sim.lost == 0, "lumík, který spadne do vody, se začne topit (zatím nezapočten)")
+	var entry_x := lem.x
 	advance(sim, SimConst.DROWN_TICKS - 1)
 	check(not lem.removed, "topení trvá DROWN_TICKS tiků")
+	check(lem.x > entry_x and lem.x <= 89 and lem.x - entry_x <= SimConst.DROWN_TICKS / 2,
+		"topící se lumík se plácá dál od břehu: %d → %d" % [entry_x, lem.x])
+	sim.take_events()
 	sim.tick()
 	check(lem.removed and not lem.saved and sim.lost == 1, "utonulý lumík je ztracený právě jednou")
+	check(_events_of(sim, "drowned").size() == 1, "konec topení ohlásí událost pro grafiku")
 	advance(sim, 20)
 	check(sim.lost == 1, "ztráta se nezapočítá znovu")
+	# V úzké jámě se plácání zastaví u protějšího břehu.
+	var narrow := fixture()
+	narrow.mask.erase_rect(70, 80, 4, 20)
+	paint_rect(narrow.mask, Rect2i(70, 84, 4, 16), TerrainMask.Kind.WATER)
+	var paddler := add_lemming(narrow, 66, 80)
+	while paddler.state != Lemming.State.DROWNING and narrow.tick_count < 60:
+		narrow.tick()
+	advance(narrow, SimConst.DROWN_TICKS - 1)
+	check(paddler.x == 73 and not paddler.removed, "plácání nevleze do protějšího břehu")
 	# Tenká hladina: pád až 3 px za tik ji nepřeskočí.
 	var thin := fixture()
 	thin.mask.erase_rect(70, 80, 20, 20)

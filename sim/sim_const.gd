@@ -59,8 +59,10 @@ const DIGGER_TICKS_PER_ROW := 2
 const SPLAT_TICKS := 16
 const EXIT_TICKS := 10
 const SHRUG_TICKS := 8
-const DROWN_TICKS := 16
-const BURN_TICKS := 14
+const DROWN_TICKS := 24
+## Topící se lumík se po tolika ticích posune o 1 px dál od břehu (jen ve vodě).
+const DROWN_DRIFT_TICKS := 2
+const BURN_TICKS := 20
 
 ## Past (např. masožravka): po sežrání postavy se tolik tiků „dobíjí“
 ## a mezitím nechá ostatní projít. Hodnotu lze přepsat u každé pasti v editoru.

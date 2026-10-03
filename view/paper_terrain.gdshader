@@ -14,7 +14,8 @@ uniform sampler2D noise_tex : filter_linear, repeat_enable;
 // Nebezpečí (PaperTerrain.build_hazards): R voda, G láva = vzdálenost od
 // hladiny 128 ± 12 × px; B/A jednosměrná zeď doleva/doprava.
 uniform sampler2D hazard_tex : filter_nearest, repeat_disable;
-uniform sampler2D hazard_soft : filter_linear, repeat_disable;
+// Stejná textura s mipmapami: rozmazaná láva = teplá záře na okolním terénu.
+uniform sampler2D hazard_soft : filter_linear_mipmap, repeat_disable;
 uniform vec2 mask_size = vec2(640.0, 200.0);
 uniform float band_offset = 0.0;
 // Herní čas v ticích (vlny, plameny); ve stop-motion po krocích.
@@ -143,7 +144,9 @@ vec4 liquid(vec2 p, float depth, bool lava, bool front_only) {
 	float edge = 0.0;
 	float next_edge = 99.0;
 	for (int i = 0; i < 6; i++) {
-		float e = float(i) * spacing + wave(p.x, t, float(i)) * (i == 0 ? 1.0 : 0.75) - (i == 0 ? 0.25 : 0.0);
+		// Hřeben lávy leží vždy nad hladinou, aby mezi ním a plameny nebyla mezera.
+		float lift = i == 0 ? (lava ? 0.85 : 0.25) : 0.0;
+		float e = float(i) * spacing + wave(p.x, t, float(i)) * (i == 0 ? 1.0 : 0.75) - lift;
 		if (depth >= e) {
 			s = float(i);
 			edge = e;
@@ -162,6 +165,31 @@ vec4 liquid(vec2 p, float depth, bool lava, bool front_only) {
 		c = mix(mix(WATER_LIGHT, WATER_DARK, sqrt(k)), WATER, mod(s, 2.0) * 0.3);
 	}
 	c *= 1.0 + (paper(p, 60.0) - 0.5) * 0.2 + (paper(p + vec2(s * 37.0, 0.0), 24.0) - 0.5) * 0.08;
+	if (lava) {
+		// Chladnoucí kůrka: tmavší papírové plátky driftují po hladině.
+		float crust = smoothstep(0.6, 0.66, noise(vec2(p.x * 0.7 - t * 0.35, p.y * 1.3), 26.0).b)
+			* (1.0 - smoothstep(2.5, 5.0, depth)) * step(0.4, depth - edge);
+		c = mix(c, LAVA_DEEP * 0.75 * (1.0 + (paper(p, 14.0) - 0.5) * 0.3), crust * 0.85);
+		// Bubliny pod hladinou: v některých úsecích 11 px jedna roste, stoupá a praskne.
+		float cell = floor(p.x / 11.0);
+		float life = fract(t / (20.0 + 14.0 * hash(vec2(cell, 3.0))) + hash(vec2(cell, 4.0)));
+		vec2 center = vec2(cell * 11.0 + 3.0 + 5.0 * hash(vec2(cell, 5.0)),
+			2.2 + 2.5 * hash(vec2(cell, 6.0)) - life * 1.6);
+		float radius = (0.3 + 1.1 * life) * step(0.35, hash(vec2(cell, 7.0)));
+		float dist = length(vec2(p.x, depth) - center);
+		float disc = 1.0 - smoothstep(radius - 0.12, radius + 0.12, dist);
+		float ring = disc * smoothstep(radius - 0.55, radius - 0.2, dist);
+		float popping = step(0.86, life);
+		c = mix(c, LAVA_LIGHT * 1.08, disc * (1.0 - popping) * 0.8);
+		c = mix(c, FLAME_CORE, ring * 0.9);
+	} else {
+		// Odlesky: světlé čárky pod hřebenem, šikmé paprsky světla v hloubce.
+		float glint = smoothstep(0.62, 0.7, noise(vec2(p.x * 0.45 + t * 0.6, s * 13.0), 40.0).r)
+			* (1.0 - smoothstep(0.25, 0.45, abs(depth - edge - 1.0)));
+		c = mix(c, FOAM, glint * 0.75);
+		float ray = smoothstep(0.58, 0.72, noise(vec2(p.x + depth * 0.6 + t * 0.12, 7.0), 34.0).g);
+		c *= 1.0 + ray * 0.07 * smoothstep(1.0, 3.0, s);
+	}
 	// Světlé vláknité jádro na horní hraně pruhu: pěna, u lávy žhavý okraj.
 	float rim = clamp(fiber_rim(depth - edge, p + vec2(0.0, s * 13.0), s < 0.5 ? 0.9 : 0.6), 0.0, 1.0);
 	c = mix(c, lava ? FLAME_CORE : FOAM, rim * (s < 0.5 ? 0.85 : 0.5));
@@ -171,23 +199,39 @@ vec4 liquid(vec2 p, float depth, bool lava, bool front_only) {
 }
 
 // Papírové plameny nad lávou: sloupce mění výšku po dvou ticích.
+// Tři řady: vzadu vysoké červené, uprostřed oranžové, vpředu nízké žluté.
 vec4 flames(vec2 p, float up) {
 	vec4 out_col = vec4(0.0);
 	float step_t = floor(sim_time / 2.0);
-	for (int row = 0; row < 2; row++) {
-		float w = row == 0 ? 3.6 : 2.6;
+	for (int row = 0; row < 3; row++) {
+		float w = row == 0 ? 4.6 : (row == 1 ? 3.6 : 2.6);
 		float x = p.x + float(row) * 1.7;
 		float column = floor(x / w);
 		float fx = fract(x / w) * 2.0 - 1.0;
-		float h = (row == 0 ? 2.2 : 1.2) + (row == 0 ? 3.6 : 2.0) * hash(vec2(column, step_t + float(row) * 31.0));
-		float lean = (hash(vec2(column + 7.0, step_t)) - 0.5) * 0.6;
+		float base_h = row == 0 ? 2.4 : (row == 1 ? 1.8 : 0.9);
+		float extra = row == 0 ? 4.2 : (row == 1 ? 3.0 : 1.8);
+		// Některé jazyky na chvíli skoro zhasnou, řada pak není pravidelná.
+		extra *= 0.35 + 0.65 * step(0.3, hash(vec2(column, step_t * 0.5 + float(row) * 7.0)));
+		float h = base_h + extra * hash(vec2(column, step_t + float(row) * 31.0));
+		float lean = (hash(vec2(column + 7.0, step_t + float(row))) - 0.5) * 0.7;
 		float profile = h * pow(max(1.0 - abs(fx + lean * up / h), 0.0), 1.3);
 		float shape = 1.0 - smoothstep(profile - 0.18, profile + 0.18, up);
 		float core = 1.0 - smoothstep(profile * 0.5 - 0.15, profile * 0.5 + 0.15, up);
-		vec3 c = row == 0 ? mix(LAVA_LIGHT, FLAME, smoothstep(0.0, h, up)) : FLAME;
-		c = mix(c, FLAME_CORE, core * 0.8) * (1.0 + (paper(p, 20.0) - 0.5) * 0.12);
-		out_col = over(vec4(c, shape), out_col);
+		vec3 c = row == 0 ? mix(LAVA, LAVA_LIGHT, smoothstep(0.0, h, up))
+			: (row == 1 ? mix(LAVA_LIGHT, FLAME, smoothstep(0.0, h, up)) : FLAME);
+		c = mix(c, FLAME_CORE, core * (row == 0 ? 0.3 : 0.8)) * (1.0 + (paper(p, 20.0) - 0.5) * 0.12);
+		// Tenký světlý okraj vystřiženého plamene.
+		float rim = (1.0 - smoothstep(0.0, 0.35, abs(up - profile))) * shape;
+		c = mix(c, FLAME_CORE, rim * 0.35);
+		out_col = over(vec4(c, shape * (row == 0 ? 0.9 : 1.0)), out_col);
 	}
+	// Jiskry stoupají z hladiny a cestou hasnou.
+	float spark_col = floor(p.x / 5.0);
+	float rise = fract(sim_time / 22.0 + hash(vec2(spark_col, 9.0)));
+	vec2 spark = vec2(spark_col * 5.0 + 1.0 + 3.0 * hash(vec2(spark_col, 10.0))
+		+ sin(rise * 6.0 + spark_col) * 0.6, rise * 10.0);
+	float spark_dot = 1.0 - smoothstep(0.22, 0.4, length(vec2(p.x, up) - spark));
+	out_col = over(vec4(FLAME_CORE, spark_dot * (1.0 - rise)), out_col);
 	return out_col;
 }
 
@@ -360,7 +404,7 @@ void fragment() {
 		col = mix(col, stair, brick);
 
 		// --- Jednosměrná zeď: šalvějový papír s nalepenými šipkami ------------
-		vec4 hs = texture(hazard_soft, UV);
+		vec4 hs = textureLod(hazard_soft, UV, 0.0);
 		float one_way = inside * max(hs.b, hs.a) * (1.0 - steel) * (1.0 - brick);
 		if (one_way > 0.001) {
 			bool right = hs.a >= hs.b;
@@ -371,6 +415,10 @@ void fragment() {
 			wall = mix(wall, RIM * (1.0 + fib * 0.2), arrow * 0.9);
 			col = mix(col, wall, one_way);
 		}
+
+		// Teplá záře lávy na okolní hlíně (rozmazaná láva z mipmap).
+		float heat = smoothstep(0.04, 0.35, textureLod(hazard_soft, UV, 3.2).g);
+		col = mix(col, col * vec3(1.2, 0.93, 0.74) + vec3(0.09, 0.035, 0.0), heat * 0.6);
 
 		// Velmi tenká hrana střihu (tloušťka papíru) na samém obrysu.
 		float outline = inside * (1.0 - smoothstep(thr, thr + 0.12, m.r));

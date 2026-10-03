@@ -1,6 +1,6 @@
 class_name BurningState
 extends LemmingState
-## Lumík se dotkl lávy. Krátce hoří, pak zmizí (ztracen).
+## Lumík se dotkl lávy. Krátce hoří, pak zmizí (ztracen) a zbude popel.
 
 
 func enter(lem: Lemming, sim: LevelSim) -> void:
@@ -10,4 +10,5 @@ func enter(lem: Lemming, sim: LevelSim) -> void:
 
 func tick(lem: Lemming, sim: LevelSim) -> void:
 	if lem.state_ticks >= SimConst.BURN_TICKS:
+		sim.emit_event("burned", lem)
 		sim.remove_lemming(lem, false)

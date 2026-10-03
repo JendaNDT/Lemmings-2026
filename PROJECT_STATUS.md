@@ -14,7 +14,8 @@ Vývoj a kontroly probíhají v cloudu.
 ## ⏭️ Příští krok
 **Etapa 5 je technicky hotová:** voda, láva, pasti a jednosměrné zdi
 v simulaci, editoru i origami vzhledu, nová mise „6 · Voda, láva a past“
-(řešitelná 8/10, požadavek 6). [Ověření etapy 5](docs/ETAPA_5_OVERENI.md).
+(řešitelná 8/10, požadavek 6). Ve 2. kole vylepšená voda, láva a animace
+postaviček (topení, hoření, chůze, pád, dopad). [Ověření etapy 5](docs/ETAPA_5_OVERENI.md).
 
 Další kroky:
 1. **Zvuky** (na řadě podle tvého přání).
@@ -91,8 +92,14 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
   masožravá rostlina, animace topení a hoření, uzavřené jeskyně
 - Mise 6 „Voda, láva a past“ ověřená čistou simulací i přes origami scénu
   a dotyk (8/10, shoda s replayem); snímky a 19s záznam
-- Kontrola: 71 GDScriptů, 10 sad, 281 ověření (`test_hazards` 45,
-  `test_origami` 50); mise 1 na telefonu znovu 20/20, terén 0 neshod
+- Kontrola: 71 GDScriptů, 10 sad, 290 ověření (`test_hazards` 48,
+  `test_origami` 56); mise 1 na telefonu znovu 20/20, terén 0 neshod
+- **Vylepšení 2. kolo:** šikmé břehy jezírka a lávové jámy, odlesky,
+  kruhy a bubliny ve vodě, plovoucí klobouk po utonutí; láva s třemi
+  řadami plamenů, jiskrami, kůrkou, bublinami a září na hlíně; topící se
+  postava se plácá dál od břehu; nové animace topení, hoření (plameny,
+  kouř, popel), chůze po osmi pózách, mávání při pádu, zplácnutí při dopadu;
+  stop-motion mění pózu každý tik
 
 - **Papírovější vzhled (2. kolo):** terén z vystřižených kusů s bílými
   natrženými okraji a měkkými stíny, světlá jádra a tloušťka papíru v celé
@@ -124,7 +131,7 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - 15–20 vlastních levelů
 - Zvuky a hudba
 - Prostředí pro další mise kampaně (nové motivy krajiny)
-- Voda s břehy a hladší dno lávy (zatím svislé stěny jezírka)
+- Pravidelnější hřeben plamenů nad lávou při oddálení doladit podle názoru
 
 ### Backlog (později)
 - Světla, glow, materiály terénu (M3)
