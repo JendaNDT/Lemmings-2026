@@ -66,7 +66,6 @@ pracovní dovednosti přidělené přes vstup. Stejný průchod byl ověřen
 i nad herním PCK vytaženým z finálního macOS balíčku při 1600 × 900.
 Tento test potvrzuje zabalený obsah, nikoli běh macOS spustitelného souboru.
 
-![Skutečná 2.5D scéna s tunelem, schody a kopáním](images/etapa-3-hratelna-scena.png)
 
 ## Výkon a meze ověření
 

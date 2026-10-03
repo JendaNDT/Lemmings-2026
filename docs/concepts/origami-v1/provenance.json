@@ -1,0 +1,42 @@
+{
+  "name": "origami-mockup-v1",
+  "created_utc_date": "2026-10-03",
+  "kind": "generated_art_direction_concept",
+  "status": "selected_visual_reference",
+  "generator": "host-native image_gen.imagegen",
+  "source": "/workspace/generated_images/exec-8bb68c78-673e-4975-8c26-b76d654e0e6c.png",
+  "image": "docs/images/mockup-origami-prvni-kroky.png",
+  "sha256": "1c3d9d1787b152e40eab50017db55ef0a485a780cf36f2d1d7828cc89bba7165",
+  "bytes": 2777976,
+  "dimensions_px": [
+    1672,
+    941
+  ],
+  "format": "PNG",
+  "prompt": "docs/concepts/origami-v1/prompt.txt",
+  "prompt_sha256": "8c472a34848f064e5bff2573a559750ca0cf07da9830547895c3e9bf2df9e241",
+  "transparent_background": false,
+  "referenced_images": [],
+  "transformations": [],
+  "negative_constraints": "Included verbatim in prompt.txt; no separate negative-prompt parameter.",
+  "review": {
+    "visually_inspected": true,
+    "paper_style_and_depth_bands_visible": true,
+    "image_decodes": true,
+    "source_copy_identical": true,
+    "in_engine": false,
+    "separated_layers": false,
+    "animation": false,
+    "parallax_motion_validated": false,
+    "gameplay_geometry_validated": false,
+    "human_approved": true
+  },
+  "limitations": [
+    "Single flattened concept image, not game-ready assets.",
+    "Working title only; no project rename.",
+    "Origami depth cues in a 2D illustration do not define 3D gameplay.",
+    "Counts, poses, skill icon semantics and playable topology require implementation review."
+  ],
+  "rights": "Generated with the host image tool for this project; no external source assets supplied. No new third-party asset license accepted; applicable service terms govern usage.",
+  "human_review_note": "User said the mockup looks nice and instructed publishing it and deleting all previous graphical proposals, 2026-10-03. Approval concerns the visual direction, not runtime implementation."
+}

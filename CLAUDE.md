@@ -3,8 +3,9 @@
 ## Kontext
 - Moderní předělávka Lemmings (1991) v **Godot 4.7 + GDScript**.
 - Testovací sestavení existují pro macOS a Android, do budoucna také Windows.
-  Všechny platformy sdílejí stejné herní jádro. Plán přechodu
-  na 2.5D je v `docs/PLAN_VYVOJE.md`; výchozí scéna `main/game_3d.tscn` je 2.5D.
+  Všechny platformy sdílejí stejné herní jádro. Aktuální plán
+  2D origami je v `docs/PLAN_VYVOJE.md`; dosavadní výchozí scéna
+  `main/game_3d.tscn` je stále 2.5D.
   Původní `main/game.tscn` zůstává pro porovnání.
 - Autor (Jenda) neprogramuje – tvoří přes vibecoding. Komunikuj **česky**,
   tykej, vysvětluj jednoduše, odpovědi drž krátké (čte z mobilu).
@@ -48,18 +49,19 @@
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.
 
 ## Výtvarná reference
-- Autor odmítl grafiku 0.4.0 jako neodpovídající mockupu. Původní předloha
-  `docs/images/mockup-modelin-prvni-kroky.png` zůstává cílem.
-- Nový samostatný výřez je `studies/clay_reference.tscn`, podklady jsou
-  v `assets/reference_v3/`, hashe v `assets/reference_v3.lock.json`.
-  Studie zatím není autorem vizuálně schválená. Její statický terén a
-  řízená deformace hrudky nenahrazují simulaci ani dynamický `ClayMesher`.
-- Herní exporty výřez a jeho podklady vylučují. Samostatný projekt sestaví
-  `python scripts/package_reference.py`; grafický průchod a záznam provede
-  `scripts/qa_reference.gd`. Skutečné záběry jsou v `docs/VYTVARNY_VYREZ_V3.md`.
-- Nevykazovat funkční testy, úspěšný import ani vytvoření modelu jako
-  potvrzení shody se schváleným vzhledem. Nepředávat nový generovaný koncept
-  jako důkaz změny skutečné hry.
+- Jediný aktuální návrh je **2D origami s paralaxním posunem a zoomem**:
+  `docs/MOCKUP_ORIGAMI.md` a `docs/images/mockup-origami-prvni-kroky.png`.
+  Autor návrh přijal a požádal odstranit všechny předchozí grafické návrhy.
+- Staré koncepty, jejich snímky a samostatná studie v3 byly odstraněny.
+  Neobnovovat je jako alternativní výtvarný cíl z historie Git.
+- Pořadí práce: mockup, oddělené grafické vrstvy, postavička s animacemi,
+  scéna Godotu. Aktuálně je hotový pouze obrázek, nikoli origami renderer.
+- Herní podklady `assets/clay/` a `assets/art_v2/` se zachovávají, dokud
+  je používá dosavadní hra. Jejich zamčení a licence dál platí.
+- Simulace zůstává společná. Herní vrstva sdílí jeden převod souřadnic,
+  dekorativní paralaxa nesmí měnit kolize ani výběr postav. HUD je pevný.
+- Technické testy nejsou dokladem výtvarné kvality. Generovaný koncept
+  nikdy nepředávat jako důkaz změny skutečné hry.
 
 ## Ověření změn
 V připraveném cloudu je Godot 4.7. V nové shell relaci nejprve:

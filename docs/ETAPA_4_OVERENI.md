@@ -2,8 +2,8 @@
 
 Společná simulace, provizorní 2.5D zobrazení a ovládání nyní podporují všech
 osm dovedností. Technické dokončení této etapy neznamená finální grafiku.
-Schválený modelínový mockup zůstává výtvarným cílem; současné terény,
-postavy, nasvícení a pozadí jeho kvality nedosahují.
+Aktuální výtvarný cíl je [2D origami](MOCKUP_ORIGAMI.md). Dosavadní
+2.5D zobrazení slouží jako funkční prototyp do nahrazení.
 
 ## Pravidla nových dovedností
 

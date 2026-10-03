@@ -43,9 +43,9 @@ události klávesnice a myši přes X11; stav simulace nebyl ručně měněn.
 6. Restart výsledkovým tlačítkem, zkouška rozlišení, kamery a dalších restartů.
 
 Snímky a logy z cloudového běhu jsou v
-`/workspace/artifacts/lemmings-phase-1/`. Závěrečný snímek:
+`/workspace/artifacts/lemmings-phase-1/`. Dřívější snímek byl při úklidu
+grafických podkladů z aktuálního repozitáře odstraněn.
 
-![Výsledek prvního levelu: zachráněno všech 20 lumíků](images/etapa-1-vyhra.png)
 
 ## Připravené exporty
 

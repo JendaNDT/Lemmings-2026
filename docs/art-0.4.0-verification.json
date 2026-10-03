@@ -75,7 +75,8 @@
     "font_license_included": true,
     "native_android_run": false
   },
-  "desktop_capture": "docs/images/art-pass-0.4.0.png",
+  "desktop_capture": null,
   "native_android_run": false,
-  "native_macos_run": false
+  "native_macos_run": false,
+  "capture_status": "Historical screenshot removed at user request on 2026-10-03; recorded runtime measurements retained."
 }

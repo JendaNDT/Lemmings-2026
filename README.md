@@ -4,27 +4,23 @@ Moderní předělávka klasické hry Lemmings (1991) v enginu Godot.
 
 Architektura: [`docs/ARCHITEKTURA.md`](docs/ARCHITEKTURA.md) ·
 Stav projektu: [`PROJECT_STATUS.md`](PROJECT_STATUS.md) ·
-Plán 2.5D: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md)
+Plán vývoje: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md)
+
+## Nový návrh — 2D origami
+
+Autor zvolil pro další návrh papírový styl s paralaxním posunem i zoomem.
+[První mockup a další postup](docs/MOCKUP_ORIGAMI.md) — generovaný výtvarný
+návrh přijatý autorem jako nový výtvarný směr, zatím bez implementace.
+
+![Výtvarný mockup 2D origami, nikoli snímek hry](docs/images/mockup-origami-prvni-kroky.png)
+
+## Současná implementace
 
 První testovací sestavení míří na **macOS (Apple Silicon i Intel)**. Stejné
 herní jádro má nyní také testovací sestavení pro Android; Windows navážou později. Výchozí scéna
 už používá **2.5D zobrazení**: prostorový terén, animované postavy a světla
 nad původní 2D simulací. Původní `main/game.tscn` zůstává pro porovnání;
 výchozí je `main/game_3d.tscn`.
-
-## Výtvarný výřez v3
-
-[**Stáhnout samostatný projekt pro Godot**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/clay-reference-v3/Lemmings-Modelinovy-vyrez-v3.zip)
-
-Rozbal ZIP, v Godotu zvol **Import → project.godot → F5**. Studie obsahuje
-nové prostorové materiály, postavu, světlo a krátkou deformaci hlíny.
-Mezerník přepíná pauzu, Tab detail a R opakuje animaci.
-
-![Skutečná samostatná scéna Godotu](docs/images/reference-v3-overview.png)
-
-[Záznam animace](docs/videos/reference-v3.mp4) · [Rozsah, původ a ověření](docs/VYTVARNY_VYREZ_V3.md).
-Jde o výtvarnou studii se statickým terénem. Do hry a do APK 0.4.0 ještě
-zapojená není; shoda s mockupem nemá autorovo vizuální schválení.
 
 ## Testovací verze pro Android
 
@@ -50,21 +46,12 @@ Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 Pro opakování exportu nastav v editoru Godotu Android SDK a Java SDK,
 nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
 
-## Nová grafika 0.4.0
+## Technický stav verze 0.4.0
 
-**Výtvarná kontrola neprošla:** autor označil vzhled 0.4.0 za neodpovídající
-schválenému mockupu. Oprava je nejbližší prioritou; [rozbor a postup](docs/GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
-
-První výtvarná úprava hratelné scény: oblé hrany a čerstvé řezy terénu,
-modelovaný zelený lem, výraznější postavička, krajina s oblaky a hradem,
-sladěné světlo a nové rozhraní. Pravidla a řešení misí zůstávají stejná.
-
-![Skutečný snímek hry 0.4.0, desktopový Forward+ renderer](docs/images/art-pass-0.4.0.png)
-
-Snímek pochází z běžící hry. Jde o první provedení směru podle schváleného
-mockupu; finální výtvarná práce celé kampaně a zvuk ještě nejsou hotové.
-Změny a ověření: [`grafika 0.4.0`](docs/GRAFIKA_04.md).
-Řešení zkušebních misí: [`etapa 4`](docs/ETAPA_4_OVERENI.md).
+[Ověření dosavadní hry a používané soubory](docs/GRAFIKA_04.md).
+Toto APK ještě používá starou grafiku. Nové 2D origami existuje jako
+výtvarný mockup; jeho implementace je další samostatný krok.
+Řešení zkušebních misí: [etapa 4](docs/ETAPA_4_OVERENI.md).
 
 ## Spuštění hotové verze na Macu
 

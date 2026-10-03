@@ -3,7 +3,7 @@
 Vývojové APK se všemi osmi dovednostmi: původní mise, tři nové zkušební
 mise a hřiště se všemi schopnostmi. Společné jádro je stejné pro všechny
 platformy. Verze 0.4.0 přidává první výtvarnou úpravu skutečné scény;
-[snímky, podklady a ověření](GRAFIKA_04.md).
+[technické podklady a ověření](GRAFIKA_04.md).
 
 ## Stažení a instalace
 
@@ -64,7 +64,8 @@ pro tento renderer. Herní logika se podle platformy nevětví.
 Linuxové vykreslování nepotvrzuje instalaci ani běh Android Activity.
 V tomto cloudu nebylo dostupné připojené Android zařízení ani použitelný
 emulátor. Nativní spuštění, výkon, zahřívání a specifika telefonu/tabletu
-proto ještě nejsou ověřené. Protokoly a snímky jsou u předaného APK.
+proto ještě nejsou ověřené. Technické výsledky zachovává záznam ověření; staré grafické náhledy
+byly při změně výtvarného směru odstraněny.
 
 ## Opakování exportu
 

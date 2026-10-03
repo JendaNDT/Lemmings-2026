@@ -10,31 +10,22 @@ nově také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**Etapa 4 je technicky dokončená:** všech osm dovedností, souběžné odpočty,
-hromadné ukončení s potvrzením, tři nové zkušební mise a hřiště se všemi
-schopnostmi. Podrobnosti: [`ověření etapy 4`](docs/ETAPA_4_OVERENI.md).
+**Aktuální směr: čistě 2D origami s paralaxním posunem a zoomem.** Autor
+přijal [nový mockup](docs/MOCKUP_ORIGAMI.md) jako jediný výtvarný podklad
+pro pokračování. Na jeho přání byly odstraněny staré koncepty, náhledy,
+videa a samostatný modelínový výřez v3. Technické podklady dosavadní hry
+zůstávají, aby hra fungovala do nahrazení rendereru.
 
-Autor schválil přesun výtvarné práce dopředu. **Verze 0.4.0 nyní obsahuje
-první výtvarnou úpravu hratelné scény**: zaoblený terén i řezy, modelovanou
-zeleň, výraznější postavu, krajinu, světlo a rozhraní. Skutečné snímky,
-původ podkladů a výsledky: [`grafika 0.4.0`](docs/GRAFIKA_04.md).
+Pořadí další práce: grafické vrstvy, postavička a animace, scéna Godotu.
+Zatím je hotový pouze nový obrázek. Paralaxa, origami animace ani nový
+renderer nejsou implementované; APK stále obsahuje dosavadní 2.5D hru.
+Nynější úkol je zveřejnění návrhu a úklid, nikoli převod celé hry.
 
-**Autor grafiku 0.4.0 odmítl jako neodpovídající schválenému mockupu.**
-Výtvarný cíl tedy není splněný. Prioritou je nový referenční výřez přímo
-v Godotu s odpovídajícím terénem, postavou a světlem; potom přenesení
-ověřeného provedení do celé mise. Konkrétní rozdíly a postup jsou v
-[`grafické revizi`](docs/GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
-Nový samostatný **výtvarný výřez v3 je nyní vytvořený v Godotu**:
-modelovaný terén, nová postava, spojená zeleň, světlo a ukázka odtržení
-hmoty. Má vlastní ZIP pro Godot, skutečné záběry a záznam. Podrobnosti:
-[`výtvarný výřez v3`](docs/VYTVARNY_VYREZ_V3.md). Vizuální schválení autora
-ani přenos do dynamického terénu celé mise zatím neproběhly. Další mechaniky
-etapy 5 následují až po této výtvarné práci. Reprezentativní demo se zvukem ani finální grafika
-celé kampaně nejsou hotové.
-
-Kompletní pořadí dvanácti etap je v [`plánu vývoje`](docs/PLAN_VYVOJE.md).
-Nativní spuštění a výkon na MacBooku a Androidu čekají na ověření;
-Windows jsou na přání autora odložené na závěr. Cloudové průchody je nenahrazují.
+Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
+[Ověření etapy 4](docs/ETAPA_4_OVERENI.md),
+[plán dvanácti etap](docs/PLAN_VYVOJE.md).
+Mechaniky etapy 5 následují po výtvarné práci. Nativní běh a výkon na Macu
+a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
 - Návrh architektury (`docs/ARCHITEKTURA.md`)
@@ -62,8 +53,7 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
 - Syntaxe/styl všech GDScriptů a původní i nové testy prošly v čisté kopii projektu
 - Samostatná modelínová sada 0.1.0: 24 map, 7 GLB včetně postavičky,
   16 kostí, 11 animací, 10 ikon, světla a kamera
-- Skutečné náhledy z Godotu a videa animací i plastické deformace;
-  zdroje Blenderu a opakovatelné generátory jsou přiložené
+- Původ používaných podkladů a jejich manifesty; staré galerie odstraněny
 - Výchozí 2.5D scéna: uzavřený terén z masky, jeskyně, ocel a stavební cihly
 - Obnova pouze změněných oblastí 32 × 32 buněk včetně sousedů na hranicích
 - Animace řízené simulačními tiky, nástroje, hrudky a lokální vizuální promáčknutí
@@ -85,18 +75,17 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
 - Kontrola etapy 4: 53 GDScriptů, osm sad, 184 ověření; původní mise stále 20/20
 - Nové mise prošly dotykovým průchodem v Compatibility rendereru na Linuxu
 
-- Výtvarná úprava 0.4.0: nový GLB se stejnou kostrou a animacemi, oblý terén,
+- Technicky implementovaná grafika 0.4.0: nový GLB se stejnou kostrou a animacemi, oblý terén,
   dekorace svázané s maskou, prostorová krajina, Nunito a osm ikon dovedností
 - Aktuální kontrola: 56 GDScriptů, osm sad, 186 ověření; první mise 20/20
   v obou rendererech, nové mise 6/6, 6/6 a 3/4 přes dotyk v Compatibility
-- Android APK 0.4.0 ve větvi `downloads/android-0.4.0`, zdroje a skutečné snímky
+- Android APK 0.4.0 ve větvi `downloads/android-0.4.0`, zdroje
   v původní vývojové větvi; předchozí APK jsou zachovaná
 
-- Samostatný výtvarný výřez v3: autorské objemy hlíny, zeleň, nová postava,
-  fyzické světlo, řízená deformace hrudky a pět modelovaných schodů
-- Nová sada má 12 souborů s kontrolními součty a editovatelnými zdroji Blenderu
-- Kontrola po přidání studie: 58 GDScriptů, osm sad, 186 herních ověření
-- Studie je oddělená od hry a vyloučená z herních exportů; její terén je statický
+- Origami mockup uložený s přesným promptem, původem a SHA-256
+- Starší grafické návrhy a oddělená studie odstraněny na přání autora
+- Po úklidu: 56 GDScriptů, osm sad, 186 ověření; import a spuštění prošly
+  v čisté kopii. Herní sady 50 + 13 souborů mají nezměněné kontrolní součty.
 
 ## 📝 TODO
 ### MVP (nutné pro v1)
@@ -104,11 +93,10 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
 - Menu a výběr levelů, ukládání postupu
 - 15–20 vlastních levelů
 - Zvuky a hudba
-- Finální výtvarné zpracování 3D postav a prostředí celé kampaně
+- Finální 2D papírové postavy, animace a prostředí celé kampaně
 
 ### Backlog (později)
 - Světla, glow, materiály terénu (M3)
-- Paralaxní pozadí
 - Replay a přetáčení času
 - Výběr jen lumíků jdoucích doleva/doprava
 - Minimapa
@@ -139,16 +127,13 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
   blokaři bez běžícího odpočtu a bez dostupného bombiče. Blokaři se nezachrání; `lost` počítá skutečné smrti, zbývající postavy
   se na konci pouze zastaví. Splnění cíle samo o sobě level předčasně neukončí.
 - **Klávesy:** podle fyzické pozice (funguje i na české klávesnici).
-- **Grafický směr:** schválené 2.5D – prostorový terén a postavy,
-  pevná ortografická kamera, 2D herní rovina a HUD. Technický prototyp je hotový.
-- **Výtvarný styl:** autor vybral Modelínový svět, druhou variantu konceptu.
-  Matné modelované povrchy, oblé tvary a výrazné barvy; reference a další
-  grafické podklady jsou popsané v `docs/VYTVARNY_SMER.md`.
-- **Pořadí grafické práce:** podklady → postavička a animace → zapojení do hry.
-  Všechny tři kroky jsou pro technický prototyp hotové; finální kampaň naváže později.
-- **Modelínová hmota:** lokální promáčknutí, protažení a odtržení hrudky.
-  Změny schůdnosti musí řídit simulace. Kopání pouze vodorovně, šikmo dolů
-  a svisle dolů; vzhůru vedou stavitelovy schody.
+- **Grafický směr:** 2D origami; jediná předloha v `docs/MOCKUP_ORIGAMI.md`.
+  Současný 2.5D renderer zůstává do nahrazení funkční, není cílovým stylem.
+- **Pořadí grafické práce:** mockup → vrstvy → postavička a animace → scéna.
+- **Paralaxa:** rozdílný posun a zoom dekorativních vrstev; terén a postavy
+  sdílejí jednu soustavu a simulační masku. HUD je pevný.
+- **Kopání:** vodorovně, šikmo dolů a svisle dolů; vzhůru vedou schody.
+
 - **Platformy:** dnes testovací macOS, později Windows a Android;
   společná simulace a obsah, odlišnosti ve vstupu, grafických profilech a exportu.
 - **Právní:** vlastní obsah, žádné převzaté assety z originálu. Při zveřejnění jiný název.
@@ -170,9 +155,9 @@ Windows jsou na přání autora odložené na závěr. Cloudové průchody je ne
 - `tests/test_*.gd`, `tests/benchmark_sim.gd` – regresní kontroly a zátěž simulace
 - `scripts/check.py`, `.github/workflows/checks.yml` – stejné kontroly lokálně a v CI
 - `export_presets.cfg`, `scripts/export_desktop.sh` – macOS, Linux QA a budoucí Windows
-- `docs/PLAN_VYVOJE.md` – aktuální plán dvanácti etap se směrem 2.5D
+- `docs/PLAN_VYVOJE.md` – aktuální plán dvanácti etap a přechod na 2D origami
 - `docs/ETAPA_1_OVERENI.md` – důkazy a omezení první fáze
-- `docs/PODKLADY_PROTOTYPU.md` – obsah a ověření samostatné grafické sady
+- `docs/PODKLADY_PROTOTYPU.md` – závislosti dosavadní hry a jejich kontrolní součty
 - `docs/ETAPA_3_OVERENI.md` – průchod 2.5D, geometrie, výkon a sestavení
 - `docs/ANDROID_DEMO.md` – aktuální Android APK, dotykový profil a meze ověření
-- `docs/GRAFIKA_04.md` – první výtvarná úprava scény, podklady a skutečné snímky
+- `docs/GRAFIKA_04.md` – technický záznam dosavadní verze bez starých návrhů

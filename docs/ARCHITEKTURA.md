@@ -236,28 +236,18 @@ nejde o měkkou fyziku terénu. Trvalý otvor je skutečně přestavěný mesh.
 Původní podklady jsou v `assets/clay/`, původ a kontrolní součty
 v `assets/clay.lock.json`. Nový odvozený model, ikony a Nunito jsou oddělené
 v `assets/art_v2/` a `assets/art_v2.lock.json`; původní balíček se nemění.
-Aktuální výtvarná kontrola je v [`GRAFIKA_04.md`](GRAFIKA_04.md).
+Technický záznam dosavadní verze je v [`GRAFIKA_04.md`](GRAFIKA_04.md).
 Po změnách se kontroluje geometrie, projekce, celý level i výkon; postup
 je v [`ETAPA_3_OVERENI.md`](ETAPA_3_OVERENI.md).
 
-### Navazující výtvarná práce
+### Navazující výtvarná práce — 2D origami
 
-Následující tabulka zachycuje původní návrh dalších efektů; rozhodující je
-schválený modelínový směr. 2D světla a sprite postavy v tomto starším návrhu
-již nahradily prostorové modely, materiály a světla výše.
-
-| Oblast | Co uděláme |
-|---|---|
-| Terén | Sady materiálů (hlína, skála, krystaly, led, kov), normálové mapy z masky → dynamické světlo, mech a kořeny na hranách. |
-| Světlo | `PointLight2D` (lucerny, krystaly, východ), barevné ladění scény, glow/bloom (HDR 2D). |
-| Lumíci | HD animace: buď 3D model vyrenderovaný do sprite sheetu, nebo 2D kostra (Skeleton2D). Výrazy obličeje, squash & stretch. |
-| Částice | Hlína, jiskry z oceli, prach, padáky, exploze, kouř. Otřesy kamery. |
-| Prostředí | Paralaxní pozadí ve více vrstvách, mlha, počasí, voda a láva se shaderem a odrazy. |
-| UI | Moderní lišta dovedností, minimapa, ovládání dotykem i gamepadem. |
-
-**Zvolená cesta 2.5D:** simulace zůstane 2D, ale terén se vykreslí jako
-3D těleso vytažené z masky a lumíci jako 3D modely. Díky oddělení
-logiky je to možné i později – jen vyměníme složku `view/`.
+Aktuální předloha je [origami mockup](MOCKUP_ORIGAMI.md). Nové zobrazení
+převezme 2D masku a stavy postav; simulační pravidla se nemění. Dekorace
+budou v samostatných vrstvách s rozdílným posunem a zoomem. Postavy,
+terén a schody musejí sdílet jednu herní transformaci, HUD zůstává pevný.
+Při změně zoomu nesmí ujíždět výběr postav nebo se odhalovat chybějící
+okraje obrazů. Obrázek zatím není rozdělený do vrstev ani implementovaný.
 
 ---
 

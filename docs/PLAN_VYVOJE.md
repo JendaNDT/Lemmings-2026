@@ -1,10 +1,13 @@
-# Plán vývoje Lemmings 2026 — 2.5D
+# Plán vývoje Lemmings 2026 — 2D origami
 
-Aktualizováno: 3. října 2026. Jde o plán budoucí implementace, nikoli o seznam hotových funkcí. Tato verze nahrazuje dřívější plán čistě 2D grafiky.
+Aktualizováno 3. října 2026. Aktuální výtvarný podklad je
+[origami mockup](MOCKUP_ORIGAMI.md). Starší návrhy byly na přání autora
+odstraněny. Dvanáct hlavních etap zůstává; etapa 3 níže zaznamenává již
+provedený technický prototyp. Nový 2D renderer se teprve připraví.
 
 ## Cíl a rozsah
 
-Herní pravidla zůstanou ve 2D; zobrazení přejde na 3D terén, animované 3D postavy, světla a prostorové pozadí. Pevná ortografická kamera zachová přehlednost. Lumíci se pohybují v jedné herní rovině a rozhraní zůstane 2D.
+Herní pravidla i nové zobrazení budou 2D. Papírový terén a animované origami postavy sdílejí jednu herní vrstvu. Dekorativní kulisy mají paralaxní posun i zoom, HUD zůstává na obrazovce. Simulace a současné mechaniky se zachovají.
 
 **První hratelné sestavení je určeno pro macOS**, který má autor nyní k dispozici. Herní jádro zůstane společné pro macOS, budoucí Windows a Android. Windows zůstávají plánovanou cílovou platformou; jejich sestavení ani nativní testování nyní neblokují první etapu. **Android má testovací APK** pro telefon a tablet; nativní spuštění a výkon se ověří samostatně. Linux slouží jako cloudové vývojové a testovací prostředí, není slíbenou distribuční platformou.
 
@@ -19,16 +22,16 @@ Vydání 1.0 zahrne osm dovedností, 15–20 vlastních levelů, menu, nastaven�
 - Procházejí regresní kontroly mechanik, terénu, celého řešení a skutečné scény s HUD.
 - Dovednosti i vypouštění mají společný záznam. Technický replay přes JSON opakuje průběh při různém tempu snímků; uživatelské rozhraní replaye je pozdější etapa.
 - Přenosné kontroly byly ověřeny v čisté kopii s oddělenou instalací nástrojů. CI pro Linux a macOS je připravené; vzdálený výsledek CI dosud nebyl ověřen.
-- Výchozí 2.5D scéna prošla první výtvarnou úpravou ve verzi 0.4.0; [skutečné snímky a ověření](GRAFIKA_04.md). Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
+- Výchozí 2.5D scéna prošla první výtvarnou úpravou ve verzi 0.4.0; [technický záznam](GRAFIKA_04.md). Android má APK a dotykový profil; zvuk, nativní spuštění a výkon na cílovém zařízení dosud ověřeny nejsou.
 - Příprava etapy 3: hotová první sada modelínových materiálů, modelů,
-  animací a samostatná galerie. Podrobnosti v [podkladech prototypu](PODKLADY_PROTOTYPU.md).
+  animací zapojených do dosavadní hry. Podrobnosti v [podkladech prototypu](PODKLADY_PROTOTYPU.md).
 
 ## Pravidla implementace
 
 - Simulace je jediným zdrojem pravdy o terénu, pohybu a výsledku levelu. Herní kolize se dál vyhodnocují podle 2D masky, nikoli podle 3D fyziky.
 - Všechny platformy používají stejné GDScripty, pravidla a definice levelů. Platformní rozdíly patří do vstupu, grafických profilů, ukládání a exportních nastavení; logiku hry nekopírovat do samostatných větví pro každý systém.
 - Grafická vrstva odvozuje vzhled ze simulace. Efekty, modely, světla a snímková frekvence nesmějí měnit výsledek.
-- Zachovat tvorbu levelů z 2D definic v editoru; 3D dekorace ukládat odděleně od logických pravidel.
+- Zachovat tvorbu levelů z 2D definic v editoru; dekorace ukládat odděleně od logických pravidel.
 - Nové zobrazení přidávat souběžně s původním tak dlouho, dokud nebude ověřená shoda. Původní zobrazení může sloužit jako diagnostická pomůcka.
 - Neprovádět velký přepis všech vrstev najednou. Každá etapa končí spustitelnou ukázkou a odpovídajícími kontrolami.
 
@@ -50,31 +53,21 @@ Připravit přenosné spouštění kontrol a CI bez závislosti na konkrétní c
 
 **Podmínka dokončení:** stejný level a příkazy dávají stejný výsledek při různém tempu vykreslování. Kontroly fungují i mimo onboardingový kontejner.
 
-## Etapa 3 — Hratelný technický prototyp 2.5D
+## Etapa 3 — Hratelný technický prototyp (dokončený 2.5D základ)
 
-**Stav:** implementováno a ověřeno v cloudu. První level zachraňuje 20/20
-přes herní vstup, geometrie odpovídá masce a výsledek simulace se shoduje
-s původní verzí. Aktuální Mac sestavení je připravené. Podrobnosti, měření
-a omezení jsou v [ověření etapy 3](ETAPA_3_OVERENI.md).
+**Stav:** dosavadní 2.5D prototyp byl implementován a ověřen v cloudu.
+První level zachraňuje 20/20 přes herní vstup; geometrie odpovídá masce
+společné simulace. [Technické ověření](ETAPA_3_OVERENI.md).
+Tyto výsledky neoznačují nové 2D origami za implementované.
 
-**Pořadí schválené autorem: grafické podklady → postavička a animace → hra.**
-Autor vybral druhý koncept, **Modelínový svět**, a schválil celkový mockup.
-První sada materiálů, modelů, rozhraní a světla i následná animační sada
-jsou hotové jako samostatná galerie pro Godot; viz
-[podklady prototypu](PODKLADY_PROTOTYPU.md). Součástí je pohybová studie
-plastické hlíny. Hratelný 2.5D prototyp již na tuto přípravu navázal;
-trvalé otvory v něm řídí maska společné simulace.
-Celkový počet dvanácti etap zůstává stejný.
+Při nahrazení grafiky zachovat masku, inkrementální aktualizace, přesný
+výběr postav, kameru, dotyk a výsledky simulace. Kopání zůstává vodorovné,
+šikmo dolů a svisle dolů. Vizuální ústřižky nesmějí měnit kolize.
+Nahoru vedou stavitelovy schody.
 
-1. Vytvořit 3D herní scénu s pevnou ortografickou kamerou a připravenou sadou modelů, materiálů a světla. Animace napojit na stavy simulace, pracovní kontakt sladit se simulačními tiky.
-2. Definovat převod logických souřadnic do 3D herní roviny. Převádět kliknutí kamery zpět na tuto rovinu a používat stávající logický výběr lumíka.
-3. Z masky terénu vytvořit prostorový povrch s přední plochou a boky. Podporovat jeskyně, otvory, oddělené ostrůvky a ocel.
-4. Rozdělit terén na menší části a přestavovat jen změněné části. Pohlídat společné hranice, normály a stíny, aby nevznikaly mezery nebo falešné překážky.
-5. Zobrazit současné kopání, ražení a stavění přímo během hry. Hlína se při zásahu krátce promáčkne, protáhne a oddělí hrudku; trvalý otvor odpovídá masce. Dekorativní deformace nesmějí měnit schůdnost mimo simulaci. Kopání má tři klasické směry: vodorovně, šikmo dolů a svisle dolů; kopání vzhůru se nezavádí. Šikmý směr zapojit po doplnění horníka v etapě 4, výbuchy po doplnění bombiče.
-6. Zachovat HUD, zoom, posun kamery a přesné označení cíle. Dekorace nesmějí zakrývat důležitou herní plochu.
-7. Porovnat stav simulace s původní verzí a změřit výkon i při souběžných změnách terénu.
-
-**Podmínka dokončení:** první level lze celý odehrát ve 2.5D, viditelné hrany odpovídají logické masce a při kopání či stavění nevznikají rušivé záseky. Dokud tento prototyp neprojde, nezačíná hromadná výroba finálních assetů.
+**Podmínka přenosu do nového zobrazení:** řešení levelu se shoduje se
+stávající simulací, viditelné hrany odpovídají masce a posun i zoom
+paralaxy zachovávají správné ovládání. Tato kontrola ještě neproběhla.
 
 ## Etapa 4 — Všech osm dovedností
 
@@ -103,35 +96,36 @@ Ukládání musí zvládat přerušený zápis, poškozený soubor a změnu form
 
 **Podmínka dokončení:** lze projít cestu od spuštění přes dokončení levelu až po návrat další den se zachovaným postupem.
 
-## Etapa 7 — Reprezentativní demo a výtvarný směr
+## Etapa 7 — Reprezentativní demo a 2D výtvarný směr
 
-**Výtvarná revize:** autor označil původní grafiku za nevyhovující a
-schválil přesun práce na skutečné scéně dopředu. Ve verzi 0.4.0 jsou
-zapojené oblé hrany terénu včetně kopání, výraznější postava, nové světlo,
-prostorové pozadí a rozhraní. Podrobnosti: [grafika 0.4.0](GRAFIKA_04.md).
-Jde o první výtvarnou úpravu; tato etapa jako celek ještě není dokončená
-(chybí mimo jiné zvuk a první uživatelské hraní nového provedení).
+**Stav:** autor přijal origami mockup jako jediný další výtvarný podklad.
+Výtvarná práce má přednost před dalšími mechanikami. Nyní je hotový
+obrázek; scéna se podle něj teprve vytvoří.
 
-**Následná reakce autora:** grafika 0.4.0 neodpovídá mockupu. Výtvarný cíl
-nebyl splněný. Nejprve zpracovat a přímo s předlohou porovnat jeden skutečný
-výřez scény v Godotu (terén, postava, světlo, kopání a schody); potom
-ověřené provedení rozšířit do celé mise. [Rozdíly a konkrétní postup](GRAFIKA_04.md#rozdíly-proti-předloze-a-oprava-postupu).
+1. Vyrobit oddělené vrstvy oblohy, vzdálené krajiny, středních kulis,
+   herního terénu a popředí včetně původně zakrytých částí.
+2. Připravit originální postavičku a čitelné animace všech činností.
+3. Vytvořit malou scénu Godotu s paralaxním posunem i zoomem; proti
+   předloze posoudit vzhled při běžném měřítku i přiblížení.
+4. Zapojit řezání papírového terénu, ústřižky a stavěné schody do masky.
+5. Dokončit ukázkové mise, rozhraní, zvuk a nápovědu, ověřit hraní.
 
-Rozpracovat již zvolený modelínový styl z etapy 3 do reprezentativní kvality.
+**Podmínka dokončení:** skutečné demo odpovídá předloze a nový hráč
+pochopí ovládání. Výběr postav sedí při každém zoomu, kulisy nezakrývají
+herní cestu a neodhalují chybějící obraz. Nativní výkon se měří zvlášť.
 
-Vytvořit tři krátké levely: úvod, kombinaci dovedností a náročnější hlavolam. Na nich dokončit ukázku zamýšlené grafiky, jednu reprezentativní postavu, rozhraní, zvuk a nápovědu.
+## Etapa 8 — Finální 2D grafika a zvuk
 
-Vybrat způsob výroby 3D postav a animací, měřítko modelů, materiály, světla a pravidla pro rozpoznatelnost dovedností. Provést první uživatelské hraní bez slovního vysvětlování.
+Dokončit papírové postavy, sady animací, terénní vrstvy a jejich řezy,
+objekty, ikony a prostředí celé kampaně. Animace i pracovní kontakt
+řídit simulačními tiky. Sjednotit přehyby, stíny a měřítko detailů.
 
-**Podmínka dokončení:** demo ukazuje cílový vzhled a nový hráč pochopí cíl, ovládání a důvody neúspěchu. Výroba dalších assetů má ověřený postup.
+Přidat hudbu, zvuky papíru, dovedností, nebezpečí a rozhraní. Hlídání
+paměti textur, přeplňování obrazu efekty a čitelnosti platí i pro Android.
+U každého podkladu evidovat původ, podmínky a exportní parametry.
 
-## Etapa 8 — Finální 3D grafika a zvuk
-
-Dokončit modely, kostry a animace všech stavů. Napojit je na logické události a interpolaci pohybu, aby nebyly zdrojem herního času. Připravit terénní materiály, prostředí, osvětlení, stíny, částice a prostorové pozadí.
-
-Přidat hudbu, zvuky dovedností, nebezpečí a rozhraní. Omezit souběh zvuků, náročná světla a částice; umožnit omezení výrazných efektů. Evidovat původ a licenci assetů.
-
-**Podmínka dokončení:** všechny herní činnosti mají čitelný, jednotný obrazový a zvukový projev. Zátěžový level splňuje dohodnutý výkonnostní cíl.
+**Podmínka dokončení:** všechny činnosti mají jednotný čitelný obrazový
+a zvukový projev; zátěžový level splňuje změřený výkonnostní cíl.
 
 ## Etapa 9 — Kampaň s 15–20 levely
 
@@ -172,12 +166,11 @@ Podrobnosti: [Android demo](ANDROID_DEMO.md).
 
 ## Pořadí a průběžné dokončování
 
-Nejdřív ověřit základ a simulaci, připravit grafické podklady, následně postavičku s animacemi a potom hratelný 2.5D terén. Navázat mechanikami a objekty, dokončit menu a malé demo. Finální assety celé kampaně vyrábět až po ověření prototypu a výtvarného směru. Uzavřít betatestem a vydáním.
+Základ a simulace jsou ověřené. Nyní navázat na přijatý origami mockup:
+vrstvy, postavička a animace, potom malá scéna a přenos do hratelné mise.
+Finální podklady celé kampaně vyrábět po posouzení skutečné scény.
+Další mechaniky, menu, obsah, betatest a vydání následují podle etap.
 
-Každý dílčí úkol má určit změněné vrstvy, konkrétní ukázku výsledku a kontroly odpovídající riziku. Po větší implementační změně aktualizovat stav projektu a relevantní architekturu. Termíny a rozpočet zpřesnit po technickém prototypu a prvním dokončeném 3D assetu; do té doby nejsou ověřené podklady pro spolehlivý odhad.
-
-**Nejbližší vývojový úkol:** porovnat nový samostatný [výřez v3](VYTVARNY_VYREZ_V3.md)
-s mockupem, dokončit potřebné výtvarné úpravy a přenést provedení do
-hratelné mise s dynamickým terénem. Výřez už existuje v Godotu, zatím bez
-vizuálního schválení autora. Grafika 0.4.0 zůstává označená za nevyhovující. Mechanicky navazuje etapa 5 až po této opravě. Cloudové testy
-nepotvrzují nativní běh na Macu ani Androidu.
+Každý úkol má konkrétní ukázku a přiměřené kontroly. Po větší změně
+aktualizovat stav a architekturu. Cloudové testy nenahrazují nativní
+spuštění a měření na Macu ani Androidu; Windows se ověří před vydáním.

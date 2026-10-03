@@ -1,8 +1,0 @@
-{
-  "seed": 20261003,
-  "mesh_objects": 39,
-  "triangles": 290328,
-  "generator": "Blender 4.3.2",
-  "scope": "authored static reference terrain; steps and crumbs remain separate",
-  "coordinates": "metres; Godot +Y up, +Z towards viewer"
-}
