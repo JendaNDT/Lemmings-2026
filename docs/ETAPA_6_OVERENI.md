@@ -102,6 +102,9 @@ godot --path . --rendering-driver opengl3 --resolution 1280x720 --fixed-fps 20 \
   --script res://scripts/qa_menu.gd -- --capture-dir=build/menu [--mobile --mobile-preview]
 ```
 
+Stejný průchod prošel i nad herními soubory vytaženými z APK 0.6.0
+([Android demo](ANDROID_DEMO.md)).
+
 ## Meze
 
 - Neověřeno na skutečném Macu ani telefonu: celá obrazovka na Macu,

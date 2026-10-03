@@ -23,8 +23,10 @@ Etapa 5 (voda, láva, pasti, jednosměrné zdi, mise 6) a zvuky jsou hotové:
 [zvuky](docs/ZVUK.md).
 
 Další kroky:
-1. **Vyzkoušet APK na telefonu** a říct, jak se menu ovládá a jak hra běží
-   (v Nastavení → Zobrazení jde zapnout počítadlo FPS). [Návod](docs/ANDROID_DEMO.md).
+1. **Vyzkoušet APK 0.6.0 na telefonu** (menu, ukládání, origami, zvuky):
+   [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.6.0/android/Lemmings-2026-Android-0.6.0.apk).
+   Aktualizuje 0.5.0; všechny mise odemkne Nastavení → Hra; počítadlo FPS
+   je v Nastavení → Zobrazení. [Návod](docs/ANDROID_DEMO.md).
 2. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5) – menu, mise 6,
    zvuky a uložení postupu po novém spuštění.
 3. Poslechnout zvuky a doladit obtížnost mise 6 podle tvého názoru.
@@ -35,6 +37,9 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.6.0** ve větvi `downloads/android-0.6.0`: menu, nastavení,
+  ukládání, origami, mise 1–6, zvuky; versionCode 7, stejný testovací podpis
+  jako 0.5.0. Herní soubory z APK prošly celým průchodem menu v Linuxu.
 - **Etapa 6 – menu, nastavení, ukládání:** `App` (nová hlavní scéna
   `main/app.tscn`), `MenuScreens`, `SettingsPanel`, `MenuBackdrop`,
   `PaperUi`; `SaveFile` (atomický zápis, záloha, SHA-256, verze formátu),

@@ -68,24 +68,25 @@ Výchozí scéna je `main/game_origami.tscn`.
 
 ## Testovací verze pro Android
 
-[**Stáhnout Android APK 0.5.0 (66 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.5.0/android/Lemmings-2026-Android-0.5.0.apk)
+[**Stáhnout Android APK 0.6.0 (66 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.6.0/android/Lemmings-2026-Android-0.6.0.apk)
 
 Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.5.0).
+[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.6.0).
 
-APK `Lemmings-2026-Android-0.5.0.apk` má origami grafiku, šest misí
-(včetně „6 · Voda, láva a past“) a zvuky. Mise se vybírají vlevo v dolní
-liště. Je určené pro telefony a tablety s Androidem 7.0+ a OpenGL ES 3.0,
+APK `Lemmings-2026-Android-0.6.0.apk` má hlavní menu, výběr misí,
+nastavení a ukládání postupu, origami grafiku, šest misí a zvuky.
+Je určené pro telefony a tablety s Androidem 7.0+ a OpenGL ES 3.0,
 včetně 32bitového a 64bitového ARM. Stáhni APK přímo na zařízení a otevři
 jej; případné povolení instalace se týká aplikace, ze které soubor otevíráš.
-**Starší verzi 0.4.0 nejdřív odinstaluj** – nové APK má jiný testovací
-podpis a jako aktualizace by se nenainstalovalo.
+Verzi 0.5.0 přímo aktualizuje; **0.4.0 a starší nejdřív odinstaluj**
+(jiný testovací podpis). Všechny mise hned odemkneš v Nastavení → Hra.
 
 Hraje se na šířku. Klepni na dovednost a potom na postavu, jedním prstem
-posouvej scénu a dvěma prsty přibližuj. Tlačítko Zpět přepíná pauzu;
-přepnutí aplikace na pozadí hru pozastaví. APK nepožaduje žádná oprávnění.
+posouvej scénu a dvěma prsty přibližuj. Tlačítko Zpět otevře pauzovací
+menu; přepnutí aplikace na pozadí hru pozastaví a uloží. APK nepožaduje
+žádná oprávnění.
 
-Jde o vývojové APK podepsané testovacím klíčem. Podpis, obsah a spuštění
+Jde o vývojové APK podepsané testovacím klíčem. Podpis, obsah a průchod
 herních souborů z APK v cloudu jsou ověřené; instalace a výkon přímo
 na Androidu zatím ne. Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 
