@@ -3,26 +3,26 @@ extends Node
 ##
 ## Každý snímek: přičte uplynulý čas, provede tolik pevných kroků simulace,
 ## kolik se jich do něj vejde, a pak předá grafice, jak daleko jsme mezi tiky.
+## Výsledky zapisuje do postupu (Progress), nastavení čte z GameSettings.
+## Spouští ji App z menu; samostatně (editor, testy) hraje s výchozím
+## nastavením a postupem jen v paměti.
 
-const MISSIONS := [
-	preload("res://levels/level_01.tscn"),
-	preload("res://levels/level_climb_float.tscn"),
-	preload("res://levels/level_miner.tscn"),
-	preload("res://levels/level_bomber.tscn"),
-	preload("res://levels/level_playground.tscn"),
-	preload("res://levels/level_hazards.tscn"),
-]
-const MISSION_TITLES: Array[String] = [
-	"1 · První kroky", "2 · Lezec a padák", "3 · Šikmý tunel",
-	"4 · Cesta skrz zeď", "5 · Všech osm dovedností", "6 · Voda, láva a past",
-]
+## Hráč chce opustit misi: "main_menu" nebo "levels" (rozehraný pokus je uložený).
+signal leave_requested(target: String)
+
+const MISSIONS := Campaign.SCENES
 
 ## Který level se hraje. Dá se přepnout v Inspectoru.
-@export var level_scene: PackedScene = MISSIONS[0]
+@export var level_scene: PackedScene = Campaign.SCENES[0]
 ## Uzel vlastní prezentace (2D origami PaperWorld nebo 2.5D ClayWorld).
 ## Prázdná cesta = původní jednoduché 2D zobrazení pro porovnání.
 @export var presentation_path := NodePath()
 
+## Nastavení a postup hráče (předá App před přidáním do stromu).
+var settings: GameSettings
+var progress: Progress
+## Obnovit rozehraný pokus z `progress.suspended` (jen při prvním načtení).
+var resume_suspended := false
 var _sim: LevelSim
 var _level: LevelDefinition
 var _selected_skill := -1
@@ -32,6 +32,10 @@ var _accumulator := 0.0
 var _result_shown := false
 var _touch: TouchControls
 var _pause_before_confirmation := false
+var _pause_before_menu := false
+var _mission_id := ""
+## Poslední načtení obnovilo rozehraný pokus (pro testy a ladění).
+var _resumed := false
 ## Zvuky (efekty podle událostí simulace, okolí, rozhraní). Hudba přijde později.
 var _audio: GameAudio
 
@@ -47,12 +51,19 @@ var _audio: GameAudio
 
 
 func _ready() -> void:
+	if settings == null:
+		settings = GameSettings.new()
+	if progress == null:
+		progress = Progress.new()
+	settings.changed.connect(_on_setting_changed)
+	_hud.settings = settings
+	_hud.menu_pressed.connect(_open_pause_menu)
+	_hud.menu_action.connect(_on_menu_action)
 	_hud.skill_selected.connect(_select_skill)
 	_hud.release_rate_step.connect(_change_release_rate)
 	_hud.pause_pressed.connect(_toggle_pause)
 	_hud.speed_pressed.connect(_toggle_speed)
 	_hud.restart_pressed.connect(_restart)
-	_hud.mission_selected.connect(_choose_mission)
 	_hud.nuke_requested.connect(_request_nuke)
 	_hud.nuke_decided.connect(_decide_nuke)
 	_hud.sound_pressed.connect(_toggle_sound)
@@ -71,11 +82,13 @@ func _ready() -> void:
 		_touch = TouchControls.new()
 		_touch.camera = _view.camera
 		_touch.tapped = _try_assign_touch
+	_apply_settings()
 	_load_level()
 
 
 func _load_level() -> void:
 	_hud.close_nuke_confirmation()
+	_hud.close_pause_menu()
 	if _touch != null:
 		_touch.clear()
 	if _level != null:
@@ -87,8 +100,21 @@ func _load_level() -> void:
 
 	var spec := LevelLoader.build_spec(_level)
 	var mask := LevelLoader.build_mask(_level)
-	LevelLoader.hide_terrain_shapes(_level)
 	_sim = LevelSim.new(spec, mask)
+	_mission_id = _level.level_id
+	_resumed = false
+	if resume_suspended and not _mission_id.is_empty() \
+			and progress.suspended.get("mission", "") == _mission_id:
+		# Rozehraný pokus: přehrát uložené příkazy až do uloženého tiku.
+		_resumed = progress.restore_suspended(_sim)
+		if not _resumed:
+			_sim = LevelSim.new(LevelLoader.build_spec(_level), LevelLoader.build_mask(_level))
+		_sim.take_events()
+	resume_suspended = false
+	LevelLoader.hide_terrain_shapes(_level)
+	if not _resumed and not _mission_id.is_empty():
+		progress.record_start(_mission_id)
+	progress.save()
 
 	var focus := Vector2(spec.width / 2.0, spec.height / 2.0)
 	if not spec.hatches.is_empty():
@@ -101,11 +127,10 @@ func _load_level() -> void:
 		_fx_view.clear()
 		_camera.setup(Vector2(spec.width, spec.height), focus)
 	_hud.setup(_sim)
-	_hud.set_missions(MISSION_TITLES, maxi(0, MISSIONS.find(level_scene)))
 	_audio.setup(_sim, _logic_to_audio)
-	_hud.set_sound(not _audio.muted)
 
-	_paused = false
+	# Obnovený pokus začne v pauze, ať se hráč nejdřív rozkouká.
+	_paused = _resumed
 	_fast = false
 	_accumulator = 0.0
 	_result_shown = false
@@ -150,14 +175,23 @@ func _process(delta: float) -> void:
 	_hud.refresh(_paused, SimConst.FAST_FORWARD_MULTIPLIER if _fast else 1.0)
 	if _sim.finished and not _result_shown:
 		_result_shown = true
-		_hud.show_result(_sim)
+		_hud.show_result(_sim, _record_result())
 		_audio.play_ui("win" if _sim.is_won() else "lose")
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	var escape: bool = event is InputEventKey and event.pressed and not event.echo \
+		and event.physical_keycode == KEY_ESCAPE
 	if _hud.confirmation_open():
-		if event is InputEventKey and event.pressed and event.physical_keycode == KEY_ESCAPE:
+		if escape:
 			_decide_nuke(false)
+		return
+	if _hud.pause_menu_open() or _hud.result_open():
+		if escape and _hud.pause_menu_open():
+			_on_menu_action("resume")
+		return
+	if escape:
+		_open_pause_menu()
 		return
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
@@ -197,7 +231,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _touch != null and not _result_shown and not _hud.confirmation_open():
+	if _touch != null and not _result_shown and not _hud.confirmation_open() \
+			and not _hud.pause_menu_open():
 		_touch.handle(event, get_viewport().get_visible_rect().size)
 
 
@@ -205,20 +240,34 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED:
 		_paused = true
 		_pause_before_confirmation = true
+		_pause_before_menu = true
 		if _touch != null:
 			_touch.clear()
+		# Telefon může aplikaci na pozadí ukončit: pokus i nastavení uložit hned.
+		_suspend_if_running()
+		settings.save()
+	elif what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_suspend_if_running()
+		settings.save()
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if _hud.confirmation_open():
 			_decide_nuke(false)
+		elif _hud.settings_open():
+			_hud.close_settings()
+		elif _hud.pause_menu_open():
+			_on_menu_action("resume")
+		elif _hud.result_open():
+			_on_menu_action("levels")
 		else:
-			_toggle_pause()
+			_open_pause_menu()
 
 
 func _try_assign_touch(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open():
+	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open() \
+			or _hud.pause_menu_open():
 		return
 	var best: Lemming = null
-	var best_distance := 42.0
+	var best_distance := settings.tap_reach
 	# Větší dotykový dosah, ale stále jen mezi cíli, jimž lze dovednost přidělit.
 	for lem in _sim.lemmings:
 		if not _sim.can_assign(lem, _selected_skill):
@@ -230,13 +279,14 @@ func _try_assign_touch(screen_point: Vector2) -> void:
 			best_distance = distance
 	if best != null:
 		_sim.assign_skill(best, _selected_skill)
-	elif _nearest_lemming_distance(screen_point) < 42.0:
+	elif _nearest_lemming_distance(screen_point) < settings.tap_reach:
 		# Klepnutí na postavu, které dovednost přidělit nejde (už ji má, došly kusy…).
 		_audio.play_ui("deny")
 
 
 func _try_assign(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open():
+	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open() \
+			or _hud.pause_menu_open():
 		return
 	var lem := _sim.find_lemming_at(logic_position(screen_point), _selected_skill)
 	if lem != null and not _sim.assign_skill(lem, _selected_skill):
@@ -292,7 +342,8 @@ func _toggle_speed() -> void:
 
 
 func _toggle_sound() -> void:
-	_hud.set_sound(not _audio.toggle_muted())
+	settings.set_value("muted", not settings.muted)
+	settings.save()
 
 
 func _restart() -> void:
@@ -301,15 +352,18 @@ func _restart() -> void:
 
 
 func _choose_mission(index: int) -> void:
-	if index < 0 or index >= MISSIONS.size():
+	if index < 0 or index >= Campaign.count():
 		return
-	level_scene = MISSIONS[index]
+	level_scene = Campaign.SCENES[index]
 	_audio.play_ui("click")
 	_load_level()
 
 
 func _request_nuke() -> void:
-	if _sim.finished or _sim.nuking or _hud.confirmation_open():
+	if _sim.finished or _sim.nuking or _hud.confirmation_open() or _hud.pause_menu_open():
+		return
+	if not settings.confirm_nuke:
+		_sim.start_nuke()
 		return
 	_pause_before_confirmation = _paused
 	_paused = true
@@ -328,3 +382,84 @@ func _decide_nuke(confirmed: bool) -> void:
 	else:
 		_audio.play_ui("click")
 	_paused = _pause_before_confirmation
+
+
+## Pauzovací menu (tlačítko Menu, Esc, Zpět na Androidu). Čas stojí.
+func _open_pause_menu() -> void:
+	if _result_shown or _hud.confirmation_open() or _hud.pause_menu_open():
+		return
+	_pause_before_menu = _paused
+	_paused = true
+	if _touch != null:
+		_touch.clear()
+	_audio.play_ui("pause")
+	_hud.show_pause_menu()
+
+
+func _on_menu_action(action: String) -> void:
+	match action:
+		"resume":
+			_hud.close_pause_menu()
+			_paused = _pause_before_menu
+			_audio.play_ui("resume")
+		"restart":
+			_restart()
+		"next":
+			var index := Campaign.index_of(_mission_id)
+			if index >= 0 and index + 1 < Campaign.count():
+				_choose_mission(index + 1)
+		"levels", "main_menu":
+			_audio.play_ui("click")
+			_suspend_if_running()
+			progress.save()
+			settings.save()
+			leave_requested.emit(action)
+
+
+## Rozehraný pokus uloží pro „Pokračovat“ (jen když už běží a neskončil).
+func _suspend_if_running() -> void:
+	if _sim != null and not _sim.finished and _sim.tick_count > 0 and not _mission_id.is_empty():
+		progress.suspend(_mission_id, _sim)
+		progress.save()
+
+
+## Zapíše výsledek do postupu a připraví údaje pro okno výsledku.
+func _record_result() -> Dictionary:
+	if _mission_id.is_empty():
+		return {}
+	var info := progress.record_result(_mission_id, _sim.saved, _sim.is_won(), _sim.tick_count)
+	progress.save()
+	var entry := progress.entry(_mission_id)
+	info["best_saved"] = entry["best_saved"]
+	info["best_ticks"] = entry["best_ticks"]
+	var index := Campaign.index_of(_mission_id)
+	if index >= 0 and index + 1 < Campaign.count():
+		info["next_title"] = Campaign.mission(index + 1)["title"]
+	return info
+
+
+func _on_setting_changed(_key: String) -> void:
+	_apply_settings()
+
+
+## Uplatní nastavení: zvuk, okno, velikost rozhraní, kvalita a ovládání.
+func _apply_settings() -> void:
+	settings.apply_audio()
+	settings.apply_window()
+	_hud.set_sound(not settings.muted)
+	_hud.show_fps(settings.show_fps)
+	_hud.set_ui_scale(settings.ui_scale)
+	var top := _hud.top_bar_height()
+	var bottom := _hud.bottom_bar_height()
+	_camera.top_padding = top
+	_camera.bottom_padding = bottom
+	if _view == null:
+		return
+	_view.camera.top_padding = top
+	_view.camera.bottom_padding = bottom
+	_view.camera.set("edge_scroll", settings.edge_scroll)
+	_view.camera.set("speed_scale", settings.scroll_speed)
+	if _view.has_method("set_quality"):
+		_view.set_quality(settings.quality)
+	if _view.has_method("set_stop_motion"):
+		_view.set_stop_motion(settings.stop_motion)

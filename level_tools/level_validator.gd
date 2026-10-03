@@ -7,7 +7,15 @@ extends RefCounted
 
 
 static func problems_for(level: LevelDefinition) -> PackedStringArray:
-	return problems(LevelLoader.build_spec(level), LevelLoader.build_mask(level))
+	var out := PackedStringArray()
+	if not is_valid_id(level.level_id):
+		out.append("Chybí stabilní identifikátor mise (Level Id: malá písmena, číslice, pomlčky).")
+	out.append_array(problems(LevelLoader.build_spec(level), LevelLoader.build_mask(level)))
+	return out
+
+
+static func is_valid_id(id: String) -> bool:
+	return RegEx.create_from_string("^[a-z0-9]+(-[a-z0-9]+)*$").search(id) != null
 
 
 static func problems(spec: LevelSpec, mask: TerrainMask) -> PackedStringArray:

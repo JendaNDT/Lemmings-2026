@@ -18,6 +18,13 @@ const LAYERS := [
 	["near", 0.5, 0.3, 0.5, 620.0, 1.0, true, 0.05],
 ]
 const SKY := [Color("8fc3d6"), Color("b4d3d8"), Color("e6e4d2")]
+## Kvalita efektů 0–2 (nízká, střední, vysoká): [zrnitost, světlo a paprsky, opar,
+##  popředí, mraky a ptáci, lístky, strop ústřižků]. Herní rovina je vždy stejná.
+const QUALITY := [
+	[false, false, false, false, false, false, 80],
+	[true, false, true, true, true, false, 160],
+	[true, true, true, true, true, true, 260],
+]
 
 var camera: PaperCamera
 var terrain: PaperTerrain
@@ -28,6 +35,7 @@ var fx: PaperFx
 var foreground: PaperForeground
 var plane: Node2D
 var layers: Array[PaperParallax] = []
+var quality := 2
 var _sim: LevelSim
 var _sky: Node2D
 var _sky_texture: GradientTexture2D
@@ -63,7 +71,7 @@ func _ready() -> void:
 		layer.haze = spec[7]
 		add_child(layer)
 		layers.append(layer)
-	_add_sky_life(layers[0])
+	add_sky_life(layers[0])
 	plane = Node2D.new()
 	plane.name = "GamePlane"
 	add_child(plane)
@@ -110,7 +118,8 @@ func _ready() -> void:
 
 
 ## Mraky plují pomalu, každý jinou rychlostí; hejnko tří ptáčků mává křídly.
-func _add_sky_life(sky: PaperParallax) -> void:
+## Sdílí ji i pozadí menu (MenuBackdrop).
+static func add_sky_life(sky: PaperParallax) -> void:
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SKY_DATA))
 	for cloud: Dictionary in data["clouds"]:
 		sky.drifters.append({"frames": [load("res://assets/origami/" + cloud["texture"])],
@@ -171,6 +180,20 @@ func update_frame(alpha: float, events: Array[Dictionary], delta: float) -> void
 	fx.advance(delta)
 	foreground.update(get_process_delta_time())
 	_apply_camera()
+
+
+## Kvalita efektů (0 nízká, 1 střední, 2 vysoká). Mění jen ozdoby, ne hru.
+func set_quality(level: int) -> void:
+	quality = clampi(level, 0, QUALITY.size() - 1)
+	var q: Array = QUALITY[quality]
+	_grain.visible = q[0]
+	_light.visible = q[1]
+	for i in layers.size():
+		layers[i].haze = float(LAYERS[i][7]) if q[2] else 0.0
+		layers[i].show_drifters = q[4]
+	foreground.visible = q[3]
+	fx.petals = q[5]
+	fx.max_scraps = q[6]
 
 
 func highlight(lem: Lemming) -> void:

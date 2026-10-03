@@ -52,8 +52,8 @@ func _test_interface() -> void:
 		await process_frame
 	var sim: LevelSim = game.get("_sim")
 	check(hud.visible_skills().size() == 8, "hřiště zpřístupní všech osm dovedností")
-	var picker: OptionButton = hud.get("_mission_picker")
-	check(picker.selected == 4, "výběr mise ukazuje právě načtený level")
+	var title: Label = hud.get("_title")
+	check(title.text == Campaign.mission(4)["title"], "lišta ukazuje název právě načtené mise")
 	var widgets: Dictionary = hud.get("_skill_widgets")
 	var fits := true
 	var right := 0.0

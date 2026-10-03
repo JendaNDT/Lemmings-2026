@@ -5,12 +5,12 @@ extends Node2D
 ## Simulaci jen čte (události, tik, stav odpočtu, masku). Zvuky v prostoru
 ## stojí na místě události na obrazovce: vlevo/vpravo podle polohy, mimo záběr
 ## tišší. Náhodná výška tónu je místní a výsledek hry neovlivní. Hudbu autor
-## doplní později – má připravenou vlastní sběrnici Music.
+## doplní později – má připravenou vlastní sběrnici Music. Hlasitost a ztlumení
+## řídí GameSettings (ukládá je), tento uzel jen přehrává.
 
 const DATA_PATH := "res://assets/audio/sfx.json"
 const AUDIO_DIR := "res://assets/audio/"
 const BUSES := ["SFX", "UI", "Ambient", "Music"]
-const SETTINGS_PATH := "user://settings.cfg"
 ## Událost simulace → zvuk (všechny typy událostí, které simulace hlásí).
 const EVENT_SOUNDS := {
 	"assign": "assign", "spawn": "spawn", "dig": "dig", "bash": "bash", "mine": "mine",
@@ -23,12 +23,9 @@ const MAX_PER_FRAME := 6
 ## Dosah zvuku v prostoru (px obrazovky): dál už není slyšet.
 const MAX_DISTANCE := 2200.0
 
-var muted := false
 ## Bez obrazovky (automatické testy) se zvuky jen zaznamenají, nepřehrávají:
 ## mixér by po rychlém ukončení testu držel rozehrané zvuky v paměti.
 var silent := DisplayServer.get_name() == "headless"
-## Kam se ukládá ztlumení (testy ho mohou přesměrovat).
-var settings_path := SETTINGS_PATH
 ## Převod logických souřadnic do prostoru, ve kterém poslouchá obrazovka.
 var to_screen: Callable
 ## Jména zvuků spuštěných od začátku levelu (pro testy a ladění).
@@ -46,7 +43,7 @@ var _clock := 0.0
 
 
 func _ready() -> void:
-	_ensure_buses()
+	ensure_buses()
 	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
 	for name: String in data["sounds"]:
 		var cfg: Dictionary = data["sounds"][name]
@@ -96,7 +93,6 @@ func _ready() -> void:
 		player.name = "loop_" + name
 		add_child(player)
 		_loops[name] = player
-	_load_settings()
 
 
 ## Nový level: vynuluje stav, najde vodu a lávu pro jejich smyčky, pustí vítr.
@@ -178,27 +174,6 @@ func _exit_tree() -> void:
 		child.call("stop")
 
 
-func set_muted(value: bool) -> void:
-	muted = value
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), muted)
-	var config := ConfigFile.new()
-	config.load(settings_path)
-	config.set_value("audio", "muted", muted)
-	config.save(settings_path)
-
-
-func toggle_muted() -> bool:
-	set_muted(not muted)
-	return muted
-
-
-func _load_settings() -> void:
-	var config := ConfigFile.new()
-	if config.load(settings_path) == OK:
-		muted = bool(config.get_value("audio", "muted", false))
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), muted)
-
-
 func _screen(at: Vector2) -> Vector2:
 	if at == Vector2.INF or not to_screen.is_valid():
 		return get_viewport_rect().size * 0.5
@@ -207,7 +182,8 @@ func _screen(at: Vector2) -> Vector2:
 
 ## Sběrnice efektů, rozhraní, okolí a (budoucí) hudby, všechny do Master.
 ## Na Master je omezovač špiček, aby souběh mnoha zvuků nepraskal.
-static func _ensure_buses() -> void:
+## Hlasitosti a ztlumení nastavuje GameSettings.apply_audio().
+static func ensure_buses() -> void:
 	var master := AudioServer.get_bus_index("Master")
 	var has_limiter := false
 	for i in AudioServer.get_bus_effect_count(master):

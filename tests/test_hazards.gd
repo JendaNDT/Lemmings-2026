@@ -295,8 +295,14 @@ func _test_loader_and_validator() -> void:
 		and text.contains("Past na (60, 30) visí") and text.contains("ve vodě nebo v lávě")
 		and not text.contains("Past na (100, 60)"),
 		"kontrola levelu najde chybějící líheň, požadavek, past ve vzduchu a východ ve vodě")
+	var warnings := level._get_configuration_warnings()
+	check(warnings.size() == problems.size() + 1 and warnings[0].contains("identifikátor"),
+		"editor ukáže stejná varování a navíc chybějící identifikátor mise")
+	level.level_id = "zkusebni-level"
 	check(level._get_configuration_warnings() == problems,
-		"editor ukáže stejná varování u kořene levelu")
+		"s identifikátorem zbydou u kořene levelu jen nálezy kontroly")
+	check(not LevelValidator.is_valid_id("Mise 1") and LevelValidator.is_valid_id("mise-1"),
+		"identifikátor mise smí mít jen malá písmena, číslice a pomlčky")
 	level.free()
 	var dir := DirAccess.open("res://levels")
 	var names := Array(dir.get_files()).filter(func(n: String) -> bool: return n.ends_with(".tscn"))

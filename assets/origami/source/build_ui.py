@@ -100,7 +100,45 @@ ICONS = {
     # Zvuk vypnutý: reproduktor a křížek.
     "sound_off": """<path d="M8 24 L18 24 L31 12 L31 52 L18 40 L8 40 Z"/>
 <path d="M39 23 L55 41 M55 23 L39 41" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>""",
+    # Menu: tři papírové proužky, každý mírně natočený.
+    "menu": """<rect x="10" y="13" width="44" height="7" rx="2" transform="rotate(-2 32 16.5)"/>
+<rect x="10" y="28.5" width="44" height="7" rx="2" transform="rotate(1.5 32 32)"/>
+<rect x="10" y="44" width="44" height="7" rx="2" transform="rotate(-1 32 47.5)"/>""",
+    # Zámek: zamčená mise.
+    "lock": """<path d="M20 28 L20 20 C20 12 25 7 32 7 C39 7 44 12 44 20 L44 28 L38 28 L38 20 C38 15.5 35.5 13 32 13 C28.5 13 26 15.5 26 20 L26 28 Z"/>
+<rect x="13" y="27" width="38" height="30" rx="4"/>
+<path d="M32 36 A4 4 0 0 1 34 43.5 L35 50 L29 50 L30 43.5 A4 4 0 0 1 32 36 Z" fill="#f4e8d2"/>""",
+    # Fajfka: splněná mise.
+    "check": """<path d="M8 33 L16 25 L27 36 L50 11 L58 19 L27 52 Z"/>""",
+    # Zpět: šipka doleva.
+    "back": """<path d="M6 32 L28 10 L28 23 L56 23 L56 41 L28 41 L28 54 Z"/>""",
+    # Hrát: trojúhelník.
+    "play": """<path d="M16 8 L54 32 L16 56 Z"/>""",
+    # Další mise: dvojitá šipka doprava.
+    "next": """<path d="M8 10 L32 32 L8 54 Z"/>
+<path d="M32 10 L56 32 L32 54 Z"/>""",
+    # Znovu: kruhová šipka.
+    "restart": """<path d="M32 10 C44 10 54 20 54 32 C54 44 44 54 32 54 C20 54 10 44 10 32 L18 32 C18 40 24 46 32 46 C40 46 46 40 46 32 C46 24 40 18 32 18 L32 26 L20 14 L32 2 Z"/>""",
 }
+
+
+
+def gear(teeth=8, outer=25.0, inner=19.0, hole=8.5, cx=32.0, cy=32.0):
+    """Ozubené kolečko (Nastavení) s otvorem uprostřed."""
+    import math
+    pts = []
+    for i in range(teeth):
+        base = i * 2 * math.pi / teeth
+        for frac, r in ((-0.30, inner), (-0.17, outer), (0.17, outer), (0.30, inner)):
+            a = base + frac * 2 * math.pi / teeth
+            pts.append(f"{cx + r * math.cos(a):.2f} {cy + r * math.sin(a):.2f}")
+    ring = "M" + " L".join(pts) + " Z"
+    circle = (f"M{cx + hole:.2f} {cy:.2f} A{hole} {hole} 0 1 0 {cx - hole:.2f} {cy:.2f} "
+              f"A{hole} {hole} 0 1 0 {cx + hole:.2f} {cy:.2f} Z")
+    return f'<path fill-rule="evenodd" d="{ring} {circle}"/>'
+
+
+ICONS["settings"] = gear()
 
 
 def write_icons(out: Path):

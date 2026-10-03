@@ -17,6 +17,10 @@ var zoom_factor := 1.0
 var top_padding := Hud.TOP_BAR_HEIGHT
 var bottom_padding := Hud.BOTTOM_BAR_HEIGHT
 var input_enabled := true
+## Posun myší u okraje obrazovky (nastavení ovládání).
+var edge_scroll := true
+## Násobek rychlosti posunu klávesami a okrajem (nastavení ovládání).
+var speed_scale := 1.0
 ## Velikost obrazovky; null = aktuální viewport (testy mohou zadat vlastní).
 var viewport_override := Vector2.ZERO
 var level_size := Vector2(640, 200)
@@ -108,7 +112,8 @@ func _process(delta: float) -> void:
 			- float(Input.is_physical_key_pressed(KEY_UP) or Input.is_physical_key_pressed(KEY_W)))
 		var vp := viewport_size()
 		var mouse := get_viewport().get_mouse_position()
-		if not DeviceProfile.touch_mode() and get_window().has_focus() and not _dragging \
+		if edge_scroll and not DeviceProfile.touch_mode() and get_window().has_focus() \
+				and not _dragging \
 				and mouse.y > top_padding and mouse.y < vp.y - bottom_padding \
 				and mouse.x >= 0 and mouse.x < vp.x:
 			if mouse.x < EDGE_SIZE:
@@ -116,7 +121,7 @@ func _process(delta: float) -> void:
 			elif mouse.x > vp.x - EDGE_SIZE:
 				move.x += 1
 		if move != Vector2.ZERO:
-			focus += move * SCROLL_SPEED * delta / pixel_scale()
+			focus += move * SCROLL_SPEED * speed_scale * delta / pixel_scale()
 	refresh()
 
 

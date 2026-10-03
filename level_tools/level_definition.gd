@@ -14,6 +14,9 @@ extends Node2D
 ##    východ ve vzduchu, past mimo zem a podobná opomenutí.
 
 @export var title := "Nový level"
+## Stabilní identifikátor pro ukládání postupu (malá písmena, číslice, pomlčky).
+## Po vydání mise ho neměnit, jinak hráči ztratí její výsledky.
+@export var level_id := ""
 ## Velikost levelu v logických pixelech (bílý rámeček v editoru).
 @export var size := Vector2i(640, 200):
 	set(value):

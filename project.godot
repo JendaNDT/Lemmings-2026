@@ -12,7 +12,8 @@ config_version=5
 
 config/name="Lemmings 2026"
 config/description="Moderní předělávka klasické hry Lemmings (1991) v Godotu."
-run/main_scene="res://main/game_origami.tscn"
+config/version="0.6.0"
+run/main_scene="res://main/app.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 config/quit_on_go_back=false

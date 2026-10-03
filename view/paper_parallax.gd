@@ -32,6 +32,8 @@ var time := 0.0
 ## Pohyblivé výřezy vrstvy v pixelech textury (mraky, ptáci):
 ## {frames, pos, anchor, speed (px za tik), scale, flap (tiky na pózu, 0 = bez), bob, phase}.
 var drifters: Array[Dictionary] = []
+## Nízká kvalita efektů pohyblivé výřezy nekreslí.
+var show_drifters := true
 var _material := ShaderMaterial.new()
 var _origin := Vector2.ZERO
 var _scale := 1.0
@@ -96,7 +98,8 @@ func _draw() -> void:
 	while x < vp.x:
 		draw_texture_rect(texture, Rect2(Vector2(x, _origin.y), size), false)
 		x += size.x
-	_draw_drifters(vp)
+	if show_drifters:
+		_draw_drifters(vp)
 	if extend_bottom and bottom < vp.y + 2.0:
 		# Poslední řádek textury protažený dolů – žádná prázdná mezera při zoomu.
 		var src := Rect2(0, texture.get_height() - 2, texture.get_width(), 1)

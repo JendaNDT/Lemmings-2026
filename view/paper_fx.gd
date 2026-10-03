@@ -59,6 +59,10 @@ var sim: LevelSim
 var alpha := 1.0
 ## Viditelná část levelu (logické px): sem občas přiletí lístek nebo okvětní plátek.
 var view_rect := Rect2()
+## Strop počtu ústřižků a obláčků (nižší kvalita efektů ho snižuje).
+var max_scraps := MAX_SCRAPS
+## Poletující okvětní lístky v krajině (při nízké kvalitě vypnuté).
+var petals := true
 var _scraps: Array[Scrap] = []
 var _puffs: Array[Puff] = []
 var _rng := RandomNumberGenerator.new()
@@ -146,7 +150,7 @@ func handle_events(events: Array[Dictionary]) -> void:
 func _burst(at: Vector2, count: int, colors: Array, base: Vector2, spread: float,
 		life: float, size: float, gravity := 1.0) -> void:
 	for _i in count:
-		if _scraps.size() >= MAX_SCRAPS:
+		while _scraps.size() >= max_scraps:
 			_scraps.remove_at(0)
 		var s := Scrap.new()
 		s.pos = at + Vector2(_rng.randf_range(-1, 1), _rng.randf_range(-1, 1))
@@ -163,7 +167,7 @@ func _burst(at: Vector2, count: int, colors: Array, base: Vector2, spread: float
 
 
 func _add_puff(puff: Puff) -> void:
-	if _puffs.size() >= MAX_SCRAPS:
+	while _puffs.size() >= max_scraps:
 		_puffs.remove_at(0)
 	_puffs.append(puff)
 
@@ -196,7 +200,8 @@ func _hazard_tick() -> void:
 	if sim == null or sim.tick_count == _last_tick:
 		return
 	_last_tick = sim.tick_count
-	_spawn_petal()
+	if petals:
+		_spawn_petal()
 	for lem in sim.lemmings:
 		if lem.removed:
 			continue

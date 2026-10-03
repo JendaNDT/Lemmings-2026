@@ -4,6 +4,7 @@
 
 [node name="Playground" instance=ExtResource("1")]
 title = "5 · Všech osm dovedností"
+level_id = "vsech-osm-dovednosti"
 climbers = 20
 floaters = 20
 bombers = 20

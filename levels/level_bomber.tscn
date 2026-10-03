@@ -8,6 +8,7 @@
 [node name="Bomber" type="Node2D"]
 script = ExtResource("1_def")
 title = "4 · Cesta skrz zeď"
+level_id = "cesta-skrz-zed"
 size = Vector2i(400, 160)
 lemming_count = 4
 save_required = 3

@@ -9,6 +9,7 @@
 [node name="Hazards" type="Node2D"]
 script = ExtResource("1_def")
 title = "6 · Voda, láva a past"
+level_id = "voda-lava-past"
 size = Vector2i(560, 200)
 lemming_count = 10
 save_required = 6

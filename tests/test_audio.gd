@@ -1,9 +1,9 @@
 extends SimTest
 ## Zvuky: každá událost simulace má zvuk, podklady se načtou, omezení opakování,
-## ztlumení s uložením a napojení na skutečnou origami scénu. Zvuk nikdy
-## nemění simulaci.
+## ztlumení a hlasitosti s uložením a napojení na skutečnou origami scénu.
+## Zvuk nikdy nemění simulaci.
 
-const SETTINGS := "user://test_audio_settings.cfg"
+const SETTINGS := "user://test_audio/settings.json"
 
 
 func _initialize() -> void:
@@ -15,7 +15,8 @@ func _run() -> void:
 	_test_assets()
 	await _test_limits_and_mute()
 	await _test_scene()
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(SETTINGS))
+	SaveFile.erase(SETTINGS)
+	GameSettings.new().apply_audio()
 	finish()
 
 
@@ -72,8 +73,9 @@ func _test_assets() -> void:
 
 
 func _test_limits_and_mute() -> void:
+	DirAccess.make_dir_recursive_absolute(SETTINGS.get_base_dir())
+	SaveFile.erase(SETTINGS)
 	var audio := GameAudio.new()
-	audio.settings_path = SETTINGS
 	root.add_child(audio)
 	var sim := fixture(5)
 	audio.setup(sim, func(p: Vector2) -> Vector2: return p * 4.0)
@@ -96,22 +98,26 @@ func _test_limits_and_mute() -> void:
 	audio.update(events.slice(0, 1), 0.12)
 	check(audio.played.count("dig") == 2, "po krátkém odstupu se zvuk smí ozvat znovu")
 	var master := AudioServer.get_bus_index("Master")
-	var was := audio.muted
-	audio.set_muted(true)
-	var config := ConfigFile.new()
-	config.load(SETTINGS)
-	check(AudioServer.is_bus_mute(master) and bool(config.get_value("audio", "muted", false)),
-		"ztlumení ztiší vše a uloží se")
-	var again := GameAudio.new()
-	again.settings_path = SETTINGS
-	root.add_child(again)
-	check(again.muted, "ztlumení vydrží i po novém spuštění")
-	audio.set_muted(false)
-	check(not AudioServer.is_bus_mute(master), "zvuk jde zase zapnout")
+	var settings := GameSettings.load_from(SETTINGS)
+	settings.set_value("muted", true)
+	settings.apply_audio()
+	settings.save()
+	check(AudioServer.is_bus_mute(master), "ztlumení ztiší vše")
+	var again := GameSettings.load_from(SETTINGS)
+	check(again.muted and again.load_status == SaveFile.Status.OK,
+		"ztlumení se uloží a vydrží i po novém spuštění")
+	again.set_value("muted", false)
+	again.set_value("volume_sfx", 0.5)
+	again.set_value("volume_music", 0.0)
+	again.apply_audio()
+	var sfx := AudioServer.get_bus_index("SFX")
+	var music := AudioServer.get_bus_index("Music")
+	check(not AudioServer.is_bus_mute(master) and absf(AudioServer.get_bus_volume_db(sfx)
+		- linear_to_db(0.5)) < 0.01 and AudioServer.is_bus_mute(music),
+		"zvuk jde zase zapnout; hlasitost efektů 50 %, hudba na nule je ztlumená")
 	for bus: String in GameAudio.BUSES:
 		check(AudioServer.get_bus_index(bus) >= 0, "sběrnice %s existuje (hudba přijde později)" % bus)
-	audio.set_muted(was)
-	again.free()
+	GameSettings.new().apply_audio()
 	audio.free()
 	await process_frame
 
@@ -121,7 +127,6 @@ func _test_scene() -> void:
 	root.add_child(game)
 	game.set_process(false)
 	var audio: GameAudio = game.get_node("Audio")
-	audio.settings_path = SETTINGS
 	var world: PaperWorld = game.get_node("PaperWorld")
 	world.camera.input_enabled = false
 	var hud: Hud = game.get_node("Hud")
@@ -148,9 +153,10 @@ func _test_scene() -> void:
 	check(audio.played.has("tick") and audio.played.has("pause") and audio.played.has("resume"),
 		"vypouštění a pauza mají zvuky rozhraní")
 	var log_size := sim.replay_log.size()
+	var settings: GameSettings = game.get("settings")
 	hud.sound_pressed.emit()
-	check(audio.muted and sim.replay_log.size() == log_size,
-		"tlačítko zvuku ztlumí hru bez herního příkazu")
+	check(settings.muted and AudioServer.is_bus_mute(AudioServer.get_bus_index("Master"))
+		and sim.replay_log.size() == log_size, "tlačítko zvuku ztlumí hru bez herního příkazu")
 	hud.sound_pressed.emit()
 	game.call("_choose_mission", 5)
 	sim = game.get("_sim")
