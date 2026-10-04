@@ -105,6 +105,16 @@ Stará zástupná ikona ve stylu původní hry je pryč.
     pauza, nastavení, odchod s rozehraným pokusem a obnova další den.
   - O hře z APK, Windows i macOS: verze 1.0.0-rc1, licence Godotu, písma
     (soubor OFL je v balíčku) i součástí, hlášení začíná „Paperlings 1.0.0-rc1“.
+- **Zveřejnění:** push značky z cloudového prostředí skončil 403, proto
+  vydání spouští větev `vydani/1.0.0-rc1`. Workflow *Vydání* (běh č. 1,
+  2 min 27 s): ověřený Godot a šablony (SHA-512), APK z větve
+  `downloads/android-1.0.0-rc1` se shodným SHA-256, celá kontrola
+  (94 GDScriptů, 17 sad, 455 kontrol), exporty Windows a macOS, balíčky,
+  značka `v1.0.0-rc1` a [předběžné vydání](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1)
+  s 5 soubory. Soubory stažené z vydání odpovídají `SHA256SUMS.txt`;
+  `.exe` z CI má ikonu a údaje Paperlings 1.0.0.1, `Paperlings.app` má
+  Info.plist 1.0.0 a spustitelný soubor s právem spuštění; jejich herní
+  data prošla obrazovkou O hře (verze, licence, hlášení).
 - `test_about` (11 kontrol): tlačítko v menu, záložky, texty titulků,
   licencí a návodu (všech 8 dovedností), plný text licence po klepnutí,
   hlášení bez cest a osobních údajů, odkaz s předvyplněnými údaji, Zpět.
