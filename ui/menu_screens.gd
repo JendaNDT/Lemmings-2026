@@ -182,7 +182,7 @@ func _build_main() -> void:
 	var title_col := VBoxContainer.new()
 	title_col.add_theme_constant_override("separation", 0)
 	banner.add_child(title_col)
-	var title := PaperUi.label("Lemmings 2026", 58, PaperUi.INK)
+	var title := PaperUi.label("Paperlings", 58, PaperUi.INK)
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_col.add_child(title)
 	var tagline := PaperUi.label("Papírová výprava lumíků", 22, PaperUi.INK_DIM)

@@ -15,6 +15,7 @@ func _initialize() -> void:
 	_test_campaign()
 	_test_progress()
 	_test_suspend()
+	_test_migration()
 	_clean()
 	finish()
 
@@ -262,3 +263,42 @@ func _mission_sim(scene: PackedScene) -> LevelSim:
 	var sim := LevelSim.new(LevelLoader.build_spec(level), LevelLoader.build_mask(level))
 	level.free()
 	return sim
+
+
+## Přejmenování na Paperlings: postup ze staré složky se jednou přenese.
+func _test_migration() -> void:
+	var old_dir := _path("stara")
+	var new_dir := _path("nova")
+	for dir in [old_dir, new_dir]:
+		DirAccess.make_dir_recursive_absolute(dir)
+		for name in DirAccess.get_files_at(dir):
+			DirAccess.remove_absolute(dir.path_join(name))
+	var progress := Progress.load_from(old_dir.path_join("progress.json"))
+	var first := Campaign.mission(0)
+	progress.record_result(first["id"], int(first["master"]), true, 500)
+	progress.save()
+	var settings := GameSettings.load_from(old_dir.path_join("settings.json"))
+	settings.set_value("minimap", false)
+	settings.save()
+	var copied := SaveMigration.migrate(old_dir, new_dir)
+	var moved := Progress.load_from(new_dir.path_join("progress.json"))
+	var moved_settings := GameSettings.load_from(new_dir.path_join("settings.json"))
+	check(copied >= 2 and moved.stars(0) == 3 and not moved_settings.minimap
+		and FileAccess.file_exists(old_dir.path_join("progress.json")),
+		"postup a nastavení ze staré složky se přenesou, originál zůstane")
+	SaveFile.erase(new_dir.path_join("progress.json"))
+	check(SaveMigration.migrate(old_dir, new_dir) == 0
+		and not FileAccess.file_exists(new_dir.path_join("progress.json")),
+		"po smazání postupu se přenos nezopakuje (značka)")
+	DirAccess.remove_absolute(new_dir.path_join(SaveMigration.MARKER))
+	Progress.load_from(new_dir.path_join("progress.json")).save()
+	check(SaveMigration.migrate(old_dir, new_dir) == 0
+		and Progress.load_from(new_dir.path_join("progress.json")).stars(0) == 0,
+		"existující nový postup se starým nepřepíše")
+	check(SaveMigration.legacy_dirs()[0].ends_with("Godot/app_userdata/Lemmings 2026")
+		and ProjectSettings.globalize_path("user://").trim_suffix("/").ends_with("Paperlings"),
+		"hra ukládá do vlastní složky Paperlings, stará složka je app_userdata/Lemmings 2026")
+	for dir in [old_dir, new_dir]:
+		for name in DirAccess.get_files_at(dir):
+			DirAccess.remove_absolute(dir.path_join(name))
+		DirAccess.remove_absolute(dir)

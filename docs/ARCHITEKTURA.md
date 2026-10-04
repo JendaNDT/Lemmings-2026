@@ -237,6 +237,7 @@ App (main/app.gd)
 | Soubor | Co dělá |
 |---|---|
 | `main/save_file.gd` | `SaveFile`: bezpečný zápis. Dva řádky – hlavička (hra, verze formátu, SHA-256 dat) a data v JSON. Zápis jde do `.tmp`, ten se ověří, předchozí platná verze se zkopíruje do `.bak` a teprve pak se `.tmp` přejmenuje. Poškozený soubor se odloží jako `.corrupt` a načte se záloha. |
+| `main/save_migration.gd` | `SaveMigration`: po přejmenování na Paperlings jednou přenese postup a nastavení ze staré složky `app_userdata/Lemmings 2026` do vlastní složky `Paperlings` (jen počítač, jen když nová složka nemá data; značka `prenos_dat.txt`). Volá ho `App` před načtením. |
 | `main/game_settings.gd` | `GameSettings`: hlasitosti sběrnic, ztlumení, celá obrazovka, pohyb postav, FPS, velikost rozhraní, kvalita efektů, posun kamery, dosah klepnutí, potvrzení Ukončit, vývojové odemčení misí. Každá hodnota má výchozí stav a povolený rozsah. `user://settings.json`. |
 | `main/progress.gd` | `Progress`: splněné mise, rekordy (víc zachráněných, při shodě kratší čas), počty pokusů, poslední mise a rozehraný pokus. `user://progress.json`. |
 | `main/campaign.gd` | `Campaign`: pořadí misí, kapitoly, Hřiště, číslo mise z pořadí, prahy hvězd; údaje čte ze scén bez vytvoření. |

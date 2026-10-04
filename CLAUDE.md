@@ -1,7 +1,12 @@
-# Lemmings 2026 – pokyny pro AI asistenta
+# Paperlings (pracovně Lemmings 2026) – pokyny pro AI asistenta
 
 ## Kontext
 - Moderní předělávka Lemmings (1991) v **Godot 4.7 + GDScript**.
+  Veřejný název je **Paperlings** (zvolil autor 4. 10. 2026); „Lemmings“
+  se ve hře ani ve vydání nepoužívá. Interní ID zůstávají kvůli
+  aktualizacím: balíček `org.lemmings2026.demo`, `SaveFile.GAME`, `level_id`.
+  Data na počítači jsou ve vlastní složce `Paperlings`; `SaveMigration`
+  jednou přenese postup ze staré `app_userdata/Lemmings 2026`.
 - Testovací sestavení existují pro macOS a Android, do budoucna také Windows.
   Všechny platformy sdílejí stejné herní jádro. Aktuální plán je
   v `docs/PLAN_VYVOJE.md`, herní design v `docs/HERNI_DESIGN.md`.

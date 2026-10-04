@@ -12,6 +12,8 @@ extends RefCounted
 ## neexistuje, nebo byl poškozený a nebyla ani použitelná záloha.
 enum Status { OK, BACKUP, MISSING, CORRUPT }
 
+## Vnitřní značka formátu z doby pracovního názvu; po přejmenování na Paperlings
+## zůstává, aby šly číst starší uložené hry.
 const GAME := "lemmings-2026"
 
 

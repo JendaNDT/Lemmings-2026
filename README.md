@@ -1,6 +1,10 @@
-# Lemmings 2026
+# Paperlings
 
-Moderní předělávka klasické hry Lemmings (1991) v enginu Godot.
+Papírová logická hra v enginu Godot: provedeš zástup origami postaviček
+nástrahami k východu – dovednostmi kopáče, stavitele, horníka a dalších.
+Inspirovaná klasickou hrou Lemmings (1991), s vlastní grafikou, zvuky
+a misemi; s původní hrou ani jejími vlastníky není nijak spojená.
+Pracovní název projektu (a repozitáře) byl **Lemmings 2026**.
 
 Architektura: [`docs/ARCHITEKTURA.md`](docs/ARCHITEKTURA.md) ·
 Stav projektu: [`PROJECT_STATUS.md`](PROJECT_STATUS.md) ·
@@ -21,8 +25,8 @@ tlačítko **Krok** o jeden tik, rychlost jde přepnout i na **½×** a **−5 s
 vrátí hru o pět sekund. Každá kapitola má vlastní krajinu a počasí
 (louka, skalní les, sopka, bouřková hora).
 Postup, hvězdy a rozehraná mise se ukládají.
-Hotové jsou všechny čtyři kapitoly – 20 misí od Seznámení po
-Mistrovskou; obtížnost každé mise je změřená z ověřeného řešení.
+Hotové jsou všechny čtyři kapitoly – 24 misí od Seznámení po
+Origami finále; obtížnost každé mise je změřená z ověřeného řešení.
 
 ![Výběr misí, úvodní karta, výsledek a pauza s nápovědou](docs/images/kampan-kapitola-1.jpg)
 

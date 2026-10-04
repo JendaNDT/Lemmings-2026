@@ -20,6 +20,8 @@ var _audio: GameAudio
 
 
 func _ready() -> void:
+	if settings_path == GameSettings.PATH and progress_path == Progress.PATH:
+		SaveMigration.run()
 	settings = GameSettings.load_from(settings_path)
 	progress = Progress.load_from(progress_path)
 	settings.changed.connect(_on_setting_changed)

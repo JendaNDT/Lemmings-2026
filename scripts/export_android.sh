@@ -40,7 +40,7 @@ mkdir -p build/android
 
 # Kontrola hotového APK: podepsané očekávaným certifikátem.
 if command -v apksigner >/dev/null 2>&1; then
-  signed=$(apksigner verify --print-certs build/android/Lemmings-2026-Android.apk 2>/dev/null \
+  signed=$(apksigner verify --print-certs build/android/Paperlings-Android.apk 2>/dev/null \
     | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')
   if [ "$signed" != "$expected" ] && [ "$allow_new" != "1" ]; then
     printf 'APK je podepsané jiným certifikátem (%s).\n' "$signed" >&2

@@ -1,4 +1,4 @@
-# Lemmings 2026 – Project Status
+# Paperlings (pracovně Lemmings 2026) – Project Status
 *Naposled aktualizováno: 04. 10. 2026*
 
 ## 🎯 Co to je
@@ -287,6 +287,9 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 
 ## 🏗️ Klíčová rozhodnutí
 *(Aby ses k tomu zase zbytečně nevracel.)*
+- **Veřejný název:** **Paperlings** (4. 10. 2026). Interní ID (balíček
+  `org.lemmings2026.demo`, značka uložených dat, `level_id`) zůstávají,
+  aby aktualizace nesmazala postup. Vydání přes **GitHub Releases**.
 - **Engine:** Godot 4.7 + GDScript (ne C#) – jednodušší pro vibecoding, funguje i export na web.
 - **Logika × grafika:** úplně oddělené. `sim/` nesmí obsahovat grafiku, Input ani náhodu.
 - **Měřítko logiky:** jako originál (lumík 10 px, 17 tiků/s). Grafika se jen zvětšuje a vyhlazuje.
