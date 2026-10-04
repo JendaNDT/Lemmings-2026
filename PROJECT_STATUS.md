@@ -37,6 +37,12 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Vzhled kapitol:** II. Skalní les (skalní město, jedle, mech), III. Voda
+  a oheň (sopky s kouřem, žhnoucí pukliny, jiskry), IV. Bouřková hora
+  (bouřkové mraky, sněžné štíty, déšť, blesky); vlastní barvy terénu
+  a trávy, světlo a počasí (`PaperTheme`, `build_themes.py`).
+- **Přetočení o 5 s** (−5 s, Backspace) se záložkami stavu
+  (`LevelSim.snapshot()`), test shody se hrou zahranou do daného tiku.
 - **Android APK 0.11.0** ve větvi `downloads/android-0.11.0` (versionCode
   12, stejný podpis): pomocníci. Herní soubory z APK prošly průchodem
   menu i ukázkou řešení.

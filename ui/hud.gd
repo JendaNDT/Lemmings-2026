@@ -10,6 +10,8 @@ signal pause_pressed
 signal speed_pressed
 ## Krok o jeden tik (jen v pauze).
 signal step_pressed
+## Přetočit o 5 s zpět.
+signal rewind_pressed
 signal restart_pressed
 signal nuke_requested
 signal nuke_decided(confirmed: bool)
@@ -63,6 +65,7 @@ var _rate_value: Label
 var _skills_box: HBoxContainer
 var _pause_button: Button
 var _step_button: Button
+var _rewind_button: Button
 var _speed_button: Button
 var _restart_button: Button
 var _menu_button: Button
@@ -165,6 +168,7 @@ func refresh(paused: bool, speed: float) -> void:
 		count_label.text = str(int(_sim.skills.get(s, 0)))
 	_pause_button.text = "Pokračuj" if paused else "Pauza"
 	_step_button.visible = paused and not _sim.finished
+	_rewind_button.disabled = _sim.finished or _sim.tick_count == 0 or _demo_running
 	_speed_button.text = "½×" if speed < 1.0 else "%d×" % roundi(speed)
 	_nuke_button.disabled = _sim.finished or _sim.nuking or _demo_running
 	_nuke_button.text = "Odpočet…" if _sim.nuking else "Odpálit vše"
@@ -391,44 +395,48 @@ func _build() -> void:
 func _build_controls(rows: VBoxContainer) -> void:
 	var row := HBoxContainer.new()
 	rows.add_child(row)
-	_menu_button = PaperUi.button("Menu", Vector2(132, 44), "menu")
+	_menu_button = PaperUi.button("Menu", Vector2(112, 44), "menu")
 	_menu_button.tooltip_text = "Pauza a menu: nastavení, výběr misí (Esc)"
 	_menu_button.pressed.connect(func() -> void: menu_pressed.emit())
 	row.add_child(_menu_button)
 	row.add_child(PaperUi.spacer())
 	row.add_child(PaperUi.label("Vypouštění", 17, TEXT_DIM))
-	var minus := PaperUi.button("−", Vector2(48, 44))
+	var minus := PaperUi.button("−", Vector2(40, 44))
 	minus.pressed.connect(func() -> void: release_rate_step.emit(-1))
 	row.add_child(minus)
 	_rate_value = PaperUi.label("50", 24, TEXT)
 	_rate_value.custom_minimum_size.x = 42
 	_rate_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	row.add_child(_rate_value)
-	var plus := PaperUi.button("+", Vector2(48, 44))
+	var plus := PaperUi.button("+", Vector2(40, 44))
 	plus.pressed.connect(func() -> void: release_rate_step.emit(1))
 	row.add_child(plus)
 	row.add_child(PaperUi.spacer())
-	_pause_button = PaperUi.button("Pauza", Vector2(120, 44))
+	_rewind_button = PaperUi.button("−5 s", Vector2(60, 44))
+	_rewind_button.tooltip_text = "Přetočí hru o 5 sekund zpět (Backspace)"
+	_rewind_button.pressed.connect(func() -> void: rewind_pressed.emit())
+	row.add_child(_rewind_button)
+	_pause_button = PaperUi.button("Pauza", Vector2(88, 44))
 	_pause_button.tooltip_text = "Zastaví čas; dovednosti jde přidělovat i v pauze (mezerník)"
 	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
 	row.add_child(_pause_button)
-	_step_button = PaperUi.button("Krok", Vector2(76, 44))
+	_step_button = PaperUi.button("Krok", Vector2(60, 44))
 	_step_button.tooltip_text = "Posune pozastavenou hru o jeden tik (tečka)"
 	_step_button.pressed.connect(func() -> void: step_pressed.emit())
 	_step_button.visible = false
 	row.add_child(_step_button)
-	_speed_button = PaperUi.button("1×", Vector2(64, 44))
+	_speed_button = PaperUi.button("1×", Vector2(52, 44))
 	_speed_button.tooltip_text = "Rychlost 1× → 3× → ½× (F)"
 	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
 	row.add_child(_speed_button)
-	_restart_button = PaperUi.button("Znovu", Vector2(96, 44))
+	_restart_button = PaperUi.button("Znovu", Vector2(80, 44))
 	_restart_button.pressed.connect(func() -> void: restart_pressed.emit())
 	row.add_child(_restart_button)
-	_nuke_button = PaperUi.button("Odpálit vše", Vector2(140, 44))
+	_nuke_button = PaperUi.button("Odpálit vše", Vector2(120, 44))
 	_nuke_button.tooltip_text = "Zavře líheň a spustí postupné odpočty bomb (N)."
 	_nuke_button.pressed.connect(func() -> void: nuke_requested.emit())
 	row.add_child(_nuke_button)
-	_sound_button = PaperUi.button("", Vector2(56, 44), "sound_on")
+	_sound_button = PaperUi.button("", Vector2(52, 44), "sound_on")
 	_sound_button.pressed.connect(func() -> void: sound_pressed.emit())
 	row.add_child(_sound_button)
 	set_sound(true)

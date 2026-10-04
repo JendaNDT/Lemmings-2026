@@ -7,6 +7,8 @@ uniform float time = 0.0;
 uniform vec3 warm = vec3(1.0, 0.82, 0.52);
 uniform float glow = 0.085;
 uniform float rays = 0.03;
+// Záblesk blesku (téma Bouřková hora), 0 = bez záblesku.
+uniform float flash = 0.0;
 
 void fragment() {
 	vec2 uv = SCREEN_UV;
@@ -19,5 +21,5 @@ void fragment() {
 	float ang = atan(d.y, d.x);
 	float band = sin(ang * 38.0 + time * 0.012) * 0.5 + sin(ang * 17.0 - time * 0.008 + 1.3) * 0.5;
 	float shafts = rays * smoothstep(0.35, 0.95, band) * (1.0 - smoothstep(0.2, 1.4, dist));
-	COLOR = vec4(warm * (halo + shafts), 1.0);
+	COLOR = vec4(warm * (halo + shafts) + vec3(0.85, 0.9, 1.0) * flash * 0.22, 1.0);
 }

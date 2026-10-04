@@ -17,7 +17,9 @@ po kapitole I. Každá mise začne **úvodní kartou** (cíl, dovednosti
 s popisem, co je nového, obtížnost) a za výsledek dostaneš **1–3 hvězdy**.
 V pauze (tlačítko **Menu**, **Esc**, na Androidu **Zpět**) je **nápověda**
 s **Ukázkou řešení**, nastavení a návrat do menu. Pozastavenou hru posune
-tlačítko **Krok** o jeden tik a rychlost jde přepnout i na **½×**.
+tlačítko **Krok** o jeden tik, rychlost jde přepnout i na **½×** a **−5 s**
+vrátí hru o pět sekund. Každá kapitola má vlastní krajinu a počasí
+(louka, skalní les, sopka, bouřková hora).
 Postup, hvězdy a rozehraná mise se ukládají.
 Hotové jsou všechny čtyři kapitoly – 20 misí od Seznámení po
 Mistrovskou; obtížnost každé mise je změřená z ověřeného řešení.

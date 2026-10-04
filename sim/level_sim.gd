@@ -78,6 +78,32 @@ func _init(level_spec: LevelSpec, terrain: TerrainMask) -> void:
 	trap_fired.fill(-1)
 
 
+## Nezávislá kopie celého stavu – záložka pro přetáčení času. Zadání mise
+## (spec) se nemění a sdílí se; stavy lumíků nemají vlastní data.
+func snapshot() -> LevelSim:
+	var terrain := TerrainMask.new(mask.width, mask.height)
+	terrain.data = mask.data.duplicate()
+	var copy := LevelSim.new(spec, terrain)
+	for lem in lemmings:
+		copy.lemmings.append(lem.duplicate_lemming())
+	copy.tick_count = tick_count
+	copy.release_rate = release_rate
+	copy.skills = skills.duplicate()
+	copy.spawned = spawned
+	copy.saved = saved
+	copy.lost = lost
+	copy.finished = finished
+	copy.nuking = nuking
+	copy.trap_ready = trap_ready.duplicate()
+	copy.trap_fired = trap_fired.duplicate()
+	copy._replay_log = _replay_log.duplicate(true)
+	copy._minimum_release_rate = _minimum_release_rate
+	copy._next_spawn_tick = _next_spawn_tick
+	copy._next_hatch = _next_hatch
+	copy._next_nuke_tick = _next_nuke_tick
+	return copy
+
+
 ## Jeden krok logiky.
 func tick() -> void:
 	if finished:

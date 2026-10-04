@@ -36,12 +36,15 @@ var foreground: PaperForeground
 var plane: Node2D
 var layers: Array[PaperParallax] = []
 var quality := 2
+## Vzhled kapitoly (PaperTheme): krajina, nebe, barvy terénu a trávy, světlo, počasí.
+var theme := PaperTheme.BY_CHAPTER[0]
 var _sim: LevelSim
 var _sky: Node2D
 var _sky_texture: GradientTexture2D
 var _grain: Node2D
 var _light: Node2D
 var _light_material: ShaderMaterial
+var _lightning := false
 
 
 func _ready() -> void:
@@ -118,14 +121,16 @@ func _ready() -> void:
 
 
 ## Mraky plují pomalu, každý jinou rychlostí; hejnko tří ptáčků mává křídly.
-## Sdílí ji i pozadí menu (MenuBackdrop).
-static func add_sky_life(sky: PaperParallax) -> void:
-	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SKY_DATA))
+## Sdílí ji i pozadí menu (MenuBackdrop). `data_path` = sky.json tématu (ptáci nepovinní).
+static func add_sky_life(sky: PaperParallax, data_path := SKY_DATA) -> void:
+	var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(data_path))
 	for cloud: Dictionary in data["clouds"]:
 		sky.drifters.append({"frames": [load("res://assets/origami/" + cloud["texture"])],
 			"pos": Vector2(cloud["pos"][0], cloud["pos"][1]),
 			"anchor": Vector2(cloud["anchor"][0], cloud["anchor"][1]),
 			"speed": float(cloud["speed"]), "bob": 2.0, "phase": cloud["pos"][0] / 997.0})
+	if not data.has("birds"):
+		return
 	var birds: Dictionary = data["birds"]
 	var frames: Array = []
 	for path: String in birds["frames"]:
@@ -136,6 +141,30 @@ static func add_sky_life(sky: PaperParallax) -> void:
 		sky.drifters.append({"frames": frames, "pos": start + Vector2(member[0], member[1]),
 			"anchor": Vector2(birds["anchor"][0], birds["anchor"][1]), "scale": float(member[2]),
 			"speed": float(birds["speed"]), "flap": 2, "bob": 6.0, "phase": i * 0.37})
+
+
+## Přepne vzhled na téma kapitoly. Mění jen dekoraci; herní rovina a kamera zůstanou.
+func set_theme(name: String) -> void:
+	if name == theme or not PaperTheme.THEMES.has(name):
+		return
+	theme = name
+	var data := PaperTheme.data(name)
+	var dir := PaperTheme.layer_dir(name)
+	for i in layers.size():
+		layers[i].texture = load(dir + LAYERS[i][0] + ".png")
+	layers[0].drifters.clear()
+	add_sky_life(layers[0], dir + "sky.json")
+	_sky_texture.gradient.colors = PackedColorArray(data["sky"])
+	terrain.set_palette(data["terrain"])
+	grass.colors = data["grass"]
+	grass.light = data["grass_light"]
+	grass.queue_redraw()
+	_lightning = data["lightning"]
+	_light_material.set_shader_parameter("flash", 0.0)
+	_apply_light()
+	fx.weather = data["weather"]
+	fx.weather_colors = data["weather_colors"]
+	fx.terra_colors = data["scraps"]
 
 
 func setup(sim: LevelSim) -> void:
@@ -165,6 +194,8 @@ func update_frame(alpha: float, events: Array[Dictionary], delta: float) -> void
 			else ticks + alpha
 		terrain.set_time(now)
 		_light_material.set_shader_parameter("time", now)
+		if _lightning:
+			_light_material.set_shader_parameter("flash", PaperTheme.lightning(ticks + alpha))
 		for layer in layers:
 			layer.time = now
 		foreground.time = now
@@ -187,13 +218,25 @@ func set_quality(level: int) -> void:
 	quality = clampi(level, 0, QUALITY.size() - 1)
 	var q: Array = QUALITY[quality]
 	_grain.visible = q[0]
-	_light.visible = q[1]
+	_apply_light()
 	for i in layers.size():
 		layers[i].haze = float(LAYERS[i][7]) if q[2] else 0.0
 		layers[i].show_drifters = q[4]
 	foreground.visible = q[3]
 	fx.petals = q[5]
+	fx.weather_level = quality
 	fx.max_scraps = q[6]
+
+
+## Světlo a paprsky jen při vysoké kvalitě; blesk tématu (bouřka) vždy.
+func _apply_light() -> void:
+	var full: bool = QUALITY[quality][1]
+	var light: Array = PaperTheme.data(theme)["light"]
+	var warm: Color = light[0]
+	_light.visible = full or _lightning
+	_light_material.set_shader_parameter("warm", Vector3(warm.r, warm.g, warm.b))
+	_light_material.set_shader_parameter("glow", light[1] if full else 0.0)
+	_light_material.set_shader_parameter("rays", light[2] if full else 0.0)
 
 
 func highlight(lem: Lemming) -> void:

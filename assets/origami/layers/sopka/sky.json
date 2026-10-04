@@ -1,0 +1,98 @@
+{
+ "tile": 2800,
+ "clouds": [
+  {
+   "texture": "layers/sopka/cloud_0.png",
+   "pos": [
+    350,
+    240
+   ],
+   "anchor": [
+    225.5,
+    155
+   ],
+   "speed": 0.1
+  },
+  {
+   "texture": "layers/sopka/cloud_1.png",
+   "pos": [
+    1000,
+    170
+   ],
+   "anchor": [
+    156.5,
+    111
+   ],
+   "speed": 0.16
+  },
+  {
+   "texture": "layers/sopka/cloud_2.png",
+   "pos": [
+    1500,
+    290
+   ],
+   "anchor": [
+    192.0,
+    137
+   ],
+   "speed": 0.08
+  },
+  {
+   "texture": "layers/sopka/cloud_3.png",
+   "pos": [
+    2200,
+    220
+   ],
+   "anchor": [
+    214.5,
+    149
+   ],
+   "speed": 0.14
+  },
+  {
+   "texture": "layers/sopka/cloud_4.png",
+   "pos": [
+    2650,
+    150
+   ],
+   "anchor": [
+    145.0,
+    103
+   ],
+   "speed": 0.2
+  }
+ ],
+ "birds": {
+  "frames": [
+   "layers/sopka/bird_0.png",
+   "layers/sopka/bird_1.png",
+   "layers/sopka/bird_2.png"
+  ],
+  "anchor": [
+   40,
+   36
+  ],
+  "flock": [
+   [
+    0,
+    0,
+    1.0
+   ],
+   [
+    -70,
+    38,
+    0.8
+   ],
+   [
+    -130,
+    12,
+    0.7
+   ]
+  ],
+  "start": [
+   1250,
+   140
+  ],
+  "speed": 2.6
+ }
+}

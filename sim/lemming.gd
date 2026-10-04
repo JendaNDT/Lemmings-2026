@@ -92,3 +92,12 @@ var saved := false
 
 func is_active() -> bool:
 	return not removed
+
+
+## Nezávislá kopie všech hodnot (záložka stavu pro přetáčení času).
+func duplicate_lemming() -> Lemming:
+	var copy := Lemming.new()
+	for property in get_property_list():
+		if property["usage"] & PROPERTY_USAGE_SCRIPT_VARIABLE:
+			copy.set(property["name"], get(property["name"]))
+	return copy

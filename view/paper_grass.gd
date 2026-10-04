@@ -11,6 +11,9 @@ const LIGHT := Color("d8cf7e")
 const DENSITY := 340
 
 var mask: TerrainMask
+## Barvy stébel a světlé špičky (téma kapitoly; výchozí = louka).
+var colors: Array = COLORS
+var light: Color = LIGHT
 ## Herní čas v ticích (ve stop-motion po krocích).
 var time := 0.0
 ## Trsy: x, y povrchu, semínko.
@@ -59,11 +62,11 @@ func _draw() -> void:
 			var w := 0.3 + 0.18 * r
 			# Stéblo se ohýbá: střed se posune jen o část výchylky špičky.
 			var mid := root.lerp(tip, 0.55) + Vector2((tip.x - root.x) * -0.15, 0.0)
-			var color: Color = COLORS[posmod(tuft.z + blade, COLORS.size())]
+			var color: Color = colors[posmod(tuft.z + blade, colors.size())]
 			draw_colored_polygon(PackedVector2Array([
 				root + Vector2(-w, 0.0), mid + Vector2(-w * 0.55, 0.0), tip,
 				mid + Vector2(w * 0.55, 0.0), root + Vector2(w, 0.0)]), color)
 			# Světlá polovina stébla (přehyb papíru, světlo zleva).
 			draw_colored_polygon(PackedVector2Array([
 				root + Vector2(-w, 0.0), mid + Vector2(-w * 0.55, 0.0), tip, mid, root]),
-				color.lerp(LIGHT, 0.35))
+				color.lerp(light, 0.35))

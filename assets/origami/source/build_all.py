@@ -27,6 +27,7 @@ sys.path.insert(0, str(HERE))
 import build_backgrounds  # noqa: E402
 import build_character  # noqa: E402
 import build_props  # noqa: E402
+import build_themes  # noqa: E402
 import build_ui  # noqa: E402
 
 GENERATED = ["layers", "paper", "props", "actor", "ui", "source/previews"]
@@ -34,6 +35,7 @@ GENERATED = ["layers", "paper", "props", "actor", "ui", "source/previews"]
 
 def generate(out: Path) -> None:
     build_backgrounds.build(out)
+    build_themes.build(out)
     build_props.build(out)
     build_character.build(out)
     build_ui.build(out)
@@ -77,7 +79,9 @@ def write_manifest() -> None:
         "contents": {
             "layers": "obloha se sluncem, pět samostatných mraků a tři pózy letícího ptáčka "
                       "(sky.json), hory, střední pás s vesnicí, viaduktem a vodopádem, "
-                      "blízký les s řekou, tři trsy rostlin popředí",
+                      "blízký les s řekou, tři trsy rostlin popředí; ve složkách les, sopka "
+                      "a bourka krajiny kapitol II–IV (skalní město a jedle, sopka s kouřem "
+                      "a jezerem, sněžné štíty s bouřkovými mraky a chatami)",
             "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
             "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
             "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",

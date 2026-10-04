@@ -13,6 +13,10 @@ signal leave_requested(target: String)
 const MISSIONS := Campaign.SCENES
 ## Rychlosti tlačítka rychlosti v pořadí přepínání (1×, zrychlení, zpomalení).
 const SPEEDS := [1.0, SimConst.FAST_FORWARD_MULTIPLIER, SimConst.SLOW_MOTION_MULTIPLIER]
+## O kolik tiků vrací pomocník Přetočit (5 s); stejně často se ukládá záložka stavu.
+const REWIND_TICKS := 5 * SimConst.TICKS_PER_SECOND
+## Kolik záložek stavu se drží (minuta hry); starší přetočení přehraje misi od začátku.
+const MAX_SNAPSHOTS := 12
 
 ## Který level se hraje. Dá se přepnout v Inspectoru.
 @export var level_scene: PackedScene = preload("res://levels/level_01.tscn")
@@ -51,6 +55,8 @@ var _demo_focus := -1
 var _demo_focus_until := 0
 ## Hráč v této misi viděl ukázku (u výsledku se to jen označí, hvězdy platí).
 var _demo_seen := false
+## Záložky stavu pro přetáčení (vzestupně podle tiku, bez příkazů svého tiku).
+var _snapshots: Array[LevelSim] = []
 
 @onready var _world: Node2D = $World
 @onready var _terrain_view: TerrainView = $World/TerrainView
@@ -78,6 +84,7 @@ func _ready() -> void:
 	_hud.pause_pressed.connect(_toggle_pause)
 	_hud.speed_pressed.connect(_toggle_speed)
 	_hud.step_pressed.connect(_step_tick)
+	_hud.rewind_pressed.connect(_rewind)
 	_hud.restart_pressed.connect(_restart)
 	_hud.nuke_requested.connect(_request_nuke)
 	_hud.nuke_decided.connect(_decide_nuke)
@@ -147,6 +154,9 @@ func _load_level(intro := true, demo := false) -> void:
 		focus = Vector2(spec.hatches[0])
 	if _view != null:
 		_view.setup(_sim)
+		if _view.has_method("set_theme"):
+			# Vzhled kapitoly (krajina, barvy, počasí); Hřiště a mise mimo kampaň = louka.
+			_view.set_theme(PaperTheme.for_chapter(Campaign.chapter_of(Campaign.index_of(_mission_id))))
 	else:
 		_terrain_view.setup(mask)
 		_lemmings_view.setup(_sim)
@@ -167,6 +177,7 @@ func _load_level(intro := true, demo := false) -> void:
 	_result_shown = false
 	var skills := _hud.visible_skills()
 	_select_skill(skills[0] if not skills.is_empty() else -1, false)
+	_snapshots = [_sim.snapshot()]
 	if _demo:
 		_apply_demo_commands()
 
@@ -255,6 +266,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_toggle_speed()
 			KEY_PERIOD:
 				_step_tick()
+			KEY_BACKSPACE:
+				_rewind()
 			KEY_R:
 				_restart()
 			KEY_T:
@@ -392,9 +405,67 @@ func _step_tick() -> void:
 	_audio.play_ui("click")
 
 
+## Pomocník: vrátí hru o 5 s. Simulace je deterministická, takže stačí misi
+## postavit znovu a přehrát zaznamenané příkazy až do dřívějšího tiku.
+## Pozdější příkazy se zahodí; kamera, pauza i rychlost zůstanou.
+func _rewind() -> void:
+	if _demo or _sim.tick_count == 0 or _result_shown or _overlay_open():
+		return
+	var target := maxi(_sim.tick_count - REWIND_TICKS, 0)
+	var log := _sim.replay_log
+	# Nejbližší záložka před cílem; bez ní se mise přehraje od začátku.
+	var sim: LevelSim = null
+	for snapshot in _snapshots:
+		if snapshot.tick_count <= target:
+			sim = snapshot.snapshot()
+	if sim == null:
+		sim = LevelSim.new(LevelLoader.build_spec(_level), LevelLoader.build_mask(_level))
+	var cursor := sim.replay_log.size()
+	while true:
+		while cursor < log.size() and int(log[cursor]["tick"]) == sim.tick_count \
+				and sim.tick_count <= target:
+			if not sim.apply_command(log[cursor]["kind"], log[cursor]["target"],
+					log[cursor]["value"]):
+				push_warning("Přetočení se nepodařilo: příkaz %d nelze provést." % cursor)
+				return
+			cursor += 1
+		if sim.tick_count >= target or sim.finished:
+			break
+		sim.tick()
+	if sim.tick_count != target:
+		push_warning("Přetočení se nepodařilo: mise skončila dřív.")
+		return
+	sim.take_events()
+	_snapshots = _snapshots.filter(func(s: LevelSim) -> bool: return s.tick_count <= target)
+	_sim = sim
+	if _touch != null:
+		_touch.clear()
+	if _view != null:
+		var focus: Vector2 = _view.camera.focus
+		var zoom: float = _view.camera.zoom_factor
+		_view.setup(_sim)
+		_view.camera.focus = focus
+		_view.camera.zoom_factor = zoom
+		_view.camera.refresh()
+	else:
+		_terrain_view.setup(_sim.mask)
+		_lemmings_view.setup(_sim)
+		_fx_view.clear()
+	var title := Campaign.display_title(_mission_id) if not _mission_id.is_empty() else ""
+	_hud.setup(_sim, title, _level.hints, not _level.solution.is_empty())
+	_audio.setup(_sim, _logic_to_audio)
+	_select_skill(_selected_skill, false)
+	_accumulator = 0.0
+	_audio.play_ui("click")
+
+
 ## Jeden tik simulace; při ukázce řešení po něm provede příkazy záznamu.
 func _advance() -> void:
 	_sim.tick()
+	if _sim.tick_count % REWIND_TICKS == 0 and not _demo:
+		_snapshots.append(_sim.snapshot())
+		if _snapshots.size() > MAX_SNAPSHOTS:
+			_snapshots.pop_front()
 	if _demo:
 		_apply_demo_commands()
 

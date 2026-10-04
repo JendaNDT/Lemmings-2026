@@ -23,7 +23,7 @@ const ATLAS := preload("res://assets/origami/actor/worker_atlas.png")
 
 ## Bubliny, kouř, kruhy na hladině a plovoucí klobouk (jen vzhled).
 class Puff:
-	enum Kind { BUBBLE, SMOKE, RIPPLE, HAT, PETAL }
+	enum Kind { BUBBLE, SMOKE, RIPPLE, HAT, PETAL, SPARK, RAIN }
 	var kind := Kind.BUBBLE
 	var pos := Vector2.ZERO
 	var vel := Vector2.ZERO
@@ -63,6 +63,13 @@ var view_rect := Rect2()
 var max_scraps := MAX_SCRAPS
 ## Poletující okvětní lístky v krajině (při nízké kvalitě vypnuté).
 var petals := true
+## Počasí tématu kapitoly: "petals" (lístky), "embers" (jiskry), "rain" (déšť).
+var weather := "petals"
+var weather_colors: Array = [Color("b5b45e"), Color("e4903f"), Color("f1e9da"), Color("9aa456")]
+## Hustota počasí podle kvality efektů: 0 vypnuto, 1 méně, 2 plně.
+var weather_level := 2
+## Barvy ústřižků hlíny (téma kapitoly; výchozí = louka).
+var terra_colors: Array = TERRA
 var _scraps: Array[Scrap] = []
 var _puffs: Array[Puff] = []
 var _rng := RandomNumberGenerator.new()
@@ -96,13 +103,15 @@ func handle_events(events: Array[Dictionary]) -> void:
 		var d := float(e["dir"])
 		match String(e["type"]):
 			"dig":
-				_burst(p + Vector2(0, 0.5), 3, TERRA, Vector2(0, -26), 22.0, 0.7, 0.9)
+				_burst(p + Vector2(0, 0.5), 3, terra_colors, Vector2(0, -26), 22.0, 0.7, 0.9)
 			"bash":
-				_burst(p + Vector2(4.0 * d, -5.0), 2, TERRA, Vector2(-18.0 * d, -14.0), 16.0, 0.7, 0.9)
+				_burst(p + Vector2(4.0 * d, -5.0), 2, terra_colors, Vector2(-18.0 * d, -14.0), 16.0, 0.7,
+					0.9)
 			"mine":
-				_burst(p + Vector2(4.0 * d, -2.0), 4, TERRA, Vector2(-14.0 * d, -20.0), 18.0, 0.7, 1.0)
+				_burst(p + Vector2(4.0 * d, -2.0), 4, terra_colors, Vector2(-14.0 * d, -20.0), 18.0, 0.7,
+					1.0)
 			"explode":
-				_burst(p + Vector2(0, -5), 30, TERRA + WORKER, Vector2(0, -34), 60.0, 1.1, 1.5)
+				_burst(p + Vector2(0, -5), 30, terra_colors + WORKER, Vector2(0, -34), 60.0, 1.1, 1.5)
 			"brick", "brick_warning":
 				if sim != null:
 					unfolding.append([p.x - 0.5, p.y, d, sim.tick_count])
@@ -200,8 +209,7 @@ func _hazard_tick() -> void:
 	if sim == null or sim.tick_count == _last_tick:
 		return
 	_last_tick = sim.tick_count
-	if petals:
-		_spawn_petal()
+	_spawn_weather()
 	for lem in sim.lemmings:
 		if lem.removed:
 			continue
@@ -260,6 +268,12 @@ func advance(delta: float) -> void:
 			Puff.Kind.HAT:
 				puff.pos.x += puff.vel.x * delta
 				puff.vel.x *= 1.0 - minf(delta * 0.7, 0.5)
+			Puff.Kind.SPARK:
+				puff.pos += Vector2(puff.vel.x + sin(puff.phase * 0.4) * 2.0, puff.vel.y) * delta
+			Puff.Kind.RAIN:
+				puff.pos += puff.vel * delta
+				if sim != null and sim.mask.is_solid(floori(puff.pos.x), floori(puff.pos.y)):
+					_puffs.remove_at(i)
 			Puff.Kind.PETAL:
 				if puff.surface > 0.0:
 					continue
@@ -338,9 +352,54 @@ func _draw() -> void:
 		draw_colored_polygon(pts, c)
 
 
+## Počasí tématu: lístky shora, jiskry zdola, nebo déšť (jen vzhled, místní náhoda).
+func _spawn_weather() -> void:
+	if view_rect.size.x <= 0.0 or weather_level <= 0:
+		return
+	match weather:
+		"petals":
+			if petals:
+				_spawn_petal()
+		"embers":
+			if posmod(sim.tick_count, 3 - weather_level) == 0:
+				_spawn_spark()
+		"rain":
+			for _i in weather_level * 3:
+				_spawn_drop()
+
+
+## Jiskra se rozžhne kdekoli v pohledu, pomalu stoupá, mihotá se a zhasne.
+func _spawn_spark() -> void:
+	var spark := Puff.new()
+	spark.kind = Puff.Kind.SPARK
+	spark.pos = view_rect.position + Vector2(_rng.randf(), _rng.randf()) * view_rect.size
+	spark.vel = Vector2(_rng.randf_range(-3.0, 4.0), _rng.randf_range(-12.0, -6.0))
+	spark.max_life = _rng.randf_range(3.0, 5.0)
+	spark.life = spark.max_life
+	spark.size = _rng.randf_range(0.55, 0.95)
+	spark.phase = _rng.randf() * TAU
+	spark.color = weather_colors[_rng.randi() % weather_colors.size()]
+	_add_puff(spark)
+
+
+## Kapka deště padá šikmo shora; na terénu zmizí.
+func _spawn_drop() -> void:
+	var drop := Puff.new()
+	drop.kind = Puff.Kind.RAIN
+	# Kapky vznikají i kousek za okraji pohledu, ať při posunu kamery nejsou suché pruhy.
+	drop.pos = Vector2(view_rect.position.x + _rng.randf_range(-0.2, 1.3) * view_rect.size.x,
+		view_rect.position.y - _rng.randf() * 6.0)
+	drop.vel = Vector2(-9.0, _rng.randf_range(58.0, 72.0))
+	drop.max_life = 3.0
+	drop.life = drop.max_life
+	drop.size = _rng.randf_range(3.5, 5.5)
+	drop.color = weather_colors[_rng.randi() % weather_colors.size()]
+	_add_puff(drop)
+
+
 ## Občasný lístek nebo okvětní plátek v horní části pohledu (jen vzhled).
 func _spawn_petal() -> void:
-	if view_rect.size.x <= 0.0 or posmod(sim.tick_count, 19) != 0 or _rng.randf() > 0.7:
+	if posmod(sim.tick_count, 19) != 0 or _rng.randf() > 0.7:
 		return
 	var petal := Puff.new()
 	petal.kind = Puff.Kind.PETAL
@@ -353,8 +412,7 @@ func _spawn_petal() -> void:
 	petal.phase = _rng.randf() * TAU
 	petal.angle = _rng.randf() * TAU
 	petal.dir = 1.0 if _rng.randf() < 0.5 else -1.0
-	var colors := [Color("b5b45e"), Color("e4903f"), Color("f1e9da"), Color("9aa456")]
-	petal.color = colors[_rng.randi() % colors.size()]
+	petal.color = weather_colors[_rng.randi() % weather_colors.size()]
 	_add_puff(petal)
 
 
@@ -383,6 +441,14 @@ func _draw_puffs() -> void:
 				draw_set_transform(puff.pos, 0.0, Vector2(1.0, 0.24))
 				draw_arc(Vector2.ZERO, radius, 0.0, TAU, 28, Color(RIPPLE, 0.75 * (1.0 - local)), 0.9, true)
 				draw_set_transform_matrix(Transform2D.IDENTITY)
+			Puff.Kind.SPARK:
+				var glow := clampf(puff.life / 1.2, 0.0, 1.0) * clampf((puff.max_life - puff.life) / 0.6,
+					0.0, 1.0) * (0.65 + 0.35 * sin(puff.phase * 1.7))
+				draw_circle(puff.pos, puff.size * 2.4, Color(puff.color, glow * 0.22))
+				draw_circle(puff.pos, puff.size, Color(puff.color, glow))
+			Puff.Kind.RAIN:
+				var tail := puff.vel.normalized() * puff.size
+				draw_line(puff.pos - tail, puff.pos, Color(puff.color, 0.7), 0.3, true)
 			Puff.Kind.PETAL:
 				var fade := clampf(puff.life / 1.5, 0.0, 1.0)
 				# Přetáčení: lístek se zužuje, jak se otáčí kolem své osy.

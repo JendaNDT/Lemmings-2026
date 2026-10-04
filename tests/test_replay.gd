@@ -5,7 +5,35 @@ func _initialize() -> void:
 	_test_boundaries()
 	_test_bad_records()
 	_test_solution_replay()
+	_test_snapshot()
 	finish()
+
+
+## Záložka stavu (přetáčení): kopie pokračuje přesně jako originál a nesdílí s ním data.
+func _test_snapshot() -> void:
+	var level := Campaign.SCENES[Campaign.index_of("origami-finale")].instantiate() \
+		as LevelDefinition
+	var commands := level.solution_commands()
+	var original := LevelSim.new(LevelLoader.build_spec(level), LevelLoader.build_mask(level))
+	level.free()
+	var replay := SimReplay.new(original, commands)
+	while original.tick_count < 1200:
+		replay.step()
+	var copy := original.snapshot()
+	var same := Progress.digest(copy) == Progress.digest(original)
+	# Kopie dostane zbylé příkazy ručně, originál je dál přehrává SimReplay.
+	var cursor := copy.replay_log.size()
+	while not original.finished:
+		replay.step()
+		copy.tick()
+		while cursor < commands.size() and int(commands[cursor]["tick"]) == copy.tick_count:
+			copy.apply_command(commands[cursor]["kind"], commands[cursor]["target"],
+				commands[cursor]["value"])
+			cursor += 1
+	check(same and copy.finished and Progress.digest(copy) == Progress.digest(original)
+		and copy.saved == 36 and copy.lemmings[0] != original.lemmings[0]
+		and copy.mask.data == original.mask.data,
+		"záložka stavu uprostřed finále pokračuje stejně jako originál (36/40), vlastní data")
 
 
 func _test_boundaries() -> void:

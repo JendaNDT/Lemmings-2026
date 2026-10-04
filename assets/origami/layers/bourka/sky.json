@@ -1,0 +1,65 @@
+{
+ "tile": 2800,
+ "clouds": [
+  {
+   "texture": "layers/bourka/cloud_0.png",
+   "pos": [
+    300,
+    300
+   ],
+   "anchor": [
+    253.0,
+    190
+   ],
+   "speed": 0.4
+  },
+  {
+   "texture": "layers/bourka/cloud_1.png",
+   "pos": [
+    950,
+    230
+   ],
+   "anchor": [
+    182.0,
+    137
+   ],
+   "speed": 0.55
+  },
+  {
+   "texture": "layers/bourka/cloud_2.png",
+   "pos": [
+    1500,
+    340
+   ],
+   "anchor": [
+    217.0,
+    161
+   ],
+   "speed": 0.32
+  },
+  {
+   "texture": "layers/bourka/cloud_3.png",
+   "pos": [
+    2150,
+    270
+   ],
+   "anchor": [
+    240.5,
+    178
+   ],
+   "speed": 0.48
+  },
+  {
+   "texture": "layers/bourka/cloud_4.png",
+   "pos": [
+    2620,
+    200
+   ],
+   "anchor": [
+    163.5,
+    120
+   ],
+   "speed": 0.6
+  }
+ ]
+}

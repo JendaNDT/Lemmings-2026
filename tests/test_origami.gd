@@ -35,6 +35,7 @@ func _run() -> void:
 	_test_solution(scene)
 	_test_other_missions(scene)
 	_test_hazard_mission(scene)
+	_test_chapter_themes(scene)
 	finish()
 
 
@@ -497,6 +498,57 @@ func _test_other_missions(scene: PackedScene) -> void:
 		check(sim.finished and sim.is_won() and same,
 			"mise %d v origami scéně přes dotyk: %d/%d, shoda s replayem" % [
 				index + 1, sim.saved, sim.spec.lemming_count])
+	game.free()
+
+
+## Vzhled kapitol: každá kapitola má svou krajinu, barvy terénu a počasí;
+## Hřiště je louka. Mění se jen dekorace, simulace zůstává stejná.
+func _test_chapter_themes(scene: PackedScene) -> void:
+	var game := scene.instantiate()
+	root.add_child(game)
+	game.set_process(false)
+	var world: PaperWorld = game.get_node("PaperWorld")
+	world.camera.input_enabled = false
+	world.set_quality(2)
+	var ok := true
+	var weather := {}
+	for c in Campaign.CHAPTERS.size():
+		game.call("_choose_mission", Campaign.chapter_indices(c)[0])
+		var theme: String = PaperTheme.BY_CHAPTER[c]
+		var data := PaperTheme.data(theme)
+		var terra: Color = data["terrain"]["TERRA"]
+		var material: ShaderMaterial = world.terrain.get("_material")
+		# Louka na začátku nic nepřepisuje: shader má její barvy jako výchozí.
+		var param: Variant = material.get_shader_parameter("TERRA")
+		if param == null and theme == "louka":
+			param = Vector3(terra.r, terra.g, terra.b)
+		var sky: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(
+			PaperTheme.layer_dir(theme) + "sky.json"))
+		var clouds: int = (sky["clouds"] as Array).size()
+		ok = ok and world.theme == theme \
+			and world.layers[1].texture.resource_path.begins_with(PaperTheme.layer_dir(theme)) \
+			and (param as Vector3).is_equal_approx(Vector3(terra.r, terra.g, terra.b)) \
+			and world.grass.colors == data["grass"] and world.fx.weather == data["weather"] \
+			and world.layers[0].drifters.size() >= clouds
+		for _frame in 120:
+			game.call("_process", 1.0 / SimConst.TICKS_PER_SECOND)
+		var kinds := {}
+		for puff in world.fx.get("_puffs"):
+			kinds[puff.kind] = true
+		weather[theme] = kinds
+	game.call("_choose_mission", -1)
+	game.set("level_scene", Campaign.PLAYGROUND)
+	game.call("_load_level")
+	check(ok and world.theme == "louka" and world.layers[1].texture.resource_path
+		== PaperWorld.LAYER_DIR + "mountains.png",
+		"každá kapitola má vlastní krajinu, barvy terénu a trávy i počasí; Hřiště je louka")
+	check(weather["sopka"].has(PaperFx.Puff.Kind.SPARK)
+		and weather["bourka"].has(PaperFx.Puff.Kind.RAIN)
+		and not weather["louka"].has(PaperFx.Puff.Kind.RAIN),
+		"sopka žhne jiskrami, na Bouřkové hoře prší, louka je bez deště")
+	check(PaperTheme.lightning(193.0) > 0.9 and PaperTheme.lightning(200.0) > 0.5
+		and PaperTheme.lightning(205.0) == 0.0 and PaperTheme.lightning(483.0) > 0.9,
+		"blesk na Bouřkové hoře: dvojitý záblesk pravidelně podle herního času")
 	game.free()
 
 

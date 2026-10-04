@@ -1,7 +1,7 @@
 extends SimTest
 ## Pomocníci ve skutečné aplikaci: rychlost 1× → 3× → ½×, krok o jeden tik
-## v pauze a ukázka řešení (přehraje uložený záznam mise, nezapisuje postup,
-## u pozdější výhry se jen označí).
+## v pauze, přetočení o 5 s a ukázka řešení (přehraje uložený záznam mise,
+## nezapisuje postup, u pozdější výhry se jen označí).
 
 const DIR := "user://test_helpers"
 
@@ -31,6 +31,7 @@ func _run() -> void:
 	hud.briefing.close()
 	_test_speed(game, hud)
 	_test_step(game, hud)
+	_test_rewind(game, hud)
 	_test_demo(game, hud)
 	_app.free()
 	await _frames(2)
@@ -87,6 +88,42 @@ func _test_step(game: Node, hud: Hud) -> void:
 	check(sim.tick_count == paused + 2 and (hud.get("_step_button") as Button).visible,
 		"v pauze posune každé stisknutí Krok hru přesně o jeden tik, jinak čas stojí")
 	hud.pause_pressed.emit()
+
+
+func _test_rewind(game: Node, hud: Hud) -> void:
+	hud.restart_pressed.emit()
+	var sim: LevelSim = game.get("_sim")
+	var plan := ReferencePlans.plan_for("dira-v-louce")
+	var state := {}
+	while sim.tick_count < 130:
+		var before := sim.tick_count
+		_step(game, 1)
+		if sim.tick_count != before:
+			plan.call(sim, state)
+	hud.release_rate_step.emit(1)
+	while sim.tick_count < 200:
+		_step(game, 1)
+	var log := sim.replay_log
+	var camera := (game.get_node("PaperWorld") as PaperWorld).camera
+	camera.focus = Vector2(150, 90)
+	camera.refresh()
+	hud.rewind_pressed.emit()
+	var rewound: LevelSim = game.get("_sim")
+	# Stejný stav jako hra, která se zahrála jen do tiku 115 (první příkaz zůstane).
+	var level := Campaign.SCENES[Campaign.index_of("dira-v-louce")].instantiate() as LevelDefinition
+	var reference := SimReplay.new(LevelSim.new(LevelLoader.build_spec(level),
+		LevelLoader.build_mask(level)), [log[0]])
+	level.free()
+	while reference.sim.tick_count < 115:
+		reference.step()
+	check(log.size() == 2 and rewound != sim and rewound.tick_count == 115
+		and rewound.replay_log == [log[0]] and rewound.release_rate == rewound.spec.release_rate
+		and Progress.digest(rewound) == Progress.digest(reference.sim),
+		"−5 s vrátí hru o 85 tiků: stejný stav i terén, pozdější příkazy zmizí")
+	check(camera.focus.is_equal_approx(Vector2(150, 90)) and not game.get("_paused"),
+		"přetočení nechá kameru na místě a hra běží dál")
+	_step(game, 17)
+	check(rewound.tick_count == 132, "po přetočení hra plynule pokračuje")
 
 
 func _test_demo(game: Node, hud: Hud) -> void:

@@ -165,6 +165,12 @@ Pomoc, která nemění pravidla (herní design, kapitola 4.8):
 - **Krok** – v pauze posune hru přesně o jeden tik (tlačítko vedle
   Pokračuj, klávesa tečka). Pro okna 2–8 tiků v kapitole IV.
 - **Zpomalení ½×** – tlačítko rychlosti přepíná 1× → 3× → ½× (klávesa F).
+- **−5 s** – vrátí hru o 5 s (Backspace). Simulace je deterministická:
+  hra drží záložku stavu každých 5 s (`LevelSim.snapshot()`, nejvýš 12)
+  a od nejbližší přehraje jen zbytek záznamu. Plné přehrání finále trvá
+  na cloudovém počítači 1,2 s, se záložkou nejvýš 5 s hry (desítky ms).
+  Test: stav po přetočení je totožný se hrou zahranou jen do toho tiku,
+  záložka uprostřed finále dohraje stejně jako originál (36/40).
 - **Ukázka řešení** – v pauzovacím menu pod nápovědou. Mise se spustí znovu
   a přehraje se uložený záznam referenčního řešení; u každého zásahu se
   zvýrazní dovednost i lumík a kamera na něj natočí, když je mimo záběr.
@@ -182,7 +188,9 @@ Pomoc, která nemění pravidla (herní design, kapitola 4.8):
   ukázce s hvězdami. Lišta s tlačítkem Krok se vejde i při velkém
   rozhraní 1,3× a v dotykovém profilu 20 : 9.
 - Celá kontrola `python scripts/check.py`: **78 GDScriptů, 14 sad,
-  393 kontrol, vše v pořádku**.
+  393 kontrol, vše v pořádku**; po přetočení a vzhledu kapitol
+  **79 GDScriptů, 14 sad, 400 kontrol**. Tlačítka lišty jsou užší, aby se
+  „−5 s“ a „Krok“ vešly i při rozhraní 130 %.
 
 ## Vyřazení 2.5D
 
@@ -224,8 +232,8 @@ cloudovém prostředí – trvalé uložení mimo něj čeká na rozhodnutí aut
 
 - Na telefonu a Macu neověřeno (výkon, čitelnost karty na malém displeji).
 - Ladění křivky podle hraní je další krok plánu. Kapitola IV má okna
-  2–8 tiků; krok o tik a zpomalení pomáhají, na telefonu je to i tak
-  náročné. Přetočení o 5 s zatím chybí.
+  2–8 tiků; krok o tik, zpomalení a přetočení o 5 s pomáhají, na telefonu
+  je to i tak náročné.
 - Nové mise kapitol II–IV zatím nikdo nehrál – měření říká jen, že jsou
   řešitelné a jak těsná jsou okna; zábavnost ověří až tvoje hraní.
 - Okno zásahu se měří posunem jednoho příkazu při pevných ostatních.

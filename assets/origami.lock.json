@@ -28,6 +28,46 @@
       "sha256": "713ae264a1d3d40401fbd6465d4ec86a788571090f1032b1c464119c873cdc42"
     },
     {
+      "path": "assets/origami/layers/bourka/cloud_0.png",
+      "sha256": "dd338ff35f596338d058b7c4c68ac428edb8a1d40fb8ff83f5f29c64b7327088"
+    },
+    {
+      "path": "assets/origami/layers/bourka/cloud_1.png",
+      "sha256": "1cc34f350184113c557e228a0336f2193557217cce1a239e467fe9271687c975"
+    },
+    {
+      "path": "assets/origami/layers/bourka/cloud_2.png",
+      "sha256": "64adc29e5f8a1854c721095b7b49ad038f836f55aa566451c5078c819c375195"
+    },
+    {
+      "path": "assets/origami/layers/bourka/cloud_3.png",
+      "sha256": "398e1a97c6e3175f903f94306c1405b86ddd70ea2b5e49f44a2c6b0e59e4a64d"
+    },
+    {
+      "path": "assets/origami/layers/bourka/cloud_4.png",
+      "sha256": "47933e31eb712d682737c8b131abc27511b02422cbab080f923dd277aeedce3a"
+    },
+    {
+      "path": "assets/origami/layers/bourka/midground.png",
+      "sha256": "9da7930c1c3c5470e221ba941a9e85926963383060663689abfaf5b3d7b3c5fb"
+    },
+    {
+      "path": "assets/origami/layers/bourka/mountains.png",
+      "sha256": "c696d328ee3fd3d289861c2ab46660ce31127571d0ae122b890f67a09bb0be83"
+    },
+    {
+      "path": "assets/origami/layers/bourka/near.png",
+      "sha256": "a48e17e96a7928c22795c17969cfeeededfd6a3994db243116c4800c510368cf"
+    },
+    {
+      "path": "assets/origami/layers/bourka/sky.json",
+      "sha256": "abe229b7bcca4d02a753ec68b5acf95628ccdd69df6d7db1658b1b140280676f"
+    },
+    {
+      "path": "assets/origami/layers/bourka/sky_decor.png",
+      "sha256": "4571b11e3bc629a93253706663db676af4595659c37d335de46520d90b8c078b"
+    },
+    {
       "path": "assets/origami/layers/cloud_0.png",
       "sha256": "1ee60ad97a78b2deb42f3b4a92fb3ac6e6926a78af8887a96bb8b2b8f9985795"
     },
@@ -60,6 +100,58 @@
       "sha256": "857d2c159b56e757cc090363460b515a7bb898b175fe7c288178151dffe5d91c"
     },
     {
+      "path": "assets/origami/layers/les/bird_0.png",
+      "sha256": "dadb514e5983ddf75a2eed7c33596c3e2ff859e8f322f1e69bd59a34ffddd943"
+    },
+    {
+      "path": "assets/origami/layers/les/bird_1.png",
+      "sha256": "bc3f9fb46a3e5e2d4228f64b313d6d8095a0e2dc7f6de4c3cfe1b378a11f1ee5"
+    },
+    {
+      "path": "assets/origami/layers/les/bird_2.png",
+      "sha256": "7a755030dab8fae12ff085c77601956c4a96061a5ad6dd6bd6a90e8ddee73129"
+    },
+    {
+      "path": "assets/origami/layers/les/cloud_0.png",
+      "sha256": "1bc049f49784a5ddcb2f0a0c75b6aac17460713dbfeeae03edb718ca698d9570"
+    },
+    {
+      "path": "assets/origami/layers/les/cloud_1.png",
+      "sha256": "3741ac4e15713d2ecaa9af41028cc475a13ded1a9087d77d8aa00875bdc37b10"
+    },
+    {
+      "path": "assets/origami/layers/les/cloud_2.png",
+      "sha256": "aa1fbbbdeaaf42cdb256e27ef844dfc02870a18f47ff76e68a21bacb84dd8715"
+    },
+    {
+      "path": "assets/origami/layers/les/cloud_3.png",
+      "sha256": "1b4ae438b3ff7ac3523f2c2bafa9582c5fe5395fcc7c0ba0879e23ad2efba449"
+    },
+    {
+      "path": "assets/origami/layers/les/cloud_4.png",
+      "sha256": "018ae0a1c26a8696f48ab76c8740b7af8e2a56f311f9d5d3cac7b3c467ad87e2"
+    },
+    {
+      "path": "assets/origami/layers/les/midground.png",
+      "sha256": "05f8ee39992d9679c462cdcebd08288a32195d1f60cbaeb4854474969123d499"
+    },
+    {
+      "path": "assets/origami/layers/les/mountains.png",
+      "sha256": "67a670ba30ee575f61c386d20cab43394ed195330fb527c582e1c8892e920828"
+    },
+    {
+      "path": "assets/origami/layers/les/near.png",
+      "sha256": "8edd435cf8e2645bd6b7894a922d2323bce081f618662491f1d2669d69c77dcc"
+    },
+    {
+      "path": "assets/origami/layers/les/sky.json",
+      "sha256": "82acbd81f864d0f46c398e4f3c847b261dcdf849b9ddbfd45c190af09f733cdd"
+    },
+    {
+      "path": "assets/origami/layers/les/sky_decor.png",
+      "sha256": "d1d4c5e8f3cd57de90448b04993205ecce977eb8a50bfef35388a30c4c09f186"
+    },
+    {
       "path": "assets/origami/layers/midground.png",
       "sha256": "e81f9a490af5f09a87d5aca621612257a2e6b2a4e91311cc7807df652a16df9a"
     },
@@ -78,6 +170,58 @@
     {
       "path": "assets/origami/layers/sky_decor.png",
       "sha256": "6232260d8bc7d7efd807230eae7967ea568dd6ef69076730bb157d03cb220593"
+    },
+    {
+      "path": "assets/origami/layers/sopka/bird_0.png",
+      "sha256": "03bf32c47635fc31cb4c9d08c2618516fa360fb777ec3082a27ddf0e70373109"
+    },
+    {
+      "path": "assets/origami/layers/sopka/bird_1.png",
+      "sha256": "6ad05b2d81af1b36aa527d07a6581961065f69d7ddaea6bfd774778fa67f8070"
+    },
+    {
+      "path": "assets/origami/layers/sopka/bird_2.png",
+      "sha256": "1d0c573b07cbcadd3a495bb5e581f8945d19df0d5632953dad6e21466b0694b8"
+    },
+    {
+      "path": "assets/origami/layers/sopka/cloud_0.png",
+      "sha256": "109a933d1926347b1bdc433ca63a947fde2bf1f9eb0b24ba756d38433be6b7ec"
+    },
+    {
+      "path": "assets/origami/layers/sopka/cloud_1.png",
+      "sha256": "d912b0d5425eff2692401a65406afa381cc42ee78ae10a84c00eddab9d9ca69d"
+    },
+    {
+      "path": "assets/origami/layers/sopka/cloud_2.png",
+      "sha256": "7cc94d6db0edb9c4ac0f62318ae74d2f5ffacdb69703b002d87b0444295c8b01"
+    },
+    {
+      "path": "assets/origami/layers/sopka/cloud_3.png",
+      "sha256": "7d16d7fe4efe141c91f0d64f6c74a221a5f9a70e9c85956c81db4fef41058bcc"
+    },
+    {
+      "path": "assets/origami/layers/sopka/cloud_4.png",
+      "sha256": "551975139b52561a07609214a6d76853a06ca7fd64da700d177b1edb9361d6fa"
+    },
+    {
+      "path": "assets/origami/layers/sopka/midground.png",
+      "sha256": "8a3de5b79aac2339ef8f2ad19e8d2af7a716e93532d93136755acfe22da50443"
+    },
+    {
+      "path": "assets/origami/layers/sopka/mountains.png",
+      "sha256": "88ab459ac7eaca9b45e0d42c737e8b3004b963ceeaeefcccee60b212e805ada8"
+    },
+    {
+      "path": "assets/origami/layers/sopka/near.png",
+      "sha256": "f3245e6aac9af9fb7f95f31797495f098c552c9b0c68ce10d6b60314cc46def3"
+    },
+    {
+      "path": "assets/origami/layers/sopka/sky.json",
+      "sha256": "9f7edced7a302f985722f7c07381ec1401e8a6ef7052a7b05b49e5798c97dd0e"
+    },
+    {
+      "path": "assets/origami/layers/sopka/sky_decor.png",
+      "sha256": "c94013f510641f8e0b4ab704311aef5703fb15b9cfeed2ff5d979efacba7e68f"
     },
     {
       "path": "assets/origami/paper/noise_smooth.png",
@@ -137,7 +281,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "7d77ed2cb4a7cd1ef7a2225994eee27d960584dcc93db0fb882289bac3a97816"
+      "sha256": "d8b31a16cf412de1717b3a22abb38a39478654dc9d4bff718ad80189c00d757c"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -145,7 +289,7 @@
     },
     {
       "path": "assets/origami/source/build_all.py",
-      "sha256": "3c1fdffb21e3bed522329d1caeaf96e596638ff893ea1ca3b56f8c1edc7f63b0"
+      "sha256": "dcea8cfcc36aa58ef386e01253e6c7398eba15b4349a693afa73b15a602a6847"
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
@@ -158,6 +302,10 @@
     {
       "path": "assets/origami/source/build_props.py",
       "sha256": "f64534d859f114d5ed19358e512c93aafff0d6bedde28cca0c495faf1f07ced9"
+    },
+    {
+      "path": "assets/origami/source/build_themes.py",
+      "sha256": "64059839861b02cd901ca8594714d2777f6d034ff70adf78b050a810c5d20bd5"
     },
     {
       "path": "assets/origami/source/build_ui.py",

@@ -80,6 +80,33 @@ Výkon na skutečném Macu a telefonu zbývá změřit.
 Porovnání pohybu (vlevo stop-motion, vpravo plynule):
 [`images/origami-stopmotion.mp4`](images/origami-stopmotion.mp4).
 
+## Vzhled kapitol (4. kolo, 4. října 2026)
+
+Každá kapitola kampaně má vlastní krajinu, barvy terénu a trávy, světlo
+a počasí; louka kapitoly I zůstala beze změny (Hřiště a menu také).
+
+![První kroky (louka), Dlouhá lávka (Skalní les), Pod sopkou (Voda a oheň), Dvě líhně (Bouřková hora)](images/vzhled-kapitol.jpg)
+
+| Kapitola | Krajina | Terén a tráva | Světlo a počasí |
+|---|---|---|---|
+| I. Papírová louka | vesnice, viadukt, řeka (beze změny) | terakota a okr, žlutozelený drn | teplé slunce, lístky |
+| II. Skalní les | šedé štíty, pískovcové věže skalního města, husté jedle, balvany s mechem | lesní hnědá, mechový drn | chladné světlo s paprsky, padající jehličí a listí |
+| III. Voda a oheň | dvě sopky s lávou a kouřem, čedičové kopce se žhnoucími puklinami, ohořelé stromy, jezero s odlesky, havrani | čedičová červeň, vyprahlá tráva | večerní žár, stoupající jiskry |
+| IV. Bouřková hora | bouřkové mraky, sněžné štíty, větrem ohnuté jedle, chaty se světlem v okně | břidlicová hnědá, studený drn | šedé světlo, déšť, dvojitý záblesk blesku zhruba každých 17 s |
+
+- Krajiny generuje `assets/origami/source/build_themes.py` (stejné rozměry
+  a kotvy vrstev jako louka, pevné seedy) do `assets/origami/layers/<téma>/`;
+  manifest `assets/origami.lock.json` má 110 souborů.
+- `PaperTheme` drží data témat, `PaperWorld.set_theme()` vymění vrstvy,
+  mraky a ptáky (`sky.json`), přechod nebe, barvy terénu (uniformy shaderu),
+  trávu, světlo a počasí. Hra volí téma podle kapitoly mise.
+- Počasí je jen vzhled s místní náhodou a herním časem (pauza ho zastaví).
+  Hustota podle kvality efektů; blesk funguje i na střední kvalitě (bez
+  slunečních paprsků).
+- Test `test_origami` (3 nové kontroly): kapitoly přepnou krajinu, barvy
+  terénu, trávu i počasí, Hřiště je louka; sopka jiskří, bouřka prší,
+  louka ne; blesk podle herního času.
+
 ## Co je hotové
 
 | Oblast | Stav |

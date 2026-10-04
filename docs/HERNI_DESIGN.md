@@ -331,7 +331,9 @@ Ukázka se nezapisuje do postupu; pozdější výhra platí a výsledek jen
 připomene „Po ukázce řešení“ (text místo ikonky). Po dvou neúspěších
 výsledek ukázku nabídne. **Krok** v pauze posune hru o jeden tik
 (klávesa tečka), tlačítko rychlosti přepíná 1× → 3× → ½× (klávesa F).
-Přetočení zůstává na později.
+**−5 s** (tlačítko v liště, Backspace) vrátí hru o 85 tiků: hra drží
+záložku stavu každých 5 s (minutu zpět) a přehraje jen kousek záznamu;
+pozdější příkazy se zahodí, kamera, pauza i rychlost zůstanou.
 
 ---
 

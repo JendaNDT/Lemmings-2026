@@ -80,6 +80,9 @@
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.
 
 ## Výtvarná reference
+- Kapitoly mají vlastní vzhled (`PaperTheme`, krajiny z
+  `assets/origami/source/build_themes.py` v `layers/<téma>/`); jen dekorace,
+  louka kapitoly I a menu zůstávají. Počasí řídí herní čas, ne simulace.
 - Jediný aktuální návrh je **2D origami s paralaxním posunem a zoomem**:
   `docs/MOCKUP_ORIGAMI.md` a `docs/images/mockup-origami-prvni-kroky.png`.
   Autor návrh přijal a požádal odstranit všechny předchozí grafické návrhy.

@@ -60,6 +60,14 @@ func _notification(what: int) -> void:
 		surface.free()
 
 
+## Barvy hlíny, tunelu a drnu podle tématu kapitoly ({uniforma: Color}).
+func set_palette(colors: Dictionary) -> void:
+	for key: String in colors:
+		var c: Color = colors[key]
+		for target: ShaderMaterial in [_material, _surface_material]:
+			target.set_shader_parameter(key, Vector3(c.r, c.g, c.b))
+
+
 func setup(terrain: TerrainMask) -> void:
 	mask = terrain
 	_mask_image = Image.create_from_data(mask.width, mask.height, false, Image.FORMAT_RGBA8, mask.data)
