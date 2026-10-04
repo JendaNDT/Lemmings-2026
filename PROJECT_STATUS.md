@@ -23,11 +23,11 @@ v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet APK 0.13.0 na telefonu** – aktualizuje 0.12.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.13.0/android/Lemmings-2026-Android-0.13.0.apk).
-   Zajímá mě: jestli je přelet mapy příjemný (délka, plynulost) a šipka
-   k východu užitečná, jak se ti líbí vzhled kapitol, jestli déšť a jiskry
-   nezpomalují telefon a jestli obtížnost roste plynule.
+1. **Vyzkoušet APK 0.14.0 na telefonu** – aktualizuje 0.13.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.14.0/android/Lemmings-2026-Android-0.14.0.apk).
+   Zajímá mě: jak se ti hrají patrové mise v podzemí (5, 11, 17, 21)
+   a jak se ti líbí jeskyně, jestli je přelet mapy příjemný, jestli
+   déšť, jiskry a prach nezpomalují telefon a jestli obtížnost roste plynule.
    [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
@@ -39,6 +39,9 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.14.0** ve větvi `downloads/android-0.14.0` (versionCode
+  15, stejný podpis): patrové mise v podzemí, 24 misí. Herní soubory z APK
+  prošly průchodem menu a všechny čtyři patrové mise se spustily v podzemí.
 - **Patrové mise v podzemí:** Důlní patra (I/5), Mraveniště (II/11),
   Podzemní vodopád (III/17) a Hluboká šachta (IV/21) – mapy přes několik
   pater shora dolů jako v původních Lemmings. Nové prostředí **podzemí**
