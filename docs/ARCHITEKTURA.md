@@ -368,11 +368,11 @@ docs/                dokumentace; docs/vydani/ poznámky k vydáním
 ji promítne do exportních předvoleb (Android versionCode, Windows a macOS
 čísla), spustí kontrolu, exporty (`export_android.sh`, `export_desktop.sh`)
 a složí balíčky s `LICENSE.txt`, `NAVOD.txt` a `THIRD_PARTY_NOTICES.txt`
-(`scripts/third_party_notices.gd`) a `SHA256SUMS.txt`. Značka `v<verze>`
-spustí `.github/workflows/release.yml`: Windows a macOS sestaví CI
+(`scripts/third_party_notices.gd`) a `SHA256SUMS.txt`. Push větve
+`vydani/<verze>` (nebo značky `v<verze>`) spustí `.github/workflows/release.yml`: Windows a macOS sestaví CI
 z ověřeného Godotu a šablon (`install_godot.py`, `install_templates.py`),
 Android APK (podepsané mimo CI) převezme z větve `downloads/android-<verze>`
-a vytvoří GitHub Release.
+a vytvoří značku `v<verze>` s GitHub Release.
 
 Podklady (textury, modely, zvuky) jsou v `assets/` se zámky kontrolních součtů.
 

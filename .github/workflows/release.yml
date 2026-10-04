@@ -1,11 +1,14 @@
 name: Vydání
 
-# Značka v<verze> (např. v1.0.0-rc1) na zdrojovém commitu spustí celé vydání:
-# kontrola, exporty pro Windows a macOS z ověřeného Godotu a šablon, Android APK
-# z větve downloads/android-<verze> (podepsané klíčem projektu mimo CI),
-# balíčky s licencí a návodem, součty SHA-256 a stránka vydání na GitHubu.
+# Větev vydani/<verze> (nebo značka v<verze>) na zdrojovém commitu spustí celé
+# vydání: kontrola, exporty pro Windows a macOS z ověřeného Godotu a šablon,
+# Android APK z větve downloads/android-<verze> (podepsané klíčem projektu
+# mimo CI), balíčky s licencí a návodem, součty SHA-256 a stránka vydání
+# na GitHubu. Značku v<verze> vytvoří GitHub při zveřejnění, pokud ještě není
+# (cloudové prostředí vývoje smí pushovat jen větve).
 on:
   push:
+    branches: ['vydani/**']
     tags: ['v*']
   workflow_dispatch:
     inputs:
@@ -18,14 +21,13 @@ permissions:
 
 concurrency:
   group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   release:
     name: Sestavení a zveřejnění
     runs-on: ubuntu-24.04
     timeout-minutes: 50
-    env:
-      TAG: ${{ github.event.inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,11 +44,15 @@ jobs:
           python scripts/install_godot.py > godot-path.txt
           printf 'GODOT_BIN=%s\n' "$(cat godot-path.txt)" >> "$GITHUB_ENV"
           python scripts/install_templates.py
-      - name: Verze odpovídá značce
+      - name: Verze odpovídá větvi nebo značce
+        env:
+          REF_NAME: ${{ github.event.inputs.tag || github.ref_name }}
         run: |
           VERSION=$(python scripts/release.py info --field version)
-          test "v$VERSION" = "$TAG" || { echo "Značka $TAG neodpovídá verzi $VERSION"; exit 1; }
-          printf 'VERSION=%s\n' "$VERSION" >> "$GITHUB_ENV"
+          NAME="${REF_NAME#vydani/}"
+          TAG="v${NAME#v}"
+          test "$TAG" = "v$VERSION" || { echo "$REF_NAME neodpovídá verzi $VERSION"; exit 1; }
+          printf 'VERSION=%s\nTAG=%s\n' "$VERSION" "$TAG" >> "$GITHUB_ENV"
       - name: Android APK z větve pro stažení
         run: |
           git fetch --depth=1 origin "downloads/android-$VERSION"
@@ -62,13 +68,13 @@ jobs:
         run: |
           PRE=""
           case "$VERSION" in *-*) PRE="--prerelease" ;; esac
-          gh release create "$TAG" build/release/"$VERSION"/* --verify-tag $PRE \
+          gh release create "$TAG" build/release/"$VERSION"/* --target "$GITHUB_SHA" $PRE \
             --title "Paperlings $VERSION" --notes-file "docs/vydani/$VERSION.md"
       - name: Protokoly kontrol
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vydani-${{ env.TAG }}
+          name: vydani-${{ github.run_id }}
           path: |
             build/checks/
             build/release/*/SHA256SUMS.txt

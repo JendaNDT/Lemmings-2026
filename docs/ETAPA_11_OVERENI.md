@@ -70,12 +70,13 @@ Stará zástupná ikona ve stylu původní hry je pryč.
 - Exportní šablony instaluje `scripts/install_templates.py` z oficiálního
   vydání se SHA-512 (Android šablony v prostředí byly shodné s oficiálními).
   `export_desktop.sh` nejdřív importuje podklady (čistý klon).
-- **Workflow *Vydání*** (`.github/workflows/release.yml`): značka
-  `v<verze>` → kontrola a exporty Windows a macOS v GitHub Actions
+- **Workflow *Vydání*** (`.github/workflows/release.yml`): push větve
+  `vydani/<verze>` (nebo značky `v<verze>`; cloudové prostředí smí pushovat
+  jen větve, značku odmítlo s 403) → kontrola a exporty Windows a macOS v GitHub Actions
   z ověřeného Godotu, APK z větve `downloads/android-<verze>` (ověřené
   SHA-256), GitHub Release s poznámkami z `docs/vydani/<verze>.md`
   (rc = předběžné vydání). Vydaná sestavení a zdrojová verze se tak
-  uchovávají u značky.
+  uchovávají u značky `v<verze>`, kterou vytvoří GitHub při zveřejnění.
 
 ## Krok 5 – kandidát 1.0.0-rc1
 

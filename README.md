@@ -96,7 +96,7 @@ z testovacích verzí (*Lemmings 2026*) se přenese sám.
 
 Samotné APK je i ve [větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-1.0.0-rc1).
 Jak vzniká vydání: `python scripts/release.py build` (kontrola, exporty
-a balíčky) a značka `v<verze>` (workflow *Vydání* na GitHubu).
+a balíčky) a větev `vydani/<verze>` (workflow *Vydání* na GitHubu).
 Podrobnosti k Android sestavení: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 
 ## Starší verze

@@ -34,10 +34,11 @@
   do předvoleb (versionCode = M·10⁶ + m·10⁴ + p·100 + rc/99), spustí kontrolu,
   exporty a balíčky v `build/release/<verze>/`. APK jde do větve
   `downloads/android-<verze>` jako `android/Paperlings-<verze>-Android.apk`
-  (+ `android/SHA256SUMS`), poznámky do `docs/vydani/<verze>.md`. Značka
-  `v<verze>` na zdrojovém commitu spustí workflow *Vydání*: Windows a macOS
-  sestaví CI z ověřeného Godotu a šablon (`scripts/install_templates.py`),
-  přidá APK z větve a vytvoří GitHub Release (rc = předběžné vydání).
+  (+ `android/SHA256SUMS`), poznámky do `docs/vydani/<verze>.md`. Push větve
+  `vydani/<verze>` na zdrojový commit spustí workflow *Vydání* (prostředí
+  nesmí pushovat značky – 403): Windows a macOS sestaví CI z ověřeného Godotu
+  a šablon (`scripts/install_templates.py`), přidá APK z větve, vytvoří
+  značku `v<verze>` a GitHub Release (rc = předběžné vydání).
 
 ## Architektonická pravidla
 - `sim/` = čistá logika: žádné uzly (Node), žádný `Input`, žádná náhoda,

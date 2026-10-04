@@ -37,7 +37,7 @@ Další kroky:
   na GitHubu), licence „volně ke hraní“ (`LICENSE.txt`), návod pro hráče
   (`docs/NAVOD.md`), vydávací skript `scripts/release.py` (jedna verze,
   kontrola, exporty, balíčky, součty) a workflow *Vydání* (GitHub Release
-  ze značky `v<verze>`), ověřené exportní šablony (`install_templates.py`).
+  z větve `vydani/<verze>`), ověřené exportní šablony (`install_templates.py`).
 - **Android APK 0.15.0** ve větvi `downloads/android-0.15.0` (versionCode
   16, stejný podpis): pomoc při hraní a minimapa. Herní soubory z APK
   prošly průchodem menu, štítkem, hláškou, minimapou a pěti mobilními
