@@ -60,9 +60,8 @@ vždy hru pozastaví a vymaže rozpracovaná gesta. Obnovení pohybu zůstává
 na hráči. Telefon začíná na střední kvalitě efektů; počítadlo FPS
 a velikost rozhraní jsou v Nastavení → Zobrazení.
 
-Android používá Compatibility / OpenGL ES 3, návrhový viewport 1280 × 720,
-75% rozlišení 3D, menší stíny a vypnuté SSAO/MSAA. Světla jsou vyvážená
-pro tento renderer. Herní logika se podle platformy nevětví.
+Android používá Compatibility / OpenGL ES 3, návrhový viewport 1280 × 720
+a vypnuté 2D MSAA. Herní logika se podle platformy nevětví.
 
 ## Ověření a omezení
 
@@ -104,12 +103,11 @@ Pro aktualizace stejné instalace je potřeba uchovat stejný klíč; bez něj
 musí hráč starší verzi odinstalovat. Pro produkční distribuci připravit
 samostatný spravovaný podpis.
 
-Grafický test dotyků na Linuxu:
+Grafický průchod menu a misí v dotykovém profilu na Linuxu:
 
 ```bash
-godot --path . --rendering-method gl_compatibility --audio-driver Dummy \
-  --resolution 1280x720 --script res://scripts/qa_3d.gd \
-  -- --touch --mobile-preview --capture-dir=/tmp/lemmings-touch
+godot --path . --rendering-driver opengl3 --resolution 1600x720 --fixed-fps 20 \
+  --script res://scripts/qa_menu.gd -- --capture-dir=build/menu --mobile --mobile-preview
 ```
 
 Varování llvmpipe o V-Sync a desktopovém 2D MSAA při přepnutí rendereru

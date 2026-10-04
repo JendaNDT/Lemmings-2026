@@ -7,22 +7,21 @@ from pathlib import Path
 
 
 def verify(root):
-    receipt = json.loads((root / 'assets/clay.lock.json').read_text())
-    assert receipt['license'] == 'LicenseRef-Lemmings2026-Project-Internal'
-    assert len(receipt['files']) == 50
-    for entry in receipt['files']:
+    fonts = json.loads((root / 'assets/fonts.lock.json').read_text())
+    assert fonts['license'] == 'OFL-1.1'
+    folder = (root / 'assets/fonts').resolve()
+    listed = set()
+    for entry in fonts['files']:
         path = root / entry['path']
-        assert path.resolve().is_relative_to((root / 'assets/clay').resolve())
+        assert path.resolve().is_relative_to(folder)
         assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
-    print(f"[OK] {len(receipt['files'])} podkladů souhlasí s manifestem")
-    art = json.loads((root / 'assets/art_v2.lock.json').read_text())
-    assert art['license'] == 'LicenseRef-Lemmings2026-Project-Internal AND OFL-1.1'
-    assert art['files']
-    for entry in art['files']:
-        path = root / entry['path']
-        assert path.resolve().is_relative_to((root / 'assets/art_v2').resolve())
-        assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
-    print(f"[OK] {len(art['files'])} nových výtvarných podkladů souhlasí s manifestem")
+        listed.add(path.resolve())
+    # Písmo OFL se smí šířit jen s licencí.
+    assert (folder / 'OFL.txt').resolve() in listed
+    for path in folder.rglob('*'):
+        if path.is_file() and path.suffix != '.import':
+            assert path.resolve() in listed, f'mimo manifest: {path}'
+    print(f"[OK] {len(fonts['files'])} soubory písma souhlasí s manifestem")
     origami = json.loads((root / 'assets/origami.lock.json').read_text())
     assert origami['license'] == 'LicenseRef-Lemmings2026-Project-Internal'
     folder = (root / 'assets/origami').resolve()

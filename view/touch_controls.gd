@@ -1,8 +1,8 @@
 class_name TouchControls
 extends RefCounted
 ## Gesta vlastní jen dotyky začaté v herní ploše. HUD obslouží Godot.
-## Kamera může být PaperCamera (2D) i ClayCamera (2.5D); stačí jí metody
-## pan_screen(), zoom_at() a vlastnosti top_padding / bottom_padding.
+## Kamera (PaperCamera) musí mít metody pan_screen(), zoom_at()
+## a vlastnosti top_padding / bottom_padding.
 
 const DRAG_THRESHOLD := 14.0
 const MAX_ZOOM_STEP := 1.5

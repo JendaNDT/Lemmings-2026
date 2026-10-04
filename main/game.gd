@@ -14,7 +14,7 @@ const MISSIONS := Campaign.SCENES
 
 ## Který level se hraje. Dá se přepnout v Inspectoru.
 @export var level_scene: PackedScene = Campaign.SCENES[0]
-## Uzel vlastní prezentace (2D origami PaperWorld nebo 2.5D ClayWorld).
+## Uzel vlastní prezentace (2D origami PaperWorld).
 ## Prázdná cesta = původní jednoduché 2D zobrazení pro porovnání.
 @export var presentation_path := NodePath()
 

@@ -1,0 +1,3 @@
+Písmo rozhraní Nunito: Copyright 2014 The Nunito Project Authors,
+SIL Open Font License 1.1. Úplná licence je v OFL.txt (musí se šířit spolu s písmem).
+Zdroj: https://raw.githubusercontent.com/google/fonts/main/ofl/nunito/Nunito%5Bwght%5D.ttf

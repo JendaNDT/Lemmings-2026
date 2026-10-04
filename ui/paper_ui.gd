@@ -11,7 +11,7 @@ const TEXT := Color("f4e8d2")
 const TEXT_DIM := Color("c9d6cf")
 const WARN := Color(1.0, 0.55, 0.45)
 const UI_DIR := "res://assets/origami/ui/"
-const FONT := preload("res://assets/art_v2/ui/Nunito.ttf")
+const FONT := preload("res://assets/fonts/Nunito.ttf")
 
 static var _margins := {}
 static var _theme: Theme

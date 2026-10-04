@@ -41,8 +41,8 @@ Krátký záznam chůze, ražení, stavění, kopání, posunu a zoomu:
 [`docs/images/origami-zaznam.mp4`](docs/images/origami-zaznam.mp4).
 Ověření a meze: [`docs/ORIGAMI_OVERENI.md`](docs/ORIGAMI_OVERENI.md).
 
-Pro porovnání zůstávají dřívější scény `main/game_3d.tscn` (2.5D)
-a `main/game.tscn` (jednoduché 2D).
+Základní scéna `main/game.tscn` (jednoduché 2D) slouží k ladění; dřívější
+2.5D zobrazení bylo 4. 10. 2026 vyřazeno.
 
 **Nově voda, láva, pasti a jednosměrné zdi** (etapa 5) a mise
 „6 · Voda, láva a past“: voda topí, láva pálí, masožravá rostlina sežere
@@ -94,12 +94,11 @@ na Androidu zatím ne. Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.m
 Pro opakování exportu nastav v editoru Godotu Android SDK a Java SDK,
 nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
 
-## Starší 2.5D verze 0.4.0
+## Starší verze
 
-[Ověření 2.5D grafiky a používané soubory](docs/GRAFIKA_04.md).
-APK 0.4.0 a dřívější Mac balíček obsahují starou 2.5D grafiku;
-nový Mac balíček s origami zatím nevznikl.
-Řešení zkušebních misí: [etapa 4](docs/ETAPA_4_OVERENI.md).
+APK 0.4.0 a dřívější Mac balíček obsahují vyřazenou 2.5D grafiku
+([historický záznam](docs/GRAFIKA_04.md)); nový Mac balíček s origami
+zatím nevznikl.
 
 ## Spuštění hotové verze na Macu
 
@@ -123,8 +122,7 @@ ověření. Aktuální výsledky: [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERE
    První import papírových textur chvíli trvá.
 3. Stiskni **F5** (nebo ▶ vpravo nahoře). Spustí se hlavní menu
    (`main/app.tscn`). Samotnou origami misi bez menu spustíš otevřením
-   `main/game_origami.tscn` a **F6**; starší zobrazení jsou
-   `main/game_3d.tscn` a `main/game.tscn`. Při spuštění bez menu se postup
+   `main/game_origami.tscn` a **F6**. Při spuštění bez menu se postup
    neukládá.
 
 ## Vytvoření vlastního sestavení

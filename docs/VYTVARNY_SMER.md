@@ -1,5 +1,8 @@
 # Výtvarný směr — 2D origami
 
+> **Historický záznam.** 2.5D zobrazení, jeho scény a podklady byly
+> 4. 10. 2026 na přání autora vyřazeny; popsané soubory už v projektu nejsou.
+
 Aktuální zadání z 3. října 2026: **čistě 2D papírová hra s paralaxním
 posunem i zoomováním**. Jediná současná výtvarná předloha je
 [origami mockup](MOCKUP_ORIGAMI.md). Autor jej označil za pěkný a požádal

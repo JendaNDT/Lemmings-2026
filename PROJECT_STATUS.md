@@ -6,7 +6,7 @@ Moderní předělávka hry Lemmings (1991) s grafikou odpovídající roku 2026.
 Stack: Godot 4.7, společné jádro v GDScriptu.
 Výchozí zobrazení je **2D origami**: papírový terén z masky simulace,
 skládané postavičky s animacemi a krajina s paralaxním posunem i zoomem.
-2.5D a jednoduché 2D zobrazení zůstávají pro porovnání.
+2.5D zobrazení bylo 4. 10. 2026 vyřazeno; jednoduché 2D slouží k ladění.
 První testovací sestavení je pro **macOS (Apple Silicon a Intel)**,
 také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
@@ -181,7 +181,6 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
   Nejpravděpodobnější příčina: nainstalovaná 0.4.0 s jiným podpisem.
 - Testovací podpisový klíč Androidu není uložený trvale – nové cloudové
   prostředí vytvoří jiný a aktualizace přes starou verzi selže.
-- 2.5D porovnávací scéna nekreslí vodu, lávu ani pasti (jen nespadne).
 - Origami grafika zatím neběžela na Macu ani Androidu; výkon na skutečné
   GPU není změřený (cloud kreslí softwarově, ~0,2 s na snímek).
 - Proti mockupu je generovaná krajina jednodušší a postavy jsou při
@@ -210,7 +209,10 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
   se na konci pouze zastaví. Splnění cíle samo o sobě level předčasně neukončí.
 - **Klávesy:** podle fyzické pozice (funguje i na české klávesnici).
 - **Grafický směr:** 2D origami; jediná předloha v `docs/MOCKUP_ORIGAMI.md`.
-  Je to výchozí zobrazení. 2.5D renderer zůstává jen pro porovnání.
+  Je to jediné herní zobrazení; 2.5D renderer byl vyřazen (4. 10. 2026).
+- **Kampaň (4. 10. 2026, autor schválil vše):** 4 kapitoly a 20 misí podle
+  `docs/HERNI_DESIGN.md`, hvězdy 1–3, Hřiště mimo kampaň, navržené názvy,
+  vyřazení 2.5D, trvalý podpisový klíč Androidu.
 - **Origami podklady:** generované vlastními skripty (opakovatelně), z mockupu
   se nekopírují pixely. Postava = díly + klíčové pózy v JSON, ne snímky.
 - **Terén ve 2D:** kreslí ho shader přímo z masky; šum hrany max. ±0,4 buňky,
@@ -233,8 +235,7 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - `scripts/qa_origami.gd` – grafický průchod, snímky, záznam a kontrola terénu
 - `docs/ORIGAMI_OVERENI.md` – výsledky a meze origami zobrazení
 - `main/game.tscn`, `main/game.gd` – hlavní scéna, herní smyčka, ovládání
-- `main/game_3d.tscn`, `view/clay_*.gd` – 2.5D scéna pro porovnání
-- `assets/clay/`, `assets/clay.lock.json` – podklady a ověření integrity
+- `assets/fonts/` – písmo Nunito s licencí OFL (`assets/fonts.lock.json`)
 - `sim/level_sim.gd` – pravidla levelu, vypouštění, východ, konec
 - `sim/sim_replay.gd` – kontrola a technické přehrávání příkazů
 - `sim/terrain_mask.gd` – logická mapa terénu

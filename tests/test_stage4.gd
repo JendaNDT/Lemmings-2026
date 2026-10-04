@@ -43,7 +43,7 @@ func _solve(mission: String) -> void:
 func _test_interface() -> void:
 	root.content_scale_size = Vector2i(1280, 720)
 	root.size = Vector2i(1280, 720)
-	var game := load("res://main/game_3d.tscn").instantiate() as Node
+	var game := load("res://main/game_origami.tscn").instantiate() as Node
 	root.add_child(game)
 	game.set_process(false)
 	var hud: Hud = game.get_node("Hud")
@@ -66,7 +66,7 @@ func _test_interface() -> void:
 	check(fits, "osm tlačítek se vejde bez překrytí do mobilní lišty 1280 × 720")
 	var lem := add_lemming(sim, 90, 70)
 	game.call("_select_skill", Lemming.Skill.BOMBER)
-	var world: ClayWorld = game.get_node("ClayWorld")
+	var world: PaperWorld = game.get_node("PaperWorld")
 	world.camera.input_enabled = false
 	var point := world.camera.logic_to_screen(Vector2(90.5, 65))
 	hud.nuke_requested.emit()
@@ -84,24 +84,20 @@ func _test_interface() -> void:
 		"potvrzení zachová původní pauzu a zapíše jediný společný příkaz")
 	game.set("_paused", false)
 	game.call("_process", 1.0 / SimConst.TICKS_PER_SECOND)
-	var actor: ClayActor = world.actors[lem.id]
-	var visuals: ClaySkillVisuals = actor.get("_skill_visuals")
-	check(visuals.countdown.visible and visuals.countdown.text == "5",
-		"odpočet se zobrazí nad skutečným 3D aktérem")
+	check(lem.bomb_ticks > 0 and lem.bomb_ticks < SimConst.BOMB_TICKS,
+		"odpočet bomby běží ve skutečné origami scéně")
 	game.set("_paused", true)
 	var remaining := lem.bomb_ticks
 	game.call("_process", 1.0)
 	check(remaining == lem.bomb_ticks, "pauza zastaví odpočet bomby")
 	sim.set_state(lem, Lemming.State.FLOATER)
 	game.call("_process", 0.0)
-	check(visuals.parachute.visible, "plachtící postava má rozvinutý 3D padák")
-	sim.set_state(lem, Lemming.State.CLIMBER)
-	game.call("_process", 0.0)
-	check(not visuals.parachute.visible, "změna stavu odstraní padák bez ztráty odpočtu")
+	check(lem.state == Lemming.State.FLOATER and lem.bomb_ticks == remaining,
+		"změna stavu na padák zachová odpočet")
 	hud.restart_pressed.emit()
 	var restarted: LevelSim = game.get("_sim")
 	check(restarted != sim and not restarted.nuking and restarted.replay_log.is_empty()
-		and hud.visible_skills().size() == 8 and world.actors.is_empty(),
+		and hud.visible_skills().size() == 8,
 		"restart obnoví právě vybranou misi včetně vlastností, odpočtů a aktérů")
 	game.call("_choose_mission", 1)
 	check(hud.visible_skills() == [Lemming.Skill.CLIMBER, Lemming.Skill.FLOATER],

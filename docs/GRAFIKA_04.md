@@ -1,5 +1,8 @@
 # Technický záznam verze 0.4.0
 
+> **Historický záznam.** 2.5D zobrazení, jeho scény a podklady byly
+> 4. 10. 2026 na přání autora vyřazeny; popsané soubory už v projektu nejsou.
+
 Verze 0.4.0 je dosavadní hratelné 2.5D sestavení. Autor jeho výtvarné
 provedení odmítl. Staré grafické návrhy a jejich náhledy byly odstraněny;
 jediná současná výtvarná předloha je [origami mockup](MOCKUP_ORIGAMI.md).

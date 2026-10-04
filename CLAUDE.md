@@ -4,9 +4,10 @@
 - Moderní předělávka Lemmings (1991) v **Godot 4.7 + GDScript**.
 - Testovací sestavení existují pro macOS a Android, do budoucna také Windows.
   Všechny platformy sdílejí stejné herní jádro. Aktuální plán je
-  v `docs/PLAN_VYVOJE.md`. Výchozí scéna je `main/game_origami.tscn`
-  (2D origami); `main/game_3d.tscn` (2.5D) a původní `main/game.tscn`
-  zůstávají pro porovnání.
+  v `docs/PLAN_VYVOJE.md`, herní design v `docs/HERNI_DESIGN.md`.
+  Aplikace startuje `main/app.tscn` (menu), mise hraje `main/game_origami.tscn`
+  (2D origami), která dědí základ `main/game.tscn`. 2.5D zobrazení bylo
+  na přání autora vyřazeno (4. 10. 2026); neobnovovat ho.
 - Autor (Jenda) neprogramuje – tvoří přes vibecoding. Komunikuj **česky**,
   tykej, vysvětluj jednoduše, odpovědi drž krátké (čte z mobilu).
 - Po každé větší změně aktualizuj `PROJECT_STATUS.md`.
@@ -39,14 +40,14 @@
   jen čte. Nové levely kontroluje `LevelValidator` (test všech misí).
 - Komentáře a texty v UI česky. Klávesy přes `physical_keycode`.
 - Nepoužívat assety ani levely z originální hry.
-- `ClaySpace` je jediný převod do 3D, `PaperCamera` jediný převod logika ↔
+- `PaperCamera` je jediný převod logika ↔
   obrazovka ve 2D (terén, postavy, líheň, východ, schody i dotyk). Paralaxní
   vrstvy kameru jen čtou. Maska dál řídí kolize; její revize oblastí se
   pouze čtou. Každý renderer sleduje revize samostatně.
-- Podklady v `assets/clay/` mají kontrolní součty v `assets/clay.lock.json`.
+- Podklady mají kontrolní součty v manifestech `assets/*.lock.json`.
   Při záměrné úpravě eviduj odvození; nepřepisuj kontrolní součet jen kvůli
-  umlčení nečekané změny. Nový model, font a ikony jsou v `assets/art_v2/`
-  s vlastním `assets/art_v2.lock.json`, původem a licencemi. Origami sada
+  umlčení nečekané změny. Písmo Nunito je v `assets/fonts/` (manifest
+  `assets/fonts.lock.json`, licence OFL). Origami sada
   je v `assets/origami/` (generátor v `source/`, manifest
   `assets/origami.lock.json`). Všechny manifesty ověřuje
   `scripts/check_assets.py`; po úpravě podkladů spusť
@@ -77,8 +78,6 @@
 - Pořadí práce: mockup, oddělené grafické vrstvy, postavička s animacemi,
   scéna Godotu. Origami renderer je implementovaný (`view/paper_*`);
   ověření a meze jsou v `docs/ORIGAMI_OVERENI.md`.
-- Herní podklady `assets/clay/` a `assets/art_v2/` se zachovávají, dokud
-  je používá dosavadní hra. Jejich zamčení a licence dál platí.
 - Simulace zůstává společná. Herní vrstva sdílí jeden převod souřadnic,
   dekorativní paralaxa nesmí měnit kolize ani výběr postav. HUD je pevný.
 - Technické testy nejsou dokladem výtvarné kvality. Generovaný koncept

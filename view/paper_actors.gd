@@ -64,7 +64,7 @@ func _init() -> void:
 	rig = JSON.parse_string(FileAccess.get_file_as_string(RIG_PATH))
 	_scale = float(rig["atlas_scale"])
 	texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	_font = preload("res://assets/art_v2/ui/Nunito.ttf")
+	_font = preload("res://assets/fonts/Nunito.ttf")
 	_silhouette = Node2D.new()
 	_silhouette.name = "Silhouette"
 	_silhouette.show_behind_parent = true

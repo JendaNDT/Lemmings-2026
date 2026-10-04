@@ -1,5 +1,8 @@
 # Podklady současného technického prototypu
 
+> **Historický záznam.** 2.5D zobrazení, jeho scény a podklady byly
+> 4. 10. 2026 na přání autora vyřazeny; popsané soubory už v projektu nejsou.
+
 Tento soubor eviduje závislosti dosud běžící hry, nikoli výtvarný návrh.
 Aktuální výtvarný směr je [2D origami](VYTVARNY_SMER.md). Starší náhledy,
 galerijní prezentace a samostatná studie byly na přání autora odstraněny.

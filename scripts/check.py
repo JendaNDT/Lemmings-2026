@@ -76,7 +76,6 @@ def main():
         run("import", [*base, "--editor", "--import"], project, logs)
         if args.benchmark:
             suites.append(project / "tests" / "benchmark_sim.gd")
-            suites.append(project / "tests" / "benchmark_3d.gd")
         total = 0
         for suite in suites:
             output = run(suite.stem, [

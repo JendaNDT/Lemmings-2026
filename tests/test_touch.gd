@@ -9,10 +9,10 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	var game := load("res://main/game_3d.tscn").instantiate() as Node
+	var game := load("res://main/game_origami.tscn").instantiate() as Node
 	root.add_child(game)
 	game.set_process(false)
-	var world: ClayWorld = game.get_node("ClayWorld")
+	var world: PaperWorld = game.get_node("PaperWorld")
 	world.camera.input_enabled = false
 	world.camera.zoom_factor = 2
 	world.camera.focus = Vector2(300, 100)
