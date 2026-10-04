@@ -7,17 +7,22 @@
 
 [node name="Level01" type="Node2D"]
 script = ExtResource("1_def")
-title = "1 · První kroky"
+title = "První kroky"
 level_id = "prvni-kroky"
 size = Vector2i(640, 200)
 lemming_count = 20
-save_required = 10
+save_required = 13
 release_rate = 50
 time_limit_seconds = 300
 blockers = 2
 builders = 3
 bashers = 2
 diggers = 2
+master_saved = 20
+difficulty_index = 38
+introduces = "Zkouška kapitoly"
+briefing = "Sloup, útes a jeskyně: použij všechno, co ses naučil."
+hints = PackedStringArray("Razič, stavitel a kopáč – každý na jiné překážce.", "Raziče přiděl těsně před sloupem, stavitele u útesu a kopáče nahoře nad jeskyní.")
 
 [node name="Terrain" type="Node2D" parent="."]
 

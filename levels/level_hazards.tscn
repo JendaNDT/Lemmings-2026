@@ -8,7 +8,7 @@
 
 [node name="Hazards" type="Node2D"]
 script = ExtResource("1_def")
-title = "6 · Voda, láva a past"
+title = "Voda, láva a past"
 level_id = "voda-lava-past"
 size = Vector2i(560, 200)
 lemming_count = 10
@@ -19,6 +19,11 @@ climbers = 1
 builders = 2
 bashers = 1
 diggers = 1
+master_saved = 8
+difficulty_index = 61
+introduces = "Voda, láva, past, šipky"
+briefing = "Voda topí, láva pálí a kytka hlídá chodbu. Zeď se šipkami prorazíš jen ve směru šipek."
+hints = PackedStringArray("Přes vodu postav most z cihel; lávu obejdi podzemím.", "První lumík: lezec, most přes jezírko a kopáč za lávou. Později razič u zdi se šipkami.")
 
 [node name="Terrain" type="Node2D" parent="."]
 

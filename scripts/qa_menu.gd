@@ -50,6 +50,11 @@ func _first_day() -> void:
 	await _click(_app.menu.cards[0])
 	var game := _app.game
 	_expect(game != null, "karta mise spustí hru")
+	await _frames(10)
+	await _capture("03-uvodni-karta")
+	var hud: Hud = game.get_node("Hud")
+	_expect(hud.briefing.visible, "mise začíná úvodní kartou")
+	await _click(_find_button(hud, "Hrát"))
 	await _frames(30)
 	await _capture("03-mise-1")
 	await _win_mission_one(game)
@@ -59,13 +64,16 @@ func _first_day() -> void:
 	await _click(next)
 	await _frames(40)
 	var sim: LevelSim = game.get("_sim")
-	_expect(sim.spec.title.begins_with("2 ·"), "tlačítko Další spustí misi 2")
-	# Kousek mise 2, pak pauzovací menu a nastavení.
+	_expect(sim.spec.title == "Schody na terasu", "tlačítko Další spustí misi 2")
+	await _capture("04-uvodni-karta-2")
+	await _click(_find_button(hud, "Hrát"))
+	# Kousek mise 2, pak pauzovací menu, nápověda a nastavení.
 	await _play(game, 120)
 	Input.parse_input_event(_key(KEY_ESCAPE))
 	await _frames(4)
+	await _click(_find_button(hud, "Nápověda"))
+	await _frames(3)
 	await _capture("05-pauza")
-	var hud: Hud = game.get_node("Hud")
 	_expect(hud.pause_menu_open(), "Esc otevře pauzovací menu")
 	await _click(_find_button(hud, "Nastavení"))
 	await _frames(4)
@@ -97,7 +105,7 @@ func _first_day() -> void:
 func _next_day() -> void:
 	await _open_app()
 	await _capture("10-druhy-den")
-	_expect(_app.progress.is_completed("prvni-kroky") and _app.settings.ui_scale > 1.2,
+	_expect(_app.progress.is_completed("dira-v-louce") and _app.settings.ui_scale > 1.2,
 		"postup i nastavení vydržely nové spuštění")
 	await _click(_find_button(_app.menu, "Pokračovat"))
 	await _frames(20)
@@ -113,6 +121,10 @@ func _next_day() -> void:
 	await _click(_find_button(game.get_node("Hud"), "Výběr misí"))
 	await _frames(10)
 	await _capture("12-mise-po-navratu")
+	_app.settings.set_value("unlock_all", true)
+	_app.menu.show_chapter(2)
+	await _frames(4)
+	await _capture("13-kapitola-3")
 	_app.queue_free()
 	await _frames(4)
 
@@ -125,46 +137,32 @@ func _open_app() -> void:
 	await _frames(20)
 
 
-## Mise 1 skutečně: dovednosti přes lištu a kliknutí na postavu (zrychleně).
+## Mise 1 skutečně: kopáč přes lištu a kliknutí na postavu (zrychleně).
 func _win_mission_one(game: Node) -> void:
 	var sim: LevelSim = game.get("_sim")
 	var hud: Hud = game.get_node("Hud")
 	var world: PaperWorld = game.get_node("PaperWorld")
 	world.camera.input_enabled = false
-	var bashed := false
-	var built := false
 	var dug := false
 	game.set("_fast", true)
 	for _frame in 4000:
 		await process_frame
 		if sim.finished:
 			break
+		if dug:
+			continue
 		for lem in sim.lemmings:
-			if lem.removed or lem.state != Lemming.State.WALKER:
+			if lem.removed or lem.state != Lemming.State.WALKER or lem.x < 100:
 				continue
-			var skill := -1
-			if not bashed and lem.dir == 1 and lem.x >= 170 and lem.x <= 175:
-				skill = Lemming.Skill.BASHER
-			elif bashed and not built and lem.dir == 1 and lem.x >= 280 and lem.x <= 284:
-				skill = Lemming.Skill.BUILDER
-			elif built and not dug and lem.y <= 58 and lem.x >= 330 and lem.x <= 360:
-				skill = Lemming.Skill.DIGGER
-			if skill < 0:
-				continue
-			var log_size := sim.replay_log.size()
-			hud.skill_selected.emit(skill)
+			hud.skill_selected.emit(Lemming.Skill.DIGGER)
 			world.camera.focus = Vector2(lem.x, lem.y)
 			world.camera.refresh()
-			var at := world.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5))
 			var click := InputEventMouseButton.new()
 			click.button_index = MOUSE_BUTTON_LEFT
 			click.pressed = true
-			click.position = at
+			click.position = world.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5))
 			game.call("_unhandled_input", click)
-			if sim.replay_log.size() > log_size:
-				bashed = bashed or skill == Lemming.Skill.BASHER
-				built = built or skill == Lemming.Skill.BUILDER
-				dug = dug or skill == Lemming.Skill.DIGGER
+			dug = not sim.replay_log.is_empty()
 			break
 	await _frames(10)
 	_report["mission1"] = [sim.saved, sim.spec.lemming_count, sim.tick_count]

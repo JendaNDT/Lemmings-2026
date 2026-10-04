@@ -49,11 +49,11 @@ func _test_reference_plans() -> void:
 		var sim := LevelDifficulty.play(LevelLoader.build_spec(level),
 			LevelLoader.build_mask(level), plan)
 		level.free()
-		if not (sim.finished and sim.is_won()):
+		if not (sim.finished and sim.is_won()) or sim.saved != int(info["master"]):
 			failed.append(info["id"])
 	check(missing.is_empty() and failed.is_empty(),
-		"každá mise kampaně má referenční řešení a vyhraje (chybí %s, selhalo %s)" % [
-			str(missing), str(failed)])
+		"každá mise kampaně má referenční řešení, vyhraje a zachrání přesně mistrovský "
+		+ "výsledek ★★★ (chybí %s, nesedí %s)" % [str(missing), str(failed)])
 
 
 func _test_measured_mission() -> void:
@@ -62,7 +62,7 @@ func _test_measured_mission() -> void:
 	var m := LevelDifficulty.measure(LevelLoader.build_spec(level), LevelLoader.build_mask(level),
 		ReferencePlans.plan_for("cesta-skrz-zed"))
 	level.free()
-	check(m["won"] and m["saved"] == 3 and m["idle_saved"] == 0 and m["windows"] == [14, 137],
-		"mise 4 změřena: 3/4, bez zásahu nikdo, okna zásahů 14 a 137 tiků")
-	check(m["index"] == 54 and LevelDifficulty.tier_name(m["tier"]) == "Střední",
-		"mise 4: index 54, pásmo Střední (jako v herním design dokumentu)")
+	check(m["won"] and m["saved"] == 11 and m["idle_saved"] == 0 and m["windows"] == [14, 137],
+		"Cesta skrz zeď změřena: 11/12, bez zásahu nikdo, okna zásahů 14 a 137 tiků")
+	check(m["index"] == 42 and LevelDifficulty.tier_name(m["tier"]) == "Střední",
+		"Cesta skrz zeď: index 42, pásmo Střední (zapsané v misi i v dokumentu)")

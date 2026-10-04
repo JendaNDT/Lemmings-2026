@@ -7,23 +7,28 @@
 
 [node name="Miner" type="Node2D"]
 script = ExtResource("1_def")
-title = "3 · Šikmý tunel"
+title = "Šikmý tunel"
 level_id = "sikmy-tunel"
 size = Vector2i(440, 200)
-lemming_count = 6
+lemming_count = 8
 save_required = 6
 release_rate = 50
 time_limit_seconds = 180
 miners = 2
+master_saved = 8
+difficulty_index = 18
+introduces = "Horník"
+briefing = "Sráz je moc vysoký na skok. Prokopej se dolů šikmo."
+hints = PackedStringArray("Pád z velké výšky lumíka zabije.", "Horník kope šikmo dolů – začni na horní plošině dost daleko od srázu.")
 
 [node name="Terrain" type="Node2D" parent="."]
 
-[node name="Shape0" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(0, 80, 240, 80, 240, 200, 0, 200)
+[node name="Upland" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 80, 70, 79, 130, 80, 190, 81, 240, 80, 240, 200, 0, 200)
 script = ExtResource("2_shape")
 
-[node name="Shape1" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(240, 170, 440, 170, 440, 200, 240, 200)
+[node name="Field" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(240, 170, 300, 169, 370, 170, 440, 170, 440, 200, 240, 200)
 script = ExtResource("2_shape")
 
 [node name="Hatch" type="Marker2D" parent="."]

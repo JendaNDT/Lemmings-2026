@@ -146,14 +146,14 @@ func _build_controls(page: VBoxContainer) -> void:
 		["Pomalá", "Běžná", "Rychlá"])
 	_choices(page, "tap_reach", "Dosah klepnutí na postavu", GameSettings.TAP_REACHES,
 		["Běžný", "Velký"])
-	_toggle(page, "confirm_nuke", "Ptát se před „Ukončit“ (odpočet bomb)")
+	_toggle(page, "confirm_nuke", "Ptát se před „Odpálit vše“")
 	if DeviceProfile.touch_mode():
 		page.add_child(_hint("Klepni na dovednost a pak na postavu. Jedním prstem posouváš "
 			+ "krajinu, dvěma přibližuješ. Tlačítko Zpět otevře menu."))
 	else:
 		page.add_child(_hint("Myš: levé tlačítko přidělí dovednost, pravé nebo prostřední "
 			+ "táhne kamerou, kolečko přibližuje. Klávesy: 1–8 dovednosti, mezerník pauza, "
-			+ "F zrychlení, R znovu, N ukončit, T zvuk, M pohyb postav, Esc menu."))
+			+ "F zrychlení, R znovu, N odpálit vše, T zvuk, M pohyb postav, Esc menu."))
 
 
 func _build_game(page: VBoxContainer) -> void:

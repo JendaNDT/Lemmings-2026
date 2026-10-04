@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="DiraVLouce" type="Node2D"]
+script = ExtResource("1_def")
+title = "Díra v louce"
+level_id = "dira-v-louce"
+size = Vector2i(320, 160)
+lemming_count = 10
+save_required = 7
+release_rate = 50
+time_limit_seconds = 180
+diggers = 2
+master_saved = 10
+difficulty_index = 15
+introduces = "Kopáč"
+briefing = "Lumíci přistanou na louce, ale východ je pod zemí. Pomoz jim dolů."
+hints = PackedStringArray("Východ je v jeskyni pod loukou.", "Vyber Kopáče a klepni na lumíka na louce. Ostatní propadnou dírou za ním.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Meadow" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 70, 60, 69, 120, 71, 180, 70, 240, 69, 320, 70, 320, 100, 250, 101, 160, 99, 70, 101, 0, 100)
+script = ExtResource("2_shape")
+
+[node name="CaveFloor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 125, 80, 124, 170, 126, 250, 125, 320, 125, 320, 160, 0, 160)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(60, 45)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(250, 125)
+script = ExtResource("4_exit")

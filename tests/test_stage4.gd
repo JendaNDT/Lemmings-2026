@@ -35,7 +35,7 @@ func _solve(mission: String) -> void:
 					if not assigned and lem.state == Lemming.State.WALKER and lem.x == 168:
 						sim.assign_skill(lem, Lemming.Skill.BLOCKER)
 						assigned = sim.assign_skill(lem, Lemming.Skill.BOMBER)
-	check(sim.finished and sim.is_won() and sim.saved == sim.spec.save_required,
+	check(sim.finished and sim.is_won() and sim.saved >= sim.spec.save_required,
 		"ukázka %s je řešitelná: %d/%d za %d tiků" % [
 			mission, sim.saved, sim.spec.lemming_count, sim.tick_count])
 
@@ -47,13 +47,14 @@ func _test_interface() -> void:
 	root.add_child(game)
 	game.set_process(false)
 	var hud: Hud = game.get_node("Hud")
-	game.call("_choose_mission", 4)
+	game.set("level_scene", Campaign.PLAYGROUND)
+	game.call("_load_level")
 	for _frame in 3:
 		await process_frame
 	var sim: LevelSim = game.get("_sim")
 	check(hud.visible_skills().size() == 8, "hřiště zpřístupní všech osm dovedností")
 	var title: Label = hud.get("_title")
-	check(title.text == Campaign.mission(4)["title"], "lišta ukazuje název právě načtené mise")
+	check(title.text == "Hřiště", "lišta ukazuje název právě načteného Hřiště")
 	var widgets: Dictionary = hud.get("_skill_widgets")
 	var fits := true
 	var right := 0.0
@@ -99,7 +100,7 @@ func _test_interface() -> void:
 	check(restarted != sim and not restarted.nuking and restarted.replay_log.is_empty()
 		and hud.visible_skills().size() == 8,
 		"restart obnoví právě vybranou misi včetně vlastností, odpočtů a aktérů")
-	game.call("_choose_mission", 1)
+	game.call("_choose_mission", Campaign.index_of("lezec-a-padak"))
 	check(hud.visible_skills() == [Lemming.Skill.CLIMBER, Lemming.Skill.FLOATER],
 		"přechod do další mise odstraní staré dovednosti a zásoby")
 	game.free()

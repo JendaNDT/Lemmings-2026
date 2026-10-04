@@ -421,7 +421,8 @@ func _mask_check() -> void:
 
 ## Hřiště se všemi dovednostmi: zblízka zachytí každou pózu ve skutečném enginu.
 func _gallery() -> void:
-	_game.call("_choose_mission", 4)
+	_game.set("level_scene", Campaign.PLAYGROUND)
+	_game.call("_load_level")
 	_sim = _game.get("_sim")
 	await _advance(2)
 	var spots := {

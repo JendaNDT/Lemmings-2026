@@ -74,14 +74,49 @@ func is_completed(id: String) -> bool:
 	return bool(entry(id)["completed"])
 
 
-## První mise je vždy otevřená, další po splnění předchozí.
+## Otevřené je vše až do nejvzdálenější splněné mise + 1. Nově vložená
+## mise před již splněnou tak hráče nezamkne (postup je podle id).
 func is_unlocked(index: int, unlock_all := false) -> bool:
 	if unlock_all or index <= 0:
 		return true
 	if index >= Campaign.count():
 		return false
+	return index <= furthest_completed() + 1
+
+
+## Index nejvzdálenější splněné mise kampaně (−1 = žádná).
+func furthest_completed() -> int:
 	var list := Campaign.missions()
-	return is_completed(list[index - 1]["id"]) or is_completed(list[index]["id"])
+	for i in range(list.size() - 1, -1, -1):
+		if is_completed(list[i]["id"]):
+			return i
+	return -1
+
+
+## Hřiště se otevře po splnění všech misí kapitoly I.
+func playground_unlocked(unlock_all := false) -> bool:
+	if unlock_all:
+		return true
+	for i in Campaign.chapter_indices(0):
+		if not is_completed(Campaign.mission(i)["id"]):
+			return false
+	return true
+
+
+## Hvězdy mise (0–3) podle nejlepšího výsledku.
+func stars(index: int) -> int:
+	var info := Campaign.mission(index)
+	var item := entry(info["id"])
+	return Campaign.stars_for(info, int(item["best_saved"])) if item["completed"] else 0
+
+
+## [získané, možné] hvězdy kapitoly.
+func chapter_stars(chapter: int) -> Array[int]:
+	var got := 0
+	var indices := Campaign.chapter_indices(chapter)
+	for i in indices:
+		got += stars(i)
+	return [got, indices.size() * 3]
 
 
 func completed_count() -> int:
@@ -109,10 +144,12 @@ func record_start(id: String) -> void:
 	suspended.clear()
 
 
-## Zapíše výsledek dohrané mise. Vrací {"first_win", "new_best", "unlocked_next"}.
+## Zapíše výsledek dohrané mise. Vrací {"first_win", "new_best", "unlocked_next",
+## "stars", "stars_before", "fails"}.
 func record_result(id: String, saved: int, won: bool, ticks: int) -> Dictionary:
 	var item := entry(id)
 	var index := Campaign.index_of(id)
+	var stars_before := stars(index) if index >= 0 else 0
 	var was_completed := bool(item["completed"])
 	var next_was_open := is_unlocked(index + 1)
 	var best_saved := int(item["best_saved"])
@@ -126,10 +163,15 @@ func record_result(id: String, saved: int, won: bool, ticks: int) -> Dictionary:
 		if saved > best_saved or (saved == best_saved and ticks < int(item["best_ticks"])):
 			item["best_saved"] = saved
 			item["best_ticks"] = ticks
+	else:
+		item["fails"] = int(item["fails"]) + 1
 	missions[id] = item
 	last_mission = id
 	suspended.clear()
 	info["unlocked_next"] = won and not next_was_open and index + 1 < Campaign.count()
+	info["stars_before"] = stars_before
+	info["stars"] = stars(index) if index >= 0 else 0
+	info["fails"] = item["fails"]
 	return info
 
 
@@ -181,6 +223,7 @@ static func _clean_entry(data: Dictionary) -> Dictionary:
 		"best_ticks": maxi(0, _int(data, "best_ticks")),
 		"plays": maxi(0, _int(data, "plays")),
 		"wins": maxi(0, _int(data, "wins")),
+		"fails": maxi(0, _int(data, "fails")),
 	}
 
 

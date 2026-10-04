@@ -158,7 +158,7 @@ func _test_scene() -> void:
 	check(settings.muted and AudioServer.is_bus_mute(AudioServer.get_bus_index("Master"))
 		and sim.replay_log.size() == log_size, "tlačítko zvuku ztlumí hru bez herního příkazu")
 	hud.sound_pressed.emit()
-	game.call("_choose_mission", 5)
+	game.call("_choose_mission", Campaign.index_of("voda-lava-past"))
 	sim = game.get("_sim")
 	var water := audio.get_node("loop_water") as AudioStreamPlayer2D
 	var lava := audio.get_node("loop_lava") as AudioStreamPlayer2D

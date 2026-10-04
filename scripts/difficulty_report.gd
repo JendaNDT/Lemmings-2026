@@ -7,6 +7,10 @@ extends SceneTree
 ##     -- [--out=build/difficulty.json]
 
 
+## Jak daleko smí být index zapsaný v misi od změřeného.
+const INDEX_TOLERANCE := 3
+
+
 func _initialize() -> void:
 	var out := ""
 	for arg in OS.get_cmdline_user_args():
@@ -30,6 +34,20 @@ func _initialize() -> void:
 		level.free()
 		var m := LevelDifficulty.measure(spec, mask, plan)
 		ok = ok and m["won"]
+		# Údaje zapsané v misi musí odpovídat měření (hvězdy a pásmo na kartě).
+		var problems := PackedStringArray()
+		if int(info["master"]) != int(m["saved"]):
+			problems.append("mistrovský výsledek %d ≠ referenční %d" % [info["master"], m["saved"]])
+		if int(info["master"]) <= int(info["required"]):
+			problems.append("mistrovský výsledek musí být vyšší než cíl")
+		if absi(int(info["difficulty"]) - int(m["index"])) > INDEX_TOLERANCE \
+				or LevelDifficulty.tier(info["difficulty"]) != m["tier"]:
+			problems.append("index v misi %d ≠ změřený %d" % [info["difficulty"], m["index"]])
+		if int(m["idle_saved"]) >= int(info["required"]):
+			problems.append("mise jde vyhrát bez zásahu")
+		for problem in problems:
+			print("  ! %s: %s" % [info["id"], problem])
+		ok = ok and problems.is_empty()
 		print("| %d | %s | %d | %d | %d | %d | %d | %d | %d / %d | %d %% | %d (%s) | %d | %d | %s |" % [
 			i + 1, info["title"], m["lemmings"], m["required"], m["saved"], m["idle_saved"],
 			m["actions"], m["skill_types"], m["skills_used"], m["skills_available"],

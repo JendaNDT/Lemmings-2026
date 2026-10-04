@@ -166,6 +166,32 @@ static func box(bg: Color, border: Color, radius: int, margin: float) -> StyleBo
 	return s
 
 
+## Řada ikon „plná / prázdná“ – hvězdy hodnocení nebo tečky obtížnosti.
+static func icon_row(full: String, empty: String, filled: int, total: int,
+		size: float) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", int(size * 0.12))
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for i in total:
+		var mark := TextureRect.new()
+		mark.texture = icon(full if i < filled else empty)
+		mark.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		mark.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		mark.custom_minimum_size = Vector2(size, size)
+		mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		row.add_child(mark)
+	return row
+
+
+static func stars_row(stars: int, size := 26.0) -> HBoxContainer:
+	return icon_row("star", "star_empty", stars, 3, size)
+
+
+## Tečky pásma obtížnosti (1–5).
+static func tier_row(tier: int, size := 14.0) -> HBoxContainer:
+	return icon_row("dot", "dot_empty", tier, LevelDifficulty.TIERS.size(), size)
+
+
 ## Herní čas jako m:ss z počtu tiků.
 static func format_ticks(ticks: int) -> String:
 	var secs := ticks / SimConst.TICKS_PER_SECOND

@@ -141,6 +141,28 @@ def gear(teeth=8, outer=25.0, inner=19.0, hole=8.5, cx=32.0, cy=32.0):
 ICONS["settings"] = gear()
 
 
+def star(points=5, outer=27.0, inner=11.5, cx=32.0, cy=33.5):
+    """Pěticípá hvězda (hodnocení mise)."""
+    import math
+    pts = []
+    for i in range(points * 2):
+        r = outer if i % 2 == 0 else inner
+        a = -math.pi / 2 + i * math.pi / points
+        pts.append(f"{cx + r * math.cos(a):.2f} {cy + r * math.sin(a):.2f}")
+    return "M" + " L".join(pts) + " Z"
+
+
+# Hvězdy: získaná je jantarová s inkoustovým obrysem, chybějící jen obrys.
+ICONS["star"] = (f'<path d="{star()}" fill="#e9a84e" stroke="currentColor" stroke-width="3.5" '
+                 'stroke-linejoin="round"/>')
+ICONS["star_empty"] = (f'<path d="{star()}" fill="none" stroke="currentColor" stroke-width="3.5" '
+                       'stroke-linejoin="round" opacity="0.45"/>')
+# Tečky obtížnosti (pásma 1–5).
+ICONS["dot"] = '<circle cx="32" cy="32" r="20"/>'
+ICONS["dot_empty"] = ('<circle cx="32" cy="32" r="18" fill="none" stroke="currentColor" '
+                      'stroke-width="5" opacity="0.4"/>')
+
+
 def write_icons(out: Path):
     folder = out / "ui" / "icons"
     folder.mkdir(parents=True, exist_ok=True)

@@ -79,20 +79,32 @@ func _test_first_day() -> void:
 	await _frames(2)
 	var game := _game()
 	check(game != null and not menu.visible and not _app.backdrop.visible
-		and _app.progress.entry("prvni-kroky")["plays"] == 1,
+		and _app.progress.entry("dira-v-louce")["plays"] == 1,
 		"karta spustí misi 1, menu a pozadí zmizí, pokus se započítá")
 	var sim: LevelSim = game.get("_sim")
 	var hud: Hud = game.get_node("Hud")
-	_solve_mission_one(game, sim)
-	check(sim.finished and sim.is_won() and hud.result_open(), "mise 1 vyhraná, ukáže se výsledek")
+	var title: Label = hud.get("_title")
+	_step(game, 30)
+	check(hud.briefing.visible and game.get("_paused") and sim.tick_count == 0
+		and title.text == "1 · Díra v louce", "úvodní karta mise: hra stojí, název má číslo")
+	game.call("_try_assign_touch", Vector2(640, 300))
+	check(sim.replay_log.is_empty(), "klepnutí přes úvodní kartu nic nepřidělí")
+	hud.briefing.close()
+	check(not hud.briefing.visible and not game.get("_paused"), "„Hrát“ kartu zavře a spustí čas")
+	_solve(game, sim, "dira-v-louce")
+	check(sim.finished and sim.is_won() and hud.result_open() and sim.saved == 10,
+		"mise 1 vyhraná referenčním řešením 10/10, ukáže se výsledek")
+	var stars: CenterContainer = hud.get("_result_stars")
 	var next: Button = hud.get("_next_button")
 	var on_disk := Progress.load_from(_app.progress_path)
-	check(next.visible and next.text.contains("Lezec") and on_disk.is_completed("prvni-kroky")
-		and on_disk.is_unlocked(1), "výsledek nabídne další misi; výhra je hned uložená na disku")
+	check(next.visible and next.text.contains("Schody") and on_disk.is_completed("dira-v-louce")
+		and on_disk.is_unlocked(1) and on_disk.stars(0) == 3 and stars.visible,
+		"výsledek ukáže 3 hvězdy a další misi; výhra je hned uložená na disku")
 	hud.menu_action.emit("next")
 	sim = game.get("_sim")
-	check(_app.game == game and sim.spec.title.begins_with("2 ·") and not hud.result_open(),
-		"Další spustí misi 2 ve stejné instanci hry")
+	check(_app.game == game and title.text == "2 · Schody na terasu" and not hud.result_open()
+		and hud.briefing.visible, "Další spustí misi 2 ve stejné instanci hry s úvodní kartou")
+	hud.briefing.close()
 	_step(game, 60)
 	var pressed := InputEventKey.new()
 	pressed.physical_keycode = KEY_ESCAPE
@@ -101,12 +113,12 @@ func _test_first_day() -> void:
 	check(hud.pause_menu_open() and game.get("_paused"), "Esc otevře pauzovací menu a zastaví čas")
 	var tick := sim.tick_count
 	_step(game, 20)
-	var digit := InputEventKey.new()
-	digit.physical_keycode = KEY_2
-	digit.pressed = true
-	game.call("_unhandled_input", digit)
-	check(sim.tick_count == tick and game.get("_selected_skill") == Lemming.Skill.CLIMBER,
-		"v pauzovacím menu čas stojí a klávesy dovedností nic nedělají")
+	var nuke := InputEventKey.new()
+	nuke.physical_keycode = KEY_N
+	nuke.pressed = true
+	game.call("_unhandled_input", nuke)
+	check(sim.tick_count == tick and not sim.nuking and not hud.confirmation_open(),
+		"v pauzovacím menu čas stojí a herní klávesy nic nedělají")
 	hud.menu_action.emit("resume")
 	check(not hud.pause_menu_open() and not game.get("_paused"),
 		"Pokračovat zavře menu a vrátí běh")
@@ -121,7 +133,7 @@ func _test_first_day() -> void:
 	await _frames(2)
 	var saved := Progress.load_from(_app.progress_path)
 	check(_app.game == null and menu.visible and menu.current_screen() == "main"
-		and saved.has_suspended() and saved.suspended["mission"] == "lezec-a-padak",
+		and saved.has_suspended() and saved.suspended["mission"] == "schody-na-terasu",
 		"Hlavní menu uvolní hru a rozehraný pokus mise 2 je uložený")
 	target = menu.continue_target()
 	check(target["resume"] and target["index"] == 1 and target["label"] == "Pokračovat",
@@ -164,12 +176,12 @@ func _test_next_day() -> void:
 	await _close_app()
 	await _open_app()
 	var progress := _app.progress
-	check(progress.load_status == SaveFile.Status.OK and progress.is_completed("prvni-kroky")
+	check(progress.load_status == SaveFile.Status.OK and progress.is_completed("dira-v-louce")
 		and progress.is_unlocked(1) and not progress.is_unlocked(2),
 		"další den: nová instance aplikace načte splněnou misi 1 a odemčenou misi 2")
 	_app.menu.show_levels()
 	var status := _app.menu.cards[0].get_node("Text/Status") as Label
-	check(status.text.begins_with("Splněno · nejlépe 20 z 20"),
+	check(status.text.begins_with("Nejlépe 10 z 10"),
 		"karta mise 1 ukazuje rekord: %s" % status.text)
 	_app.menu.show_main()
 	var target := _app.menu.continue_target()
@@ -179,9 +191,9 @@ func _test_next_day() -> void:
 	var sim: LevelSim = game.get("_sim")
 	check(game.get("_resumed") and sim.tick_count == int(stored["tick"]) and sim.tick_count > 0
 		and Progress.digest(sim) == stored["digest"] and game.get("_paused")
-		and not _app.progress.has_suspended(),
+		and not _app.progress.has_suspended() and not (game.get_node("Hud") as Hud).briefing.visible,
 		"Pokračovat obnoví misi 2 na stejném tiku (%d) se stejným stavem, v pauze" % sim.tick_count)
-	check(_app.progress.entry("lezec-a-padak")["plays"] == 1,
+	check(_app.progress.entry("schody-na-terasu")["plays"] == 1,
 		"obnovení rozehraného pokusu se nepočítá jako nový pokus")
 	(game.get_node("Hud") as Hud).menu_action.emit("main_menu")
 	await _frames(2)
@@ -190,10 +202,13 @@ func _test_next_day() -> void:
 func _test_settings_in_game() -> void:
 	var settings := _app.settings
 	settings.set_value("unlock_all", true)
-	_app.start_mission(4)
+	_app.start_playground()
 	await _frames(2)
 	var game := _game()
 	var hud: Hud = game.get_node("Hud")
+	check(game != null and (hud.get("_title") as Label).text == "Hřiště",
+		"Hřiště se spustí mimo kampaň (vývojové odemčení)")
+	hud.briefing.close()
 	var world: PaperWorld = game.get_node("PaperWorld")
 	settings.set_value("ui_scale", 1.3)
 	await _frames(2)
@@ -254,6 +269,9 @@ func _test_back_and_background() -> void:
 	await _frames(2)
 	var game := _game()
 	var hud: Hud = game.get_node("Hud")
+	game.propagate_notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	check(not hud.briefing.visible and not hud.pause_menu_open(),
+		"Zpět na úvodní kartě ji zavře a spustí misi")
 	_step(game, 40)
 	game.propagate_notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
 	check(hud.pause_menu_open(), "Zpět na Androidu otevře pauzovací menu")
@@ -262,7 +280,7 @@ func _test_back_and_background() -> void:
 	game.notification(Node.NOTIFICATION_APPLICATION_PAUSED)
 	var saved := Progress.load_from(_app.progress_path)
 	check(game.get("_paused") and saved.has_suspended()
-		and saved.suspended["mission"] == "prvni-kroky",
+		and saved.suspended["mission"] == "dira-v-louce",
 		"přechod na pozadí hru zastaví a rozehraný pokus hned uloží")
 	hud.menu_action.emit("levels")
 	await _frames(2)
@@ -281,22 +299,15 @@ func _test_back_and_background() -> void:
 	await _close_app()
 
 
-## Řešení mise 1 (razič, stavitel, kopáč) přes stejné příkazy jako hráč.
-func _solve_mission_one(game: Node, sim: LevelSim) -> void:
-	var bashed := false
-	var built := false
-	var dug := false
+## Referenční řešení mise přes stejné příkazy jako hráč (krok po kroku ve hře).
+func _solve(game: Node, sim: LevelSim, id: String) -> void:
+	var plan := ReferencePlans.plan_for(id)
+	var state := {}
 	for _t in 300 * SimConst.TICKS_PER_SECOND:
+		var before := sim.tick_count
 		_step(game, 1)
+		if sim.tick_count != before:
+			plan.call(sim, state)
 		if sim.finished:
 			_step(game, 1)
 			return
-		for lem in sim.lemmings:
-			if lem.removed or lem.state != Lemming.State.WALKER:
-				continue
-			if not bashed and lem.dir == 1 and lem.x >= 170 and lem.x <= 175:
-				bashed = sim.assign_skill(lem, Lemming.Skill.BASHER)
-			elif bashed and not built and lem.dir == 1 and lem.x >= 280 and lem.x <= 284:
-				built = sim.assign_skill(lem, Lemming.Skill.BUILDER)
-			elif built and not dug and lem.y <= 58 and lem.x >= 330 and lem.x <= 360:
-				dug = sim.assign_skill(lem, Lemming.Skill.DIGGER)

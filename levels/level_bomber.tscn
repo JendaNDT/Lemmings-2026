@@ -7,24 +7,25 @@
 
 [node name="Bomber" type="Node2D"]
 script = ExtResource("1_def")
-title = "4 · Cesta skrz zeď"
+title = "Cesta skrz zeď"
 level_id = "cesta-skrz-zed"
 size = Vector2i(400, 160)
-lemming_count = 4
-save_required = 3
+lemming_count = 12
+save_required = 9
 release_rate = 50
 time_limit_seconds = 180
+bombers = 2
 blockers = 1
-bombers = 1
+master_saved = 11
+difficulty_index = 42
+introduces = "Bombič"
+briefing = "Zeď je moc vysoká a není čím ji prorazit. Jeden lumík se musí obětovat."
+hints = PackedStringArray("Bombič vybuchne za 5 s a zničí terén kolem sebe.", "Zastav prvního lumíka u zdi blokařem a hned mu přiděl bombu.")
 
 [node name="Terrain" type="Node2D" parent="."]
 
-[node name="Shape0" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(0, 80, 400, 80, 400, 160, 0, 160)
-script = ExtResource("2_shape")
-
-[node name="Shape1" type="Polygon2D" parent="Terrain"]
-polygon = PackedVector2Array(170, 55, 180, 55, 180, 80, 170, 80)
+[node name="Ground" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 80, 90, 79, 170, 80, 170, 55, 174, 53, 180, 55, 180, 80, 260, 81, 400, 80, 400, 160, 0, 160)
 script = ExtResource("2_shape")
 
 [node name="Hatch" type="Marker2D" parent="."]

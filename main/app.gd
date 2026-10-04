@@ -31,6 +31,7 @@ func _ready() -> void:
 	add_child(_audio)
 	menu = MenuScreens.new(settings, progress)
 	menu.play_requested.connect(start_mission)
+	menu.playground_requested.connect(start_playground)
 	menu.quit_requested.connect(_quit)
 	menu.reset_requested.connect(_reset_progress)
 	menu.clicked.connect(func() -> void: _audio.play_ui("click"))
@@ -40,10 +41,23 @@ func _ready() -> void:
 
 ## Spustí misi z kampaně (index), případně obnoví její rozehraný pokus.
 func start_mission(index: int, resume := false) -> void:
-	if index < 0 or index >= Campaign.count() or game != null:
+	if index < 0 or index >= Campaign.count():
+		return
+	_start(Campaign.SCENES[index], resume)
+
+
+## Hřiště mimo kampaň (otevře se po kapitole I).
+func start_playground() -> void:
+	if progress.playground_unlocked(settings.unlock_all):
+		_start(Campaign.PLAYGROUND, false)
+
+
+func _start(scene: PackedScene, resume: bool) -> void:
+	if game != null:
 		return
 	game = GAME_SCENE.instantiate()
-	game.set("level_scene", Campaign.SCENES[index])
+	game.set("level_scene", scene)
+	game.set("show_briefing", true)
 	game.set("settings", settings)
 	game.set("progress", progress)
 	game.set("resume_suspended", resume)

@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://levels/level_01.tscn" id="1"]
 
 [node name="Playground" instance=ExtResource("1")]
-title = "5 · Všech osm dovedností"
+title = "Hřiště"
 level_id = "vsech-osm-dovednosti"
 climbers = 20
 floaters = 20
@@ -13,3 +13,7 @@ builders = 20
 bashers = 20
 miners = 20
 diggers = 20
+master_saved = 20
+introduces = "Všech osm dovedností"
+briefing = "Pískoviště bez tlaku: vyzkoušej si všechny dovednosti na mapě první zkoušky."
+hints = PackedStringArray()

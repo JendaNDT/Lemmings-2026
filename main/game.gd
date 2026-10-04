@@ -13,7 +13,7 @@ signal leave_requested(target: String)
 const MISSIONS := Campaign.SCENES
 
 ## Který level se hraje. Dá se přepnout v Inspectoru.
-@export var level_scene: PackedScene = Campaign.SCENES[0]
+@export var level_scene: PackedScene = preload("res://levels/level_01.tscn")
 ## Uzel vlastní prezentace (2D origami PaperWorld).
 ## Prázdná cesta = původní jednoduché 2D zobrazení pro porovnání.
 @export var presentation_path := NodePath()
@@ -23,6 +23,8 @@ var settings: GameSettings
 var progress: Progress
 ## Obnovit rozehraný pokus z `progress.suspended` (jen při prvním načtení).
 var resume_suspended := false
+## Na začátku mise ukázat úvodní kartu (spouští-li misi menu; testy a editor ne).
+var show_briefing := false
 var _sim: LevelSim
 var _level: LevelDefinition
 var _selected_skill := -1
@@ -59,6 +61,7 @@ func _ready() -> void:
 	_hud.settings = settings
 	_hud.menu_pressed.connect(_open_pause_menu)
 	_hud.menu_action.connect(_on_menu_action)
+	_hud.briefing.closed.connect(_on_briefing_closed)
 	_hud.skill_selected.connect(_select_skill)
 	_hud.release_rate_step.connect(_change_release_rate)
 	_hud.pause_pressed.connect(_toggle_pause)
@@ -86,7 +89,8 @@ func _ready() -> void:
 	_load_level()
 
 
-func _load_level() -> void:
+## Načte misi `level_scene`. `intro` = ukázat úvodní kartu (ne při restartu).
+func _load_level(intro := true) -> void:
 	_hud.close_nuke_confirmation()
 	_hud.close_pause_menu()
 	if _touch != null:
@@ -126,11 +130,15 @@ func _load_level() -> void:
 		_lemmings_view.setup(_sim)
 		_fx_view.clear()
 		_camera.setup(Vector2(spec.width, spec.height), focus)
-	_hud.setup(_sim)
+	_hud.setup(_sim, Campaign.display_title(_mission_id) if not _mission_id.is_empty() else "",
+		_level.hints)
 	_audio.setup(_sim, _logic_to_audio)
 
 	# Obnovený pokus začne v pauze, ať se hráč nejdřív rozkouká.
 	_paused = _resumed
+	if show_briefing and intro and not _resumed:
+		_paused = true
+		_hud.briefing.open(_briefing_data())
 	_fast = false
 	_accumulator = 0.0
 	_result_shown = false
@@ -186,6 +194,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		if escape:
 			_decide_nuke(false)
 		return
+	if _hud.briefing.visible:
+		if event is InputEventKey and event.pressed and not event.echo \
+				and event.physical_keycode in [KEY_ESCAPE, KEY_ENTER, KEY_SPACE, KEY_KP_ENTER]:
+			_hud.briefing.close()
+		return
 	if _hud.pause_menu_open() or _hud.result_open():
 		if escape and _hud.pause_menu_open():
 			_on_menu_action("resume")
@@ -231,8 +244,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _touch != null and not _result_shown and not _hud.confirmation_open() \
-			and not _hud.pause_menu_open():
+	if _touch != null and not _result_shown and not _overlay_open():
 		_touch.handle(event, get_viewport().get_visible_rect().size)
 
 
@@ -252,6 +264,8 @@ func _notification(what: int) -> void:
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if _hud.confirmation_open():
 			_decide_nuke(false)
+		elif _hud.briefing.visible:
+			_hud.briefing.close()
 		elif _hud.settings_open():
 			_hud.close_settings()
 		elif _hud.pause_menu_open():
@@ -263,8 +277,7 @@ func _notification(what: int) -> void:
 
 
 func _try_assign_touch(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open() \
-			or _hud.pause_menu_open():
+	if _selected_skill < 0 or _sim.finished or _overlay_open():
 		return
 	var best: Lemming = null
 	var best_distance := settings.tap_reach
@@ -285,8 +298,7 @@ func _try_assign_touch(screen_point: Vector2) -> void:
 
 
 func _try_assign(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished or _hud.confirmation_open() \
-			or _hud.pause_menu_open():
+	if _selected_skill < 0 or _sim.finished or _overlay_open():
 		return
 	var lem := _sim.find_lemming_at(logic_position(screen_point), _selected_skill)
 	if lem != null and not _sim.assign_skill(lem, _selected_skill):
@@ -348,7 +360,7 @@ func _toggle_sound() -> void:
 
 func _restart() -> void:
 	_audio.play_ui("click")
-	_load_level()
+	_load_level(false)
 
 
 func _choose_mission(index: int) -> void:
@@ -360,7 +372,7 @@ func _choose_mission(index: int) -> void:
 
 
 func _request_nuke() -> void:
-	if _sim.finished or _sim.nuking or _hud.confirmation_open() or _hud.pause_menu_open():
+	if _sim.finished or _sim.nuking or _overlay_open():
 		return
 	if not settings.confirm_nuke:
 		_sim.start_nuke()
@@ -386,7 +398,7 @@ func _decide_nuke(confirmed: bool) -> void:
 
 ## Pauzovací menu (tlačítko Menu, Esc, Zpět na Androidu). Čas stojí.
 func _open_pause_menu() -> void:
-	if _result_shown or _hud.confirmation_open() or _hud.pause_menu_open():
+	if _result_shown or _overlay_open():
 		return
 	_pause_before_menu = _paused
 	_paused = true
@@ -436,6 +448,9 @@ func _record_result() -> Dictionary:
 	var entry := progress.entry(_mission_id)
 	info["best_saved"] = entry["best_saved"]
 	info["best_ticks"] = entry["best_ticks"]
+	if Campaign.index_of(_mission_id) >= 0:
+		info["thresholds"] = Campaign.star_thresholds(Campaign.mission(
+			Campaign.index_of(_mission_id)))
 	var index := Campaign.index_of(_mission_id)
 	if index >= 0 and index + 1 < Campaign.count():
 		info["next_title"] = Campaign.mission(index + 1)["title"]
@@ -467,3 +482,36 @@ func _apply_settings() -> void:
 		_view.set_quality(settings.quality)
 	if _view.has_method("set_stop_motion"):
 		_view.set_stop_motion(settings.stop_motion)
+
+
+## Je otevřené okno, které patří HUDu (potvrzení, pauza, úvodní karta)?
+func _overlay_open() -> bool:
+	return _hud.confirmation_open() or _hud.pause_menu_open() or _hud.briefing.visible
+
+
+func _on_briefing_closed() -> void:
+	_paused = false
+	_audio.play_ui("resume")
+
+
+## Údaje pro úvodní kartu mise.
+func _briefing_data() -> Dictionary:
+	var spec := _sim.spec
+	var skills: Array = []
+	for skill: int in Lemming.SKILL_ORDER:
+		if int(spec.skills.get(skill, 0)) > 0:
+			skills.append([skill, int(spec.skills[skill])])
+	var data := {
+		"title": Campaign.display_title(_mission_id) if not _mission_id.is_empty() else spec.title,
+		"goal": "Cíl: zachraň %d z %d lumíků · čas %d:%02d" % [spec.save_required,
+			spec.lemming_count, floori(spec.time_limit_seconds / 60.0), spec.time_limit_seconds % 60],
+		"introduces": _level.introduces, "briefing": _level.briefing, "skills": skills,
+	}
+	var index := Campaign.index_of(_mission_id)
+	if index >= 0:
+		var info := Campaign.mission(index)
+		data["chapter"] = "Kapitola " + Campaign.chapter_title(Campaign.chapter_of(index))
+		data["tier"] = LevelDifficulty.tier(int(info["difficulty"]))
+		data["thresholds"] = Campaign.star_thresholds(info)
+		data["stars"] = progress.stars(index)
+	return data

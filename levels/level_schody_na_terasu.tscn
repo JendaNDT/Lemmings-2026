@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="SchodyNaTerasu" type="Node2D"]
+script = ExtResource("1_def")
+title = "Schody na terasu"
+level_id = "schody-na-terasu"
+size = Vector2i(360, 160)
+lemming_count = 12
+save_required = 7
+release_rate = 50
+time_limit_seconds = 180
+builders = 3
+master_saved = 12
+difficulty_index = 14
+introduces = "Stavitel"
+briefing = "Terasa s východem je o kousek výš, než lumík vyjde."
+hints = PackedStringArray("Lumík vyjde schod jen do 6 px – tenhle je vyšší.", "Stavitele přiděl kousek před stupněm. Schody stoupají pomalu: 12 cihel = 12 px.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Meadow" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 120, 60, 119, 130, 120, 190, 121, 230, 120, 230, 112, 290, 111, 360, 112, 360, 160, 0, 160)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(50, 95)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(320, 112)
+script = ExtResource("4_exit")

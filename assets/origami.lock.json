@@ -137,7 +137,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "47fc50f30d0a64133f521cf4af930527b7c4896090ebbb52511205cfbfebf180"
+      "sha256": "7d77ed2cb4a7cd1ef7a2225994eee27d960584dcc93db0fb882289bac3a97816"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -161,7 +161,7 @@
     },
     {
       "path": "assets/origami/source/build_ui.py",
-      "sha256": "c63dfc0f648a6f07ebf4bff1a763b4f1daa75d7bc13b161e2ee43d7e3558bf56"
+      "sha256": "f1313040ff18af98ad8ec5b06e6b83bc1089f6239574ea143b7e1b0bea9fefa1"
     },
     {
       "path": "assets/origami/source/palette.py",
@@ -212,6 +212,14 @@
       "sha256": "e34766937d25a84b5eb1ac4a8c4aa6215a4013a89e48742dfb0083669d84a6f6"
     },
     {
+      "path": "assets/origami/ui/icons/dot.svg",
+      "sha256": "148eaebc762239fd90bcec92d2b0d1aa197d8f14cd2f49a10737913acf9ef197"
+    },
+    {
+      "path": "assets/origami/ui/icons/dot_empty.svg",
+      "sha256": "bf932cde4034fbd395785fcd63fc87c64f1fe7f4ae02280dfd97398ff0eb19f8"
+    },
+    {
       "path": "assets/origami/ui/icons/floater.svg",
       "sha256": "69319a5f053b27373e9ed7cfa1bf05c8ed3b4551b4b9aab1edf1cc061da6675f"
     },
@@ -250,6 +258,14 @@
     {
       "path": "assets/origami/ui/icons/sound_on.svg",
       "sha256": "8582347d801a3081949b771f887855b89e06351246da660bea62cdfc7e57a587"
+    },
+    {
+      "path": "assets/origami/ui/icons/star.svg",
+      "sha256": "81df3b0e97a66527fe824eb1fc882bc8d85f1771b7efe257bbad4b2d7707e7e5"
+    },
+    {
+      "path": "assets/origami/ui/icons/star_empty.svg",
+      "sha256": "7a1b8aac8285dc937bc9bf6001fab3d8201a408e1b2356ca7498009af3535452"
     },
     {
       "path": "assets/origami/ui/label.png",

@@ -459,8 +459,9 @@ func _test_other_missions(scene: PackedScene) -> void:
 	world.camera.input_enabled = false
 	var hud: Hud = game.get_node("Hud")
 	var levels := ["climb_float", "miner", "bomber"]
+	var ids := ["lezec-a-padak", "sikmy-tunel", "cesta-skrz-zed"]
 	for index in [1, 2, 3]:
-		game.call("_choose_mission", index)
+		game.call("_choose_mission", Campaign.index_of(ids[index - 1]))
 		var sim: LevelSim = game.get("_sim")
 		var assigned := false
 		var frames := 0
@@ -508,9 +509,9 @@ func _test_hazard_mission(scene: PackedScene) -> void:
 	var world: PaperWorld = game.get_node("PaperWorld")
 	world.camera.input_enabled = false
 	var hud: Hud = game.get_node("Hud")
-	game.call("_choose_mission", 5)
+	game.call("_choose_mission", Campaign.index_of("voda-lava-past"))
 	var sim: LevelSim = game.get("_sim")
-	check(sim.spec.title.begins_with("6 ·") and sim.spec.traps.size() == 1
+	check(sim.spec.title == "Voda, láva a past" and sim.spec.traps.size() == 1
 		and world.terrain.hazard_rect.has_point(Vector2i(240, 110))
 		and world.terrain.hazard_rect.has_point(Vector2i(390, 110)),
 		"mise 6 se načte s pastí a oblastí vody i lávy pro přední vrstvu")
@@ -679,7 +680,7 @@ func _test_living_scene(scene: PackedScene) -> void:
 	game.set_process(false)
 	var world: PaperWorld = game.get_node("PaperWorld")
 	world.camera.input_enabled = false
-	game.call("_choose_mission", 0)
+	game.call("_choose_mission", Campaign.index_of("prvni-kroky"))
 	var sim: LevelSim = game.get("_sim")
 	check(is_equal_approx(world.camera.zoom_factor, 2.0),
 		"výchozí pohled je bližší, postavy jsou čitelné bez přibližování")

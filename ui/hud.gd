@@ -47,6 +47,8 @@ const SKILL_GAP := 6.0
 
 ## Nastavení hráče (pro obrazovku nastavení v pauze); nastaví hra.
 var settings: GameSettings
+## Úvodní karta mise (otevírá ji hra na začátku mise).
+var briefing: BriefingCard
 ## Velikost rozhraní (1.0 = návrhová); lišty se zvětší, herní plocha zmenší.
 var ui_scale := 1.0
 var _sim: LevelSim
@@ -66,7 +68,12 @@ var _confirm_layer: Panel
 var _pause_layer: Panel
 var _pause_subtitle: Label
 var _settings_panel: SettingsPanel
+var _hint_button: Button
+var _hint_label: Label
+var _hints := PackedStringArray()
+var _hint_index := 0
 var _result_layer: Control
+var _result_stars: CenterContainer
 var _result_title: Label
 var _result_text: Label
 var _result_note: Label
@@ -84,12 +91,19 @@ func _ready() -> void:
 	_fit()
 
 
-func setup(sim: LevelSim) -> void:
+## Nová mise: `title` s číslem z kampaně (prázdný = název z levelu),
+## `hints` pro nápovědu v pauzovacím menu (od obecné po konkrétní).
+func setup(sim: LevelSim, title := "", hints := PackedStringArray()) -> void:
 	_sim = sim
 	_result_layer.visible = false
 	_pause_layer.visible = false
-	_title.text = sim.spec.title
-	_pause_subtitle.text = sim.spec.title
+	_title.text = title if not title.is_empty() else sim.spec.title
+	_pause_subtitle.text = _title.text
+	_hints = hints
+	_hint_index = 0
+	_hint_button.visible = not hints.is_empty()
+	_hint_button.text = "Nápověda"
+	_hint_label.visible = false
 	for child in _skills_box.get_children():
 		child.free()
 	_skill_widgets.clear()
@@ -137,12 +151,22 @@ func refresh(paused: bool, speed: float) -> void:
 	_pause_button.text = "Pokračuj" if paused else "Pauza"
 	_speed_button.text = "%d×" % roundi(speed)
 	_nuke_button.disabled = _sim.finished or _sim.nuking
-	_nuke_button.text = "Odpočet…" if _sim.nuking else "Ukončit"
+	_nuke_button.text = "Odpočet…" if _sim.nuking else "Odpálit vše"
 	for skill: int in _skill_widgets:
 		(_skill_widgets[skill]["button"] as Button).disabled = \
 			_sim.finished or int(_sim.skills.get(skill, 0)) <= 0
 	if _fps_tab.visible:
 		_fps.text = "%d FPS" % roundi(Engine.get_frames_per_second())
+
+
+## Další nápověda v pauzovacím menu (postupně, poslední zůstane).
+func _show_next_hint() -> void:
+	if _hints.is_empty():
+		return
+	_hint_label.text = "Tip %d/%d: %s" % [_hint_index + 1, _hints.size(), _hints[_hint_index]]
+	_hint_label.visible = true
+	_hint_index = mini(_hint_index + 1, _hints.size() - 1)
+	_hint_button.text = "Další tip" if _hint_index < _hints.size() - 1 else "Nápověda"
 
 
 ## Ikona tlačítka zvuku: reproduktor s vlnkami, nebo přeškrtnutý.
@@ -219,7 +243,8 @@ func close_settings() -> void:
 
 
 ## Okno výsledku. `info`: {"next_title", "best_saved", "best_ticks", "first_win",
-## "new_best", "unlocked_next"} – vše volitelné (bez kampaně jen základ).
+## "new_best", "unlocked_next", "stars", "stars_before", "thresholds", "fails"}
+## – vše volitelné (bez kampaně jen základ).
 func show_result(sim: LevelSim, info := {}) -> void:
 	_result_layer.visible = true
 	_pause_layer.visible = false
@@ -241,6 +266,25 @@ func show_result(sim: LevelSim, info := {}) -> void:
 	if int(info.get("best_saved", 0)) > 0:
 		notes.append("Nejlepší výsledek: %d z %d za %s" % [int(info["best_saved"]),
 			sim.spec.lemming_count, PaperUi.format_ticks(int(info.get("best_ticks", 0)))])
+	var thresholds: Array = info.get("thresholds", [])
+	var stars := int(info.get("stars", 0))
+	for child in _result_stars.get_children():
+		child.free()
+	_result_stars.visible = thresholds.size() == 3
+	if _result_stars.visible:
+		_result_stars.add_child(PaperUi.stars_row(Campaign.stars_for(
+			{"required": thresholds[0], "master": thresholds[2]}, sim.saved), 40.0))
+		if stars > int(info.get("stars_before", 0)) and won:
+			notes.append("Nová hvězda!")
+		var next_star := -1
+		for limit: int in thresholds:
+			if sim.saved < limit:
+				next_star = limit
+				break
+		if next_star > 0 and won:
+			notes.append("Další hvězda za %d zachráněných." % next_star)
+	if not won and int(info.get("fails", 0)) >= 2 and not _hints.is_empty():
+		notes.append("Tip: " + _hints[0])
 	_result_note.text = "\n".join(notes)
 	_result_note.visible = not notes.is_empty()
 	var next_title: String = info.get("next_title", "")
@@ -302,6 +346,7 @@ func _build() -> void:
 
 	_build_result()
 	_build_pause_menu()
+	_build_briefing()
 	_build_confirmation()
 
 
@@ -335,8 +380,8 @@ func _build_controls(rows: VBoxContainer) -> void:
 	var restart := PaperUi.button("Znovu", Vector2(96, 44))
 	restart.pressed.connect(func() -> void: restart_pressed.emit())
 	row.add_child(restart)
-	_nuke_button = PaperUi.button("Ukončit", Vector2(112, 44))
-	_nuke_button.tooltip_text = "Zavře líheň a spustí postupné odpočty bomb."
+	_nuke_button = PaperUi.button("Odpálit vše", Vector2(140, 44))
+	_nuke_button.tooltip_text = "Zavře líheň a spustí postupné odpočty bomb (N)."
 	_nuke_button.pressed.connect(func() -> void: nuke_requested.emit())
 	row.add_child(_nuke_button)
 	_sound_button = PaperUi.button("", Vector2(56, 44), "sound_on")
@@ -353,11 +398,16 @@ func _build_result() -> void:
 	_result_title = PaperUi.label("", 40, ACCENT)
 	_result_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_result_title)
+	_result_stars = CenterContainer.new()
+	_result_stars.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(_result_stars)
 	_result_text = PaperUi.label("", 22, INK)
 	_result_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	col.add_child(_result_text)
 	_result_note = PaperUi.label("", 19, INK_DIM)
 	_result_note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_result_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_result_note.custom_minimum_size.x = 500
 	col.add_child(_result_note)
 	_next_button = PaperUi.button("Další mise", Vector2(0, 60), "next")
 	_next_button.pressed.connect(func() -> void: menu_action.emit("next"))
@@ -396,14 +446,28 @@ func _build_pause_menu() -> void:
 		else:
 			button.pressed.connect(func() -> void: menu_action.emit(action))
 		col.add_child(button)
+	_hint_button = PaperUi.button("Nápověda", Vector2(400, 50))
+	_hint_button.pressed.connect(_show_next_hint)
+	col.add_child(_hint_button)
+	_hint_label = PaperUi.label("", 18, INK)
+	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_hint_label.custom_minimum_size.x = 400
+	_hint_label.visible = false
+	col.add_child(_hint_label)
+	_hint_button.visible = false
 	_pause_layer.hide()
+
+
+func _build_briefing() -> void:
+	briefing = BriefingCard.new()
+	_root.add_child(briefing)
 
 
 func _build_confirmation() -> void:
 	_confirm_layer = PaperUi.overlay(0.7)
 	_root.add_child(_confirm_layer)
 	var col := PaperUi.dialog(_confirm_layer, 0.0)
-	col.add_child(PaperUi.label("Ukončit pokus?", 30, INK))
+	col.add_child(PaperUi.label("Odpálit všechny?", 30, INK))
 	col.add_child(PaperUi.label("Líheň se zavře a lumíkům začne odpočet bomby.\n"
 		+ "Dosavadní záchrany zůstanou započítané.", 20, INK))
 	var cancel := PaperUi.button("Pokračovat ve hře", Vector2(460, 56))

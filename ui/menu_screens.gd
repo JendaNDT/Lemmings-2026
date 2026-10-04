@@ -5,6 +5,8 @@ extends CanvasLayer
 
 ## Hrát misi; `resume` = obnovit rozehraný pokus z postupu.
 signal play_requested(index: int, resume: bool)
+## Hrát Hřiště (pískoviště mimo kampaň).
+signal playground_requested
 signal quit_requested
 ## Hráč potvrdil smazání postupu.
 signal reset_requested
@@ -25,6 +27,9 @@ var _continue_title: Label
 var _continue_note: Label
 var _summary: Label
 var _grid: GridContainer
+var _chapter := 0
+var _chapter_tabs: Array[Button] = []
+var _playground_button: Button
 
 
 func _init(game_settings: GameSettings, player_progress: Progress) -> void:
@@ -67,6 +72,8 @@ func show_main() -> void:
 
 func show_levels() -> void:
 	close_settings()
+	# Otevřít kapitolu, ve které hráč právě je.
+	_chapter = maxi(0, Campaign.chapter_of(continue_target()["index"]))
 	refresh()
 	_main.hide()
 	_levels.show()
@@ -106,16 +113,31 @@ func refresh() -> void:
 	if _continue == null:
 		return
 	var target := continue_target()
-	var info := Campaign.mission(target["index"])
+	var title := Campaign.display_title(Campaign.mission(target["index"])["id"])
 	_continue_title.text = target["label"]
 	if target["resume"]:
-		_continue_note.text = "Rozehráno: %s (%s)" % [info["title"],
+		_continue_note.text = "Rozehráno: %s (%s)" % [title,
 			PaperUi.format_ticks(int(progress.suspended["tick"]))]
 	else:
-		_continue_note.text = info["title"]
+		_continue_note.text = title
 	for i in cards.size():
 		_fill_card(cards[i], i)
-	_summary.text = "Splněno %d z %d misí" % [progress.completed_count(), Campaign.count()]
+		cards[i].visible = Campaign.chapter_of(i) == _chapter
+	var total := 0
+	for c in Campaign.CHAPTERS.size():
+		var stars := progress.chapter_stars(c)
+		total += stars[0]
+		_chapter_tabs[c].text = "%s · %d/%d" % [Campaign.chapter_title(c), stars[0], stars[1]]
+		_chapter_tabs[c].set_pressed_no_signal(c == _chapter)
+	_summary.text = "Hvězdy %d / %d" % [total, Campaign.count() * 3]
+	_playground_button.disabled = not progress.playground_unlocked(settings.unlock_all)
+	_playground_button.tooltip_text = "Hřiště se otevře po splnění kapitoly I." \
+		if _playground_button.disabled else "Pískoviště se všemi dovednostmi."
+
+
+func show_chapter(chapter: int) -> void:
+	_chapter = clampi(chapter, 0, Campaign.CHAPTERS.size() - 1)
+	refresh()
 
 
 ## Kam vede hlavní tlačítko: {"index", "resume", "label"}.
@@ -247,8 +269,32 @@ func _build_levels() -> void:
 	head.add_child(PaperUi.spacer())
 	_summary = PaperUi.label("", 20, PaperUi.TEXT_DIM)
 	head.add_child(_summary)
+	# Kapitoly jako záložky; Hřiště vedle nich.
+	var tabs := HBoxContainer.new()
+	tabs.add_theme_constant_override("separation", 8)
+	col.add_child(tabs)
+	var group := ButtonGroup.new()
+	for c in Campaign.CHAPTERS.size():
+		var tab := PaperUi.button(Campaign.chapter_title(c), Vector2(0, 48))
+		tab.add_theme_font_size_override("font_size", 18)
+		tab.toggle_mode = true
+		tab.button_group = group
+		tab.pressed.connect(func() -> void:
+			clicked.emit()
+			show_chapter(c))
+		tabs.add_child(tab)
+		_chapter_tabs.append(tab)
+	tabs.add_child(PaperUi.spacer())
+	_playground_button = PaperUi.button("Hřiště", Vector2(150, 48), "play")
+	_playground_button.add_theme_font_size_override("font_size", 18)
+	_playground_button.pressed.connect(func() -> void:
+		clicked.emit()
+		playground_requested.emit())
+	tabs.add_child(_playground_button)
 	_grid = GridContainer.new()
 	_grid.columns = 3
+	# Stejná šířka i pro kapitolu s jedinou misí (3 karty + mezery).
+	_grid.custom_minimum_size = Vector2(3 * 300 + 2 * 14, 0)
 	_grid.add_theme_constant_override("h_separation", 14)
 	_grid.add_theme_constant_override("v_separation", 14)
 	col.add_child(_grid)
@@ -275,10 +321,16 @@ func _make_card(index: int) -> Button:
 	title.name = "Title"
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	col.add_child(title)
-	var status := PaperUi.label("", 18, PaperUi.INK_DIM)
+	var status := PaperUi.label("", 17, PaperUi.INK_DIM)
 	status.name = "Status"
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	col.add_child(status)
+	# Dole hvězdy a tečky obtížnosti (vyplní _fill_card).
+	var marks := HBoxContainer.new()
+	marks.name = "Marks"
+	marks.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(marks)
+	PaperUi.place(marks, 0.0, 1.0, 1.0, 1.0, 18.0, -40.0, -62.0, -12.0)
 	var badge := TextureRect.new()
 	badge.name = "Badge"
 	badge.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -295,21 +347,29 @@ func _fill_card(card: Button, index: int) -> void:
 	var entry := progress.entry(id)
 	var unlocked := progress.is_unlocked(index, settings.unlock_all)
 	card.disabled = not unlocked
-	(card.get_node("Text/Title") as Label).text = info["title"]
+	(card.get_node("Text/Title") as Label).text = Campaign.display_title(id)
 	var status := card.get_node("Text/Status") as Label
 	var badge := card.get_node("Badge") as TextureRect
+	var marks := card.get_node("Marks") as HBoxContainer
+	for child in marks.get_children():
+		child.free()
+	if unlocked:
+		marks.add_child(PaperUi.stars_row(progress.stars(index), 22.0))
+		marks.add_child(PaperUi.spacer())
+		marks.add_child(PaperUi.tier_row(LevelDifficulty.tier(int(info["difficulty"])), 11.0))
 	if not unlocked:
 		status.text = "Zamčeno – nejdřív splň předchozí misi."
 		badge.texture = PaperUi.icon("lock")
-	elif entry["completed"]:
-		status.text = "Splněno · nejlépe %d z %d (%s)" % [int(entry["best_saved"]),
+		return
+	if entry["completed"]:
+		status.text = "Nejlépe %d z %d (%s)" % [int(entry["best_saved"]),
 			int(info["lemmings"]), PaperUi.format_ticks(int(entry["best_ticks"]))]
 		badge.texture = PaperUi.icon("check")
 	else:
 		status.text = "Zachraň %d z %d" % [int(info["required"]), int(info["lemmings"])]
 		badge.texture = null
 	if progress.has_suspended() and progress.suspended["mission"] == id:
-		status.text += "\nRozehráno – pokračuje se"
+		status.text += " · rozehráno"
 
 
 func _fit() -> void:

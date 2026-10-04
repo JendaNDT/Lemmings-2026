@@ -9,6 +9,12 @@ extends RefCounted
 ## id mise → plán (Callable), nebo prázdný Callable, když plán chybí.
 static func plan_for(id: String) -> Callable:
 	match id:
+		"dira-v-louce":
+			return _first_hole
+		"schody-na-terasu":
+			return _terrace
+		"hlidka-u-srazu":
+			return _cliff_guard
 		"prvni-kroky", "vsech-osm-dovednosti":
 			return _first_steps
 		"lezec-a-padak":
@@ -20,6 +26,34 @@ static func plan_for(id: String) -> Callable:
 		"voda-lava-past":
 			return _hazards
 	return Callable()
+
+
+## První chodec na louce (x ≥ 100) prokope díru do jeskyně.
+static func _first_hole(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if not s.get("done", false) and not lem.removed and lem.state == Lemming.State.WALKER \
+				and lem.x >= 100:
+			s["done"] = sim.assign_skill(lem, Lemming.Skill.DIGGER)
+
+
+## Stavitel 16 px před stupněm terasy (x = 214, směr doprava).
+static func _terrace(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if not s.get("done", false) and not lem.removed and lem.state == Lemming.State.WALKER \
+				and lem.dir == 1 and lem.x == 214:
+			s["done"] = sim.assign_skill(lem, Lemming.Skill.BUILDER)
+
+
+## Blokař před srázem (x ≥ 290), kopáč u prvního lumíka, který se od něj vrací.
+static func _cliff_guard(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER:
+			continue
+		if not s.get("blocked", false) and lem.dir == 1 and lem.x >= 290:
+			s["blocked"] = sim.assign_skill(lem, Lemming.Skill.BLOCKER)
+		elif s.get("blocked", false) and not s.get("dug", false) and lem.dir == -1 \
+				and lem.x <= 200:
+			s["dug"] = sim.assign_skill(lem, Lemming.Skill.DIGGER)
 
 
 ## Razič prorazí sloup, stavitel postaví schody na útes, kopáč prokope do jeskyně.

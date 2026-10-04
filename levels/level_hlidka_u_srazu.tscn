@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="HlidkaUSrazu" type="Node2D"]
+script = ExtResource("1_def")
+title = "Hlídka u srázu"
+level_id = "hlidka-u-srazu"
+size = Vector2i(420, 180)
+lemming_count = 15
+save_required = 11
+release_rate = 50
+time_limit_seconds = 180
+blockers = 2
+diggers = 2
+master_saved = 14
+difficulty_index = 23
+introduces = "Blokař"
+briefing = "Líheň je kousek od srázu. Než prokopeš cestu do jeskyně, dav potřebuje hlídku."
+hints = PackedStringArray("Blokař zastaví ostatní a obrací je zpátky. Zůstane stát až do konce.", "Nejdřív blokaře mezi líheň a sráz, pak kopáče vlevo od něj.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Plateau" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 90, 80, 89, 160, 91, 240, 90, 320, 90, 320, 180, 300, 180, 300, 120, 200, 121, 100, 119, 0, 120)
+script = ExtResource("2_shape")
+
+[node name="CaveFloor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 142, 90, 141, 180, 143, 300, 142, 300, 180, 0, 180)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(240, 65)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(80, 142)
+script = ExtResource("4_exit")

@@ -38,6 +38,19 @@ extends Node2D
 @export_range(0, 99) var miners := 0
 @export_range(0, 99) var diggers := 0
 
+@export_group("Kampaň")
+## Mistrovský výsledek (★★★): kolik lumíků zachrání referenční řešení
+## (tests/reference_plans.gd). Musí být víc než cíl mise.
+@export_range(0, 200) var master_saved := 0
+## Změřený index obtížnosti 0–100 (scripts/difficulty_report.gd); určuje pásmo.
+@export_range(0, 100) var difficulty_index := 0
+## Co mise nově učí – štítek na úvodní kartě (např. „Kopáč“).
+@export var introduces := ""
+## Krátký úvod na úvodní kartě mise.
+@export_multiline var briefing := ""
+## Nápovědy od obecné po konkrétní (pauzovací menu, po opakovaném neúspěchu).
+@export var hints: PackedStringArray = []
+
 
 func skill_counts() -> Dictionary:
 	return {

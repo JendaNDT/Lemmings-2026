@@ -130,18 +130,38 @@ func _test_settings() -> void:
 func _test_campaign() -> void:
 	var list := Campaign.missions()
 	var ids := {}
-	var ok := list.size() == Campaign.count() and list.size() >= 6
+	var ok := list.size() == Campaign.count() and list.size() >= 8
 	for i in list.size():
 		var info: Dictionary = list[i]
 		var level := (info["scene"] as PackedScene).instantiate() as LevelDefinition
 		ok = ok and LevelValidator.is_valid_id(info["id"]) and not ids.has(info["id"]) \
 			and info["id"] == level.level_id and info["title"] == level.title \
-			and info["lemmings"] == level.lemming_count and info["required"] == level.save_required
+			and info["lemmings"] == level.lemming_count and info["required"] == level.save_required \
+			and info["master"] > info["required"] and not level.title.contains("·") \
+			and not level.briefing.is_empty() and not level.hints.is_empty()
 		ids[info["id"]] = true
 		level.free()
-	check(ok, "každá mise má platný a jedinečný identifikátor, kampaň čte údaje přímo ze scén")
-	check(Campaign.index_of("voda-lava-past") == 5 and Campaign.index_of("neexistuje") == -1,
+	check(ok, "každá mise má jedinečné id, mistrovský výsledek nad cílem, úvod a nápovědu; "
+		+ "kampaň čte údaje přímo ze scén")
+	check(Campaign.index_of("voda-lava-past") == 7 and Campaign.index_of("neexistuje") == -1,
 		"mise se dohledá podle identifikátoru")
+	var covered := 0
+	for c in Campaign.CHAPTERS.size():
+		check(int(Campaign.CHAPTERS[c][2]) == covered, "kapitola %s navazuje bez mezery" % [
+			Campaign.CHAPTERS[c][0]])
+		covered += int(Campaign.CHAPTERS[c][3])
+	check(covered == Campaign.count() and Campaign.chapter_of(0) == 0
+		and Campaign.chapter_of(Campaign.index_of("voda-lava-past")) == 2,
+		"kapitoly pokrývají celou kampaň")
+	check(Campaign.display_title("sikmy-tunel") == "3 · Šikmý tunel"
+		and Campaign.display_title(Campaign.playground()["id"]) == "Hřiště"
+		and Campaign.index_of(Campaign.playground()["id"]) == -1,
+		"číslo mise se dopočítá z pořadí; Hřiště je mimo kampaň a bez čísla")
+	var hole := Campaign.mission(0)
+	check(Campaign.star_thresholds(hole) == [7, 9, 10] and Campaign.stars_for(hole, 6) == 0
+		and Campaign.stars_for(hole, 8) == 1 and Campaign.stars_for(hole, 9) == 2
+		and Campaign.stars_for(hole, 10) == 3,
+		"hvězdy: cíl 7, polovina cesty 9, mistrovský výsledek 10")
 
 
 func _test_progress() -> void:
@@ -150,30 +170,47 @@ func _test_progress() -> void:
 	check(progress.is_unlocked(0) and not progress.is_unlocked(1)
 		and progress.next_mission_index() == 0, "na začátku je otevřená jen první mise")
 	check(progress.is_unlocked(5, true), "vývojová volba otevře všechny mise")
-	progress.record_start("prvni-kroky")
-	var lost := progress.record_result("prvni-kroky", 5, false, 900)
-	check(not lost["first_win"] and not progress.is_unlocked(1) and progress.entry("prvni-kroky")
-		["plays"] == 1, "prohra nic neodemkne, ale započítá pokus")
-	var won := progress.record_result("prvni-kroky", 15, true, 2000)
+	progress.record_start("dira-v-louce")
+	var lost := progress.record_result("dira-v-louce", 5, false, 900)
+	check(not lost["first_win"] and not progress.is_unlocked(1) and lost["fails"] == 1
+		and progress.entry("dira-v-louce")["plays"] == 1,
+		"prohra nic neodemkne, ale započítá pokus a neúspěch")
+	var won := progress.record_result("dira-v-louce", 8, true, 2000)
 	check(won["first_win"] and won["unlocked_next"] and progress.is_unlocked(1)
-		and progress.next_mission_index() == 1, "první výhra splní misi a odemkne další")
-	var better := progress.record_result("prvni-kroky", 18, true, 2500)
-	var faster := progress.record_result("prvni-kroky", 18, true, 1800)
-	var worse := progress.record_result("prvni-kroky", 12, true, 900)
-	var entry := progress.entry("prvni-kroky")
-	check(better["new_best"] and faster["new_best"] and not worse["new_best"]
-		and entry["best_saved"] == 18 and entry["best_ticks"] == 1800 and entry["wins"] == 4,
-		"rekord: víc zachráněných, při shodě rychlejší čas")
+		and progress.next_mission_index() == 1 and won["stars"] == 1 and won["stars_before"] == 0,
+		"první výhra splní misi, odemkne další a dá první hvězdu")
+	var better := progress.record_result("dira-v-louce", 10, true, 2500)
+	var faster := progress.record_result("dira-v-louce", 10, true, 1800)
+	var worse := progress.record_result("dira-v-louce", 7, true, 900)
+	var entry := progress.entry("dira-v-louce")
+	check(better["new_best"] and better["stars"] == 3 and faster["new_best"]
+		and not worse["new_best"] and entry["best_saved"] == 10 and entry["best_ticks"] == 1800
+		and entry["wins"] == 4, "rekord: víc zachráněných, při shodě rychlejší čas")
+	check(progress.stars(0) == 3 and progress.chapter_stars(0) == [3, 18],
+		"hvězdy mise i součet kapitoly")
 	progress.save()
 	var again := Progress.load_from(path)
 	check(again.load_status == SaveFile.Status.OK and again.to_dict() == progress.to_dict()
-		and again.last_mission == "prvni-kroky", "postup se uloží a po novém spuštění načte")
+		and again.last_mission == "dira-v-louce", "postup se uloží a po novém spuštění načte")
 	var odd := Progress.new()
 	odd.from_dict({"missions": {"prvni-kroky": {"completed": "ano", "best_saved": -4,
 		"plays": "x"}, "7": 5}, "last_mission": 3, "suspended": {"mission": "x"}})
 	check(not odd.is_completed("prvni-kroky") and odd.entry("prvni-kroky")["best_saved"] == 0
 		and odd.missions.size() == 1 and odd.last_mission == "" and not odd.has_suspended(),
 		"poškozené položky postupu se vyčistí")
+	# Hráč, který už splnil „První kroky“ (dřív mise 1, teď 6), nezůstane zamčený.
+	var veteran := Progress.new()
+	veteran.record_result("prvni-kroky", 20, true, 1000)
+	var open := true
+	for i in 7:
+		open = open and veteran.is_unlocked(i)
+	check(open and not veteran.is_unlocked(7) and veteran.furthest_completed() == 5,
+		"vložené mise před splněnou misí zůstanou otevřené (vše do nejdál splněné + 1)")
+	check(not veteran.playground_unlocked(), "Hřiště je zamčené, dokud není celá kapitola I")
+	for i in Campaign.chapter_indices(0):
+		veteran.record_result(Campaign.mission(i)["id"], 20, true, 1000)
+	check(veteran.playground_unlocked() and veteran.playground_unlocked(false),
+		"po splnění kapitoly I se otevře Hřiště")
 	again.reset()
 	check(again.missions.is_empty() and not FileAccess.file_exists(path),
 		"smazání postupu vymaže výsledky i soubor")
@@ -181,7 +218,7 @@ func _test_progress() -> void:
 
 func _test_suspend() -> void:
 	var path := _path("suspend.json")
-	var scene := Campaign.SCENES[3]
+	var scene := Campaign.SCENES[Campaign.index_of("cesta-skrz-zed")]
 	var sim := _mission_sim(scene)
 	for _t in 140:
 		sim.tick()
