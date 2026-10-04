@@ -1,27 +1,29 @@
-# Android demo 0.12.0
+# Android demo 0.13.0
 
-Vývojové APK s **vlastním vzhledem každé kapitoly** (louka, skalní les,
-sopka s jiskrami, bouřka s deštěm a blesky), **přetočením o 5 s**,
-pomocníky (krok o tik, zpomalení ½×, ukázka řešení každé mise) a **celou kampaní – 20 misí ve čtyřech kapitolách**
+Vývojové APK s **přeletem mapy** na začátku mise (kamera ukáže východ
+a přeletí k líhni) a **šipkou k východu** mimo záběr, vlastním vzhledem
+každé kapitoly (louka, skalní les, sopka s jiskrami, bouřka s deštěm
+a blesky), přetočením o 5 s, pomocníky (krok o tik, zpomalení ½×, ukázka
+řešení každé mise) a **celou kampaní – 20 misí ve čtyřech kapitolách**
 s hvězdami, úvodními kartami misí, nápovědou a Hřištěm (etapa 9), dále
 menu, ukládáním postupu, origami grafikou a zvuky. Hudba přijde později.
 Popis změn: [etapa 9](ETAPA_9_OVERENI.md), [herní design](HERNI_DESIGN.md),
 [etapa 6](ETAPA_6_OVERENI.md), [zvuky](ZVUK.md).
 
-![Vzhled kapitol z herních souborů APK 0.12.0: louka (I), skalní les (II), sopka s jiskrami (III) a bouřka s deštěm (IV), v liště tlačítko −5 s (Linux, ne telefon)](images/android-0.12.0.jpg)
+![Přelet mapy z herních souborů APK 0.13.0: štítek Východ, let k líhni, šipka k východu za hry a přelet v profilu 20 : 9 (Linux, ne telefon)](images/android-0.13.0.jpg)
 
 ## Stažení a instalace
 
-[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.12.0/android/Lemmings-2026-Android-0.12.0.apk) (68 MiB).
+[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.13.0/android/Lemmings-2026-Android-0.13.0.apk) (68 MiB).
 
-Soubor `Lemmings-2026-Android-0.12.0.apk` je v samostatné větvi
-`downloads/android-0.12.0`, spolu s návodem a SHA-256 kontrolním součtem.
-Starší APK zůstávají ve větvích `downloads/android-0.11.0` a dřívějších.
+Soubor `Lemmings-2026-Android-0.13.0.apk` je v samostatné větvi
+`downloads/android-0.13.0`, spolu s návodem a SHA-256 kontrolním součtem.
+Starší APK zůstávají ve větvích `downloads/android-0.12.0` a dřívějších.
 Stáhnout na telefon nebo tablet, otevřít a případně povolit instalaci
 z použitého prohlížeče či správce souborů. Hra se jmenuje
 **Lemmings 2026 Demo** a běží na šířku.
 
-**Aktualizace z 0.5.0 až 0.11.0** proběhne přímo (stejný testovací
+**Aktualizace z 0.5.0 až 0.12.0** proběhne přímo (stejný testovací
 podpis) a uložený postup i hvězdy zůstanou. Z verze 0.4.0 a starší je potřeba
 nejdřív odinstalovat (jiný podpis).
 
@@ -32,14 +34,14 @@ má otevřené i nové mise před ní. Všechny mise hned otevře
 
 - Android 7.0 / API 24 a novější, OpenGL ES 3.0.
 - Architektury `arm64-v8a` a `armeabi-v7a` v jednom APK.
-- Verze 0.12.0, versionCode 13, balíček `org.lemmings2026.demo`.
+- Verze 0.13.0, versionCode 14, balíček `org.lemmings2026.demo`.
 - Target SDK 36; aplikace nepožaduje žádná Android oprávnění.
 - Testovací podpis, schémata v2/v3. Není určený pro vydání do Google Play;
   soukromý klíč je mimo repozitář i předávané artefakty.
-  Certifikát SHA-256 (stejný jako 0.5.0–0.11.0, ověřuje ho export):
+  Certifikát SHA-256 (stejný jako 0.5.0–0.12.0, ověřuje ho export):
   `fdb924fa25c6dfec478caa66dd8ba03ec91909d475de240d9213a50f6681407f`.
 
-SHA-256 APK: `55375193cbfdc7925e6dc818fa90ead10e2d0d75994f8c55f9e012b6bf4ce850`.
+SHA-256 APK: `814121fe7d0469582338796cd39b8914c2b0ddd5b58010e975dbb701f38ee527`.
 
 ## Ovládání a profil
 
@@ -48,6 +50,11 @@ Tlačítko **Zpět** v menu vrací o úroveň výš a z hlavního menu aplikaci
 zavře; ve hře otevře pauzovací menu (Pokračovat, Začít znovu, Nastavení,
 Výběr misí, Hlavní menu). Postup, nastavení a rozehraná mise se ukládají
 i při přechodu aplikace na pozadí.
+
+Po úvodní kartě začne **přelet mapy**: kamera ukáže východ se štítkem
+„Východ“ a přeletí k líhni, čas mise mezitím stojí. Klepnutí kamkoli (nebo
+Zpět) přelet přeskočí a nic nepřidělí; vypnout jde v Nastavení → Hra.
+Za hry ukazuje papírový odznak u okraje směr k východu, když není vidět.
 
 Pomocníci: tlačítko **−5 s** vrátí hru o pět sekund (pozdější příkazy
 zmizí, kamera zůstane na místě), v pauze tlačítko **Krok** posune hru o jeden
@@ -76,24 +83,27 @@ a vypnuté 2D MSAA. Herní logika se podle platformy nevětví.
 ## Ověření a omezení
 
 - Před exportem prošla kompletní kontrola `python scripts/check.py`:
-  79 GDScriptů, 14 sad, 400 kontrol (simulace, kampaň, hvězdy, úvodní
+  83 GDScriptů, 15 sad, 420 kontrol (simulace, kampaň, hvězdy, úvodní
   karta, ukládání, menu, dotyk, zvuky, obtížnost misí, pomocníci,
-  přetočení, vzhled kapitol). Report obtížnosti:
+  přetočení, vzhled kapitol, přelet mapy). Report obtížnosti:
   všech 20 misí v cílovém pásmu, každá má ověřené referenční řešení.
 - Export ověřil otisk podpisového klíče a hotové APK apksignerem (v2/v3,
-  stejný certifikát jako 0.5.0–0.11.0); zarovnání `zipalign -c 4`,
-  manifest (0.12.0 / 13, API 24/36, žádná oprávnění), licence písma OFL,
+  stejný certifikát jako 0.5.0–0.12.0); zarovnání `zipalign -c 4`,
+  manifest (0.13.0 / 14, API 24/36, žádná oprávnění), licence písma OFL,
   origami a zvuků. Testy, dokumentace ani skripty se nebalí.
 - Herní soubory vytažené přímo z APK prošly v Linuxu (Compatibility,
   softwarový llvmpipe, dotykový profil 20 : 9) celým průchodem
-  `scripts/qa_menu.gd`: úvodní karta, mise 1 vyhraná 10/10 klepnutím,
+  `scripts/qa_menu.gd`: úvodní karta, přelet mapy přeskočený kliknutím,
+  mise 1 vyhraná 10/10 klepnutím,
   výsledek s hvězdami, další mise, pauza s nápovědou, nastavení, odchod
   s rozehraným pokusem a nové spuštění s obnovou; kampaň v balíčku má
   20 misí a všechny čtyři záložky kapitol se vejdou i v profilu 20 : 9.
   Z týchž souborů proběhla i Ukázka řešení mise Propadlo (9 z 10 =
   mistrovský výsledek), Krok, zpomalení a lišta s −5 s. První mise každé
   kapitoly se z balíčku spustila se svým vzhledem (louka, les, sopka,
-  bouřka) – krajiny všech témat jsou v APK.
+  bouřka) – krajiny všech témat jsou v APK. Přelet finále z balíčku
+  trval 3,9 s a skončil na startovním záběru; šipka pak ukazuje
+  k východu u pravého okraje.
 
 Linuxové spuštění nepotvrzuje instalaci ani běh Android Activity.
 Nativní výkon, systémové tlačítko Zpět a čitelnost karet na malém

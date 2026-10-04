@@ -20,6 +20,8 @@ const ZOOM_DIP := 0.3
 const DIP_DISTANCE := 500.0
 ## Střed záběru nad patou východu (logické px; domeček je vysoký asi 44 px).
 const EXIT_LIFT := 18.0
+## Nejdelší krok přeletu za jeden snímek (s).
+const MAX_STEP := 0.1
 
 var camera: PaperCamera
 var elapsed := 0.0

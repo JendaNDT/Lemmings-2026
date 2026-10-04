@@ -237,11 +237,13 @@ func start_flyover() -> bool:
 	return true
 
 
-## Posune přelet o skutečný čas; vrací true, dokud ještě běží.
+## Posune přelet o skutečný čas; vrací true, dokud ještě běží. Dlouhý snímek
+## (načítání, zásek telefonu) posune přelet nejvýš o MAX_STEP, takže pohled
+## na východ nikdy nepřeskočí.
 func advance_flyover(delta: float) -> bool:
 	if flyover == null:
 		return false
-	flyover.advance(delta)
+	flyover.advance(minf(delta, PaperFlyover.MAX_STEP))
 	return not flyover.done
 
 

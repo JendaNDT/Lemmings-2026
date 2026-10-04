@@ -21,11 +21,11 @@ všech 20 misí**, všechny v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet APK 0.12.0 na telefonu** – aktualizuje 0.11.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.12.0/android/Lemmings-2026-Android-0.12.0.apk).
-   Zajímá mě: jak se ti líbí vzhled kapitol (les, sopka, bouřka), jestli
-   déšť a jiskry nezpomalují telefon, jestli pomáhá −5 s, Krok, zpomalení
-   a Ukázka řešení a jestli obtížnost roste plynule.
+1. **Vyzkoušet APK 0.13.0 na telefonu** – aktualizuje 0.12.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.13.0/android/Lemmings-2026-Android-0.13.0.apk).
+   Zajímá mě: jestli je přelet mapy příjemný (délka, plynulost) a šipka
+   k východu užitečná, jak se ti líbí vzhled kapitol, jestli déšť a jiskry
+   nezpomalují telefon a jestli obtížnost roste plynule.
    [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
@@ -37,6 +37,9 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.13.0** ve větvi `downloads/android-0.13.0` (versionCode
+  14, stejný podpis): přelet mapy a šipka k východu. Herní soubory z APK
+  prošly průchodem menu včetně přeskočení přeletu kliknutím.
 - **Přelet mapy:** po úvodní kartě kamera ukáže východ se štítkem
   „Východ“ a přeletí k líhni (2,6–4,4 s, čas stojí); klepnutí, klávesa
   nebo Zpět ho přeskočí, vypnout jde v Nastavení → Hra. Za hry ukazuje

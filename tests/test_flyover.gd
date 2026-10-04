@@ -81,14 +81,17 @@ func _test_flight(game: Node) -> void:
 		and game.call("_overlay_open") and _exit_on_screen(world)
 		and world.camera.zoom_factor < start_zoom,
 		"„Hrát“ spustí přelet: čas stojí, kamera ukáže východ v širším záběru")
-	_step(game, 6)
+	game.call("_process", 2.0)
+	check(is_equal_approx(world.flyover.elapsed, PaperFlyover.MAX_STEP),
+		"zaseknutý snímek (2 s) posune přelet jen o krok, pohled na východ nepřeskočí")
+	_step(game, 5)
 	var label: Label = hud.flyover.get_child(0).get_child(0)
 	check(world.guide.exit_tag > 0.9 and world.guide.arrow_position() == Vector2.INF
 		and label.text.begins_with("Přelet mapy"),
 		"nad východem je štítek Východ, šipka u okraje se při přeletu neukazuje")
 	var duration := world.flyover.duration
 	var min_zoom := INF
-	var frames := 6
+	var frames := 7
 	var ticks_ok := true
 	while game.get("_flyover") and frames < 200:
 		_step(game, 1)
