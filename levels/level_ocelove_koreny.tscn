@@ -22,6 +22,7 @@ difficulty_index = 36
 introduces = "Razič"
 briefing = "Lesní cestu přehradily kmeny. Jeden je z hlíny, druhý má ocelové jádro."
 hints = PackedStringArray("Razič prorazí hlínu, ale o ocel se zastaví.", "Raziče přiděl těsně před prvním kmenem. Za ním je pod zemí jeskyně – kopej tam, ne před kmenem.")
+solution = PackedInt32Array(127, 0, 0, 5, 250, 0, 1, 7)
 
 [node name="Terrain" type="Node2D" parent="."]
 

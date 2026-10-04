@@ -21,6 +21,7 @@ difficulty_index = 42
 introduces = "Bombič"
 briefing = "Zeď je moc vysoká a není čím ji prorazit. Jeden lumík se musí obětovat."
 hints = PackedStringArray("Bombič vybuchne za 5 s a zničí terén kolem sebe.", "Zastav prvního lumíka u zdi blokařem a hned mu přiděl bombu.")
+solution = PackedInt32Array(173, 0, 0, 3, 173, 0, 0, 2)
 
 [node name="Terrain" type="Node2D" parent="."]
 

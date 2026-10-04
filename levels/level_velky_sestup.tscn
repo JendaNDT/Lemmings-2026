@@ -24,6 +24,7 @@ difficulty_index = 84
 introduces = "Sestup bez padáků"
 briefing = "Čtyři srázy dolů z Bouřkové hory a jen jeden padák. Ocelové lemy hlídají, kudy jde kopat."
 hints = PackedStringArray("Pád do 60 px lumík přežije. Horníkův tunel i jáma u okraje sníží výšku srázu.", "Padák dej prvnímu a ostatní nahoře zastav blokařem. Průzkumník kope jámu v hliněném okně a dole staví lávku; teprve pak pusť dav horníkem úzkým oknem se šipkami.")
+solution = PackedInt32Array(34, 0, 0, 1, 152, 0, 1, 3, 310, 0, 0, 7, 680, 0, 0, 4, 688, 0, 22, 6, 1085, 0, 22, 6)
 
 [node name="Terrain" type="Node2D" parent="."]
 

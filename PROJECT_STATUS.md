@@ -29,14 +29,17 @@ Další kroky:
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
    rozhodnutí (viz Známé bugy).
-3. Pomocníci (krok o tik, zpomalení, ukázka řešení) – kapitola IV má
-   okna jen 2–8 tiků. Pak ladění křivky podle tvého hraní.
+3. Ladění obtížnosti podle tvého hraní (hlavně kapitola IV).
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Pomocníci:** Krok o jeden tik v pauze, zpomalení ½× (rychlost
+  1× → 3× → ½×) a Ukázka řešení v pauzovacím menu – přehraje uložené
+  referenční řešení mise (`LevelDefinition.solution`, generuje
+  `scripts/update_solutions.gd`), nezapisuje postup. Test `test_helpers`.
 - **Android APK 0.10.0** ve větvi `downloads/android-0.10.0` (versionCode
   11, stejný podpis): celá kampaň, 20 misí. Herní soubory z APK prošly
   průchodem menu.

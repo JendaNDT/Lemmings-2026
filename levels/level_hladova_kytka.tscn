@@ -23,6 +23,7 @@ difficulty_index = 37
 introduces = "Past se dobíjí"
 briefing = "Za kamenným stupněm hlídá cestu masožravá kytka. Kolik lumíků spolkne?"
 hints = PackedStringArray("Kytka se po jídle chvíli dobíjí.", "Postav schody na stupeň a pak zvyš vypouštění – hustý dav proběhne, než se kytka dobije. Ještě hustší dav nashromáždí blokař.")
+solution = PackedInt32Array(131, 0, 0, 4, 283, 0, 1, 3, 1115, 0, 1, 2)
 
 [node name="Terrain" type="Node2D" parent="."]
 

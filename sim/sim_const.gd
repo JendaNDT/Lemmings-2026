@@ -10,6 +10,8 @@ extends RefCounted
 const TICKS_PER_SECOND := 17
 ## Rychlost tlačítka „zrychlit“.
 const FAST_FORWARD_MULTIPLIER := 3.0
+## Zpomalení (pomocník hlavně pro dotyk); logika běží stejně, jen pomaleji.
+const SLOW_MOTION_MULTIPLIER := 0.5
 
 ## Výška lumíka (pro klikání, strop, tunely).
 const LEMMING_HEIGHT := 10

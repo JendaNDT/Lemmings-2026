@@ -1,7 +1,7 @@
 # Lemmings 2026 – herní design dokument
 
 Verze 1.1 · 4. 10. 2026 · stav: **schváleno autorem, realizuje se**
-([kroky 1, 2, 4, 5 a 6 hotové](ETAPA_9_OVERENI.md))
+([kroky 1–6 hotové](ETAPA_9_OVERENI.md))
 
 Dokument popisuje, co hra umí dnes, kde má slabá místa, navrhuje kampaň
 o 20 misích (15 nových) a systém obtížnosti, který se dá změřit.
@@ -322,6 +322,16 @@ obtížnost a hráč si může vzít pomoc, která **nemění pravidla**:
    o 85 dřív (v plánu je pro verzi 1.1; lze zvážit dřív).
 
 Použití ukázky se u výsledku jen označí ikonkou, hvězdy zůstanou.
+
+**Stav (4. 10. 2026):** hotové body 1–3. Nápověda má textové tipy a jako
+poslední stupeň **Ukázku řešení** v pauzovacím menu: mise se spustí znovu
+a přehraje uložený záznam referenčního řešení (`LevelDefinition.solution`),
+u každého zásahu zvýrazní dovednost i lumíka a natočí na něj kameru.
+Ukázka se nezapisuje do postupu; pozdější výhra platí a výsledek jen
+připomene „Po ukázce řešení“ (text místo ikonky). Po dvou neúspěších
+výsledek ukázku nabídne. **Krok** v pauze posune hru o jeden tik
+(klávesa tečka), tlačítko rychlosti přepíná 1× → 3× → ½× (klávesa F).
+Přetočení zůstává na později.
 
 ---
 
@@ -828,9 +838,9 @@ Autor schválil všech šest bodů: strukturu kampaně a přesun Prvních kroků
 na konec kapitoly I, hvězdy, Hřiště mimo kampaň, názvy misí a kapitol,
 vyřazení 2.5D zobrazení a trvalé uložení podpisového klíče Androidu.
 
-**Stav realizace:** kroky 1 (systémy kampaně), 2 (kapitola I), 4
-(kapitola II), 5 (kapitola III) a 6 (kapitola IV) jsou hotové – kampaň
-má všech 20 misí,
+**Stav realizace:** kroky 1 (systémy kampaně), 2 (kapitola I),
+3 (pomocníci), 4 (kapitola II), 5 (kapitola III) a 6 (kapitola IV) jsou
+hotové – kampaň má všech 20 misí,
 2.5D je vyřazené, export hlídá stálý podpis
 ([ověření](ETAPA_9_OVERENI.md)). Změřené indexy kapitoly I: 15, 14, 18,
 23, 32, 38. Při stavbě se upravily rozměry N1 a N3 (mělčí jeskyně – pád

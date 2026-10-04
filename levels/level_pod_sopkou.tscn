@@ -22,6 +22,7 @@ difficulty_index = 63
 introduces = "Zkouška kapitoly"
 briefing = "Cestu přehradilo lávové jezero. Východ je v jeskyni pod ním – a i tam hlídá kytka."
 hints = PackedStringArray("Horníkův tunel klesá jen pomalu. Začni včas, aby vedl pod lávou, ne skrz ni.", "Horníka pusť 60–80 px před jezerem a hned zvyš vypouštění – dav pak kytku přeběhne pohromadě. Na římsu postav dvoje schody.")
+solution = PackedInt32Array(191, 0, 0, 6, 192, 1, -1, 99, 567, 0, 0, 4, 751, 0, 0, 4)
 
 [node name="Terrain" type="Node2D" parent="."]
 

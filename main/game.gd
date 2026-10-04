@@ -11,6 +11,8 @@ extends Node
 signal leave_requested(target: String)
 
 const MISSIONS := Campaign.SCENES
+## Rychlosti tlačítka rychlosti v pořadí přepínání (1×, zrychlení, zpomalení).
+const SPEEDS := [1.0, SimConst.FAST_FORWARD_MULTIPLIER, SimConst.SLOW_MOTION_MULTIPLIER]
 
 ## Který level se hraje. Dá se přepnout v Inspectoru.
 @export var level_scene: PackedScene = preload("res://levels/level_01.tscn")
@@ -29,7 +31,7 @@ var _sim: LevelSim
 var _level: LevelDefinition
 var _selected_skill := -1
 var _paused := false
-var _fast := false
+var _speed := 1.0
 var _accumulator := 0.0
 var _result_shown := false
 var _touch: TouchControls
@@ -40,6 +42,15 @@ var _mission_id := ""
 var _resumed := false
 ## Zvuky (efekty podle událostí simulace, okolí, rozhraní). Hudba přijde později.
 var _audio: GameAudio
+## Ukázka řešení: hra přehrává uložený záznam mise, hráč jen sleduje.
+var _demo := false
+var _demo_commands: Array[Dictionary] = []
+var _demo_cursor := 0
+## Lumík, kterému ukázka právě přidělila dovednost (zvýraznění), a do kdy.
+var _demo_focus := -1
+var _demo_focus_until := 0
+## Hráč v této misi viděl ukázku (u výsledku se to jen označí, hvězdy platí).
+var _demo_seen := false
 
 @onready var _world: Node2D = $World
 @onready var _terrain_view: TerrainView = $World/TerrainView
@@ -66,6 +77,7 @@ func _ready() -> void:
 	_hud.release_rate_step.connect(_change_release_rate)
 	_hud.pause_pressed.connect(_toggle_pause)
 	_hud.speed_pressed.connect(_toggle_speed)
+	_hud.step_pressed.connect(_step_tick)
 	_hud.restart_pressed.connect(_restart)
 	_hud.nuke_requested.connect(_request_nuke)
 	_hud.nuke_decided.connect(_decide_nuke)
@@ -89,8 +101,9 @@ func _ready() -> void:
 	_load_level()
 
 
-## Načte misi `level_scene`. `intro` = ukázat úvodní kartu (ne při restartu).
-func _load_level(intro := true) -> void:
+## Načte misi `level_scene`. `intro` = ukázat úvodní kartu (ne při restartu),
+## `demo` = přehrát uložené řešení mise (postup se nezapisuje).
+func _load_level(intro := true, demo := false) -> void:
 	_hud.close_nuke_confirmation()
 	_hud.close_pause_menu()
 	if _touch != null:
@@ -105,9 +118,18 @@ func _load_level(intro := true) -> void:
 	var spec := LevelLoader.build_spec(_level)
 	var mask := LevelLoader.build_mask(_level)
 	_sim = LevelSim.new(spec, mask)
+	if _level.level_id != _mission_id:
+		_demo_seen = false
 	_mission_id = _level.level_id
+	_demo = demo and not _level.solution.is_empty()
+	_demo_commands.clear()
+	if _demo:
+		_demo_commands = _level.solution_commands()
+	_demo_cursor = 0
+	_demo_focus = -1
+	_demo_seen = _demo_seen or _demo
 	_resumed = false
-	if resume_suspended and not _mission_id.is_empty() \
+	if resume_suspended and not _demo and not _mission_id.is_empty() \
 			and progress.suspended.get("mission", "") == _mission_id:
 		# Rozehraný pokus: přehrát uložené příkazy až do uloženého tiku.
 		_resumed = progress.restore_suspended(_sim)
@@ -116,7 +138,7 @@ func _load_level(intro := true) -> void:
 		_sim.take_events()
 	resume_suspended = false
 	LevelLoader.hide_terrain_shapes(_level)
-	if not _resumed and not _mission_id.is_empty():
+	if not _resumed and not _demo and not _mission_id.is_empty():
 		progress.record_start(_mission_id)
 	progress.save()
 
@@ -130,8 +152,9 @@ func _load_level(intro := true) -> void:
 		_lemmings_view.setup(_sim)
 		_fx_view.clear()
 		_camera.setup(Vector2(spec.width, spec.height), focus)
-	_hud.setup(_sim, Campaign.display_title(_mission_id) if not _mission_id.is_empty() else "",
-		_level.hints)
+	var title := Campaign.display_title(_mission_id) if not _mission_id.is_empty() else ""
+	_hud.setup(_sim, ("Ukázka · " + title) if _demo else title, _level.hints,
+		not _level.solution.is_empty(), _demo)
 	_audio.setup(_sim, _logic_to_audio)
 
 	# Obnovený pokus začne v pauze, ať se hráč nejdřív rozkouká.
@@ -139,11 +162,13 @@ func _load_level(intro := true) -> void:
 	if show_briefing and intro and not _resumed:
 		_paused = true
 		_hud.briefing.open(_briefing_data())
-	_fast = false
+	_speed = 1.0
 	_accumulator = 0.0
 	_result_shown = false
 	var skills := _hud.visible_skills()
 	_select_skill(skills[0] if not skills.is_empty() else -1, false)
+	if _demo:
+		_apply_demo_commands()
 
 
 func _process(delta: float) -> void:
@@ -151,11 +176,10 @@ func _process(delta: float) -> void:
 		return
 	var tick_time := 1.0 / SimConst.TICKS_PER_SECOND
 	if not _paused and not _sim.finished:
-		var speed := SimConst.FAST_FORWARD_MULTIPLIER if _fast else 1.0
-		_accumulator += delta * speed
+		_accumulator += delta * _speed
 		var steps := 0
 		while _accumulator >= tick_time and steps < 8:
-			_sim.tick()
+			_advance()
 			_accumulator -= tick_time
 			steps += 1
 		_accumulator = minf(_accumulator, tick_time)
@@ -164,14 +188,16 @@ func _process(delta: float) -> void:
 	_audio.update(events, delta)
 	var alpha := clampf(_accumulator / tick_time, 0.0, 1.0)
 	if _view != null:
-		var visual_delta := 0.0 if _paused or _sim.finished else delta * \
-			(SimConst.FAST_FORWARD_MULTIPLIER if _fast else 1.0)
+		var visual_delta := 0.0 if _paused or _sim.finished else delta * _speed
 		_view.update_frame(alpha, events, visual_delta)
 	else:
 		_fx_view.handle_events(events)
 		_lemmings_view.alpha = alpha
 
 	var hovered := _sim.find_lemming_at(mouse_logic_position(), _selected_skill)
+	if _demo and _demo_focus >= 0 and _sim.tick_count < _demo_focus_until \
+			and not _sim.lemmings[_demo_focus].removed:
+		hovered = _sim.lemmings[_demo_focus]
 	if _view != null:
 		_view.highlight(hovered)
 	else:
@@ -180,7 +206,7 @@ func _process(delta: float) -> void:
 	if Input.get_current_cursor_shape() != cursor:
 		Input.set_default_cursor_shape(cursor)
 
-	_hud.refresh(_paused, SimConst.FAST_FORWARD_MULTIPLIER if _fast else 1.0)
+	_hud.refresh(_paused, _speed)
 	if _sim.finished and not _result_shown:
 		_result_shown = true
 		_hud.show_result(_sim, _record_result())
@@ -227,6 +253,8 @@ func _unhandled_input(event: InputEvent) -> void:
 				_toggle_pause()
 			KEY_F:
 				_toggle_speed()
+			KEY_PERIOD:
+				_step_tick()
 			KEY_R:
 				_restart()
 			KEY_T:
@@ -277,7 +305,7 @@ func _notification(what: int) -> void:
 
 
 func _try_assign_touch(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished or _overlay_open():
+	if _selected_skill < 0 or _sim.finished or _overlay_open() or _demo:
 		return
 	var best: Lemming = null
 	var best_distance := settings.tap_reach
@@ -298,7 +326,7 @@ func _try_assign_touch(screen_point: Vector2) -> void:
 
 
 func _try_assign(screen_point: Vector2) -> void:
-	if _selected_skill < 0 or _sim.finished or _overlay_open():
+	if _selected_skill < 0 or _sim.finished or _overlay_open() or _demo:
 		return
 	var lem := _sim.find_lemming_at(logic_position(screen_point), _selected_skill)
 	if lem != null and not _sim.assign_skill(lem, _selected_skill):
@@ -339,7 +367,7 @@ func _select_skill(skill: int, by_player := true) -> void:
 
 
 func _change_release_rate(delta: int) -> void:
-	if _sim.change_release_rate(delta):
+	if not _demo and _sim.change_release_rate(delta):
 		_audio.play_ui("tick")
 
 
@@ -348,9 +376,54 @@ func _toggle_pause() -> void:
 	_audio.play_ui("pause" if _paused else "resume")
 
 
+## Rychlost: 1× → zrychlení → zpomalení (pomocník hlavně pro dotyk) → 1×.
 func _toggle_speed() -> void:
-	_fast = not _fast
+	_speed = SPEEDS[(SPEEDS.find(_speed) + 1) % SPEEDS.size()]
 	_audio.play_ui("click")
+
+
+## Pomocník: v pauze posune hru o jeden tik (těsná okna zásahu).
+func _step_tick() -> void:
+	if not _paused or _sim.finished or _result_shown or _overlay_open():
+		return
+	_advance()
+	# Ukázat stav po kroku (mezistav mezi tiky by byl o krok pozadu).
+	_accumulator = 0.999 / SimConst.TICKS_PER_SECOND
+	_audio.play_ui("click")
+
+
+## Jeden tik simulace; při ukázce řešení po něm provede příkazy záznamu.
+func _advance() -> void:
+	_sim.tick()
+	if _demo:
+		_apply_demo_commands()
+
+
+## Příkazy ukázky, které patří do aktuálního tiku (jako SimReplay).
+func _apply_demo_commands() -> void:
+	while _demo_cursor < _demo_commands.size() \
+			and int(_demo_commands[_demo_cursor]["tick"]) <= _sim.tick_count:
+		var command := _demo_commands[_demo_cursor]
+		_demo_cursor += 1
+		if _sim.apply_command(command["kind"], command["target"], command["value"]) \
+				and command["kind"] == LevelSim.Command.ASSIGN_SKILL:
+			_show_demo_command(command["target"], command["value"])
+
+
+## Ukázka zvýrazní dovednost i lumíka a natočí na něj kameru, je-li mimo záběr.
+func _show_demo_command(target: int, skill: int) -> void:
+	_hud.select_skill(skill)
+	_demo_focus = target
+	_demo_focus_until = _sim.tick_count + SimConst.TICKS_PER_SECOND
+	if _view == null:
+		return
+	var lem := _sim.lemmings[target]
+	var point := Vector2(lem.x, lem.y - 5)
+	var screen: Vector2 = _view.camera.logic_to_screen(point)
+	var visible := get_viewport().get_visible_rect()
+	if not visible.grow(-visible.size.x * 0.15).has_point(screen):
+		_view.camera.focus = point
+		_view.camera.refresh()
 
 
 func _toggle_sound() -> void:
@@ -372,7 +445,7 @@ func _choose_mission(index: int) -> void:
 
 
 func _request_nuke() -> void:
-	if _sim.finished or _sim.nuking or _overlay_open():
+	if _sim.finished or _sim.nuking or _overlay_open() or _demo:
 		return
 	if not settings.confirm_nuke:
 		_sim.start_nuke()
@@ -416,6 +489,10 @@ func _on_menu_action(action: String) -> void:
 			_audio.play_ui("resume")
 		"restart":
 			_restart()
+		"demo":
+			_hud.close_pause_menu()
+			_audio.play_ui("click")
+			_load_level(false, true)
 		"next":
 			var index := Campaign.index_of(_mission_id)
 			if index >= 0 and index + 1 < Campaign.count():
@@ -434,13 +511,16 @@ func _on_menu_action(action: String) -> void:
 
 ## Rozehraný pokus uloží pro „Pokračovat“ (jen když už běží a neskončil).
 func _suspend_if_running() -> void:
-	if _sim != null and not _sim.finished and _sim.tick_count > 0 and not _mission_id.is_empty():
+	if _sim != null and not _demo and not _sim.finished and _sim.tick_count > 0 \
+			and not _mission_id.is_empty():
 		progress.suspend(_mission_id, _sim)
 		progress.save()
 
 
 ## Zapíše výsledek do postupu a připraví údaje pro okno výsledku.
 func _record_result() -> Dictionary:
+	if _demo:
+		return {"demo": true}
 	if _mission_id.is_empty():
 		return {}
 	var info := progress.record_result(_mission_id, _sim.saved, _sim.is_won(), _sim.tick_count)
@@ -454,6 +534,7 @@ func _record_result() -> Dictionary:
 	var index := Campaign.index_of(_mission_id)
 	if index >= 0 and index + 1 < Campaign.count():
 		info["next_title"] = Campaign.mission(index + 1)["title"]
+	info["demo_seen"] = _demo_seen
 	return info
 
 

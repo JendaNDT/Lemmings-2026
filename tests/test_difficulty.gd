@@ -40,20 +40,32 @@ func _test_formula() -> void:
 func _test_reference_plans() -> void:
 	var missing: Array[String] = []
 	var failed: Array[String] = []
+	var stale: Array[String] = []
 	for info in Campaign.missions():
 		var plan := ReferencePlans.plan_for(info["id"])
 		if not plan.is_valid():
 			missing.append(info["id"])
 			continue
 		var level := (info["scene"] as PackedScene).instantiate() as LevelDefinition
-		var sim := LevelDifficulty.play(LevelLoader.build_spec(level),
-			LevelLoader.build_mask(level), plan)
-		level.free()
+		var spec := LevelLoader.build_spec(level)
+		var sim := LevelDifficulty.play(spec, LevelLoader.build_mask(level), plan)
 		if not (sim.finished and sim.is_won()) or sim.saved != int(info["master"]):
 			failed.append(info["id"])
+		# Ukázka řešení ve hře přehrává uložený záznam – musí být totožný s plánem.
+		var stored := level.solution_commands()
+		var replay := SimReplay.new(LevelSim.new(spec, LevelLoader.build_mask(level)), stored)
+		while replay.step():
+			pass
+		if stored != sim.replay_log or not replay.error.is_empty() \
+				or replay.sim.saved != int(info["master"]):
+			stale.append(info["id"])
+		level.free()
 	check(missing.is_empty() and failed.is_empty(),
 		"každá mise kampaně má referenční řešení, vyhraje a zachrání přesně mistrovský "
 		+ "výsledek ★★★ (chybí %s, nesedí %s)" % [str(missing), str(failed)])
+	check(stale.is_empty(), "uložená ukázka řešení v každé misi odpovídá referenčnímu plánu "
+		+ "a přehraje mistrovský výsledek (zastaralé %s – spusť scripts/update_solutions.gd)"
+		% str(stale))
 
 
 func _test_measured_mission() -> void:

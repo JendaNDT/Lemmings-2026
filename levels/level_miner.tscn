@@ -20,6 +20,7 @@ difficulty_index = 18
 introduces = "Horník"
 briefing = "Sráz je moc vysoký na skok. Prokopej se dolů šikmo."
 hints = PackedStringArray("Pád z velké výšky lumíka zabije.", "Horník kope šikmo dolů – začni na horní plošině dost daleko od srázu.")
+solution = PackedInt32Array(83, 0, 0, 6)
 
 [node name="Terrain" type="Node2D" parent="."]
 

@@ -49,6 +49,10 @@ zavře; ve hře otevře pauzovací menu (Pokračovat, Začít znovu, Nastavení,
 Výběr misí, Hlavní menu). Postup, nastavení a rozehraná mise se ukládají
 i při přechodu aplikace na pozadí.
 
+Pomocníci: v pauze tlačítko **Krok** posune hru o jeden tik, tlačítko
+rychlosti přepíná 1× → 3× → ½× a pauzovací menu nabízí **Ukázku řešení**
+(přehraje řešení mise, postup nezapisuje).
+
 Klepnutí na dovednost a potom na postavu přidělí příkaz. Posun jedním prstem
 posouvá kameru, dva prsty ji posouvají i přibližují. Dovednost se přidělí
 až při uvolnění prstu bez významného pohybu. Emulovaná myš nevytvoří druhý

@@ -156,6 +156,34 @@ bez zásahu.
 - **Menu:** tlačítko Hřiště je v záhlaví vedle hvězd, aby se do řádku
   vešly čtyři záložky kapitol (ověřeno i v dotykovém profilu).
 
+## Pomocníci (krok 3)
+
+Pomoc, která nemění pravidla (herní design, kapitola 4.8):
+
+![Pauza s tlačítkem Krok a zpomalením, pauzovací menu s Ukázkou řešení, běžící ukázka a její konec](images/pomocnici.jpg)
+
+- **Krok** – v pauze posune hru přesně o jeden tik (tlačítko vedle
+  Pokračuj, klávesa tečka). Pro okna 2–8 tiků v kapitole IV.
+- **Zpomalení ½×** – tlačítko rychlosti přepíná 1× → 3× → ½× (klávesa F).
+- **Ukázka řešení** – v pauzovacím menu pod nápovědou. Mise se spustí znovu
+  a přehraje se uložený záznam referenčního řešení; u každého zásahu se
+  zvýrazní dovednost i lumík a kamera na něj natočí, když je mimo záběr.
+  Hráč jen sleduje (dovednosti, vypouštění ani „Odpálit vše“ nejdou),
+  může ale pauzovat, krokovat a měnit rychlost. „Hrát sám“ ukázku ukončí.
+  Ukázka se nezapisuje do postupu; pozdější výhra platí a výsledek
+  připomene „Po ukázce řešení“. Po dvou neúspěších výsledek ukázku nabídne.
+- **Záznamy řešení** jsou přímo v misích (`solution`), generuje je
+  `scripts/update_solutions.gd` z referenčních plánů. `test_difficulty`
+  hlídá, že záznam odpovídá plánu a přehraje mistrovský výsledek – plány
+  (`tests/`) se do APK nebalí, záznamy ano.
+- Nový test `tests/test_helpers.gd` (11 kontrol): pořadí rychlostí,
+  ½× = poloviční počet tiků, krok jen v pauze a přesně o tik, ukázka
+  zachrání mistrovský výsledek, nezapíše postup, „Hrát sám“ a výhra po
+  ukázce s hvězdami. Lišta s tlačítkem Krok se vejde i při velkém
+  rozhraní 1,3× a v dotykovém profilu 20 : 9.
+- Celá kontrola `python scripts/check.py`: **78 GDScriptů, 14 sad,
+  393 kontrol, vše v pořádku**.
+
 ## Vyřazení 2.5D
 
 Smazána scéna `main/game_3d.tscn`, `view/clay_*`, podklady
@@ -195,9 +223,9 @@ cloudovém prostředí – trvalé uložení mimo něj čeká na rozhodnutí aut
 ## Meze
 
 - Na telefonu a Macu neověřeno (výkon, čitelnost karty na malém displeji).
-- Pomocníci (krok o tik, zpomalení, ukázka řešení) a ladění křivky podle
-  hraní jsou další kroky plánu. Kapitola IV má okna 2–8 tiků – bez kroku
-  o tik a zpomalení bude na telefonu hodně náročná.
+- Ladění křivky podle hraní je další krok plánu. Kapitola IV má okna
+  2–8 tiků; krok o tik a zpomalení pomáhají, na telefonu je to i tak
+  náročné. Přetočení o 5 s zatím chybí.
 - Nové mise kapitol II–IV zatím nikdo nehrál – měření říká jen, že jsou
   řešitelné a jak těsná jsou okna; zábavnost ověří až tvoje hraní.
 - Okno zásahu se měří posunem jednoho příkazu při pevných ostatních.

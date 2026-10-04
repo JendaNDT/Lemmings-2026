@@ -24,6 +24,7 @@ difficulty_index = 61
 introduces = "Láva"
 briefing = "Voda topí, láva pálí a kytka hlídá chodbu. Zeď se šipkami prorazíš jen ve směru šipek."
 hints = PackedStringArray("Přes vodu postav most z cihel; lávu obejdi podzemím.", "První lumík: lezec, most přes jezírko a kopáč za lávou. Později razič u zdi se šipkami.")
+solution = PackedInt32Array(34, 0, 0, 0, 279, 0, 0, 4, 400, 0, 1, 5, 578, 0, 0, 7)
 
 [node name="Terrain" type="Node2D" parent="."]
 

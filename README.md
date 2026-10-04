@@ -15,8 +15,10 @@ IV. Bouřková hora)
 a odemykají se postupně; **Hřiště** se všemi dovednostmi se otevře
 po kapitole I. Každá mise začne **úvodní kartou** (cíl, dovednosti
 s popisem, co je nového, obtížnost) a za výsledek dostaneš **1–3 hvězdy**.
-V pauze (tlačítko **Menu**, **Esc**, na Androidu **Zpět**) je **nápověda**,
-nastavení a návrat do menu. Postup, hvězdy a rozehraná mise se ukládají.
+V pauze (tlačítko **Menu**, **Esc**, na Androidu **Zpět**) je **nápověda**
+s **Ukázkou řešení**, nastavení a návrat do menu. Pozastavenou hru posune
+tlačítko **Krok** o jeden tik a rychlost jde přepnout i na **½×**.
+Postup, hvězdy a rozehraná mise se ukládají.
 Hotové jsou všechny čtyři kapitoly – 20 misí od Seznámení po
 Mistrovskou; obtížnost každé mise je změřená z ověřeného řešení.
 

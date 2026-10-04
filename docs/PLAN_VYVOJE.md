@@ -159,8 +159,8 @@ z referenčních řešení je hotové (`scripts/difficulty_report.gd`).
 **Stav (4. 10. 2026):** autor návrh schválil. Hotové jsou systémy kampaně
 (kapitoly, hvězdy, úvodní karta, nápověda, Hřiště) a všechny čtyři
 kapitoly (20 misí, z toho 15 nových), vše v cílových pásmech;
-[ověření](ETAPA_9_OVERENI.md). Další: pomocníci (krok o tik, zpomalení,
-ukázka řešení) a ladění křivky podle hraní.
+[ověření](ETAPA_9_OVERENI.md). Hotoví jsou i pomocníci (krok o tik,
+zpomalení, ukázka řešení). Další: ladění křivky podle hraní.
 
 ## Etapa 10 — Pohodlí a betatest
 

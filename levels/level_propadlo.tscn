@@ -21,6 +21,7 @@ difficulty_index = 33
 introduces = "Bomba na terén"
 briefing = "Plošina je tenká jako papír a vpravo končí srázem. Jeskyně pod ní vede k východu."
 hints = PackedStringArray("Výbuch zničí i podlahu pod bombičem.", "Bombu přiděl prvnímu lumíkovi hned po dopadu – vybuchne asi po 85 px chůze. V jeskyni postav schody na stupeň.")
+solution = PackedInt32Array(42, 0, 0, 2, 279, 0, 1, 4)
 
 [node name="Terrain" type="Node2D" parent="."]
 

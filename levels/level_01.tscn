@@ -23,6 +23,7 @@ difficulty_index = 38
 introduces = "Zkouška kapitoly"
 briefing = "Sloup, útes a jeskyně: použij všechno, co ses naučil."
 hints = PackedStringArray("Razič, stavitel a kopáč – každý na jiné překážce.", "Raziče přiděl těsně před sloupem, stavitele u útesu a kopáče nahoře nad jeskyní.")
+solution = PackedInt32Array(126, 0, 0, 5, 260, 0, 0, 4, 426, 0, 5, 7)
 
 [node name="Terrain" type="Node2D" parent="."]
 

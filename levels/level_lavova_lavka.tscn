@@ -22,6 +22,7 @@ difficulty_index = 73
 introduces = "Přesnost na doraz"
 briefing = "Tři lávové jámy, každá přesně tak široká, jak daleko dosáhnou jedny schody."
 hints = PackedStringArray("Lávka musí začít těsně u okraje jámy – o pár kroků dřív už nedosáhne.", "Blokař zastaví dav. První lumík staví u samého okraje každé jámy. Pauza pomůže trefit správný okamžik.")
+solution = PackedInt32Array(161, 0, 1, 3, 171, 0, 0, 4, 453, 0, 0, 4, 735, 0, 0, 4, 949, 0, 1, 2)
 
 [node name="Terrain" type="Node2D" parent="."]
 

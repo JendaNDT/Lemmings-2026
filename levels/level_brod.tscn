@@ -22,6 +22,7 @@ difficulty_index = 56
 introduces = "Voda"
 briefing = "Řeka je široká a lumíci neumí plavat. Most z cihel ale udrží."
 hints = PackedStringArray("Dokud most není hotový, ostatní musí počkat – postav jim do cesty blokaře.", "Jedny schody na řeku nestačí: když stavitel pokrčí rameny, přiděl mu dalšího. Blokaře nakonec uvolní bomba.")
+solution = PackedInt32Array(225, 0, 0, 4, 227, 0, 1, 3, 409, 0, 0, 4, 593, 0, 1, 2)
 
 [node name="Terrain" type="Node2D" parent="."]
 

@@ -21,6 +21,7 @@ difficulty_index = 23
 introduces = "Blokař"
 briefing = "Líheň je kousek od srázu. Než prokopeš cestu do jeskyně, dav potřebuje hlídku."
 hints = PackedStringArray("Blokař zastaví ostatní a obrací je zpátky. Zůstane stát až do konce.", "Nejdřív blokaře mezi líheň a sráz, pak kopáče vlevo od něj.")
+solution = PackedInt32Array(92, 0, 0, 3, 198, 0, 1, 7)
 
 [node name="Terrain" type="Node2D" parent="."]
 

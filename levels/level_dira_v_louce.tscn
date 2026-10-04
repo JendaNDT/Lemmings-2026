@@ -20,6 +20,7 @@ difficulty_index = 15
 introduces = "Kopáč"
 briefing = "Lumíci přistanou na louce, ale východ je pod zemí. Pomoz jim dolů."
 hints = PackedStringArray("Východ je v jeskyni pod loukou.", "Vyber Kopáče a klepni na lumíka na louce. Ostatní propadnou dírou za ním.")
+solution = PackedInt32Array(82, 0, 0, 7)
 
 [node name="Terrain" type="Node2D" parent="."]
 

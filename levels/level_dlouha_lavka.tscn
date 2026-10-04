@@ -22,6 +22,7 @@ difficulty_index = 51
 introduces = "Dva stavitelé v řadě"
 briefing = "Dav čeká v ohrádce. Propast je delší než jedny schody."
 hints = PackedStringArray("Když stavitel pokrčí rameny, přiděl mu dalšího stavitele – schody pokračují.", "Lezec přeleze ohrádku a postaví lávku; teprve potom razič otevře ohrádku zevnitř.")
+solution = PackedInt32Array(34, 0, 0, 0, 223, 0, 0, 4, 407, 0, 0, 4, 614, 0, 5, 5)
 
 [node name="Terrain" type="Node2D" parent="."]
 

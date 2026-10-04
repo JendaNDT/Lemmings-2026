@@ -67,6 +67,8 @@
   rozsahu z dokumentu. Po změně pravidel nebo misí report znovu spustit.
   Mise nese `master_saved` (výsledek referenčního řešení = ★★★),
   `difficulty_index`, úvod a nápovědy; report hlídá shodu s měřením.
+  Záznam řešení pro Ukázku (`solution`) po změně misí nebo plánů obnoví
+  `scripts/update_solutions.gd`; `test_difficulty` hlídá shodu s plánem.
   Pád z povrchu do jeskyně musí být pod 60 px (jinak lumíci zemřou).
   Zdi, kmeny a hráze na zemi zapustit pod povrch (spodní hrana pod
   terénem), jinak pod nimi lumíci projdou škvírou.

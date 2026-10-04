@@ -22,6 +22,7 @@ difficulty_index = 66
 introduces = "Dvě skupiny najednou"
 briefing = "Na Bouřkové hoře se otevřely dvě líhně. Východ je na kopci mezi nimi – a zprava teče kanál."
 hints = PackedStringArray("Pravá skupina se nejdřív odrazí od skály a pak míří rovnou do kanálu. Začni u ní.", "Vpravo lávka od samého břehu a blokař za ní; vlevo dvoje schody ke stěně kopce. Blokaře nakonec uvolní bomba.")
+solution = PackedInt32Array(203, 0, 0, 4, 335, 0, 1, 4, 363, 0, 3, 3, 387, 0, 0, 4, 638, 0, 3, 2)
 
 [node name="Terrain" type="Node2D" parent="."]
 

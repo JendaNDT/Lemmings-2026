@@ -21,6 +21,7 @@ difficulty_index = 32
 introduces = "Lezec a padák"
 briefing = "Za vysokou zdí je hluboký sráz. Každý lumík potřebuje lézt i plachtit."
 hints = PackedStringArray("Lezec i padák jsou trvalé – jeden lumík může mít obojí.", "Přiděluj hned po dopadu z líhně; v pauze to jde v klidu.")
+solution = PackedInt32Array(34, 0, 0, 0, 34, 0, 0, 1, 62, 0, 1, 0, 62, 0, 1, 1, 90, 0, 2, 0, 90, 0, 2, 1, 118, 0, 3, 0, 118, 0, 3, 1, 146, 0, 4, 0, 146, 0, 4, 1, 174, 0, 5, 0, 174, 0, 5, 1, 202, 0, 6, 0, 202, 0, 6, 1, 230, 0, 7, 0, 230, 0, 7, 1)
 
 [node name="Terrain" type="Node2D" parent="."]
 

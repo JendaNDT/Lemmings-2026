@@ -22,6 +22,7 @@ difficulty_index = 50
 introduces = "Jednosměrné zdi"
 briefing = "Útes je protkaný šipkami. Razič i horník projdou zdí jen ve směru šipek, kopáč kudy chce."
 hints = PackedStringArray("Proti šipkám razič jen cinkne. Kopáč šipky nezajímají.", "Nahoře prorazte první zeď, mezi zdmi kopej dolů. Dole veď horníka šikmo skrz útes – rovně je to na druhé straně moc vysoko.")
+solution = PackedInt32Array(104, 0, 0, 5, 218, 0, 0, 7, 370, 0, 0, 6)
 
 [node name="Terrain" type="Node2D" parent="."]
 

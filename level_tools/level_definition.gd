@@ -50,6 +50,19 @@ extends Node2D
 @export_multiline var briefing := ""
 ## Nápovědy od obecné po konkrétní (pauzovací menu, po opakovaném neúspěchu).
 @export var hints: PackedStringArray = []
+## Záznam referenčního řešení pro „Ukázku řešení“: čtveřice tik, druh, cíl,
+## hodnota (jako LevelSim.replay_log). Generuje scripts/update_solutions.gd
+## z tests/reference_plans.gd; ručně neupravovat.
+@export var solution := PackedInt32Array()
+
+
+## Uložené řešení jako příkazy pro SimReplay ([] = mise ho nemá).
+func solution_commands() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	for i in range(0, solution.size() - 3, 4):
+		out.append({"tick": solution[i], "kind": solution[i + 1], "target": solution[i + 2],
+			"value": solution[i + 3]})
+	return out
 
 
 func skill_counts() -> Dictionary:

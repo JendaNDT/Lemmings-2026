@@ -8,6 +8,8 @@ signal skill_selected(skill: int)
 signal release_rate_step(delta: int)
 signal pause_pressed
 signal speed_pressed
+## Krok o jeden tik (jen v pauze).
+signal step_pressed
 signal restart_pressed
 signal nuke_requested
 signal nuke_decided(confirmed: bool)
@@ -15,7 +17,7 @@ signal sound_pressed
 ## Tlačítko Menu (otevře pauzovací menu).
 signal menu_pressed
 ## Volba v pauzovacím menu nebo ve výsledku: "resume", "restart", "next",
-## "levels", "main_menu".
+## "levels", "main_menu", "demo" (ukázka řešení).
 signal menu_action(action: String)
 
 const TOP_BAR_HEIGHT := 72.0
@@ -60,7 +62,9 @@ var _stats: Label
 var _rate_value: Label
 var _skills_box: HBoxContainer
 var _pause_button: Button
+var _step_button: Button
 var _speed_button: Button
+var _restart_button: Button
 var _menu_button: Button
 var _nuke_button: Button
 var _sound_button: Button
@@ -70,6 +74,9 @@ var _pause_subtitle: Label
 var _settings_panel: SettingsPanel
 var _hint_button: Button
 var _hint_label: Label
+var _demo_button: Button
+var _can_demo := false
+var _demo_running := false
 var _hints := PackedStringArray()
 var _hint_index := 0
 var _result_layer: Control
@@ -92,8 +99,10 @@ func _ready() -> void:
 
 
 ## Nová mise: `title` s číslem z kampaně (prázdný = název z levelu),
-## `hints` pro nápovědu v pauzovacím menu (od obecné po konkrétní).
-func setup(sim: LevelSim, title := "", hints := PackedStringArray()) -> void:
+## `hints` pro nápovědu v pauzovacím menu (od obecné po konkrétní),
+## `can_demo` = mise má uloženou ukázku řešení, `demo` = ukázka právě běží.
+func setup(sim: LevelSim, title := "", hints := PackedStringArray(), can_demo := false,
+		demo := false) -> void:
 	_sim = sim
 	_result_layer.visible = false
 	_pause_layer.visible = false
@@ -104,6 +113,12 @@ func setup(sim: LevelSim, title := "", hints := PackedStringArray()) -> void:
 	_hint_button.visible = not hints.is_empty()
 	_hint_button.text = "Nápověda"
 	_hint_label.visible = false
+	_can_demo = can_demo
+	_demo_running = demo
+	_demo_button.visible = can_demo and not demo
+	_restart_button.text = "Hrát sám" if demo else "Znovu"
+	_restart_button.tooltip_text = "Ukončí ukázku a spustí misi znovu (R)" if demo \
+		else "Začne misi znovu (R)"
 	for child in _skills_box.get_children():
 		child.free()
 	_skill_widgets.clear()
@@ -149,8 +164,9 @@ func refresh(paused: bool, speed: float) -> void:
 		var count_label: Label = _skill_widgets[s]["count"]
 		count_label.text = str(int(_sim.skills.get(s, 0)))
 	_pause_button.text = "Pokračuj" if paused else "Pauza"
-	_speed_button.text = "%d×" % roundi(speed)
-	_nuke_button.disabled = _sim.finished or _sim.nuking
+	_step_button.visible = paused and not _sim.finished
+	_speed_button.text = "½×" if speed < 1.0 else "%d×" % roundi(speed)
+	_nuke_button.disabled = _sim.finished or _sim.nuking or _demo_running
 	_nuke_button.text = "Odpočet…" if _sim.nuking else "Odpálit vše"
 	for skill: int in _skill_widgets:
 		(_skill_widgets[skill]["button"] as Button).disabled = \
@@ -249,6 +265,9 @@ func show_result(sim: LevelSim, info := {}) -> void:
 	_result_layer.visible = true
 	_pause_layer.visible = false
 	var won := sim.is_won()
+	if info.get("demo", false):
+		_show_demo_result(sim)
+		return
 	if won:
 		_result_title.text = "Výborně!"
 		_result_title.add_theme_color_override("font_color", ACCENT)
@@ -285,6 +304,10 @@ func show_result(sim: LevelSim, info := {}) -> void:
 			notes.append("Další hvězda za %d zachráněných." % next_star)
 	if not won and int(info.get("fails", 0)) >= 2 and not _hints.is_empty():
 		notes.append("Tip: " + _hints[0])
+	if not won and int(info.get("fails", 0)) >= 2 and _can_demo:
+		notes.append("Nevíš si rady? V pauze je Ukázka řešení.")
+	if won and info.get("demo_seen", false):
+		notes.append("Po ukázce řešení – hvězdy platí.")
 	_result_note.text = "\n".join(notes)
 	_result_note.visible = not notes.is_empty()
 	var next_title: String = info.get("next_title", "")
@@ -295,6 +318,21 @@ func show_result(sim: LevelSim, info := {}) -> void:
 
 func result_open() -> bool:
 	return _result_layer.visible
+
+
+## Konec ukázky: bez hvězd a zápisu, nabídne hrát sám.
+func _show_demo_result(sim: LevelSim) -> void:
+	_result_title.text = "Konec ukázky"
+	_result_title.add_theme_color_override("font_color", ACCENT)
+	_result_text.text = "Ukázka zachránila %d z %d lumíků (potřeba %d)." % [
+		sim.saved, sim.spec.lemming_count, sim.spec.save_required]
+	_result_note.text = "Teď to zkus sám – hvězdy se počítají jen za vlastní hru."
+	_result_note.visible = true
+	for child in _result_stars.get_children():
+		child.free()
+	_result_stars.visible = false
+	_next_button.visible = false
+	_again_button.text = "Hrát sám"
 
 
 # --- Stavba rozhraní --------------------------------------------------------------
@@ -374,12 +412,18 @@ func _build_controls(rows: VBoxContainer) -> void:
 	_pause_button.tooltip_text = "Zastaví čas; dovednosti jde přidělovat i v pauze (mezerník)"
 	_pause_button.pressed.connect(func() -> void: pause_pressed.emit())
 	row.add_child(_pause_button)
+	_step_button = PaperUi.button("Krok", Vector2(76, 44))
+	_step_button.tooltip_text = "Posune pozastavenou hru o jeden tik (tečka)"
+	_step_button.pressed.connect(func() -> void: step_pressed.emit())
+	_step_button.visible = false
+	row.add_child(_step_button)
 	_speed_button = PaperUi.button("1×", Vector2(64, 44))
+	_speed_button.tooltip_text = "Rychlost 1× → 3× → ½× (F)"
 	_speed_button.pressed.connect(func() -> void: speed_pressed.emit())
 	row.add_child(_speed_button)
-	var restart := PaperUi.button("Znovu", Vector2(96, 44))
-	restart.pressed.connect(func() -> void: restart_pressed.emit())
-	row.add_child(restart)
+	_restart_button = PaperUi.button("Znovu", Vector2(96, 44))
+	_restart_button.pressed.connect(func() -> void: restart_pressed.emit())
+	row.add_child(_restart_button)
 	_nuke_button = PaperUi.button("Odpálit vše", Vector2(140, 44))
 	_nuke_button.tooltip_text = "Zavře líheň a spustí postupné odpočty bomb (N)."
 	_nuke_button.pressed.connect(func() -> void: nuke_requested.emit())
@@ -455,6 +499,11 @@ func _build_pause_menu() -> void:
 	_hint_label.visible = false
 	col.add_child(_hint_label)
 	_hint_button.visible = false
+	_demo_button = PaperUi.button("Ukázka řešení", Vector2(400, 50), "play")
+	_demo_button.tooltip_text = "Spustí misi znovu a přehraje její řešení. Hvězdy zůstávají."
+	_demo_button.pressed.connect(func() -> void: menu_action.emit("demo"))
+	_demo_button.visible = false
+	col.add_child(_demo_button)
 	_pause_layer.hide()
 
 

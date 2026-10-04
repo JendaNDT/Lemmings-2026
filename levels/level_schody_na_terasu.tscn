@@ -20,6 +20,7 @@ difficulty_index = 14
 introduces = "Stavitel"
 briefing = "Terasa s východem je o kousek výš, než lumík vyjde."
 hints = PackedStringArray("Lumík vyjde schod jen do 6 px – tenhle je vyšší.", "Stavitele přiděl kousek před stupněm. Schody stoupají pomalu: 12 cihel = 12 px.")
+solution = PackedInt32Array(206, 0, 0, 4)
 
 [node name="Terrain" type="Node2D" parent="."]
 

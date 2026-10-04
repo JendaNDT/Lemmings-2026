@@ -21,6 +21,7 @@ difficulty_index = 55
 introduces = "Rychlost vypouštění"
 briefing = "Mlýn zavírá za necelé dvě minuty a lumíků je čtyřicet."
 hints = PackedStringArray("Tlačítkem + u vypouštění vyjdou lumíci z líhně rychleji.", "Prorazte hráz, postav schody k mlýnu a pak zvyš vypouštění až na 99.")
+solution = PackedInt32Array(197, 0, 0, 5, 198, 1, -1, 99, 387, 0, 0, 4)
 
 [node name="Terrain" type="Node2D" parent="."]
 

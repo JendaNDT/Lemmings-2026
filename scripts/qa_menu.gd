@@ -151,7 +151,7 @@ func _win_mission_one(game: Node) -> void:
 	var world: PaperWorld = game.get_node("PaperWorld")
 	world.camera.input_enabled = false
 	var dug := false
-	game.set("_fast", true)
+	game.set("_speed", 3.0)
 	for _frame in 4000:
 		await process_frame
 		if sim.finished:
@@ -177,9 +177,9 @@ func _win_mission_one(game: Node) -> void:
 
 
 func _play(game: Node, frames: int) -> void:
-	game.set("_fast", true)
+	game.set("_speed", 3.0)
 	await _frames(frames)
-	game.set("_fast", false)
+	game.set("_speed", 1.0)
 
 
 func _find_button(node: Node, text: String) -> Button:
