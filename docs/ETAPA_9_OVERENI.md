@@ -1,8 +1,9 @@
 # Etapa 9 – kampaň: systémy a kapitoly I–IV
 
 4. října 2026. Podle schváleného [herního designu](HERNI_DESIGN.md)
-(autor odsouhlasil všech šest rozhodnutí) jsou hotové kroky 1, 2, 4, 5
-a 6 plánu realizace: systémy kampaně a všechny čtyři kapitoly (20 misí).
+(autor odsouhlasil všech šest rozhodnutí) jsou hotové kroky 1–7 plánu
+realizace: systémy kampaně, všechny čtyři kapitoly (20 misí), pomocníci
+a čtyři patrové mise v podzemí (celkem 24 misí).
 Zároveň bylo vyřazeno 2.5D zobrazení a export Androidu hlídá stálý podpis.
 
 ![Výběr misí po kapitolách, úvodní karta, výsledek s hvězdami a pauza s nápovědou](images/kampan-kapitola-1.jpg)
@@ -226,6 +227,43 @@ Orientace v mapě bez změny pravidel (herní design, kapitola 4.8):
   dotykový profil).
 - Celá kontrola `python scripts/check.py`: **83 GDScriptů, 15 sad, 420
   kontrol, vše v pořádku**.
+
+## Patrové mise v podzemí (krok 7)
+
+Na přání autora: první mise byly velmi vodorovné, původní Lemmings
+působily svisleji (mapa 1600 × 160 px byla vidět celá na výšku a vedla přes
+několik pater). V každé kapitole přibyla jedna patrová mise ve společném
+prostředí podzemí (autor ho vybral ze tří variant).
+
+![Důlní patra, Mraveniště, Podzemní vodopád a Hluboká šachta ve hře](images/podzemi.jpg)
+
+| # | Mise | Patra a zásahy | Index |
+|---|---|---|---|
+| 5 | Důlní patra | tři podlahy, kopáč dvakrát nad hromadou hlušiny | 25 Lehká |
+| 11 | Mraveniště | tři komory s ocelí pod podlahou: kopáč v okně, bomba na chodci, schody ke dveřím | 44 Střední |
+| 17 | Podzemní vodopád | čtyři terasy: kytka (rychlé vypouštění), razič skrz šipky, blokař před lávou | 58 Střední |
+| 21 | Hluboká šachta | čtyři římsy: horník skrz pilíř, kopáč v okně oceli, blokař těsně před lávou, kytka | 67 Těžká |
+
+- **Pravidlo stavby:** dav padá do vykopané díry od horní hrany podlahy,
+  ne ode dna díry. Kratší pád proto zajistí jen vyšší místo pod dírou
+  (hromada hlušiny, římsa, okno v oceli nad suchou zemí). Zapsáno
+  v CLAUDE.md a v herním designu (karty P1–P4).
+- **Ladění:** Mraveniště mělo s blokařem a bombou nad oknem okno zásahu
+  5 tiků (index 75), proto bomba na chodci a bez raziče; Hluboká šachta
+  by na původní cíl 76–80 potřebovala okna pod 5 tiků, a tak stojí jako
+  druhá mise kapitoly IV (cíl 19 z 25, hvězdy 19 / 20 / 21).
+- **Prostředí:** vlastní krajina podzemí, terén s mechem, světlo luceren,
+  svítící prach; volný prostor ukazuje jeskyni místo hnědé stěny dutiny
+  ([vzhled](ORIGAMI_OVERENI.md)). Úvodní karta připíše „výprava
+  do podzemí“.
+- **Postup hráče** zůstane (mise podle id); vložené mise před splněnou
+  jsou hned otevřené. Kapitoly mají 7, 6, 6 a 5 misí, hvězd je 72;
+  výběr misí se vejde i v profilu 20 : 9.
+- Report obtížnosti: všech 24 misí v pásmu, každá s referenčním řešením
+  a záznamem pro Ukázku. `test_origami` hlídá podzemí v každé kapitole.
+- Celá kontrola `python scripts/check.py`: **83 GDScriptů, 15 sad,
+  421 kontrol, vše v pořádku**; grafický průchod menu na počítači
+  i v dotykovém profilu (24 misí).
 
 ## Vyřazení 2.5D
 

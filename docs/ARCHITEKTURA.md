@@ -299,6 +299,7 @@ a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
 | `PaperForeground` | Nízké trsy rostlin u spodní lišty (rozostřené, blíž než herní rovina), kývají se ve větru; zprůhlední, když je za nimi postava, líheň nebo východ. Vstup nepřijímají. |
 | Světlo (`paper_light.gdshader`) | Přičítací vrstva: teplá záře slunce zleva shora a jemné paprsky, pomalu se posouvají s herním časem. |
 | Zrnitost (`paper_grain.gdshader`) | Násobící vrstva přes celou herní scénu pod HUDem: papírové žíhání, ztmavení rohů a chladnější strana odvrácená od slunce. |
+| `PaperTheme` | Data vzhledu: téma kapitoly nebo prostředí mise (`LevelDefinition.scenery`, např. podzemí patrových misí) – vrstvy krajiny, nebe, barvy terénu a trávy, světlo, počasí, kreslení dutin. |
 | `PaperFlyover` | Přelet mapy po úvodní kartě: kamera začne u východu (širší záběr), po 1,6 s přeletí s oddálením na startovní záběr u líhně. Řídí ho skutečný čas; simulace mezitím stojí na tiku 0. |
 | `PaperGuide` | Ukazatele v obrazovkových souřadnicích nad krajinou: štítek „Východ“ nad střechou při přeletu a odznak s domečkem u okraje herní plochy, když je východ mimo záběr. Polohy jen přes `PaperCamera`, vstup nepřijímá, roste s velikostí rozhraní. |
 

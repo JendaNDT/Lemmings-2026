@@ -49,6 +49,14 @@ static func plan_for(id: String) -> Callable:
 			return _descent
 		"origami-finale":
 			return _finale
+		"dulni-patra":
+			return _mine_floors
+		"mraveniste":
+			return _anthill
+		"podzemni-vodopad":
+			return _cave_falls
+		"hluboka-sachta":
+			return _deep_shaft
 	return Callable()
 
 
@@ -405,3 +413,75 @@ static func _finale(sim: LevelSim, s: Dictionary) -> void:
 		elif s.has("cliff2") and hero.y < 160 and not s.has("gate") and lem.x == 434 and lem.y == 180:
 			if sim.assign_skill(lem, Lemming.Skill.BASHER):
 				s["gate"] = sim.tick_count
+
+
+## Důlní patra: kopáč na 2. patře nad hromadou hlušiny (x = 130, cestou doleva),
+## na 3. patře druhý kopáč nad hromadou na dně (x = 82), dole dav dojde k východu.
+static func _mine_floors(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER:
+			continue
+		if not s.has("dig2") and absi(lem.y - 115) <= 2 and lem.dir == -1 and lem.x == 130:
+			if sim.assign_skill(lem, Lemming.Skill.DIGGER):
+				s["dig2"] = sim.tick_count
+		elif s.has("dig2") and not s.has("dig3") and absi(lem.y - 182) <= 2 and lem.x == 82:
+			if sim.assign_skill(lem, Lemming.Skill.DIGGER):
+				s["dig3"] = sim.tick_count
+
+
+## Mraveniště: kopáč v hliněném okně horní komory (x = 260), ve druhé komoře
+## bomba chodci cestou doleva (x = 215), vybuchne nad oknem v oceli (x ≈ 130);
+## dole stavitel postaví schody na stupeň ke dveřím (x = 360).
+static func _anthill(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER:
+			continue
+		if not s.has("dig") and absi(lem.y - 70) <= 2 and lem.x == 260:
+			if sim.assign_skill(lem, Lemming.Skill.DIGGER):
+				s["dig"] = sim.tick_count
+		elif not s.has("bomb") and absi(lem.y - 125) <= 2 and lem.dir == -1 and lem.x == 215:
+			if sim.assign_skill(lem, Lemming.Skill.BOMBER):
+				s["bomb"] = sim.tick_count
+		elif not s.has("build") and lem.y == 180 and lem.dir == 1 and lem.x == 360:
+			if sim.assign_skill(lem, Lemming.Skill.BUILDER):
+				s["build"] = sim.tick_count
+
+
+## Podzemní vodopád: vypouštění hned na 99 (hustý dav projde kolem kytky),
+## na třetí terase blokař před okrajem nad lávou (x = 270, cestou doleva)
+## a razič skrz skálu se šipkami doprava (x = 346).
+static func _cave_falls(sim: LevelSim, s: Dictionary) -> void:
+	if not s.has("fast"):
+		if sim.change_release_rate(SimConst.MAX_RELEASE_RATE - sim.release_rate):
+			s["fast"] = sim.tick_count
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER or absi(lem.y - 150) > 2:
+			continue
+		if not s.has("block") and lem.dir == -1 and lem.x == 270:
+			if sim.assign_skill(lem, Lemming.Skill.BLOCKER):
+				s["block"] = sim.tick_count
+		elif not s.has("bash") and lem.dir == 1 and lem.x == 346:
+			if sim.assign_skill(lem, Lemming.Skill.BASHER):
+				s["bash"] = sim.tick_count
+
+
+## Hluboká šachta: vypouštění hned na 99 (dav proběhne kolem kytky), horník
+## na skalním pilíři druhé římsy (x = 256), kopáč v hliněném okně ocelové
+## podlahy třetí římsy (x = 280, cestou doleva) a hned po dopadu blokař
+## na čtvrté římse těsně před lávou (x = 276).
+static func _deep_shaft(sim: LevelSim, s: Dictionary) -> void:
+	if not s.has("fast"):
+		if sim.change_release_rate(SimConst.MAX_RELEASE_RATE - sim.release_rate):
+			s["fast"] = sim.tick_count
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER:
+			continue
+		if not s.has("mine") and absi(lem.y - 95) <= 2 and lem.dir == 1 and lem.x == 256:
+			if sim.assign_skill(lem, Lemming.Skill.MINER):
+				s["mine"] = sim.tick_count
+		elif not s.has("dig") and absi(lem.y - 165) <= 2 and lem.dir == -1 and lem.x == 280:
+			if sim.assign_skill(lem, Lemming.Skill.DIGGER):
+				s["dig"] = sim.tick_count
+		elif not s.has("block") and absi(lem.y - 222) <= 2 and lem.dir == -1 and lem.x == 276:
+			if sim.assign_skill(lem, Lemming.Skill.BLOCKER):
+				s["block"] = sim.tick_count

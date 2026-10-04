@@ -546,6 +546,29 @@ func _test_chapter_themes(scene: PackedScene) -> void:
 		and weather["bourka"].has(PaperFx.Puff.Kind.RAIN)
 		and not weather["louka"].has(PaperFx.Puff.Kind.RAIN),
 		"sopka žhne jiskrami, na Bouřkové hoře prší, louka je bez deště")
+	# Patrové mise mají v každé kapitole společné prostředí podzemí (jeskyně a důl).
+	var underground: Array[String] = []
+	var cave_ok := true
+	for index in Campaign.count():
+		var level := Campaign.SCENES[index].instantiate() as LevelDefinition
+		if level.scenery == "podzemi":
+			underground.append(level.level_id)
+		level.free()
+	for id in underground:
+		game.call("_choose_mission", Campaign.index_of(id))
+		cave_ok = cave_ok and world.theme == "podzemi" \
+			and world.layers[2].texture.resource_path.begins_with(PaperTheme.layer_dir("podzemi")) \
+			and world.fx.weather == "motes" and world.layers[0].drifters.size() == 4
+	for _frame in 120:
+		game.call("_process", 1.0 / SimConst.TICKS_PER_SECOND)
+	var motes := false
+	for puff in world.fx.get("_puffs"):
+		motes = motes or puff.kind == PaperFx.Puff.Kind.SPARK
+	var chapters := {}
+	for id in underground:
+		chapters[Campaign.chapter_of(Campaign.index_of(id))] = true
+	check(cave_ok and motes and underground.size() == 4 and chapters.size() == 4,
+		"patrové mise (jedna v každé kapitole) mají podzemí: jeskyni, netopýry a svítící prach")
 	check(PaperTheme.lightning(193.0) > 0.9 and PaperTheme.lightning(200.0) > 0.5
 		and PaperTheme.lightning(205.0) == 0.0 and PaperTheme.lightning(483.0) > 0.9,
 		"blesk na Bouřkové hoře: dvojitý záblesk pravidelně podle herního času")

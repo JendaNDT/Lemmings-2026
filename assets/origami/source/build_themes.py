@@ -1,4 +1,5 @@
-"""Krajiny kapitol II–IV: Skalní les, sopka (Voda a oheň) a Bouřková hora.
+"""Krajiny kapitol II–IV: Skalní les, sopka (Voda a oheň) a Bouřková hora,
+a podzemí (jeskyně a důl) pro patrové mise napříč kapitolami.
 
 Každé téma má stejné vrstvy jako louka kapitoly I (nebe se sluncem, mraky
 a ptáci jako výřezy, hory, střední pás, blízký pás) ve složce layers/<téma>/,
@@ -17,7 +18,7 @@ import numpy as np
 from build_backgrounds import TILE, mountain, pine, soften
 from paperlib import Canvas, ellipse, fiber_field, mix, rgb, tear, transform
 
-THEMES = ("les", "sopka", "bourka")
+THEMES = ("les", "sopka", "bourka", "podzemi")
 
 # Barvy témat (vzorkované z papírových odstínů louky a posunuté k náladě kapitoly).
 PAL = {
@@ -56,6 +57,16 @@ PAL = {
         "pine_near_shade": "#172d2e", "rock": "#8a9396", "rock_shade": "#687276", "ground": "#34474d",
         "trunk": "#4a3a30", "hut": "#a27c5a", "hut_shade": "#81603f", "hut_roof": "#5b4a44",
         "window": "#f3cf7a",
+    },
+    "podzemi": {
+        "ceiling": "#3b3339", "ceiling_shade": "#2c252b", "far": "#4a414d", "far_shade": "#3b3340",
+        "column": "#564b55", "column_shade": "#443a45", "haze": "#3a333f", "haze_low": "#2c2731",
+        "ledges": ["#5b4a43", "#4d3e39", "#40332f"], "rock": "#6e5c52", "rock_shade": "#51433c",
+        "rock_dark": "#2f2724", "ground": "#2a2226", "timber": "#8c6642", "timber_shade": "#6b4a2e",
+        "lantern": "#f6cd72", "lantern_frame": "#3a2d26", "glow": "#f2b45a",
+        "crystal": "#7fd3c8", "crystal_shade": "#4c9f9b", "crystal_glow": "#8fe6da",
+        "amethyst": "#b49be0", "amethyst_shade": "#8770be", "amethyst_glow": "#c7b2f0",
+        "moss": "#5d806a", "bat": "#2a2329", "bat_light": "#40353d", "shaft": "#e9d6a8",
     },
 }
 
@@ -532,9 +543,243 @@ def bourka(fiber, out: Path, seed: int) -> dict:
     return sky
 
 
+# --- Podzemí ---------------------------------------------------------------------
+
+def ceiling_band(c, rng, p, depth, count, colors=("ceiling", "ceiling_shade"), top=None):
+    """Strop jeskyně u horního okraje s visícími krápníky (dlaždice navazuje).
+    `top` = zvlněná horní hrana (vzdálená vrstva), jinak sahá až nad okraj."""
+    pts = [(-30, -10)] if top is None else \
+        [(TILE + 30 - i * (TILE + 60) / 30, top + 18 * math.sin(i * 1.3) + rng.uniform(-8, 8)) for i in range(31)]
+    y0 = 0.0 if top is None else top + 20
+    for x in np.sort(rng.uniform(0, TILE, count)):
+        drop = depth * rng.uniform(0.25, 1.0)
+        half = rng.uniform(10, 26)
+        base = y0 + depth * rng.uniform(0.15, 0.3)
+        pts += [(x - half * 2.2, base + rng.uniform(-6, 6)), (x - half * 0.3, base + drop * 0.7),
+                (x, base + drop), (x + half * 0.3, base + drop * 0.7), (x + half * 2.2, base + rng.uniform(-6, 6))]
+    if top is None:
+        pts.append((TILE + 30, -10))
+    poly = tear(pts, 2.0, rng, step=4)
+    c.shape(poly, p[colors[0]], fiber=0.07, shadow=(5, 8, 7, 0.22), core=(3.0, 0.45))
+    for x in np.sort(rng.uniform(0, TILE, count // 2)):
+        half = rng.uniform(8, 18)
+        drop = depth * rng.uniform(0.4, 0.8)
+        c.shape(tear([(x - half, y0 - 6), (x + half, y0 - 6), (x + half * 0.2, y0 + drop),
+                      (x - half * 0.1, y0 + drop * 0.9)], 1.4, rng, step=3), p[colors[1]], fiber=0.06)
+
+
+def stalagmite(x, base, height, half, rng):
+    """Krápník ze země: prohnuté boky a zaoblená špička; vrací obrys a stínovanou pravou část."""
+    left, right = [], []
+    lean = rng.uniform(-0.12, 0.12) * half
+    for i in range(10):
+        t = i / 10
+        w = half * (1 - t) ** 0.75
+        y = base - height * t
+        left.append((x - w + lean * t + rng.uniform(-2, 2), y))
+        right.append((x + w + lean * t + rng.uniform(-2, 2), y))
+    tip_r = max(half * 0.12, 3)
+    tip = [(x + lean + math.cos(math.pi + k * math.pi / 6) * tip_r,
+            base - height + math.sin(math.pi + k * math.pi / 6) * tip_r * 1.4) for k in range(7)]
+    outline = [(x - half - 4, base + 8)] + left + tip + list(reversed(right)) + [(x + half + 4, base + 8)]
+    # Stín: od osy (mírně vpravo) po pravý bok.
+    center = [(x + lean * (i / 10) + half * 0.12 * (1 - i / 10), base - height * i / 10) for i in range(10)]
+    shade = [(x + half * 0.12, base + 8)] + center + [(x + lean, base - height)] + list(reversed(right)) + \
+        [(x + half + 4, base + 8)]
+    return outline, shade
+
+
+def stalagmites(c, rng, base, count, hmin, hmax, wmin, wmax, lit, shade, shadow_op, rings=None):
+    for x in np.sort(rng.uniform(0, TILE, count)):
+        height = rng.uniform(hmin, hmax)
+        half = rng.uniform(wmin, wmax)
+        yb = base + rng.uniform(-8, 12)
+        pts, sh = stalagmite(x, yb, height, half, rng)
+        pts = tear(pts, 1.6, rng, step=4)
+        c.shape(pts, lit, fiber=0.07, shadow=(5, 6, 5, shadow_op), core=(2.5, 0.45))
+        c.shape(tear(sh, 1.2, rng, step=4), shade, fiber=0.07)
+        if rings is not None:
+            for k in range(3):
+                t = 0.18 + k * 0.22
+                w = half * (1 - t) ** 0.75
+                y = yb - height * t + rng.uniform(-4, 4)
+                c.crease((x - w * 0.85, y), (x + w * 0.8, y + rng.uniform(-3, 3)), 1.8, rings, 0.3)
+
+
+def rock_column(c, x, top, base, w, rng, p):
+    """Krápníkový sloup od stropu k zemi: zúžený uprostřed, prstence a stín vpravo."""
+    left, right = [], []
+    for i in range(9):
+        t = i / 8
+        waist = 1.0 - 0.35 * math.sin(math.pi * t)
+        y = top + (base - top) * t
+        left.append((x - w / 2 * waist + rng.uniform(-4, 4), y))
+        right.append((x + w / 2 * waist + rng.uniform(-4, 4), y))
+    poly = tear(left + list(reversed(right)), 2.0, rng, step=4)
+    c.shape(poly, p["column"], fiber=0.08, shadow=(6, 8, 6, 0.2), core=(3.0, 0.45))
+    c.shape(tear([(x + w * 0.1, top), (x + w * 0.45, top), (x + w * 0.3, (top + base) / 2),
+                  (x + w * 0.45, base), (x + w * 0.1, base)], 1.4, rng, step=4), p["column_shade"], fiber=0.07)
+    for k in range(4):
+        y = top + (base - top) * (0.2 + k * 0.2) + rng.uniform(-8, 8)
+        c.crease((x - w * 0.35, y), (x + w * 0.3, y + rng.uniform(-4, 4)), 2.0, p["rock_dark"], 0.3)
+
+
+def crystals(c, x, base, size, rng, col, shade, glow, glow_strength=0.4):
+    """Svítící shluk krystalů: šestiboké hroty z jednoho místa a měkká záře."""
+    soft_glow(c, x, base - size * 0.5, size * 1.2, size * 0.9, glow, glow_strength)
+    for k in range(int(rng.uniform(3, 6))):
+        angle = rng.uniform(-0.7, 0.7)
+        length = size * rng.uniform(0.55, 1.1)
+        width = size * rng.uniform(0.12, 0.2)
+        dx, dy = math.sin(angle), -math.cos(angle)
+        nx, ny = -dy, dx
+        bx, by = x + rng.uniform(-size * 0.2, size * 0.2), base
+        tip = (bx + dx * length, by + dy * length)
+        shard = [(bx - nx * width, by - ny * width), (bx - nx * width + dx * length * 0.75,
+                  by - ny * width + dy * length * 0.75), tip,
+                 (bx + nx * width + dx * length * 0.75, by + ny * width + dy * length * 0.75),
+                 (bx + nx * width, by + ny * width)]
+        c.shape(shard, col, fiber=0.03, shadow=(2, 3, 2, 0.18))
+        c.shape([shard[2], shard[3], shard[4], (bx, by)], shade, fiber=0.03)
+
+
+def lantern(c, x, y, rope_top, p):
+    soft_glow(c, x, y + 10, 70, 60, p["glow"], 0.45)
+    c.crease((x, rope_top), (x, y - 12), 2.0, p["lantern_frame"], 0.8)
+    c.shape([(x - 9, y - 12), (x + 9, y - 12), (x + 12, y - 6), (x - 12, y - 6)], p["lantern_frame"], fiber=0.03)
+    c.shape([(x - 8, y - 6), (x + 8, y - 6), (x + 8, y + 16), (x - 8, y + 16)], p["lantern"], fiber=0.02,
+            shadow=(2, 3, 2, 0.2))
+    c.shape([(x - 10, y + 16), (x + 10, y + 16), (x + 7, y + 21), (x - 7, y + 21)], p["lantern_frame"], fiber=0.03)
+    c.crease((x, y - 4), (x, y + 14), 1.6, p["lantern_frame"], 0.6)
+
+
+def timber_frame(c, x, base, w, hgt, rng, p):
+    """Důlní výdřeva: dva sloupky, příčný trám a vzpěry."""
+    post = 14
+    for px in (x, x + w - post):
+        c.shape([(px, base + 6), (px + rng.uniform(-2, 2), base - hgt), (px + post, base - hgt),
+                 (px + post + rng.uniform(-2, 2), base + 6)], p["timber"], fiber=0.06, shadow=(4, 5, 4, 0.22))
+        c.shape([(px + post * 0.6, base + 6), (px + post * 0.6, base - hgt), (px + post, base - hgt),
+                 (px + post, base + 6)], p["timber_shade"], fiber=0.06)
+    beam = [(x - 12, base - hgt - 16), (x + w + 12, base - hgt - 18), (x + w + 10, base - hgt + 2),
+            (x - 10, base - hgt + 4)]
+    c.shape(beam, p["timber"], fiber=0.06, shadow=(4, 6, 5, 0.25), core=(2.0, 0.35))
+    c.crease((x - 6, base - hgt - 4), (x + w + 6, base - hgt - 6), 2.0, p["timber_shade"], 0.5)
+    for sx, ex in ((x + post, x + post + 28), (x + w - post, x + w - post - 28)):
+        c.shape([(sx, base - hgt + 30), (sx + 4 * (1 if ex > sx else -1), base - hgt + 34),
+                 (ex, base - hgt + 2), (ex - 6 * (1 if ex > sx else -1), base - hgt + 2)],
+                p["timber_shade"], fiber=0.05)
+
+
+def ladder(c, x, top, bottom, p):
+    for rail in (x, x + 26):
+        c.shape([(rail, top), (rail + 6, top), (rail + 6, bottom), (rail, bottom)], p["timber"], fiber=0.05,
+                shadow=(3, 4, 3, 0.2))
+    y = top + 14
+    while y < bottom - 6:
+        c.shape([(x + 4, y), (x + 28, y - 2), (x + 28, y + 4), (x + 4, y + 6)], p["timber_shade"], fiber=0.05)
+        y += 24
+
+
+def bat_shape(c, bx, by, size, wing, col, light):
+    """Netopýr z papíru: tělo s oušky a vroubkovaná křídla podle fáze mávnutí."""
+    lift = size * 0.7 * wing
+    for side in (-1, 1):
+        tip = (bx + side * size * 1.25, by - lift)
+        edge = [(bx + side * size * 0.2, by - size * 0.05), tip,
+                (bx + side * size * 0.95, by - lift * 0.5 + size * 0.28),
+                (bx + side * size * 0.7, by - lift * 0.35 + size * 0.12),
+                (bx + side * size * 0.5, by - lift * 0.2 + size * 0.3),
+                (bx + side * size * 0.25, by + size * 0.12)]
+        c.shape(edge, light if side > 0 else col, fiber=0.04, shadow=(2, 3, 2, 0.15))
+    body = ellipse(bx, by + size * 0.05, size * 0.22, size * 0.3, 20)
+    c.shape(body, col, fiber=0.04)
+    for side in (-1, 1):
+        c.shape([(bx + side * size * 0.05, by - size * 0.18), (bx + side * size * 0.2, by - size * 0.45),
+                 (bx + side * size * 0.2, by - size * 0.15)], col, fiber=0.03)
+
+
+def podzemi(fiber, out: Path, seed: int) -> dict:
+    p = PAL["podzemi"]
+    folder = out / "layers" / "podzemi"
+    rng = np.random.default_rng(seed)
+    c = Canvas(TILE, 560, wrap_x=True, fiber=fiber)
+    # Světlo shora: úzké paprsky z puklin ve stropě (měkká záře, ne papír).
+    for x in (520, 1650, 2380):
+        soft_glow(c, x, 300, 46, 260, p["shaft"], 0.16)
+    ceiling_band(c, rng, p, 190, 46, colors=("ceiling_shade", "ceiling"))
+    for x in np.sort(rng.uniform(0, TILE, 7)):
+        crystals(c, x, rng.uniform(70, 110), rng.uniform(26, 40), rng, p["amethyst"], p["amethyst_shade"],
+                 p["amethyst_glow"], 0.3)
+    c.save(folder / "sky_decor.png")
+    frames = []
+    for k, wing in enumerate([1.0, 0.15, -0.7]):
+        bat = Canvas(96, 76, fiber=fiber)
+        bat_shape(bat, 48, 40, 30, wing, p["bat"], p["bat_light"])
+        bat.save(folder / f"bird_{k}.png")
+        frames.append(f"layers/podzemi/bird_{k}.png")
+    sky = {"tile": TILE, "clouds": [],
+           "birds": {"frames": frames, "anchor": [48, 40],
+                     "flock": [[0, 0, 0.9], [-60, 30, 0.75], [-110, 6, 0.65], [-160, 40, 0.6]],
+                     "start": [1350, 230], "speed": 3.4}}
+
+    rng = np.random.default_rng(seed + 1)
+    h = 640
+    c = Canvas(TILE, h, wrap_x=True, fiber=fiber)
+    base = h - 40
+    # Vzdálený strop napojený na sloupy, ať horní hrana vrstvy nikde nevisí ve vzduchu.
+    for x in np.sort(rng.uniform(0, TILE, 6)):
+        rock_column(c, x, 60, base + 10, rng.uniform(70, 120), rng, p)
+    # Stejná barva jako vrchol nebe, takže horní hrana vrstvy splyne.
+    ceiling_band(c, rng, p, 190, 40, colors=("ceiling_shade", "ceiling"), top=40)
+    stalagmites(c, rng, base, 22, 120, 300, 40, 90, p["far"], p["far_shade"], 0.08, p["haze_low"])
+    stalagmites(c, rng, base + 30, 18, 70, 170, 30, 70, p["column"], p["column_shade"], 0.14, p["far_shade"])
+    haze_band(c, p, base, h)
+    c.save(folder / "mountains.png")
+
+    rng = np.random.default_rng(seed + 2)
+    h = 720
+    c = Canvas(TILE, h, wrap_x=True, fiber=fiber)
+    bases = [360, 440, 520]
+    hill_rows(c, rng, p["ledges"], bases, h, amp=40)
+    for x in (300, 1100, 1900, 2500):
+        y = hill_y(x + 60, bases[1], 1, 40) + 40
+        timber_frame(c, x, y, rng.uniform(150, 200), rng.uniform(150, 190), rng, p)
+        lantern(c, x + 40, y - 120, y - 168, p)
+    for x in (720, 1560, 2260):
+        ladder(c, x, hill_y(x, bases[0], 0, 40) - 40, hill_y(x, bases[1], 1, 40) + 50, p)
+    for x in np.sort(rng.uniform(0, TILE, 12)):
+        y = hill_y(x, bases[2], 2, 40) + rng.uniform(10, 40)
+        crystals(c, x, y, rng.uniform(30, 52), rng, p["crystal"], p["crystal_shade"], p["crystal_glow"], 0.32)
+    bottom = [(-20, 650)] + [(-20 + i * (TILE + 40) / 40, 645 - 14 * math.sin(i * 0.8) + rng.uniform(-6, 6))
+                             for i in range(41)] + [(TILE + 20, h + 5), (-20, h + 5)]
+    c.shape(bottom, p["ground"], fiber=0.05)
+    c.save(folder / "midground.png")
+
+    rng = np.random.default_rng(seed + 3)
+    h = 620
+    c = Canvas(TILE, h, wrap_x=True, fiber=fiber)
+    c.shape([(-20, 470), (TILE + 20, 470), (TILE + 20, h + 5), (-20, h + 5)], p["ground"], fiber=0.06,
+            gradient=(mix(p["ground"], "#000000", 0.3), 470, h))
+    stalagmites(c, rng, 500, 12, 160, 300, 40, 80, p["rock"], p["rock_shade"], 0.26, p["rock_dark"])
+    for x in np.sort(rng.uniform(0, TILE, 12)):
+        boulder(c, x, 500 + rng.uniform(-10, 20), rng.uniform(90, 170), rng.uniform(50, 90), rng,
+                p["rock"], p["rock_shade"], p["moss"])
+    for k, x in enumerate(np.sort(rng.uniform(0, TILE, 9))):
+        if k % 2:
+            crystals(c, x, 480 + rng.uniform(0, 20), rng.uniform(60, 90), rng, p["amethyst"],
+                     p["amethyst_shade"], p["amethyst_glow"], 0.38)
+        else:
+            crystals(c, x, 480 + rng.uniform(0, 20), rng.uniform(60, 90), rng, p["crystal"],
+                     p["crystal_shade"], p["crystal_glow"], 0.38)
+    c.save(folder / "near.png")
+    return sky
+
+
 def build(out: Path, seed: int = 4026) -> None:
     fiber = fiber_field(512, 512, np.random.default_rng(seed))
-    for k, (theme, make) in enumerate([("les", les), ("sopka", sopka), ("bourka", bourka)]):
+    for k, (theme, make) in enumerate([("les", les), ("sopka", sopka), ("bourka", bourka),
+                                       ("podzemi", podzemi)]):
         folder = out / "layers" / theme
         folder.mkdir(parents=True, exist_ok=True)
         sky = make(fiber, out, seed + 100 * (k + 1))

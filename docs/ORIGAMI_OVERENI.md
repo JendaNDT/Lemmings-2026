@@ -107,6 +107,34 @@ a počasí; louka kapitoly I zůstala beze změny (Hřiště a menu také).
   terénu, trávu i počasí, Hřiště je louka; sopka jiskří, bouřka prší,
   louka ne; blesk podle herního času.
 
+## Podzemí pro patrové mise (5. kolo, 4. října 2026)
+
+Patrové mise (jedna v každé kapitole) mají společné prostředí podzemí –
+mise si ho vybere sama (`LevelDefinition.scenery = "podzemi"`), ostatní
+mise dál řídí kapitola.
+
+![Důlní patra, Mraveniště, Podzemní vodopád a Hluboká šachta ve hře](images/podzemi.jpg)
+
+| Vrstva | Obsah |
+|---|---|
+| Strop (nebe) | vrstvený strop s krápníky, fialové krystaly, světlo z puklin; místo mraků a ptáků hejno čtyř netopýrů |
+| Hory | krápníkové sloupy od stropu k zemi, zaoblené stalagmity s prstenci, opar |
+| Střed | skalní stupně, důlní výdřeva s lucernami (měkká záře), žebříky, tyrkysové krystaly |
+| Blízko | balvany s mechem, stalagmity, svítící shluky krystalů |
+
+- Terén: kamenitá hnědá, mech místo trávy; světlo luceren bez paprsků;
+  počasí „motes“ – řídký svítící prach se pomalu vznáší (tyrkys, fialová,
+  jantar).
+- Celý level je pod zemí, proto téma vypíná kreslení uzavřených dutin
+  (`PaperTerrain.fill_cavities`): volný prostor ukazuje krajinu jeskyně
+  místo hnědé zadní stěny a římsy dostanou mech. Vykopané tunely si
+  světlou zadní stěnu výkopu nechávají. Téma se proto nastaví před
+  `setup()` terénu.
+- Manifest `assets/origami.lock.json` má 118 souborů (8 nových, ostatní
+  podklady beze změny).
+- Test `test_origami`: všechny čtyři patrové mise (po jedné v každé
+  kapitole) přepnou na podzemí, netopýry a svítící prach.
+
 ## Co je hotové
 
 | Oblast | Stav |

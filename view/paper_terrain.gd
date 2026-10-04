@@ -20,6 +20,9 @@ const SURFACE_STEP := 12
 const SURFACE_REACH := 10
 
 var mask: TerrainMask
+## Uzavřené dutiny kreslit jako zadní stěnu jeskyně (téma podzemí to vypíná:
+## celý level je pod zemí a volný prostor ukazuje krajinu jeskyně).
+var fill_cavities := true
 var updates := 0
 ## Přední vrstva hladiny (kreslí se nad postavami): obdélník s vodou a lávou.
 var surface: Node2D
@@ -74,7 +77,7 @@ func setup(terrain: TerrainMask) -> void:
 	# Mipmapy masky = levné rozmazání pro měkké stíny a šířku vláknitých okrajů.
 	_mask_image.generate_mipmaps()
 	_mask_texture = ImageTexture.create_from_image(_mask_image)
-	var static_image := build_static(mask)
+	var static_image := build_static(mask, fill_cavities)
 	_static_texture = ImageTexture.create_from_image(static_image)
 	surface_points = exposed_surface(static_image)
 	var hazards := build_hazards(mask)
@@ -195,8 +198,9 @@ static func exposed_surface(static_image: Image) -> Array[Vector2i]:
 
 ## R = původní zem, G = vnitřek jeskyně, A = hloubka pod povrchem vystaveným nebi (×16).
 ## Jeskyně je prázdné místo sevřené zemí (viz CAVE_REACH_*) nebo uzavřená dutina,
-## kam se od horního ani bočních okrajů levelu nedá dostat. Pod vodou a lávou drn neleží.
-static func build_static(source: TerrainMask) -> Image:
+## kam se od horního ani bočních okrajů levelu nedá dostat (`cavities` = false
+## dutiny vynechá). Pod vodou a lávou drn neleží.
+static func build_static(source: TerrainMask, cavities := true) -> Image:
 	var w := source.width
 	var h := source.height
 	var bpp := TerrainMask.BYTES_PER_PIXEL
@@ -269,7 +273,7 @@ static func build_static(source: TerrainMask) -> Image:
 				open[next] = 1
 				queue.append(next)
 	for i in w * h:
-		if not solid[i] and not open[i]:
+		if cavities and not solid[i] and not open[i]:
 			out[i * 4 + 1] = 255
 	# Hloubka pod povrchem: drn jen tam, kde je nad runem dost volného nebe
 	# a nejde o dno jeskyně.

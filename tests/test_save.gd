@@ -143,7 +143,7 @@ func _test_campaign() -> void:
 		level.free()
 	check(ok, "každá mise má jedinečné id, mistrovský výsledek nad cílem, úvod a nápovědu; "
 		+ "kampaň čte údaje přímo ze scén")
-	check(Campaign.index_of("voda-lava-past") == 14 and Campaign.index_of("neexistuje") == -1,
+	check(Campaign.index_of("voda-lava-past") == 17 and Campaign.index_of("neexistuje") == -1,
 		"mise se dohledá podle identifikátoru")
 	var covered := 0
 	for c in Campaign.CHAPTERS.size():
@@ -186,7 +186,7 @@ func _test_progress() -> void:
 	check(better["new_best"] and better["stars"] == 3 and faster["new_best"]
 		and not worse["new_best"] and entry["best_saved"] == 10 and entry["best_ticks"] == 1800
 		and entry["wins"] == 4, "rekord: víc zachráněných, při shodě rychlejší čas")
-	check(progress.stars(0) == 3 and progress.chapter_stars(0) == [3, 18],
+	check(progress.stars(0) == 3 and progress.chapter_stars(0) == [3, 21],
 		"hvězdy mise i součet kapitoly")
 	progress.save()
 	var again := Progress.load_from(path)
@@ -198,13 +198,13 @@ func _test_progress() -> void:
 	check(not odd.is_completed("prvni-kroky") and odd.entry("prvni-kroky")["best_saved"] == 0
 		and odd.missions.size() == 1 and odd.last_mission == "" and not odd.has_suspended(),
 		"poškozené položky postupu se vyčistí")
-	# Hráč, který už splnil „První kroky“ (dřív mise 1, teď 6), nezůstane zamčený.
+	# Hráč, který už splnil „První kroky“ (dřív mise 1, teď 7), nezůstane zamčený.
 	var veteran := Progress.new()
 	veteran.record_result("prvni-kroky", 20, true, 1000)
 	var open := true
-	for i in 7:
+	for i in 8:
 		open = open and veteran.is_unlocked(i)
-	check(open and not veteran.is_unlocked(7) and veteran.furthest_completed() == 5,
+	check(open and not veteran.is_unlocked(8) and veteran.furthest_completed() == 6,
 		"vložené mise před splněnou misí zůstanou otevřené (vše do nejdál splněné + 1)")
 	check(not veteran.playground_unlocked(), "Hřiště je zamčené, dokud není celá kapitola I")
 	for i in Campaign.chapter_indices(0):

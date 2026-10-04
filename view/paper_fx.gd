@@ -63,7 +63,7 @@ var view_rect := Rect2()
 var max_scraps := MAX_SCRAPS
 ## Poletující okvětní lístky v krajině (při nízké kvalitě vypnuté).
 var petals := true
-## Počasí tématu kapitoly: "petals" (lístky), "embers" (jiskry), "rain" (déšť).
+## Počasí tématu: "petals" (lístky), "embers" (jiskry), "rain" (déšť), "motes" (prach v podzemí).
 var weather := "petals"
 var weather_colors: Array = [Color("b5b45e"), Color("e4903f"), Color("f1e9da"), Color("9aa456")]
 ## Hustota počasí podle kvality efektů: 0 vypnuto, 1 méně, 2 plně.
@@ -363,13 +363,21 @@ func _spawn_weather() -> void:
 		"embers":
 			if posmod(sim.tick_count, 3 - weather_level) == 0:
 				_spawn_spark()
+		"motes":
+			# Podzemí: řídký svítící prach se pomalu vznáší (méně než jiskry).
+			if posmod(sim.tick_count, 6 - weather_level * 2) == 0:
+				var mote := _spawn_spark()
+				mote.vel = Vector2(_rng.randf_range(-2.5, 2.5), _rng.randf_range(-3.0, 1.5))
+				mote.max_life = _rng.randf_range(4.0, 6.5)
+				mote.life = mote.max_life
+				mote.size *= 0.8
 		"rain":
 			for _i in weather_level * 3:
 				_spawn_drop()
 
 
 ## Jiskra se rozžhne kdekoli v pohledu, pomalu stoupá, mihotá se a zhasne.
-func _spawn_spark() -> void:
+func _spawn_spark() -> Puff:
 	var spark := Puff.new()
 	spark.kind = Puff.Kind.SPARK
 	spark.pos = view_rect.position + Vector2(_rng.randf(), _rng.randf()) * view_rect.size
@@ -380,6 +388,7 @@ func _spawn_spark() -> void:
 	spark.phase = _rng.randf() * TAU
 	spark.color = weather_colors[_rng.randi() % weather_colors.size()]
 	_add_puff(spark)
+	return spark
 
 
 ## Kapka deště padá šikmo shora; na terénu zmizí.

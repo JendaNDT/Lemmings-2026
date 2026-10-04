@@ -54,6 +54,9 @@ extends Node2D
 ## hodnota (jako LevelSim.replay_log). Generuje scripts/update_solutions.gd
 ## z tests/reference_plans.gd; ručně neupravovat.
 @export var solution := PackedInt32Array()
+## Vlastní prostředí mise (PaperTheme): prázdné = podle kapitoly, „podzemi“ =
+## jeskyně a důl pro patrové mise. Jen vzhled.
+@export var scenery := ""
 
 
 ## Uložené řešení jako příkazy pro SimReplay ([] = mise ho nemá).

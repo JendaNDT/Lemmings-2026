@@ -1,10 +1,11 @@
 # Lemmings 2026 – herní design dokument
 
-Verze 1.1 · 4. 10. 2026 · stav: **schváleno autorem, realizuje se**
-([kroky 1–6 hotové](ETAPA_9_OVERENI.md))
+Verze 1.2 · 4. 10. 2026 · stav: **schváleno autorem, realizuje se**
+([kroky 1–7 hotové](ETAPA_9_OVERENI.md))
 
 Dokument popisuje, co hra umí dnes, kde má slabá místa, navrhuje kampaň
-o 20 misích (15 nových) a systém obtížnosti, který se dá změřit.
+o 20 misích (15 nových), doplněnou o 4 patrové mise v podzemí (24 misí),
+a systém obtížnosti, který se dá změřit.
 Je podkladem pro [etapu 9 – kampaň](PLAN_VYVOJE.md) a část etapy 10.
 Technické detaily jsou v [architektuře](ARCHITEKTURA.md).
 
@@ -27,7 +28,8 @@ Technické detaily jsou v [architektuře](ARCHITEKTURA.md).
   a sbírá 1–3 hvězdy. Místo režimů „lehká/těžká“ dostane **pomocníky**
   (nápověda, krok o tik, zpomalení).
 - **Kampaň:** 4 kapitoly × 5–6 misí = 20 misí (5 stávajících upravených
-  + 15 nových) a Hřiště mimo kampaň. Křivka stoupá „pilou“: každá kapitola
+  + 15 nových), k nim v každé kapitole jedna patrová mise v podzemí
+  (celkem 24) a Hřiště mimo kampaň. Křivka stoupá „pilou“: každá kapitola
   začne oddechem a skončí zkouškou.
 - **Hotové v kódu:** měření obtížnosti (`LevelDifficulty`), referenční
   řešení (`ReferencePlans`), report `scripts/difficulty_report.gd`
@@ -358,9 +360,15 @@ v záběru.
 **Hřiště** (dnešní „Všech osm dovedností“) je mimo kampaň a otevře se
 po kapitole I.
 
-### 5.2 Pořadí 20 misí
+**Výpravy do podzemí:** v každé kapitole je jedna **patrová mise**
+ve společném prostředí podzemí (jeskyně a důl s lucernami, krystaly
+a netopýry). Mapa vede přes několik pater nad sebou shora dolů, jako
+svislé úrovně původních Lemmings, a kapitola v ní použije, co právě učí.
 
-N = nová mise (karta v kapitole 6), U = stávající s úpravou (5.4).
+### 5.2 Pořadí 24 misí
+
+N = nová mise (karta v kapitole 6), U = stávající s úpravou (5.4),
+P = patrová mise v podzemí (karty P1–P4 v kapitole 6).
 
 | # | Mise | id | Druh | Učí / hlavní nápad | Cílový index |
 |---|---|---|---|---|---|
@@ -368,50 +376,59 @@ N = nová mise (karta v kapitole 6), U = stávající s úpravou (5.4).
 | 2 | Schody na terasu | `schody-na-terasu` | N2 | stavitel | 12–19 |
 | 3 | Šikmý tunel | `sikmy-tunel` | U | horník | 15–24 |
 | 4 | Hlídka u srázu | `hlidka-u-srazu` | N3 | blokař chrání dav | 18–26 |
-| 5 | Lezec a padák | `lezec-a-padak` | U | trvalé vlastnosti | 26–34 |
-| 6 | První kroky | `prvni-kroky` | U | zkouška: razič + stavitel + kopáč | 33–40 |
-| 7 | Propadlo | `propadlo` | N5 | bomba otevře podlahu | 30–38 (změřeno 33) |
-| 8 | Ocelové kořeny | `ocelove-koreny` | N4 | razič, ocel ho zastaví | 32–39 (změřeno 36) |
-| 9 | Cesta skrz zeď | `cesta-skrz-zed` | U | blokař + bomba | 38–45 (změřeno 42) |
-| 10 | Dlouhá lávka | `dlouha-lavka` | N6 | dva stavitelé v řadě, ohrádka | 45–52 (změřeno 51) |
-| 11 | Mlýnský spěch | `mlynsky-spech` | N7 | zkouška: vypouštění a čas | 50–56 (změřeno 55) |
-| 12 | Hladová kytka | `hladova-kytka` | N8 | past se dobíjí – hustý dav projde (nápad) | 30–38 (změřeno 37) |
-| 13 | Šipky v útesu | `sipky-v-utesu` | N9 | jednosměrné zdi | 45–52 (změřeno 50) |
-| 14 | Brod | `brod` | N10 | most přes vodu, uvolnění blokaře | 52–58 (změřeno 56) |
-| 15 | Voda, láva a past | `voda-lava-past` | stávající | kombinace nebezpečí (změřeno 61) | 58–64 |
-| 16 | Pod sopkou | `pod-sopkou` | N11 | zkouška: horník pod lávou, past, čas | 62–68 (změřeno 63) |
-| 17 | Dvě líhně | `dve-lihne` | N12 | dvě skupiny současně | 63–70 (změřeno 66) |
-| 18 | Lávová lávka | `lavova-lavka` | N13 | přesnost na doraz | 72–78 (změřeno 73) |
-| 19 | Velký sestup | `velky-sestup` | N14 | sestup bez padáků | 80–86 (změřeno 84) |
-| 20 | Origami finále | `origami-finale` | N15 | vše dohromady | 85–92 (změřeno 91) |
+| 5 | Důlní patra | `dulni-patra` | P1 | patra pod sebou, pád do 60 px | 22–30 (změřeno 25) |
+| 6 | Lezec a padák | `lezec-a-padak` | U | trvalé vlastnosti | 26–34 |
+| 7 | První kroky | `prvni-kroky` | U | zkouška: razič + stavitel + kopáč | 33–40 |
+| 8 | Propadlo | `propadlo` | N5 | bomba otevře podlahu | 30–38 (změřeno 33) |
+| 9 | Ocelové kořeny | `ocelove-koreny` | N4 | razič, ocel ho zastaví | 32–39 (změřeno 36) |
+| 10 | Cesta skrz zeď | `cesta-skrz-zed` | U | blokař + bomba | 38–45 (změřeno 42) |
+| 11 | Mraveniště | `mraveniste` | P2 | komory nad sebou, okna v oceli | 42–48 (změřeno 44) |
+| 12 | Dlouhá lávka | `dlouha-lavka` | N6 | dva stavitelé v řadě, ohrádka | 45–52 (změřeno 51) |
+| 13 | Mlýnský spěch | `mlynsky-spech` | N7 | zkouška: vypouštění a čas | 50–56 (změřeno 55) |
+| 14 | Hladová kytka | `hladova-kytka` | N8 | past se dobíjí – hustý dav projde (nápad) | 30–38 (změřeno 37) |
+| 15 | Šipky v útesu | `sipky-v-utesu` | N9 | jednosměrné zdi | 45–52 (změřeno 50) |
+| 16 | Brod | `brod` | N10 | most přes vodu, uvolnění blokaře | 52–58 (změřeno 56) |
+| 17 | Podzemní vodopád | `podzemni-vodopad` | P3 | terasy dolů: kytka, šipky, láva | 56–60 (změřeno 58) |
+| 18 | Voda, láva a past | `voda-lava-past` | stávající | kombinace nebezpečí (změřeno 61) | 58–64 |
+| 19 | Pod sopkou | `pod-sopkou` | N11 | zkouška: horník pod lávou, past, čas | 62–68 (změřeno 63) |
+| 20 | Dvě líhně | `dve-lihne` | N12 | dvě skupiny současně | 63–70 (změřeno 66) |
+| 21 | Hluboká šachta | `hluboka-sachta` | P4 | sestup šachtou: horník, okno v oceli, láva | 66–72 (změřeno 67) |
+| 22 | Lávová lávka | `lavova-lavka` | N13 | přesnost na doraz | 72–78 (změřeno 73) |
+| 23 | Velký sestup | `velky-sestup` | N14 | sestup bez padáků | 80–86 (změřeno 84) |
+| 24 | Origami finále | `origami-finale` | N15 | vše dohromady | 85–92 (změřeno 91) |
 
 ### 5.3 Křivka obtížnosti (cíl)
 
 Jeden dílek = 4 body indexu.
 
 ```
- 1 Díra v louce       ██▌ 10
- 2 Schody na terasu   ████ 16
- 3 Šikmý tunel        █████ 20
- 4 Hlídka u srázu     █████▌ 22
- 5 Lezec a padák      ███████▌ 30
- 6 První kroky ★      █████████ 37
- 7 Propadlo           ████████ 33
- 8 Ocelové kořeny     █████████ 36
- 9 Cesta skrz zeď     ██████████▌ 42
-10 Dlouhá lávka       ████████████▌ 51
-11 Mlýnský spěch ★    █████████████▌ 55
-12 Hladová kytka      █████████ 37
-13 Šipky v útesu      ████████████▌ 50
-14 Brod               ██████████████ 56
-15 Voda, láva a past  ███████████████ 61
-16 Pod sopkou ★       ███████████████▌ 63
-17 Dvě líhně          ████████████████▌ 66
-18 Lávová lávka       ██████████████████▎ 73
-19 Velký sestup       █████████████████████ 84
-20 Origami finále ★   ██████████████████████▊ 91
+ 1 Díra v louce        ██▌ 10
+ 2 Schody na terasu    ████ 16
+ 3 Šikmý tunel         █████ 20
+ 4 Hlídka u srázu      █████▌ 22
+ 5 Důlní patra ▼       ██████▎ 25
+ 6 Lezec a padák       ███████▌ 30
+ 7 První kroky ★       █████████▎ 37
+ 8 Propadlo            ████████▎ 33
+ 9 Ocelové kořeny      █████████ 36
+10 Cesta skrz zeď      ██████████▌ 42
+11 Mraveniště ▼        ███████████ 44
+12 Dlouhá lávka        ████████████▊ 51
+13 Mlýnský spěch ★     █████████████▊ 55
+14 Hladová kytka       █████████▎ 37
+15 Šipky v útesu       ████████████▌ 50
+16 Brod                ██████████████ 56
+17 Podzemní vodopád ▼  ██████████████▌ 58
+18 Voda, láva a past   ███████████████▎ 61
+19 Pod sopkou ★        ███████████████▊ 63
+20 Dvě líhně           ████████████████▌ 66
+21 Hluboká šachta ▼    ████████████████▊ 67
+22 Lávová lávka        ██████████████████▎ 73
+23 Velký sestup        █████████████████████ 84
+24 Origami finále ★    ██████████████████████▊ 91
 ```
-★ = zkouška kapitoly. Pila je záměrná: po zkoušce přijde oddech.
+★ = zkouška kapitoly, ▼ = patrová mise v podzemí. Pila je záměrná: po
+zkoušce přijde oddech.
 
 ### 5.4 Úpravy stávajících misí
 
@@ -799,14 +816,82 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 - **Stavba:** jedna líheň místo dvou a bez blokaře, bombiče a horníka –
   mise zůstala čitelná a pestrost (5 druhů) je i tak plná.
 
+### Patrové mise v podzemí (P1–P4)
+
+Doplněné na přání autora (4. 10. 2026): první mise byly příliš vodorovné,
+původní Lemmings působily svisleji (mapa 1600 × 160 px byla vidět celá
+na výšku a vedla přes několik pater). V každé kapitole je proto jedna
+patrová mise ve společném prostředí **podzemí**. Pravidlo pro stavbu:
+dav padá do vykopané díry od horní hrany podlahy, ne ode dna díry, takže
+díra zkrátí pád jen tam, kde je pod ní vyšší místo (hromada hlušiny,
+římsa, okno v oceli nad suchou zemí).
+
+### P1 · Důlní patra
+
+`dulni-patra` · I/5 · **Lehká** (22–30, změřeno 25) · nápad: ano
+
+- **Učí:** patra pod sebou a pravidlo 60 px.
+- **Mapa 360 × 260** · lumíci 15, cíl 12 · vypouštění 50 · čas 3:00
+- **Dovednosti:** kopáč 3 · **hvězdy:** 12 / 14 / 15
+- **Stavba:** tři tenké podlahy nad sebou. Přes okraj je to do dalšího
+  patra vždy 67 px (smrt), pod podlahou ale leží hromady hlušiny – díra
+  nad hromadou vede jen 50 px dolů.
+- **Řešení:** kopáč na 2. patře nad hromadou (cestou doleva), druhý
+  na 3. patře nad hromadou na dně; dav dojde k východu (15/15).
+- **Past na nepozorné:** díra vedle hromady pustí dav až na dno.
+
+### P2 · Mraveniště
+
+`mraveniste` · II/11 · **Střední** (42–48, změřeno 44) · nápad: ano
+
+- **Učí:** komory nad sebou, ocel pod podlahou, bomba na chodci.
+- **Mapa 420 × 230** · lumíci 20, cíl 15 · vypouštění 50 · čas 3:30
+- **Dovednosti:** kopáč 2, bombič 2, stavitel 2 · **hvězdy:** 15 / 17 / 19
+- **Stavba:** tři komory přes celou šířku; pod podlahami je ocel
+  s jediným hliněným oknem (nahoře 40 px, uprostřed 80 px). Dolní komora
+  končí stupněm 12 px ke dveřím.
+- **Řešení:** kopáč v okně horní komory, ve druhé bomba chodci 85 px
+  před oknem (za 5 s ujde přesně k němu), dole schody na stupeň (19/20).
+- **Stavba mise:** blokař s bombou nad oknem měl okno 5 tiků a razič
+  špuntu 6 tiků – na kapitolu II moc přesné, proto bomba na chodci.
+
+### P3 · Podzemní vodopád
+
+`podzemni-vodopad` · III/17 · **Střední** (56–60, změřeno 58) · nápad: ano
+
+- **Učí:** terasy dolů, kombinace nebezpečí kapitoly.
+- **Mapa 440 × 250** · lumíci 20, cíl 14 · vypouštění 50 · čas 2:30
+- **Dovednosti:** blokař 1, razič 1 · **hvězdy:** 14 / 16 / 17
+- **Stavba:** čtyři terasy po stupních (bezpečné skoky 45–50 px). Na druhé
+  kytka (dobíjení 60), třetí zavírá skála se šipkami doprava a z jejího
+  levého okraje se padá do lávy.
+- **Řešení:** vypouštění hned na 99 (kytka sní 2), razič skrz šipky,
+  blokař před okrajem nad lávou (17/20).
+
+### P4 · Hluboká šachta
+
+`hluboka-sachta` · IV/21 · **Těžká** (66–72, změřeno 67) · nápad: ano
+
+- **Učí:** sestup šachtou, přesnost v řadě zásahů.
+- **Mapa 420 × 320** · lumíci 25, cíl 19 · vypouštění 50 · čas 1:30
+- **Dovednosti:** horník 1, kopáč 1, blokař 1 · **hvězdy:** 19 / 20 / 21
+- **Stavba:** čtyři římsy střídavě vlevo a vpravo. Z druhé vede bezpečně
+  jen šikmý tunel skalním pilířem, třetí má ocelovou podlahu s hliněným
+  oknem 18 px nad suchou římsou, čtvrtá lávu 8 px od místa dopadu
+  a kytku (dobíjení 150) před východem.
+- **Řešení:** vypouštění na 99, horník na pilíři, kopáč v okně a týž
+  lumík hned po dopadu blokařem před lávou (21/25).
+- **Zařazení:** při cíli 76–80 by mise musela mít okna pod 5 tiků;
+  proto stojí jako druhá v kapitole IV mezi Dvěma líhněmi a Lávovou lávkou.
+
 ---
 
 ## 7. Rozhraní a výuka pro kampaň
 
 1. **Úvodní karta mise:** název, „Zachraň 11 z 15“, dovednosti s popisy
    (i na telefonu), štítek „Nové: Blokař“, tečky obtížnosti, hvězdy.
-2. **Přelet mapy** na začátku (1–2 s) a značka směru k východu, když je
-   mimo záběr.
+2. **Přelet mapy** na začátku a značka směru k východu, když je mimo
+   záběr (hotovo, 4.8).
 3. **Výběr misí po kapitolách** (záložky I–IV, 5–6 karet), tečky
    obtížnosti, hvězdy, součet hvězd kapitoly; Hřiště jako zvláštní karta.
 4. **Nápověda** v pauzovacím menu a nabídka po 2 neúspěších (4.8).
@@ -833,7 +918,8 @@ Každý krok končí kontrolou, reportem obtížnosti a APK k vyzkoušení.
 4. **Kapitola II** – N4–N7, úprava Cesty skrz zeď.
 5. **Kapitola III** – N8–N11.
 6. **Kapitola IV** – N12–N15.
-7. **Ladění křivky** podle tvého hraní a reportu.
+7. **Patrové mise v podzemí** – P1–P4, jedna v každé kapitole.
+8. **Ladění křivky** podle tvého hraní a reportu.
 
 Každá nová mise: scéna s `level_id` → `LevelValidator` bez nálezu →
 plán v `ReferencePlans` → report v cílovém rozsahu → test řešení →
@@ -848,8 +934,8 @@ na konec kapitoly I, hvězdy, Hřiště mimo kampaň, názvy misí a kapitol,
 vyřazení 2.5D zobrazení a trvalé uložení podpisového klíče Androidu.
 
 **Stav realizace:** kroky 1 (systémy kampaně), 2 (kapitola I),
-3 (pomocníci), 4 (kapitola II), 5 (kapitola III) a 6 (kapitola IV) jsou
-hotové – kampaň má všech 20 misí,
+3 (pomocníci), 4 (kapitola II), 5 (kapitola III), 6 (kapitola IV)
+a 7 (patrové mise) jsou hotové – kampaň má 24 misí,
 2.5D je vyřazené, export hlídá stálý podpis
 ([ověření](ETAPA_9_OVERENI.md)). Změřené indexy kapitoly I: 15, 14, 18,
 23, 32, 38. Při stavbě se upravily rozměry N1 a N3 (mělčí jeskyně – pád
@@ -868,6 +954,11 @@ a 3 stavitele (při původních číslech index 48, pod pásmem). Pod sopkou
 má čas 2:00 a kytku s dobíjením 120 (při 50 by snědla 5–6 a mistrovský
 výsledek by splynul s cílem); stupeň na louce a jáma v jeskyni drží dav
 pohromadě.
+
+Krok 7 – patrové mise v podzemí (P1–P4) – je hotový: změřeno 25, 44, 58
+a 67, kampaň má 24 misí. Každá je v prostředí podzemí (vlastní krajina
+jeskyně a dolu, `LevelDefinition.scenery`), uzavřený prostor ukazuje
+krajinu jeskyně místo hnědé stěny dutiny.
 
 Kapitola IV změřeno: 66, 73, 84, 91. Dvě líhně mají cíl 26 a čas 2:00,
 Lávová lávka tři jámy po 22 px a čas 1:55, Velký sestup blokaře, který

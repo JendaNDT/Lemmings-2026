@@ -86,6 +86,10 @@
 - Kapitoly mají vlastní vzhled (`PaperTheme`, krajiny z
   `assets/origami/source/build_themes.py` v `layers/<téma>/`); jen dekorace,
   louka kapitoly I a menu zůstávají. Počasí řídí herní čas, ne simulace.
+  Patrové mise (jedna v každé kapitole) mají prostředí podzemí přes
+  `LevelDefinition.scenery`; téma se nastaví před `setup()` terénu.
+  V patrových misích dav padá do díry od horní hrany podlahy – kratší
+  pád zajistí jen vyšší místo pod dírou (hromada, římsa).
 - Jediný aktuální návrh je **2D origami s paralaxním posunem a zoomem**:
   `docs/MOCKUP_ORIGAMI.md` a `docs/images/mockup-origami-prvni-kroky.png`.
   Autor návrh přijal a požádal odstranit všechny předchozí grafické návrhy.

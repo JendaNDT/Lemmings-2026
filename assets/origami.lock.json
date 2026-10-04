@@ -164,6 +164,38 @@
       "sha256": "f6e0c349b9e71c7353914e5adcf2c6c243f96a7f24c42954838f909872274771"
     },
     {
+      "path": "assets/origami/layers/podzemi/bird_0.png",
+      "sha256": "5a7ec193884f47a3d35d6bd8652ce385cb590e3dfbe720cdd8063f7302f13461"
+    },
+    {
+      "path": "assets/origami/layers/podzemi/bird_1.png",
+      "sha256": "40e2fa40e4aa3328462c4ca60d832c3a05ec80964ec6860bde6c59bef5de7a3b"
+    },
+    {
+      "path": "assets/origami/layers/podzemi/bird_2.png",
+      "sha256": "e4a09a153892427b1ef3265d5b833b100398653db51ed4ada999418621ccc3f7"
+    },
+    {
+      "path": "assets/origami/layers/podzemi/midground.png",
+      "sha256": "6a869a90d135310f24907839238cfac6ef7f374ebfe6bb0a1acc72c7258031b2"
+    },
+    {
+      "path": "assets/origami/layers/podzemi/mountains.png",
+      "sha256": "6bbebab519987e34ff262c7042be1bf6c85a7230b948d1e351a3a64f11b3842c"
+    },
+    {
+      "path": "assets/origami/layers/podzemi/near.png",
+      "sha256": "cc9743d60315abd020ecf5bc763d2b6dc33af6f853379ca572e03ffb4a3e6c7b"
+    },
+    {
+      "path": "assets/origami/layers/podzemi/sky.json",
+      "sha256": "a5a76871c2a5a42257771ad384f72a8a13c545a9d640b4ab3434c4624f93a22d"
+    },
+    {
+      "path": "assets/origami/layers/podzemi/sky_decor.png",
+      "sha256": "43b750d519c5a2c83a55f488f60b5f33af0bc08df3ea3ce945ed25632bc1583c"
+    },
+    {
       "path": "assets/origami/layers/sky.json",
       "sha256": "b0f3a0c37b27240e10941ca5f2116b251666ed262a5d3e7627fb53102499bf79"
     },
@@ -281,7 +313,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "d8b31a16cf412de1717b3a22abb38a39478654dc9d4bff718ad80189c00d757c"
+      "sha256": "57264edc36f64a44bbf7511903bc499ef2f5c321e1305f36a72f5852da6dfdd2"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -289,7 +321,7 @@
     },
     {
       "path": "assets/origami/source/build_all.py",
-      "sha256": "dcea8cfcc36aa58ef386e01253e6c7398eba15b4349a693afa73b15a602a6847"
+      "sha256": "11668cc2428f6b8112ba04ef53d7a8179fba14bfa9e86414021199d55bbcb201"
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
@@ -305,7 +337,7 @@
     },
     {
       "path": "assets/origami/source/build_themes.py",
-      "sha256": "64059839861b02cd901ca8594714d2777f6d034ff70adf78b050a810c5d20bd5"
+      "sha256": "ab93d2767ab792faa12e7a1fb3aadd37e9439a85001d462076f538dadb817db8"
     },
     {
       "path": "assets/origami/source/build_ui.py",

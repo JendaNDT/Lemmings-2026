@@ -1,0 +1,80 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="Mraveniste" type="Node2D"]
+script = ExtResource("1_def")
+title = "Mraveniště"
+level_id = "mraveniste"
+size = Vector2i(420, 230)
+lemming_count = 20
+save_required = 15
+release_rate = 50
+time_limit_seconds = 210
+bombers = 2
+builders = 2
+diggers = 2
+master_saved = 19
+difficulty_index = 44
+introduces = "Komory nad sebou"
+briefing = "Mravenci tu vyhloubili tři komory nad sebou. Podlahy jsou zpevněné ocelí – jen kousek hlíny vede dál."
+hints = PackedStringArray("V každé komoře hledej místo, kde pod hlínou není ocel. Kopáč ani bomba ocel neprorazí.", "Nahoře kopej v hliněném okně. Ve druhé komoře dej bombu chodci tak, aby vybuchl nad oknem – za 5 s ujde kus cesty. Dole postaví stavitel schody ke dveřím.")
+scenery = "podzemi"
+solution = PackedInt32Array(244, 0, 0, 7, 615, 0, 0, 2, 1192, 0, 1, 4)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ceiling" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 420, 0, 420, 8, 367.5, 11, 315, 14, 262.5, 8, 210, 11, 157.5, 14, 105, 8, 52.5, 11, 0, 7)
+script = ExtResource("2_shape")
+
+[node name="LeftWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 14, 0, 16, 90, 13, 160, 15, 230, 0, 230)
+script = ExtResource("2_shape")
+
+[node name="RightWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(406, 0, 420, 0, 420, 230, 405, 230, 407, 160, 404, 90)
+script = ExtResource("2_shape")
+
+[node name="Floor1" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 70, 200, 69, 406, 70, 406, 80, 14, 80)
+script = ExtResource("2_shape")
+
+[node name="Steel1L" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 80, 240, 80, 240, 86, 14, 86)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Steel1R" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(280, 80, 406, 80, 406, 86, 280, 86)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Floor2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 125, 220, 124, 406, 125, 406, 135, 14, 135)
+script = ExtResource("2_shape")
+
+[node name="Steel2L" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 135, 90, 135, 90, 141, 14, 141)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Steel2R" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(170, 135, 406, 135, 406, 141, 170, 141)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Floor3" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 180, 372, 180, 372, 168, 406, 168, 406, 230, 14, 230)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(60, 40)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(392, 168)
+script = ExtResource("4_exit")

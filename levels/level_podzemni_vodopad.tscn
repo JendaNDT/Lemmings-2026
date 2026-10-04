@@ -1,0 +1,84 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://level_tools/lemming_trap.gd" id="5_trap"]
+
+[node name="PodzemniVodopad" type="Node2D"]
+script = ExtResource("1_def")
+title = "Podzemní vodopád"
+level_id = "podzemni-vodopad"
+size = Vector2i(440, 250)
+lemming_count = 20
+save_required = 14
+release_rate = 50
+time_limit_seconds = 150
+blockers = 1
+bashers = 1
+master_saved = 17
+difficulty_index = 58
+introduces = "Terasy dolů"
+briefing = "Jeskynní terasy klesají jako vodopád: na první číhá kytka, pod druhou teče láva a cestu dolů zavírá skála se šipkami."
+hints = PackedStringArray("Kytka sní vždycky jen jednoho a pak chvíli tráví. Hustý dav proběhne.", "Zrychli vypouštění hned na začátku. Na třetí terase zastav blokařem cestu k lávě a skálu se šipkami prorazí razič – šipky ukazují, kudy jde kopat.")
+scenery = "podzemi"
+solution = PackedInt32Array(1, 1, -1, 99, 372, 0, 1, 5, 473, 0, 2, 3)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ceiling" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 440, 0, 440, 8, 385, 11, 330, 14, 275, 8, 220, 11, 165, 14, 110, 8, 55, 11, 0, 7)
+script = ExtResource("2_shape")
+
+[node name="LeftWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 14, 0, 16, 90, 13, 170, 15, 250, 0, 250)
+script = ExtResource("2_shape")
+
+[node name="RightWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(426, 0, 440, 0, 440, 250, 425, 250, 427, 170, 424, 90)
+script = ExtResource("2_shape")
+
+[node name="Terrace1" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 55, 100, 54, 170, 55, 173, 60, 169, 66, 100, 67, 14, 66)
+script = ExtResource("2_shape")
+
+[node name="Terrace2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(122, 100, 210, 99, 300, 100, 303, 105, 299, 111, 210, 112, 124, 111, 119, 105)
+script = ExtResource("2_shape")
+
+[node name="Terrace3" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(252, 150, 330, 149, 392, 150, 395, 155, 391, 161, 330, 162, 254, 161, 249, 155)
+script = ExtResource("2_shape")
+
+[node name="ArrowRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(352, 151, 352, 116, 358, 110, 364, 110, 368, 116, 368, 151)
+script = ExtResource("2_shape")
+kind = 6
+
+[node name="Bottom" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 200, 120, 199, 426, 200, 426, 250, 14, 250)
+script = ExtResource("2_shape")
+
+[node name="LavaCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(196, 200, 294, 200, 294, 206, 196, 206)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Lava" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(196, 206, 294, 206, 292, 220, 284, 226, 206, 226, 198, 220)
+script = ExtResource("2_shape")
+kind = 4
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(50, 25)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(410, 200)
+script = ExtResource("4_exit")
+
+[node name="Trap" type="Marker2D" parent="."]
+position = Vector2(235, 100)
+script = ExtResource("5_trap")
+rearm_ticks = 60

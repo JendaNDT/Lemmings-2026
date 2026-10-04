@@ -81,7 +81,9 @@ def write_manifest() -> None:
                       "(sky.json), hory, střední pás s vesnicí, viaduktem a vodopádem, "
                       "blízký les s řekou, tři trsy rostlin popředí; ve složkách les, sopka "
                       "a bourka krajiny kapitol II–IV (skalní město a jedle, sopka s kouřem "
-                      "a jezerem, sněžné štíty s bouřkovými mraky a chatami)",
+                      "a jezerem, sněžné štíty s bouřkovými mraky a chatami), ve složce "
+                      "podzemi jeskyně a důl pro patrové mise (strop s krápníky, sloupy, "
+                      "výdřeva s lucernami, žebříky, svítící krystaly, tři pózy netopýra)",
             "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
             "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
             "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",

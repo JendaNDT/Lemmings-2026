@@ -1,6 +1,7 @@
 class_name Campaign
 extends RefCounted
 ## Kampaň: mise v pořadí, rozdělené do kapitol, a Hřiště mimo kampaň.
+## V každé kapitole je jedna patrová mise v podzemí (`scenery = "podzemi"`).
 ## Postup se ukládá podle stabilního identifikátoru mise
 ## (`LevelDefinition.level_id`), ne podle pořadí, takže přidání nebo
 ## přeřazení mise uložený postup nerozbije. Číslo mise se dopočítá z pořadí.
@@ -12,32 +13,36 @@ const SCENES: Array[PackedScene] = [
 	preload("res://levels/level_schody_na_terasu.tscn"),
 	preload("res://levels/level_miner.tscn"),
 	preload("res://levels/level_hlidka_u_srazu.tscn"),
+	preload("res://levels/level_dulni_patra.tscn"),
 	preload("res://levels/level_climb_float.tscn"),
 	preload("res://levels/level_01.tscn"),
 	# II. Skalní les
 	preload("res://levels/level_propadlo.tscn"),
 	preload("res://levels/level_ocelove_koreny.tscn"),
 	preload("res://levels/level_bomber.tscn"),
+	preload("res://levels/level_mraveniste.tscn"),
 	preload("res://levels/level_dlouha_lavka.tscn"),
 	preload("res://levels/level_mlynsky_spech.tscn"),
 	# III. Voda a oheň
 	preload("res://levels/level_hladova_kytka.tscn"),
 	preload("res://levels/level_sipky_v_utesu.tscn"),
 	preload("res://levels/level_brod.tscn"),
+	preload("res://levels/level_podzemni_vodopad.tscn"),
 	preload("res://levels/level_hazards.tscn"),
 	preload("res://levels/level_pod_sopkou.tscn"),
 	# IV. Bouřková hora
 	preload("res://levels/level_dve_lihne.tscn"),
+	preload("res://levels/level_hluboka_sachta.tscn"),
 	preload("res://levels/level_lavova_lavka.tscn"),
 	preload("res://levels/level_velky_sestup.tscn"),
 	preload("res://levels/level_origami_finale.tscn"),
 ]
 ## Kapitoly: [římské číslo, název, index první mise, počet misí].
 const CHAPTERS := [
-	["I", "Papírová louka", 0, 6],
-	["II", "Skalní les", 6, 5],
-	["III", "Voda a oheň", 11, 5],
-	["IV", "Bouřková hora", 16, 4],
+	["I", "Papírová louka", 0, 7],
+	["II", "Skalní les", 7, 6],
+	["III", "Voda a oheň", 13, 6],
+	["IV", "Bouřková hora", 19, 5],
 ]
 ## Pískoviště se všemi dovednostmi; otevře se po splnění kapitoly I.
 const PLAYGROUND := preload("res://levels/level_playground.tscn")

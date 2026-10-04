@@ -1,0 +1,98 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://level_tools/lemming_trap.gd" id="5_trap"]
+
+[node name="HlubokaSachta" type="Node2D"]
+script = ExtResource("1_def")
+title = "Hluboká šachta"
+level_id = "hluboka-sachta"
+size = Vector2i(420, 320)
+lemming_count = 25
+save_required = 19
+release_rate = 50
+time_limit_seconds = 90
+blockers = 1
+miners = 1
+diggers = 1
+master_saved = 21
+difficulty_index = 67
+introduces = "Sestup šachtou"
+briefing = "Šachta vede hluboko pod Bouřkovou horu. Římsy jsou daleko od sebe, podlahy zpevněné ocelí a na dně teče láva."
+hints = PackedStringArray("Z druhé římsy vede bezpečná cesta jen šikmo skrz skalní pilíř. Na třetí je v oceli jediné hliněné okno.", "Horník začne na pilíři, ne před ním. Kopáč v okně nad suchou římsou. Dole hned zastav blokařem cestu k lávě.")
+scenery = "podzemi"
+solution = PackedInt32Array(1, 1, -1, 99, 264, 0, 0, 6, 565, 0, 1, 7, 599, 0, 1, 3)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ceiling" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 420, 0, 420, 8, 367.5, 11, 315, 14, 262.5, 8, 210, 11, 157.5, 14, 105, 8, 52.5, 11, 0, 7)
+script = ExtResource("2_shape")
+
+[node name="LeftWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 14, 0, 16, 90, 13, 200, 15, 320, 0, 320)
+script = ExtResource("2_shape")
+
+[node name="RightWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(406, 0, 420, 0, 420, 320, 405, 320, 407, 200, 404, 90)
+script = ExtResource("2_shape")
+
+[node name="Ledge1" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 45, 80, 44, 150, 45, 153, 50, 149, 56, 80, 57, 14, 56)
+script = ExtResource("2_shape")
+
+[node name="Ledge2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(114, 80, 122, 80, 124, 95, 200, 94, 250, 95, 300, 95, 302, 120, 298, 141, 250, 141, 250, 106, 200, 107, 124, 106, 114, 106)
+script = ExtResource("2_shape")
+
+[node name="Ledge3" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(252, 165, 330, 164, 406, 165, 406, 171, 252, 171, 249, 168)
+script = ExtResource("2_shape")
+
+[node name="Steel3L" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(252, 171, 271, 171, 271, 177, 252, 177)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Steel3R" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(289, 171, 406, 171, 406, 177, 289, 177)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Ledge4" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 222, 120, 221, 330, 222, 333, 227, 329, 233, 120, 234, 14, 233)
+script = ExtResource("2_shape")
+
+[node name="LavaCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(224, 222, 268, 222, 268, 228, 224, 228)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Lava" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(224, 228, 268, 228, 266, 236, 260, 240, 232, 240, 226, 236)
+script = ExtResource("2_shape")
+kind = 4
+
+[node name="Platform" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(318, 280, 360, 279, 406, 280, 406, 320, 318, 320)
+script = ExtResource("2_shape")
+
+[node name="Bottom" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 300, 318, 300, 318, 320, 14, 320)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(50, 15)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(390, 280)
+script = ExtResource("4_exit")
+
+[node name="Trap" type="Marker2D" parent="."]
+position = Vector2(318, 222)
+script = ExtResource("5_trap")
+rearm_ticks = 150

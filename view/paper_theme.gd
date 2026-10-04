@@ -3,6 +3,8 @@ extends RefCounted
 ## Vzhled kapitol: krajina, nebe, barvy hlíny a trávy, světlo a počasí.
 ## Jen vzhled – kolize, pravidla ani výběr postav se nemění. Krajiny vyrábí
 ## assets/origami/source/build_themes.py (louka build_backgrounds.py).
+## Mise si může prostředí vybrat sama (`LevelDefinition.scenery`, např. podzemí
+## pro patrové mise napříč kapitolami).
 
 ## Téma podle kapitoly kampaně (0–3); mimo kampaň (Hřiště) louka.
 const BY_CHAPTER := ["louka", "les", "sopka", "bourka"]
@@ -74,6 +76,24 @@ const THEMES := {
 		"weather_colors": [Color("eef4f7"), Color("d3e0e8")],
 		"scraps": [Color("8c5c4a"), Color("9d7656"), Color("b28f6c"), Color("b6a284"), Color("c3aa8a")],
 	},
+	# Podzemí (patrové mise): jeskyně a důl, kamenitá hlína, mech, světlo luceren, svítící prach.
+	"podzemi": {
+		"dir": "podzemi", "sky": [Color("2c252b"), Color("3a3340"), Color("4d423f")],
+		# Celý level je pod zemí: volný prostor ukazuje krajinu jeskyně, ne stěnu dutiny.
+		"caves": false,
+		"terrain": {
+			"TERRA": Color("7a5e50"), "TERRA_DARK": Color("5e473d"), "OCHRE": Color("8f6b4f"),
+			"OCHRE_LIGHT": Color("a8805c"), "SAND": Color("a89580"), "TUNNEL": Color("b49a7e"),
+			"TUNNEL_DARK": Color("6e5444"), "CAVE": Color("241c1f"), "GRASS_TOP": Color("8fae8a"),
+			"GRASS": Color("4f7466"), "GRASS_LIT": Color("638a78"), "GRASS_DARK": Color("3d5c52"),
+		},
+		"grass": [Color("4f7466"), Color("638a78"), Color("3d5c52"), Color("587e6d")],
+		"grass_light": Color("8fae8a"),
+		"light": [Color(1.0, 0.8, 0.55), 0.1, 0.0], "lightning": false,
+		"weather": "motes",
+		"weather_colors": [Color("8fe6da"), Color("c7b2f0"), Color("f6cd72"), Color("7fd3c8")],
+		"scraps": [Color("7a5e50"), Color("8f6b4f"), Color("a8805c"), Color("a89580"), Color("b49a7e")],
+	},
 }
 
 
@@ -81,6 +101,11 @@ static func for_chapter(chapter: int) -> String:
 	if chapter < 0 or chapter >= BY_CHAPTER.size():
 		return BY_CHAPTER[0]
 	return BY_CHAPTER[chapter]
+
+
+## Téma mise: vlastní prostředí mise, jinak podle kapitoly.
+static func for_mission(scenery: String, chapter: int) -> String:
+	return scenery if THEMES.has(scenery) else for_chapter(chapter)
 
 
 static func data(name: String) -> Dictionary:

@@ -152,6 +152,7 @@ static func add_sky_life(sky: PaperParallax, data_path := SKY_DATA) -> void:
 
 
 ## Přepne vzhled na téma kapitoly. Mění jen dekoraci; herní rovina a kamera zůstanou.
+## Volá se před setup(): vykreslení dutin v terénu závisí na tématu.
 func set_theme(name: String) -> void:
 	if name == theme or not PaperTheme.THEMES.has(name):
 		return
@@ -164,6 +165,7 @@ func set_theme(name: String) -> void:
 	add_sky_life(layers[0], dir + "sky.json")
 	_sky_texture.gradient.colors = PackedColorArray(data["sky"])
 	terrain.set_palette(data["terrain"])
+	terrain.fill_cavities = data.get("caves", true)
 	grass.colors = data["grass"]
 	grass.light = data["grass_light"]
 	grass.queue_redraw()

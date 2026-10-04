@@ -16,8 +16,10 @@ Vývoj a kontroly probíhají v cloudu.
 Hotové: kapitoly, hvězdy, úvodní karta mise, nápověda, Hřiště,
 kapitola I (15 → 14 → 18 → 23 → 32 → 38), II (33 → 36 → 42 → 51 → 55),
 III (37 → 50 → 56 → 61 → 63) a **kapitola IV Bouřková hora**: Dvě líhně
-66, Lávová lávka 73, Velký sestup 84, Origami finále 91. **Kampaň má
-všech 20 misí**, všechny v cílových pásmech.
+66, Lávová lávka 73, Velký sestup 84, Origami finále 91. K nim v každé
+kapitole jedna **patrová mise v podzemí** (Důlní patra 25, Mraveniště 44,
+Podzemní vodopád 58, Hluboká šachta 67) – **kampaň má 24 misí**, všechny
+v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
@@ -37,6 +39,11 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Patrové mise v podzemí:** Důlní patra (I/5), Mraveniště (II/11),
+  Podzemní vodopád (III/17) a Hluboká šachta (IV/21) – mapy přes několik
+  pater shora dolů jako v původních Lemmings. Nové prostředí **podzemí**
+  (jeskyně a důl: krápníky, sloupy, výdřeva s lucernami, krystaly,
+  netopýři, svítící prach; `build_themes.py`, `LevelDefinition.scenery`).
 - **Android APK 0.13.0** ve větvi `downloads/android-0.13.0` (versionCode
   14, stejný podpis): přelet mapy a šipka k východu. Herní soubory z APK
   prošly průchodem menu včetně přeskočení přeletu kliknutím.

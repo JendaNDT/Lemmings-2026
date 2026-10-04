@@ -1,0 +1,62 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="DulniPatra" type="Node2D"]
+script = ExtResource("1_def")
+title = "Důlní patra"
+level_id = "dulni-patra"
+size = Vector2i(360, 260)
+lemming_count = 15
+save_required = 12
+release_rate = 50
+time_limit_seconds = 180
+diggers = 3
+master_saved = 15
+difficulty_index = 25
+introduces = "Patra pod sebou"
+briefing = "Starý důl má tři patra nad sebou. Přes okraj je každý skok do dalšího patra moc vysoký – ale pod podlahou leží hromady hlušiny."
+hints = PackedStringArray("Pád do 60 px lumík přežije. Hromada hlušiny pod podlahou zkrátí pád.", "Kopej přesně nad hromadou: na druhém patře cestou doleva, na třetím vlevo nad hromadou na dně.")
+scenery = "podzemi"
+solution = PackedInt32Array(560, 0, 0, 7, 642, 0, 0, 7)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ceiling" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 360, 0, 360, 8, 315, 11, 270, 14, 225, 8, 180, 11, 135, 14, 90, 8, 45, 11, 0, 7)
+script = ExtResource("2_shape")
+
+[node name="LeftWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 14, 0, 16, 90, 13, 170, 15, 260, 0, 260)
+script = ExtResource("2_shape")
+
+[node name="RightWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(346, 0, 360, 0, 360, 260, 345, 260, 347, 170, 344, 90)
+script = ExtResource("2_shape")
+
+[node name="Floor1" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 60, 140, 59, 270, 60, 273, 64, 269, 70, 140, 71, 14, 70)
+script = ExtResource("2_shape")
+
+[node name="Floor2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(80, 115, 200, 114, 346, 115, 346, 125, 200, 126, 83, 125, 78, 120)
+script = ExtResource("2_shape")
+
+[node name="Floor3" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 182, 90, 182, 108, 166, 130, 165, 152, 166, 170, 182, 200, 182, 203, 186, 199, 192, 110, 193, 14, 192)
+script = ExtResource("2_shape")
+
+[node name="Bottom" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(14, 249, 48, 249, 64, 233, 82, 232, 100, 233, 116, 249, 346, 249, 346, 260, 14, 260)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(60, 30)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(320, 249)
+script = ExtResource("4_exit")

@@ -158,10 +158,13 @@ func _load_level(intro := true, demo := false) -> void:
 	if not spec.hatches.is_empty():
 		focus = Vector2(spec.hatches[0])
 	if _view != null:
-		_view.setup(_sim)
 		if _view.has_method("set_theme"):
 			# Vzhled kapitoly (krajina, barvy, počasí); Hřiště a mise mimo kampaň = louka.
-			_view.set_theme(PaperTheme.for_chapter(Campaign.chapter_of(Campaign.index_of(_mission_id))))
+			# Patrové mise mají vlastní prostředí (podzemí) v kterékoli kapitole.
+			# Téma před setup(): terén podle něj kreslí (ne)uzavřené dutiny.
+			_view.set_theme(PaperTheme.for_mission(_level.scenery,
+				Campaign.chapter_of(Campaign.index_of(_mission_id))))
+		_view.setup(_sim)
 	else:
 		_terrain_view.setup(mask)
 		_lemmings_view.setup(_sim)
@@ -706,6 +709,8 @@ func _briefing_data() -> Dictionary:
 	if index >= 0:
 		var info := Campaign.mission(index)
 		data["chapter"] = "Kapitola " + Campaign.chapter_title(Campaign.chapter_of(index))
+		if _level.scenery == "podzemi":
+			data["chapter"] += " · výprava do podzemí"
 		data["tier"] = LevelDifficulty.tier(int(info["difficulty"]))
 		data["thresholds"] = Campaign.star_thresholds(info)
 		data["stars"] = progress.stars(index)
