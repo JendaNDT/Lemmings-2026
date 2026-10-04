@@ -1,5 +1,12 @@
 # Android demo 0.15.0
 
+> **Od 1.0.0-rc1 vychází hra jako Paperlings** na
+> [GitHub Releases](https://github.com/JendaNDT/Lemmings-2026/releases)
+> (Windows, macOS, Android) – instalace a aktualizace jsou v
+> [návodu pro hráče](NAVOD.md), vydání v [etapě 11](ETAPA_11_OVERENI.md).
+> APK 1.0.0-rc1 má stejný balíček i podpis a aktualizuje verze 0.5.0–0.15.0.
+> Níže zůstává popis posledního testovacího APK a ověření Android exportu.
+
 Vývojové APK s **pomocí při hraní** (etapa 10): hláška, proč dovednost
 nejde dát, štítek nad lumíkem (co dělá, kolik jich je v davu), náhled
 cíle při držení prstu a **minimapa** v rohu. Dál má **čtyři patrové mise v podzemí** (jedna v každé

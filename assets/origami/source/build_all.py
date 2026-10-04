@@ -92,7 +92,7 @@ def write_manifest() -> None:
             "ui": "papírové panely HUDu (9 dílů), 8 ikon dovedností, ikony menu a zvuku (SVG)",
             "icon": "ikona aplikace Paperlings (postavička z dílů atlasu ve 3× rozlišení "
                     "na papírovém kopci): PNG 1024/256, Android 192 a adaptivní 432 "
-                    "(pozadí a popředí), .ico a .icns",
+                    "(pozadí, popředí a silueta), .ico a .icns",
             "source/previews": "kontaktní arch póz pro vizuální kontrolu (není ve hře)",
         },
         "limitations": [

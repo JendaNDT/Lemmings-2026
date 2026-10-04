@@ -358,8 +358,21 @@ view/                grafika: terén, lumíci, efekty, kamera, shadery
                      (paper_* = 2D origami)
 ui/                  rozhraní: HUD, menu, nastavení, společný papírový vzhled
 tests/               automatické testy simulace (běží bez grafiky)
-docs/                dokumentace
+scripts/             kontrola (check.py), exporty, vydání (release.py),
+                     ověřený Godot a šablony, QA průchody, maraton
+docs/                dokumentace; docs/vydani/ poznámky k vydáním
+.github/             CI (checks.yml), vydání (release.yml), formulář chyby
 ```
+
+**Vydání (etapa 11):** verze je jen v `project.godot`. `scripts/release.py`
+ji promítne do exportních předvoleb (Android versionCode, Windows a macOS
+čísla), spustí kontrolu, exporty (`export_android.sh`, `export_desktop.sh`)
+a složí balíčky s `LICENSE.txt`, `NAVOD.txt` a `THIRD_PARTY_NOTICES.txt`
+(`scripts/third_party_notices.gd`) a `SHA256SUMS.txt`. Značka `v<verze>`
+spustí `.github/workflows/release.yml`: Windows a macOS sestaví CI
+z ověřeného Godotu a šablon (`install_godot.py`, `install_templates.py`),
+Android APK (podepsané mimo CI) převezme z větve `downloads/android-<verze>`
+a vytvoří GitHub Release.
 
 Podklady (textury, modely, zvuky) jsou v `assets/` se zámky kontrolních součtů.
 
@@ -394,6 +407,10 @@ obsah ano. Proto:
 - Pro osobní projekt a učení je to v pohodě.
 - Pokud bys chtěl hru někdy zveřejnit: **vlastní název**, vlastní
   grafika, hudba a levely. Neopisovat původní levely 1:1.
+
+Hra proto vychází pod vlastním názvem **Paperlings** (etapa 11) s vlastní
+ikonou; „Lemmings“ zůstává jen v pracovním názvu repozitáře a ve vymezení
+„inspirováno … není nijak spojená“ (O hře, `LICENSE.txt`, README).
 
 Všechno v tomhle repozitáři je vlastní tvorba (kód, tvary, barvy,
 level), nic není převzaté z originálu.

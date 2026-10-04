@@ -1,0 +1,75 @@
+name: Vydání
+
+# Značka v<verze> (např. v1.0.0-rc1) na zdrojovém commitu spustí celé vydání:
+# kontrola, exporty pro Windows a macOS z ověřeného Godotu a šablon, Android APK
+# z větve downloads/android-<verze> (podepsané klíčem projektu mimo CI),
+# balíčky s licencí a návodem, součty SHA-256 a stránka vydání na GitHubu.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existující značka vydání (např. v1.0.0-rc1)
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  release:
+    name: Sestavení a zveřejnění
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements-dev.txt
+      - name: Nástroje GDScriptu
+        run: python -m pip install -r scripts/requirements-dev.txt
+      - name: Ověřený Godot a exportní šablony
+        run: |
+          python scripts/install_godot.py > godot-path.txt
+          printf 'GODOT_BIN=%s\n' "$(cat godot-path.txt)" >> "$GITHUB_ENV"
+          python scripts/install_templates.py
+      - name: Verze odpovídá značce
+        run: |
+          VERSION=$(python scripts/release.py info --field version)
+          test "v$VERSION" = "$TAG" || { echo "Značka $TAG neodpovídá verzi $VERSION"; exit 1; }
+          printf 'VERSION=%s\n' "$VERSION" >> "$GITHUB_ENV"
+      - name: Android APK z větve pro stažení
+        run: |
+          git fetch --depth=1 origin "downloads/android-$VERSION"
+          APK="android/Paperlings-$VERSION-Android.apk"
+          git show "FETCH_HEAD:$APK" > android.apk
+          git show "FETCH_HEAD:android/SHA256SUMS" | grep " Paperlings-$VERSION-Android.apk$" \
+            | sed 's/ .*$/  android.apk/' | sha256sum -c -
+      - name: Kontrola, exporty a balíčky
+        run: python scripts/release.py build --platforms windows,macos --android-apk android.apk
+      - name: Zveřejnění na GitHubu
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PRE=""
+          case "$VERSION" in *-*) PRE="--prerelease" ;; esac
+          gh release create "$TAG" build/release/"$VERSION"/* --verify-tag $PRE \
+            --title "Paperlings $VERSION" --notes-file "docs/vydani/$VERSION.md"
+      - name: Protokoly kontrol
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vydani-${{ env.TAG }}
+          path: |
+            build/checks/
+            build/release/*/SHA256SUMS.txt
+          if-no-files-found: warn

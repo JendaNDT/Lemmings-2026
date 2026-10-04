@@ -187,6 +187,15 @@ Uchovat vydaná sestavení a odpovídající zdrojovou verzi. Připravit způsob
 
 **Podmínka dokončení:** nový hráč dokáže hru stáhnout, spustit, dokončit a aktualizovat bez ztráty postupu.
 
+**Stav (4. 10. 2026):** hotový veřejný název **Paperlings** (zvolil autor),
+ikona, obrazovka O hře (titulky, návod, licence, hlášení chyb), licence hry
+„volně ke hraní“, návod pro hráče, přenos postupu ze složky testovacích
+verzí a opakovatelné vydání (`scripts/release.py`, workflow *Vydání*,
+GitHub Releases). Zveřejněn kandidát **1.0.0-rc1** pro Windows, macOS
+a Android ([ověření](ETAPA_11_OVERENI.md)). Zbývá test na skutečných
+Windows (autor, [kontrolní seznam](TEST_WINDOWS.md)), oprava nálezů
+a vydání 1.0.0.
+
 ## Etapa 12 — Navazující rozšíření
 
 První testovací Android APK ukázkové mise bylo na přání autora připraveno

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Export společného projektu. Vyžaduje standardní Godot 4.7 a jeho šablony.
+# Export společného projektu. Vyžaduje standardní Godot 4.7 a jeho šablony
+# (python scripts/install_templates.py). Vydání skládá scripts/release.py.
 set -euo pipefail
 
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
@@ -19,4 +20,6 @@ case "$("$godot_bin" --version)" in
 esac
 
 mkdir -p "$output_dir"
+# Čistý klon nemá importované podklady; bez importu by v balíčku chyběly.
+"$godot_bin" --headless --editor --path "$repo_root" --import
 "$godot_bin" --headless --path "$repo_root" --export-release "$preset"

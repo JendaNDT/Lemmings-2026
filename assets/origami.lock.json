@@ -28,6 +28,10 @@
       "sha256": "825826de11498404a6344772acd855cf1a2d9b68aa8715d8fa93db8c1b73e303"
     },
     {
+      "path": "assets/origami/icon/android_mono_432.png",
+      "sha256": "87d6dad4fd15c839560e7b179763604b507e2e7c64ac3d38ae69cf9a7d2906b0"
+    },
+    {
       "path": "assets/origami/icon/icon_1024.png",
       "sha256": "a4189d79953e40b4efcdb3d00d8d802a501bb6ca7ff9d9e02b200012f3d523a8"
     },
@@ -341,7 +345,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "9b0cbcc7b8a05e717596e51264d478060095c5772a351ae50ba52121adcccb65"
+      "sha256": "9ab945cde73d5932925b373b27c518d2568c6aae4922be07564d89d596255b97"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -349,7 +353,7 @@
     },
     {
       "path": "assets/origami/source/build_all.py",
-      "sha256": "cbb278c9444f22c722cb8eced4535f364adde1b3a8ee016a28cbaf59225373c9"
+      "sha256": "dcb85f67ae9d081016a11166b7185de4ca48c39fb03266c3238fc038dbbfbc29"
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
@@ -361,7 +365,7 @@
     },
     {
       "path": "assets/origami/source/build_icon.py",
-      "sha256": "4eeaff54becbc7ffc2f801ed5a2f2253722028ed16fe07fdb0522a4e083eccec"
+      "sha256": "c287b33dcc9c4ea8dd666a0e5784d067adc993b3fee222de2861c1ad1c4c4737"
     },
     {
       "path": "assets/origami/source/build_props.py",

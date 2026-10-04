@@ -74,40 +74,30 @@ popis: [`docs/ZVUK.md`](docs/ZVUK.md).
 
 ## Platformy
 
-První testovací sestavení míří na **macOS (Apple Silicon i Intel)**. Stejné
-herní jádro má také testovací sestavení pro Android; Windows navážou později.
+Hra vychází pro **Windows**, **macOS (Apple Silicon i Intel)** a **Android**
+ze stejného herního jádra; Linux slouží jen k automatickým kontrolám.
 Výchozí scéna je `main/game_origami.tscn`.
 
-## Testovací verze pro Android
+## Stažení – kandidát na vydání 1.0
 
-[**Stáhnout Android APK 0.15.0 (70 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.15.0/android/Lemmings-2026-Android-0.15.0.apk)
+[**Paperlings 1.0.0-rc1 – Windows, macOS a Android**](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1)
+(předběžné vydání na GitHubu, ke každému souboru SHA-256).
 
-Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.15.0).
+| Soubor | Pro |
+|---|---|
+| `Paperlings-1.0.0-rc1-Windows.zip` | Windows 10/11, 64 bit – rozbal a spusť `Paperlings.exe` |
+| `Paperlings-1.0.0-rc1-macOS.zip` | macOS (Apple Silicon i Intel) |
+| `Paperlings-1.0.0-rc1-Android.apk` | Android 7.0+ (aktualizuje testovací verze 0.5.0 a novější) |
 
-APK 0.15.0 má celou kampaň – 24 misí ve čtyřech kapitolách (v každé
-jedna patrová mise v podzemí), každá kapitola s vlastní krajinou a počasím, přelet mapy na začátku mise
-a šipku k východu, minimapu, štítek nad lumíkem a hlášku, proč dovednost
-nejde dát, pomocníky (přetočení o 5 s, krok o tik, zpomalení,
-ukázka řešení), hvězdy, úvodní karty a nápovědu,
-Hřiště, menu a ukládání, origami grafiku
-a zvuky. Je určené pro Android 7.0+ s OpenGL ES 3.0 (32bitový
-i 64bitový ARM). Verze 0.5.0–0.14.0 přímo aktualizuje (stejný testovací
-podpis); 0.4.0 a starší nejdřív odinstaluj.
+Instalace, aktualizace, ovládání, známá omezení a hlášení chyb:
+[návod pro hráče](docs/NAVOD.md). Sestavení nejsou podepsaná certifikátem
+Microsoftu ani Applu, proto systém napoprvé varuje. Uložený postup
+z testovacích verzí (*Lemmings 2026*) se přenese sám.
 
-Hraje se na šířku. Klepni na dovednost a potom na postavu, jedním prstem
-posouvej scénu a dvěma prsty přibližuj. Podržený prst ukáže štítek, co
-postava dělá; minimapa v rohu přesune pohled. Tlačítko Zpět otevře pauzovací
-menu; přepnutí aplikace na pozadí hru pozastaví a uloží. APK nepožaduje
-žádná oprávnění.
-
-Jde o vývojové APK podepsané testovacím klíčem. Podpis, obsah a průchod
-herních souborů z APK v cloudu jsou ověřené; instalace a výkon přímo
-na Androidu zatím ne. Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
-
-Pro opakování exportu nastav v editoru Godotu Android SDK a Java SDK,
-nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`
-(ověří, že APK má stejný podpis jako předchozí verze).
+Samotné APK je i ve [větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-1.0.0-rc1).
+Jak vzniká vydání: `python scripts/release.py build` (kontrola, exporty
+a balíčky) a značka `v<verze>` (workflow *Vydání* na GitHubu).
+Podrobnosti k Android sestavení: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 
 ## Starší verze
 
@@ -238,6 +228,10 @@ do `Campaign.SCENES` v `main/campaign.gd`.
 
 ## Právní poznámka
 
-Fanouškovský projekt. Značka Lemmings patří jejímu vlastníkovi (Sony).
-Herní modely a levely jsou vlastní tvorba. Písmo Nunito používá licenci
-SIL Open Font License 1.1; její znění je v `assets/art_v2/ui/OFL.txt`.
+Paperlings © 2026 Jenda – volně ke hraní, ostatní práva vyhrazena
+([`LICENSE.txt`](LICENSE.txt)). Inspirováno hrou Lemmings (1991, DMA
+Design); s původní hrou ani s vlastníkem značky Lemmings není projekt
+nijak spojený a nepoužívá z ní obrázky, zvuky, písma ani mise. Godot
+Engine má licenci MIT, písmo Nunito SIL Open Font License 1.1
+([`assets/fonts/OFL.txt`](assets/fonts/OFL.txt)); seznam součástí třetích
+stran je ve hře (O hře → Licence) a v `THIRD_PARTY_NOTICES.txt` u vydání.

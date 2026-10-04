@@ -29,6 +29,15 @@
   Odkaz na soubor uvnitř cloudového pracovního prostoru mu nestačí ke stažení.
 - Současně udržovat aktuální zdrojový kód na původní pracovní větvi
   `ccr-ee49bb72-jyyh2r`. Instalační APK patří pouze do větve pro stažení.
+- **Vydání (od 1.0.0-rc1):** verze je jen v `project.godot`
+  (`X.Y.Z` nebo `X.Y.Z-rcN`); `python scripts/release.py build` ji promítne
+  do předvoleb (versionCode = M·10⁶ + m·10⁴ + p·100 + rc/99), spustí kontrolu,
+  exporty a balíčky v `build/release/<verze>/`. APK jde do větve
+  `downloads/android-<verze>` jako `android/Paperlings-<verze>-Android.apk`
+  (+ `android/SHA256SUMS`), poznámky do `docs/vydani/<verze>.md`. Značka
+  `v<verze>` na zdrojovém commitu spustí workflow *Vydání*: Windows a macOS
+  sestaví CI z ověřeného Godotu a šablon (`scripts/install_templates.py`),
+  přidá APK z větve a vytvoří GitHub Release (rc = předběžné vydání).
 
 ## Architektonická pravidla
 - `sim/` = čistá logika: žádné uzly (Node), žádný `Input`, žádná náhoda,

@@ -2,49 +2,42 @@
 *Naposled aktualizováno: 04. 10. 2026*
 
 ## 🎯 Co to je
-Moderní předělávka hry Lemmings (1991) s grafikou odpovídající roku 2026.
-Stack: Godot 4.7, společné jádro v GDScriptu.
-Výchozí zobrazení je **2D origami**: papírový terén z masky simulace,
-skládané postavičky s animacemi a krajina s paralaxním posunem i zoomem.
-2.5D zobrazení bylo 4. 10. 2026 vyřazeno; jednoduché 2D slouží k ladění.
-První testovací sestavení je pro **macOS (Apple Silicon a Intel)**,
-také testovací APK pro Android, do budoucna Windows.
+**Paperlings** – papírová logická hra inspirovaná Lemmings (1991):
+provedeš zástup origami postaviček nástrahami k východu. 24 misí ve čtyřech
+kapitolách a Hřiště. Stack: Godot 4.7, společné jádro v GDScriptu.
+Vychází pro **Windows, macOS a Android** přes GitHub Releases.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**Kampaň se staví podle schváleného [herního designu](docs/HERNI_DESIGN.md).**
-Hotové: kapitoly, hvězdy, úvodní karta mise, nápověda, Hřiště,
-kapitola I (15 → 14 → 18 → 23 → 32 → 38), II (33 → 36 → 42 → 51 → 55),
-III (37 → 50 → 56 → 61 → 63) a **kapitola IV Bouřková hora**: Dvě líhně
-66, Lávová lávka 73, Velký sestup 84, Origami finále 91. K nim v každé
-kapitole jedna **patrová mise v podzemí** (Důlní patra 25, Mraveniště 44,
-Podzemní vodopád 58, Hluboká šachta 67) – **kampaň má 24 misí**, všechny
-v cílových pásmech.
-2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
+**Otestuj kandidáta 1.0.0-rc1 na Windows** podle
+[kontrolního seznamu](docs/TEST_WINDOWS.md) a pošli mi výsledky.
+[Stáhnout (Windows, macOS, Android)](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1).
 
-**Etapa 10 – pohodlí a betatest** je technicky hotová: hra řekne, proč
-dovednost nejde dát, štítek nad lumíkem ukáže, co dělá a kolik jich je
-v davu, prst držený na ploše předem ukáže cíl, v rohu je minimapa.
-Maraton celé kampaně a kontrola devíti rozlišení prošly
-([ověření](docs/ETAPA_10_OVERENI.md)).
+Etapa 11 (vydání 1.0) je technicky hotová: jméno Paperlings, ikona, O hře
+(titulky, návod, licence, hlášení chyb), přenos postupu z testovacích
+verzí a opakovatelné vydání ([ověření](docs/ETAPA_11_OVERENI.md)).
 
 Další kroky:
-1. **Vyzkoušet APK 0.15.0 na telefonu** – aktualizuje 0.14.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.15.0/android/Lemmings-2026-Android-0.15.0.apk).
-   Zajímá mě: je štítek nad lumíkem a hláška čitelná, pomáhá náhled cíle
-   při držení prstu, je minimapa užitečná a nepřekáží, a jak se hrají
-   patrové mise v podzemí (5, 11, 17, 21). [Návod](docs/ANDROID_DEMO.md).
-2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
-   jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
-   rozhodnutí (viz Známé bugy).
-3. Ladění obtížnosti a případně výběr podle směru podle tvého hraní.
-4. Pak etapa 11 – vydání 1.0 (název, ikona, licence, Windows).
-
-Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
-[Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
-Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
+1. **Test na Windows** (výše) – co nepůjde, opravím.
+2. Vyzkoušet rc1 na **telefonu** (aktualizuje 0.15.0 bez ztráty postupu)
+   a případně na Macu.
+3. **Podpisový klíč natrvalo** – klíč Androidu žije jen v cloudu; jeho
+   přenos mimo něj čeká na tvé rozhodnutí (viz Známé bugy).
+4. Po testech **vydání 1.0.0** (stejný postup, bez „rc“).
 
 ## ✅ Hotovo
+- **Kandidát 1.0.0-rc1** – předběžné vydání na GitHubu pro Windows, macOS
+  a Android (versionCode 1000001, stejný podpis). Balíčky obsahují licenci,
+  návod a THIRD_PARTY_NOTICES.txt.
+- **Etapa 11 – vydání:** veřejný název **Paperlings** (interní ID beze
+  změny), vlastní složka dat a jednorázový přenos postupu ze staré
+  (`SaveMigration`), ikona z generátoru (okno, Android včetně adaptivní
+  a jednobarevné, Windows .exe, macOS), obrazovka **O hře** (titulky, návod,
+  licence hry, Godotu, součástí a písma, Nahlásit chybu s formulářem
+  na GitHubu), licence „volně ke hraní“ (`LICENSE.txt`), návod pro hráče
+  (`docs/NAVOD.md`), vydávací skript `scripts/release.py` (jedna verze,
+  kontrola, exporty, balíčky, součty) a workflow *Vydání* (GitHub Release
+  ze značky `v<verze>`), ověřené exportní šablony (`install_templates.py`).
 - **Android APK 0.15.0** ve větvi `downloads/android-0.15.0` (versionCode
   16, stejný podpis): pomoc při hraní a minimapa. Herní soubory z APK
   prošly průchodem menu, štítkem, hláškou, minimapou a pěti mobilními
@@ -276,9 +269,12 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
   výchozím zoomu menší; podrobně v `docs/ORIGAMI_OVERENI.md`.
 - Při průchodu prvního levelu v grafickém cloudovém běhu nebyla nalezena
   chyba bránící hraní. Nejde o vyčerpávající kontrolu všech mechanik.
-- Nativní spuštění na macOS čeká na uživatelské ověření; Windows až na
-  závěr vývoje. Android APK je připravené, instalace a výkon na zařízení
-  nebo emulátoru zatím ověřené nejsou.
+- Windows a macOS sestavení 1.0.0-rc1 zatím nikdo nespustil na skutečném
+  počítači (v cloudu jde jen export a kontrola obsahu); test na Windows
+  dělá autor podle `docs/TEST_WINDOWS.md`. Android APK nebylo ověřené
+  instalací na zařízení ani v emulátoru.
+- Windows .exe není podepsaný certifikátem (SmartScreen varuje při prvním
+  spuštění).
 - Mac balíček není notarizovaný Applem; první spuštění může vyžadovat
   potvrzení konkrétní aplikace v nastavení zabezpečení.
 - Zátěž 200 postav se souběžnou prací dosahuje v cloudu přibližně 35 ms

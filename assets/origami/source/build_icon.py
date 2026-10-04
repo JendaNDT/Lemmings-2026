@@ -6,8 +6,9 @@ jen ve trojnásobném rozlišení. Výstup ve složce icon/:
 - icon_1024.png – celá ikona se zaoblenými rohy (macOS, náhledy, vydání),
 - icon_256.png – ikona projektu a okna hry,
 - android_192.png – klasická ikona Androidu,
-- android_bg_432.png a android_fg_432.png – adaptivní ikona Androidu
-  (pozadí s krajinou a postavička zvlášť; postavička leží v bezpečném kruhu),
+- android_bg_432.png, android_fg_432.png a android_mono_432.png – adaptivní ikona
+  Androidu: pozadí s krajinou, postavička v bezpečném kruhu a její bílá silueta
+  pro motivy Androidu 13+,
 - paperlings.ico (Windows, 16–256 px) a paperlings.icns (macOS).
 """
 
@@ -115,6 +116,11 @@ def build(out: Path) -> None:
     fg = Image.new("RGBA", (432, 432), (0, 0, 0, 0))
     fg.alpha_composite(small, ((432 - width) // 2, (432 - height) // 2))
     fg.save(folder / "android_fg_432.png", optimize=True)
+    # Jednobarevná ikona (motivy Androidu 13+): bílá silueta postavičky.
+    alpha = fg.getchannel("A")
+    mono = Image.new("RGBA", fg.size, (255, 255, 255, 0))
+    mono.putalpha(alpha)
+    mono.save(folder / "android_mono_432.png", optimize=True)
     icon.save(folder / "paperlings.ico", sizes=ICO_SIZES)
     icon.save(folder / "paperlings.icns")
 
