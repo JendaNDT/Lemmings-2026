@@ -21,10 +21,11 @@ všech 20 misí**, všechny v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet APK 0.9.0 na telefonu** – aktualizuje 0.8.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.9.0/android/Lemmings-2026-Android-0.9.0.apk).
-   Zajímá mě: jestli jsou nové mise kapitol II a III zábavné, srozumitelné
-   a jestli obtížnost roste plynule. [Návod](docs/ANDROID_DEMO.md).
+1. **Vyzkoušet APK 0.10.0 na telefonu** – aktualizuje 0.9.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.10.0/android/Lemmings-2026-Android-0.10.0.apk).
+   Zajímá mě: jestli jsou nové mise zábavné a srozumitelné, jestli
+   obtížnost roste plynule a jak se na telefonu hraje kapitola IV.
+   [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
    rozhodnutí (viz Známé bugy).
@@ -36,6 +37,9 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.10.0** ve větvi `downloads/android-0.10.0` (versionCode
+  11, stejný podpis): celá kampaň, 20 misí. Herní soubory z APK prošly
+  průchodem menu.
 - **Etapa 9, krok 6 – kapitola IV:** mise Dvě líhně (dvě skupiny),
   Lávová lávka (tři jámy na doraz), Velký sestup (průzkumník s padákem,
   blokař, horníci oknem v ocelových lemech) a Origami finále (vše

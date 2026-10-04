@@ -72,16 +72,15 @@ Výchozí scéna je `main/game_origami.tscn`.
 
 ## Testovací verze pro Android
 
-[**Stáhnout Android APK 0.9.0 (61 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.9.0/android/Lemmings-2026-Android-0.9.0.apk)
+[**Stáhnout Android APK 0.10.0 (61 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.10.0/android/Lemmings-2026-Android-0.10.0.apk)
 
 Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.9.0).
+[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.10.0).
 
-APK 0.9.0 má kapitolu III Voda a oheň se čtyřmi novými misemi,
-kapitoly I a II (celkem 16 misí), hvězdy, úvodní karty a nápovědu,
-Hřiště, menu a ukládání, origami grafiku
+APK 0.10.0 má celou kampaň – 20 misí ve čtyřech kapitolách (nově
+IV. Bouřková hora), hvězdy, úvodní karty a nápovědu, Hřiště, menu a ukládání, origami grafiku
 a zvuky. Je určené pro Android 7.0+ s OpenGL ES 3.0 (32bitový
-i 64bitový ARM). Verze 0.5.0–0.8.0 přímo aktualizuje (stejný testovací
+i 64bitový ARM). Verze 0.5.0–0.9.0 přímo aktualizuje (stejný testovací
 podpis); 0.4.0 a starší nejdřív odinstaluj.
 
 Hraje se na šířku. Klepni na dovednost a potom na postavu, jedním prstem
