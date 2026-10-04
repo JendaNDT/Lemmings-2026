@@ -45,6 +45,10 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.15.0** ve větvi `downloads/android-0.15.0` (versionCode
+  16, stejný podpis): pomoc při hraní a minimapa. Herní soubory z APK
+  prošly průchodem menu, štítkem, hláškou, minimapou a pěti mobilními
+  rozlišeními.
 - **Etapa 10 – pohodlí a betatest:** důvod, proč dovednost nejde dát
   (`SkillRules` v simulaci, hláška nad lištou), **štítek nad lumíkem**
   (co dělá, trvalé vlastnosti, počet v davu, důvod odmítnutí),

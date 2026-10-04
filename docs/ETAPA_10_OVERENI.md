@@ -103,10 +103,15 @@ postup podle id misí přežil vložení čtyř patrových misí (test_save).
 - `test_save`: nastavení ze starší verze.
 - Celá kontrola `python scripts/check.py`: **89 GDScriptů, 16 sad,
   440 kontrol, vše v pořádku** (Godot 4.7 stable, ověřený SHA-512).
+- APK 0.15.0: herní soubory z balíčku prošly průchodem menu (počítač
+  i telefon), štítkem, hláškou a minimapou v Mraveništi a kontrolou
+  rozlišení v dotykovém profilu ([Android demo](ANDROID_DEMO.md)).
 
 ## Meze
 
 - Telefon: čitelnost štítku a minimapy, výkon vykreslování a pohodlí
   náhledu cíle zatím nikdo nezkoušel.
+- Minimapa v pravém horním rohu může zakrýt kousek mapy (třeba střechu
+  východu u pravého okraje); kdo ji nechce, vypne ji v nastavení.
 - Výběr jen lumíků jdoucích jedním směrem (jako NeoLemmix) zatím není –
   podle testování.

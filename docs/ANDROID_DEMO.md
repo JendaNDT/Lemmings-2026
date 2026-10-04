@@ -13,7 +13,7 @@ menu, ukládáním postupu, origami grafikou a zvuky. Hudba přijde později.
 Popis změn: [etapa 10](ETAPA_10_OVERENI.md), [etapa 9](ETAPA_9_OVERENI.md), [herní design](HERNI_DESIGN.md),
 [etapa 6](ETAPA_6_OVERENI.md), [zvuky](ZVUK.md).
 
-![Patrové mise z herních souborů APK 0.14.0: Důlní patra, Mraveniště, Podzemní vodopád a Hluboká šachta (Linux, ne telefon)](images/android-0.14.0.jpg)
+![Z herních souborů APK 0.15.0: štítek nad drženým lumíkem, hláška po odmítnutí, minimapa po přesunu pohledu a volba minimapy v nastavení (Linux, dotykový profil 20 : 9, ne telefon)](images/android-0.15.0.jpg)
 
 ## Stažení a instalace
 
@@ -44,7 +44,7 @@ má otevřené i nové mise před ní. Všechny mise hned otevře
   Certifikát SHA-256 (stejný jako 0.5.0–0.14.0, ověřuje ho export):
   `fdb924fa25c6dfec478caa66dd8ba03ec91909d475de240d9213a50f6681407f`.
 
-SHA-256 APK: `dd137a891235c8c1d1618e5110e0b89bed2e48db44ba7d267812f0c8a80189ef`.
+SHA-256 APK: `5c90c7a5acbea961e94276c7da4c4e8c43d72626f4eda0bd4fb2713bc8218734`.
 
 ## Ovládání a profil
 
@@ -95,13 +95,15 @@ a vypnuté 2D MSAA. Herní logika se podle platformy nevětví.
 ## Ověření a omezení
 
 - Před exportem prošla kompletní kontrola `python scripts/check.py`:
-  83 GDScriptů, 15 sad, 421 kontrol (simulace, kampaň, hvězdy, úvodní
+  89 GDScriptů, 16 sad, 440 kontrol (simulace, kampaň, hvězdy, úvodní
   karta, ukládání, menu, dotyk, zvuky, obtížnost misí, pomocníci,
-  přetočení, vzhled kapitol a podzemí, přelet mapy). Report obtížnosti:
+  přetočení, vzhled kapitol a podzemí, přelet mapy, důvody odmítnutí,
+  štítek, náhled cíle a minimapa). Maraton celé kampaně v jedné aplikaci
+  (`scripts/soak.gd`) bez úniku uzlů a paměti. Report obtížnosti:
   všech 24 misí v cílovém pásmu, každá má ověřené referenční řešení.
 - Export ověřil otisk podpisového klíče a hotové APK apksignerem (v2/v3,
-  stejný certifikát jako 0.5.0–0.13.0); zarovnání `zipalign -c 4`,
-  manifest (0.14.0 / 15, API 24/36, žádná oprávnění), licence písma OFL,
+  stejný certifikát jako 0.5.0–0.14.0); zarovnání `zipalign -c 4`,
+  manifest (0.15.0 / 16, API 24/36, žádná oprávnění), licence písma OFL,
   origami a zvuků. Testy, dokumentace ani skripty se nebalí.
 - Herní soubory vytažené přímo z APK prošly v Linuxu (Compatibility,
   softwarový llvmpipe, dotykový profil 20 : 9) celým průchodem
@@ -117,6 +119,14 @@ a vypnuté 2D MSAA. Herní logika se podle platformy nevětví.
   trval 3,9 s a skončil na startovním záběru; šipka pak ukazuje
   k východu u pravého okraje. Všechny čtyři patrové mise se z balíčku
   spustily v prostředí podzemí a mají záznam pro Ukázku řešení.
+- APK 0.15.0 z týchž souborů: menu na počítači i v dotykovém profilu
+  (24 misí, mise 1 vyhraná 10/10); v Mraveništi držený prst ukázal štítek
+  „Chodec →“, uvolnění přidělilo kopáče, druhé klepnutí nic nepřidělilo
+  a hláška řekla „Tenhle lumík už kope.“; přesun pohledu přes minimapu.
+  `scripts/qa_resolutions.gd` z balíčku: pět mobilních obrazovek
+  (16:9, 20:9, 19,5:9, 16:10, 4:3) po 100 % i 130 % bez překryvů.
+  Hlášky ALSA a „resources still in use“ při ukončení způsobuje jen
+  chybějící zvuková karta v cloudu (s ovladačem Dummy zmizí).
 
 Linuxové spuštění nepotvrzuje instalaci ani běh Android Activity.
 Nativní výkon, systémové tlačítko Zpět a čitelnost karet na malém
