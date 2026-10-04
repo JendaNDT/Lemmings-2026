@@ -246,6 +246,8 @@ App (main/app.gd)
 | `ui/play_info.gd` | `PlayInfo`: štítek nad lumíkem pod kurzorem nebo prstem (stav, směr, vlastnosti, dav, důvod odmítnutí) a krátká hláška, proč přidělení nevyšlo. Vstup nepřijímá. |
 | `ui/minimap.gd` | `Minimap`: zmenšený přehled mise s lumíky a rámečkem záběru; klepnutí pošle `focus_requested`, kameru přesune hra. Simulaci jen čte. |
 | `ui/menu_screens.gd`, `ui/settings_panel.gd`, `ui/menu_backdrop.gd` | Obrazovky menu, nastavení (sdílené s pauzou ve hře) a pozadí. |
+| `ui/about_panel.gd` | `AboutPanel`: „O hře“ z hlavního menu – titulky, návod (Jak hrát), licence (hra, Godot a jeho součásti z `Engine.get_copyright_info()`, písmo OFL; plné texty licencí součástí po jedné) a tlačítko Nahlásit chybu. |
+| `main/bug_report.gd` | `BugReport`: verze a údaje o zařízení bez osobních údajů, odkaz na formulář `.github/ISSUE_TEMPLATE/chyba.yml` s předvyplněným polem `diagnostika`, kopie do schránky. |
 | `ui/paper_ui.gd` | `PaperUi`: společný papírový vzhled HUDu i menu. |
 
 **Rozehraný pokus** se neukládá jako stav světa, ale jako `replay_log`

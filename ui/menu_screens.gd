@@ -29,6 +29,7 @@ var _root: Control
 var _main: Control
 var _levels: Control
 var _settings_panel: SettingsPanel
+var _about_panel: AboutPanel
 var _continue: Button
 var _continue_title: Label
 var _continue_note: Label
@@ -63,15 +64,18 @@ func set_ui_scale(value: float) -> void:
 	_fit()
 
 
-## Která obrazovka je vidět: "main", "levels" nebo "settings".
+## Která obrazovka je vidět: "main", "levels", "settings" nebo "about".
 func current_screen() -> String:
 	if _settings_panel != null:
 		return "settings"
+	if _about_panel != null:
+		return "about"
 	return "levels" if _levels.visible else "main"
 
 
 func show_main() -> void:
 	close_settings()
+	close_about()
 	refresh()
 	_main.show()
 	_levels.hide()
@@ -79,6 +83,7 @@ func show_main() -> void:
 
 func show_levels() -> void:
 	close_settings()
+	close_about()
 	# Otevřít kapitolu, ve které hráč právě je.
 	_chapter = maxi(0, Campaign.chapter_of(continue_target()["index"]))
 	refresh()
@@ -103,11 +108,28 @@ func close_settings() -> void:
 		_settings_panel = null
 
 
+## „O hře“: titulky, návod, licence a hlášení chyby.
+func show_about() -> void:
+	if _about_panel != null:
+		return
+	_about_panel = AboutPanel.new(settings, progress)
+	_about_panel.closed.connect(close_about)
+	_root.add_child(_about_panel)
+
+
+func close_about() -> void:
+	if _about_panel != null:
+		_about_panel.queue_free()
+		_about_panel = null
+
+
 ## Zpět o úroveň (Esc, tlačítko Zpět). Vrací false v hlavním menu.
 func back() -> bool:
 	match current_screen():
 		"settings":
 			_settings_panel.close()
+		"about":
+			close_about()
 		"levels":
 			show_main()
 		_:
@@ -209,12 +231,20 @@ func _build_main() -> void:
 		clicked.emit()
 		show_settings())
 	col.add_child(options)
+	var about := PaperUi.button("O hře", Vector2(0, 62), "info")
+	about.pressed.connect(func() -> void:
+		clicked.emit()
+		show_about())
+	col.add_child(about)
 	if not DeviceProfile.touch_mode():
 		var quit := PaperUi.button("Ukončit hru", Vector2(0, 62), "back")
 		quit.pressed.connect(func() -> void: quit_requested.emit())
 		col.add_child(quit)
-	var version := PaperUi.label("Verze %s · vývojová" % ProjectSettings.get_setting(
-		"application/config/version", "0"), 17, PaperUi.TEXT)
+	# Předběžná verze (např. 1.0.0-rc1) se označí jako testovací.
+	var number := BugReport.version()
+	var version := PaperUi.label("Verze %s%s" % [number, " · testovací" if "-" in number else ""],
+		17, PaperUi.TEXT)
+	version.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	version.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.45))
 	version.add_theme_constant_override("shadow_offset_y", 1)
 	_main.add_child(version)

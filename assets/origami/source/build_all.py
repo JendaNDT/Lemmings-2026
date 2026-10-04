@@ -89,7 +89,7 @@ def write_manifest() -> None:
             "paper": "periodická vláknitá textura papíru a hladký šum pro trhané hrany",
             "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
             "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",
-            "ui": "papírové panely HUDu (9 dílů), 8 ikon dovedností a 2 ikony zvuku (SVG)",
+            "ui": "papírové panely HUDu (9 dílů), 8 ikon dovedností, ikony menu a zvuku (SVG)",
             "icon": "ikona aplikace Paperlings (postavička z dílů atlasu ve 3× rozlišení "
                     "na papírovém kopci): PNG 1024/256, Android 192 a adaptivní 432 "
                     "(pozadí a popředí), .ico a .icns",
@@ -103,7 +103,7 @@ def write_manifest() -> None:
     (PACKAGE / "provenance.json").write_text(json.dumps(provenance, indent=2, ensure_ascii=False) + "\n")
     files = [{"path": str(p.relative_to(REPO)), "sha256": digest(p)} for p in tracked_files()]
     lock = {"package": provenance["package"], "version": provenance["version"],
-            "license": "LicenseRef-Lemmings2026-Project-Internal", "files": files}
+            "license": "LicenseRef-Paperlings-AllRightsReserved", "files": files}
     (REPO / "assets" / "origami.lock.json").write_text(json.dumps(lock, indent=2) + "\n")
     print(f"Manifest: {len(files)} souborů")
 

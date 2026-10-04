@@ -1,6 +1,7 @@
-LicenseRef-Lemmings2026-Project-Internal
+LicenseRef-Paperlings-AllRightsReserved
 
-Origami sada vznikla pro projekt Lemmings 2026 na zadání jeho autora.
+Origami sada vznikla pro hru Paperlings (pracovně Lemmings 2026) na zadání
+jejího autora.
 Všechny obrazy (vrstvy krajiny, papírové textury, líheň, východ, díly
 postavičky, panely HUDu) jsou vygenerované vlastními skripty ve složce
 source/ s pevnými seedy; ikony dovedností jsou ručně psané SVG. Nebyly
@@ -12,5 +13,8 @@ převzaty jsou jen změřené barvy a výtvarné principy (papírové vrstvy,
 skládané postavičky, rozložení scény).
 
 Python, NumPy, Pillow, SciPy a Godot jsou použité nástroje; jejich součásti
-se touto sadou nedistribuují. Písmo HUDu (Nunito, OFL 1.1) je v assets/art_v2.
-Veřejnou distribuční licenci výsledné hry stanoví autor před zveřejněním.
+se touto sadou nedistribuují. Písmo HUDu (Nunito, OFL 1.1) je v assets/fonts.
+
+© 2026 Jenda. Všechna práva vyhrazena. Sada se šíří jen jako součást hry
+Paperlings, kterou lze zdarma stahovat, hrát a sdílet odkaz na ni; jiné
+použití vyžaduje svolení autora (viz LICENSE v kořeni repozitáře).

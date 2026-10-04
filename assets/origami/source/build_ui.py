@@ -112,6 +112,11 @@ ICONS = {
     "check": """<path d="M8 33 L16 25 L27 36 L50 11 L58 19 L27 52 Z"/>""",
     # Zpět: šipka doleva.
     "back": """<path d="M6 32 L28 10 L28 23 L56 23 L56 41 L28 41 L28 54 Z"/>""",
+    # O hře: přeložený papírek s písmenem i.
+    "info": """<path d="M10 8 L46 8 L56 18 L56 56 L10 56 Z"/>
+<path d="M46 8 L46 18 L56 18 Z" fill="#f4e8d2" opacity="0.55"/>
+<circle cx="33" cy="20" r="4.5" fill="#f4e8d2"/>
+<path d="M27 28 L37 28 L37 45 L41 45 L41 50 L25 50 L25 45 L29 45 L29 33 L27 33 Z" fill="#f4e8d2"/>""",
     # Hrát: trojúhelník.
     "play": """<path d="M16 8 L54 32 L16 56 Z"/>""",
     # Další mise: dvojitá šipka doprava.

@@ -8,6 +8,14 @@ signal closed
 signal reset_progress_confirmed
 
 const TABS := ["Zvuk", "Zobrazení", "Ovládání", "Hra"]
+## Ovládání (nastavení i návod v „O hře“).
+const TOUCH_HINT := ("Klepni na dovednost a pak na postavu – dokud prst držíš, štítek ukáže, "
+	+ "koho zasáhneš. Jedním prstem posouváš krajinu, dvěma přibližuješ. Klepnutí "
+	+ "na minimapu přesune pohled. Tlačítko Zpět otevře menu.")
+const MOUSE_HINT := ("Myš: levé tlačítko přidělí dovednost, pravé nebo prostřední táhne "
+	+ "kamerou, kolečko přibližuje. Klávesy: 1–8 dovednosti, mezerník pauza, tečka krok "
+	+ "o tik, Backspace −5 s, F rychlost, R znovu, N odpálit vše, T zvuk, M pohyb postav, "
+	+ "Esc menu.")
 const VOLUME_ROWS := [["master", "Celková hlasitost"], ["sfx", "Efekty"],
 	["ui", "Rozhraní"], ["ambient", "Okolí (vítr, voda, láva)"], ["music", "Hudba (připravuje se)"]]
 
@@ -148,20 +156,12 @@ func _build_controls(page: VBoxContainer) -> void:
 	_choices(page, "tap_reach", "Dosah klepnutí na postavu", GameSettings.TAP_REACHES,
 		["Běžný", "Velký"])
 	_toggle(page, "confirm_nuke", "Ptát se před „Odpálit vše“")
-	if DeviceProfile.touch_mode():
-		page.add_child(_hint("Klepni na dovednost a pak na postavu – dokud prst držíš, "
-			+ "štítek ukáže, koho zasáhneš. Jedním prstem posouváš krajinu, dvěma přibližuješ. "
-			+ "Tlačítko Zpět otevře menu."))
-	else:
-		page.add_child(_hint("Myš: levé tlačítko přidělí dovednost, pravé nebo prostřední "
-			+ "táhne kamerou, kolečko přibližuje. Klávesy: 1–8 dovednosti, mezerník pauza, "
-			+ "tečka krok o tik, Backspace −5 s, F rychlost, R znovu, N odpálit vše, T zvuk, "
-			+ "M pohyb postav, Esc menu."))
+	page.add_child(_hint(TOUCH_HINT if DeviceProfile.touch_mode() else MOUSE_HINT))
 
 
 func _build_game(page: VBoxContainer) -> void:
 	_toggle(page, "flyover", "Přelet mapy na začátku mise")
-	_toggle(page, "unlock_all", "Všechny mise odemčené (vývojová verze)")
+	_toggle(page, "unlock_all", "Všechny mise odemčené (postup se dál ukládá)")
 	if allow_reset:
 		var reset := PaperUi.button("Smazat postup…", Vector2(260, 52))
 		reset.pressed.connect(func() -> void: _confirm.show())

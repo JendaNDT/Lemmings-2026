@@ -529,7 +529,7 @@ def write_manifest() -> None:
     (PACKAGE / "provenance.json").write_text(json.dumps(provenance, indent=2, ensure_ascii=False) + "\n")
     files = [{"path": str(p.relative_to(REPO)), "sha256": digest(p)} for p in tracked_files()]
     lock = {"package": provenance["package"], "version": provenance["version"],
-            "license": "LicenseRef-Lemmings2026-Project-Internal", "files": files}
+            "license": "LicenseRef-Paperlings-AllRightsReserved", "files": files}
     (REPO / "assets" / "audio.lock.json").write_text(json.dumps(lock, indent=2) + "\n")
     print(f"Manifest: {len(files)} souborů")
 

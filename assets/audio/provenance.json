@@ -10,7 +10,7 @@
     "scipy": "1.17.1"
   },
   "generator_sha256": {
-    "build_sfx.py": "2dc0c322de1a80824b45b0e0b851e51dec879c64a4211d3b6d960b22c6f72fe4"
+    "build_sfx.py": "78a8ae08c8bccdd2283f9bac850916f75579849eaaeb57735d2dd81aea84b7f5"
   },
   "format": "WAV PCM 16 bit mono; efekty 44,1 kHz, smyčky 22,05 kHz",
   "contents": {

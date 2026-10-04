@@ -1,11 +1,11 @@
 {
   "package": "lemmings-paper-sfx",
   "version": "1.0.0",
-  "license": "LicenseRef-Lemmings2026-Project-Internal",
+  "license": "LicenseRef-Paperlings-AllRightsReserved",
   "files": [
     {
       "path": "assets/audio/LICENSE.txt",
-      "sha256": "a0c5863d02e947de01fea9aa807bf04f6868b1edfdb533b76ea57d5c22de364c"
+      "sha256": "5346e5e365167ebc7b2319410539b1637ef8548dfd8210431675285da8c93a9c"
     },
     {
       "path": "assets/audio/loops/lava.wav",
@@ -21,7 +21,7 @@
     },
     {
       "path": "assets/audio/provenance.json",
-      "sha256": "ff7732612d49891a51ce4bfe79c5b1b1648ddeb311e28f1b69ea4639a513af70"
+      "sha256": "33baab3060397aac47cc0d82f2bb95e9990fa67710c316bc07b915344e7b6f1a"
     },
     {
       "path": "assets/audio/sfx/assign.wav",
@@ -145,7 +145,7 @@
     },
     {
       "path": "assets/audio/source/build_sfx.py",
-      "sha256": "2dc0c322de1a80824b45b0e0b851e51dec879c64a4211d3b6d960b22c6f72fe4"
+      "sha256": "78a8ae08c8bccdd2283f9bac850916f75579849eaaeb57735d2dd81aea84b7f5"
     }
   ]
 }

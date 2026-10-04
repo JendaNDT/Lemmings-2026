@@ -1,11 +1,11 @@
 {
   "package": "lemmings-origami-art",
   "version": "1.0.0",
-  "license": "LicenseRef-Lemmings2026-Project-Internal",
+  "license": "LicenseRef-Paperlings-AllRightsReserved",
   "files": [
     {
       "path": "assets/origami/LICENSE.txt",
-      "sha256": "26b73a5fd0c86efc997c79b64beb3d29bf9ff11c89f069e613e46fe959fc254b"
+      "sha256": "11bc5ddb191ee739cd7ea503201abcd2781a6027b319dad108ef9ada4fdfc9e3"
     },
     {
       "path": "assets/origami/actor/worker_atlas.png",
@@ -341,7 +341,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "2d2750aac030da2554885b738a7960ab7325dc43e5cc0767e7e858e226e3ec2b"
+      "sha256": "9b0cbcc7b8a05e717596e51264d478060095c5772a351ae50ba52121adcccb65"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -349,7 +349,7 @@
     },
     {
       "path": "assets/origami/source/build_all.py",
-      "sha256": "671b6b5a908cb7ce6ce94e8775a18703154bfa5d665907d314cb12ec21c6b6b0"
+      "sha256": "cbb278c9444f22c722cb8eced4535f364adde1b3a8ee016a28cbaf59225373c9"
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
@@ -373,7 +373,7 @@
     },
     {
       "path": "assets/origami/source/build_ui.py",
-      "sha256": "f1313040ff18af98ad8ec5b06e6b83bc1089f6239574ea143b7e1b0bea9fefa1"
+      "sha256": "e512d2ed9f9ce00d9fd7693a9eb1df0df79c12b0457cfe42f73f35bf330da886"
     },
     {
       "path": "assets/origami/source/palette.py",
@@ -434,6 +434,10 @@
     {
       "path": "assets/origami/ui/icons/floater.svg",
       "sha256": "69319a5f053b27373e9ed7cfa1bf05c8ed3b4551b4b9aab1edf1cc061da6675f"
+    },
+    {
+      "path": "assets/origami/ui/icons/info.svg",
+      "sha256": "3a43613b081e47c42bc7e52961845e442caff3c8fa3a579a0d16a9e938bb01d9"
     },
     {
       "path": "assets/origami/ui/icons/lock.svg",

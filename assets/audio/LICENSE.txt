@@ -1,11 +1,15 @@
-LicenseRef-Lemmings2026-Project-Internal
+LicenseRef-Paperlings-AllRightsReserved
 
-Zvuková sada vznikla pro projekt Lemmings 2026 na zadání jeho autora.
+Zvuková sada vznikla pro hru Paperlings (pracovně Lemmings 2026) na zadání
+jejího autora.
 Všechny efekty a okolní smyčky jsou syntetizované vlastním skriptem
 source/build_sfx.py (NumPy a SciPy, pevné seedy) z šumu, filtrů a tónů.
 Nejsou v nich nahrávky, vzorky ani zvuky z původní hry Lemmings ani od
 externího dodavatele. Hudba zatím není součástí sady.
 
 Python, NumPy, SciPy a Godot jsou použité nástroje; jejich součásti se
-touto sadou nedistribuují. Veřejnou distribuční licenci výsledné hry
-stanoví autor před zveřejněním.
+touto sadou nedistribuují.
+
+© 2026 Jenda. Všechna práva vyhrazena. Sada se šíří jen jako součást hry
+Paperlings, kterou lze zdarma stahovat, hrát a sdílet odkaz na ni; jiné
+použití vyžaduje svolení autora (viz LICENSE v kořeni repozitáře).

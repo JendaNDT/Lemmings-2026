@@ -1,0 +1,31 @@
+name: Chyba ve hře
+description: Něco v Paperlings nefunguje, jak má.
+title: "[Chyba] "
+labels: ["chyba"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Díky, že pomáháš hru vylepšit! Nejrychleji pomůže tlačítko
+        **O hře → Nahlásit chybu** přímo ve hře – údaje o zařízení vyplní samo.
+  - type: textarea
+    id: popis
+    attributes:
+      label: Co se stalo?
+      description: Co jsi dělal(a), co se stalo a co jsi čekal(a).
+    validations:
+      required: true
+  - type: textarea
+    id: kroky
+    attributes:
+      label: Jak to zopakovat?
+      placeholder: |
+        1. Mise 5 (Důlní patra)
+        2. Kopáč na prvního lumíka
+        3. …
+  - type: textarea
+    id: diagnostika
+    attributes:
+      label: Údaje o zařízení
+      description: Vyplní hra. Jinak sem napiš verzi hry (O hře) a zařízení.
+      render: text

@@ -23,7 +23,7 @@ def verify(root):
             assert path.resolve() in listed, f'mimo manifest: {path}'
     print(f"[OK] {len(fonts['files'])} soubory písma souhlasí s manifestem")
     origami = json.loads((root / 'assets/origami.lock.json').read_text())
-    assert origami['license'] == 'LicenseRef-Lemmings2026-Project-Internal'
+    assert origami['license'] == 'LicenseRef-Paperlings-AllRightsReserved'
     folder = (root / 'assets/origami').resolve()
     listed = set()
     for entry in origami['files']:
@@ -37,7 +37,7 @@ def verify(root):
             assert path.resolve() in listed, f'mimo manifest: {path}'
     print(f"[OK] {len(origami['files'])} origami podkladů souhlasí s manifestem")
     audio = json.loads((root / 'assets/audio.lock.json').read_text())
-    assert audio['license'] == 'LicenseRef-Lemmings2026-Project-Internal'
+    assert audio['license'] == 'LicenseRef-Paperlings-AllRightsReserved'
     folder = (root / 'assets/audio').resolve()
     listed = set()
     for entry in audio['files']:

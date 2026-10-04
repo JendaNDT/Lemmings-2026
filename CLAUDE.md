@@ -86,6 +86,10 @@
 - Přelet mapy (`PaperFlyover`, vrstva `FlyoverHint`) a ukazatele k východu
   (`PaperGuide`) jsou jen vzhled: simulace během přeletu stojí, kamera
   zůstává jediným převodem a první klepnutí přelet jen přeskočí.
+- Licence hry (rozhodnutí autora): volně ke hraní, ostatní práva vyhrazena
+  (`LICENSE.txt`, `AboutPanel.license_summary()`). Titulky uvádějí autora
+  „Jenda“. Nová součást třetí strany musí do `LICENSE.txt` a „O hře → Licence“.
+  Návod pro hráče je v `docs/NAVOD.md`, hlášení chyb přes `BugReport`.
 - Proč dovednost nejde dát, rozhoduje jen `SkillRules.refusal()` (sim);
   `can_assign()` je zkratka. Texty hlášek jsou v `PlayInfo`. Minimapa
   (`Minimap`) simulaci jen čte, kameru přesouvá hra; dotyk začatý na ní
