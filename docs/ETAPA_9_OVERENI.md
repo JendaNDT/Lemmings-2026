@@ -1,8 +1,8 @@
-# Etapa 9 – kampaň: systémy a kapitoly I–III
+# Etapa 9 – kampaň: systémy a kapitoly I–IV
 
 4. října 2026. Podle schváleného [herního designu](HERNI_DESIGN.md)
-(autor odsouhlasil všech šest rozhodnutí) jsou hotové kroky 1, 2, 4 a 5
-plánu realizace: systémy kampaně a kapitoly I, II a III (16 misí).
+(autor odsouhlasil všech šest rozhodnutí) jsou hotové kroky 1, 2, 4, 5
+a 6 plánu realizace: systémy kampaně a všechny čtyři kapitoly (20 misí).
 Zároveň bylo vyřazeno 2.5D zobrazení a export Androidu hlídá stálý podpis.
 
 ![Výběr misí po kapitolách, úvodní karta, výsledek s hvězdami a pauza s nápovědou](images/kampan-kapitola-1.jpg)
@@ -14,8 +14,9 @@ Telefon (dotykový profil 20 : 9):
 ## Co je nového
 
 - **Kapitoly.** Výběr misí má záložky I. Papírová louka (6 misí),
-  II. Skalní les a III. Voda a oheň (zatím po jedné misi) se součtem hvězd
-  a tlačítko **Hřiště** (otevře se po kapitole I).
+  II. Skalní les (5), III. Voda a oheň (5) a IV. Bouřková hora (4) se
+  součtem hvězd; tlačítko **Hřiště** (otevře se po kapitole I) je
+  v záhlaví.
 - **Číslo mise** se dopočítá z pořadí („3 · Šikmý tunel“), názvy
   ve scénách jsou bez čísel.
 - **Úvodní karta mise:** název, kapitola, tečky a název pásma obtížnosti,
@@ -118,6 +119,43 @@ zkouškou v pásmu Těžká. Bez zásahu nejde vyhrát žádná mise.
   a 3 stavitele. Blokař musí stát dál než 16 px od mostu, jinak výbuch
   rozbije jeho začátek.
 
+## Kapitola IV – Bouřková hora
+
+Čtyři nové mise (N12–N15), kampaň má všech 20 misí. Snímky ze skutečné
+hry během referenčního řešení:
+
+![Dvě líhně, Lávová lávka, Velký sestup a Origami finále](images/kampan-kapitola-4.jpg)
+
+| # | Mise | Lumíci / cíl | Hvězdy | Učí | Index | Pásmo | Cíl z designu |
+|---|---|---|---|---|---|---|---|
+| 17 | Dvě líhně | 30 / 26 | 26 / 28 / 29 | dvě skupiny najednou | 66 | Těžká | 63–70 |
+| 18 | Lávová lávka | 20 / 18 | 18 / 19 / 19 | přesnost na doraz | 73 | Těžká | 72–78 |
+| 19 | Velký sestup | 25 / 20 | 20 / 21 / 22 | sestup bez padáků | 84 | Mistrovská | 80–86 |
+| 20 | Origami finále | 40 / 34 | 34 / 35 / 36 | všechno dohromady | 91 | Mistrovská | 85–92 |
+
+Celá křivka: 15 → 14 → 18 → 23 → 32 → 38 | 33 → 36 → 42 → 51 → 55 |
+37 → 50 → 56 → 61 → 63 | 66 → 73 → 84 → 91. Žádná mise nejde vyhrát
+bez zásahu.
+
+**Co měření při stavbě odhalilo:**
+- **Dvě líhně:** pravý stupeň kopce měl 10 px a lumíci na něj nevylezli
+  (zvládnou 6) – je nižší. S původním cílem 22 a časem 4:00 vyšel index
+  52; mise má cíl 26 a čas 2:00.
+- **Lávová lávka:** se dvěma jámami po 21 px index 60 a okno 7 tiků;
+  teď tři jámy po 22 px (okno 6 tiků) a čas 1:55.
+- **Velký sestup:** dav po tunelech předběhne průzkumníka s padákem
+  (padák je pomalý) a utopil by se v jezírku dřív, než je lávka. Blokař
+  proto nahoře drží dav, dokud průzkumník nepřipraví cestu. Lumíci těsně
+  za horníkem ho na čtvrté terase předběhnou dřív, než vznikne tunel –
+  referenční řešení zachrání 22 z 25, cíl je 20.
+- **Origami finále:** průzkumník (lezec s padákem) připraví celou cestu,
+  dav čeká v ohradě. Schody na útes musí začít 50–52 px před ním; když
+  stavitel narazí do stěny, otočí se a spadne pod lávkou do lávy. Útes
+  je o 2 px nižší, jinak by šly schody postavit jen z jediného místa.
+  Mise má jednu líheň místo dvou (čitelnost).
+- **Menu:** tlačítko Hřiště je v záhlaví vedle hvězd, aby se do řádku
+  vešly čtyři záložky kapitol (ověřeno i v dotykovém profilu).
+
 ## Vyřazení 2.5D
 
 Smazána scéna `main/game_3d.tscn`, `view/clay_*`, podklady
@@ -138,8 +176,9 @@ cloudovém prostředí – trvalé uložení mimo něj čeká na rozhodnutí aut
 
 - `python scripts/check.py`: **76 GDScriptů, 13 sad, 380 kontrol, vše
   v pořádku** (bez 3D sad; nové kontroly kampaně, hvězd, odemykání,
-  úvodní karty a Hřiště). Po kapitole II i III znovu: 380 kontrol
-  v pořádku (testy procházejí všechny mise kampaně, takže pokryjí i nové).
+  úvodní karty a Hřiště). Po kapitolách II a III znovu 380 kontrol,
+  po kapitole IV 381 (kontrola navazování přibyla za novou kapitolu);
+  testy procházejí všechny mise kampaně, takže pokryjí i nové.
 - `tests/test_save.gd` (44): kapitoly navazují, číslování, Hřiště mimo
   kampaň, prahy hvězd, odemykání po vložení misí, Hřiště po kapitole I,
   každá mise má úvod, nápovědu a mistrovský výsledek nad cílem.
@@ -148,7 +187,7 @@ cloudovém prostředí – trvalé uložení mimo něj čeká na rozhodnutí aut
   odchod s rozehraným pokusem, „další den“, Hřiště, Zpět.
 - `tests/test_difficulty.gd`: každá mise kampaně má referenční řešení,
   vyhraje a zachrání přesně mistrovský výsledek.
-- `scripts/difficulty_report.gd`: všech 16 misí v cílovém pásmu, index
+- `scripts/difficulty_report.gd`: všech 20 misí v cílovém pásmu, index
   zapsaný v misi odpovídá měření, žádná nejde vyhrát bez zásahu.
 - Grafický průchod `scripts/qa_menu.gd` na počítači i v dotykovém profilu
   a znovu **nad herními soubory vytaženými z APK 0.7.0**.
@@ -156,9 +195,10 @@ cloudovém prostředí – trvalé uložení mimo něj čeká na rozhodnutí aut
 ## Meze
 
 - Na telefonu a Macu neověřeno (výkon, čitelnost karty na malém displeji).
-- Kapitola IV (N12–N15) a pomocníci (krok o tik, zpomalení, ukázka
-  řešení) jsou další kroky plánu.
-- Nové mise kapitol II a III zatím nikdo nehrál – měření říká jen, že jsou
+- Pomocníci (krok o tik, zpomalení, ukázka řešení) a ladění křivky podle
+  hraní jsou další kroky plánu. Kapitola IV má okna 2–8 tiků – bez kroku
+  o tik a zpomalení bude na telefonu hodně náročná.
+- Nové mise kapitol II–IV zatím nikdo nehrál – měření říká jen, že jsou
   řešitelné a jak těsná jsou okna; zábavnost ověří až tvoje hraní.
 - Okno zásahu se měří posunem jednoho příkazu při pevných ostatních.
   U řetězu zásahů (Pod sopkou: horník → stavitelé) vyjde proto užší než

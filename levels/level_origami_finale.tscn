@@ -1,0 +1,98 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://level_tools/lemming_trap.gd" id="5_trap"]
+
+[node name="OrigamiFinale" type="Node2D"]
+script = ExtResource("1_def")
+title = "Origami finále"
+level_id = "origami-finale"
+size = Vector2i(960, 240)
+lemming_count = 40
+save_required = 34
+release_rate = 30
+time_limit_seconds = 240
+climbers = 1
+floaters = 1
+builders = 6
+bashers = 3
+diggers = 2
+master_saved = 36
+difficulty_index = 91
+introduces = "Všechno dohromady"
+briefing = "Poslední cesta přes Bouřkovou horu: řeka, skály se šipkami, chodba s kytkami, láva a útes. Jeden odvážný lumík musí jít napřed."
+hints = PackedStringArray("Dav nech v ohradě, dokud průzkumník nepřipraví cestu. Lezec s padákem přeleze, co ostatní nemohou.", "Průzkumník: dvoje schody přes řeku, razič skrz šipky, kopáč před skálou se šipkami proti směru, přes chodbu po střeše, lávka u okraje lávy a dvoje schody na útes. Pak zrychli vypouštění a otevři ohradu i chodbu razičem.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Base" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 160, 380, 160, 380, 180, 850, 180, 850, 154, 960, 154, 960, 240, 0, 240)
+script = ExtResource("2_shape")
+
+[node name="LeftRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 60, 9, 56, 15, 70, 13, 110, 16, 162, 0, 162)
+script = ExtResource("2_shape")
+
+[node name="PenWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(110, 172, 110, 140, 115, 137, 120, 140, 120, 172)
+script = ExtResource("2_shape")
+
+[node name="RiverCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(150, 160, 180, 160, 180, 163, 150, 163)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="River" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(150, 163, 180, 163, 178, 178, 170, 185, 160, 185, 152, 178)
+script = ExtResource("2_shape")
+kind = 3
+
+[node name="Rock1" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(240, 170, 240, 118, 248, 110, 262, 110, 270, 118, 270, 170)
+script = ExtResource("2_shape")
+kind = 6
+
+[node name="UnderCorridor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(300, 165, 380, 165, 380, 180, 300, 180)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Rock2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(320, 165, 320, 118, 328, 110, 372, 110, 380, 118, 380, 165)
+script = ExtResource("2_shape")
+kind = 5
+
+[node name="Roof" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(440, 186, 440, 116, 450, 110, 590, 110, 600, 116, 600, 166, 450, 166, 450, 186)
+script = ExtResource("2_shape")
+
+[node name="LavaCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(680, 180, 702, 180, 702, 186, 680, 186)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Lava" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(680, 186, 702, 186, 701, 198, 696, 204, 686, 204, 681, 198)
+script = ExtResource("2_shape")
+kind = 4
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(50, 130)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(920, 154)
+script = ExtResource("4_exit")
+
+[node name="Trap" type="Marker2D" parent="."]
+position = Vector2(500, 180)
+script = ExtResource("5_trap")
+rearm_ticks = 150
+
+[node name="Trap2" type="Marker2D" parent="."]
+position = Vector2(550, 180)
+script = ExtResource("5_trap")
+rearm_ticks = 150

@@ -1,0 +1,94 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="VelkySestup" type="Node2D"]
+script = ExtResource("1_def")
+title = "Velký sestup"
+level_id = "velky-sestup"
+size = Vector2i(480, 320)
+lemming_count = 25
+save_required = 20
+release_rate = 50
+time_limit_seconds = 100
+floaters = 1
+blockers = 1
+builders = 1
+miners = 2
+diggers = 1
+master_saved = 22
+difficulty_index = 84
+introduces = "Sestup bez padáků"
+briefing = "Čtyři srázy dolů z Bouřkové hory a jen jeden padák. Ocelové lemy hlídají, kudy jde kopat."
+hints = PackedStringArray("Pád do 60 px lumík přežije. Horníkův tunel i jáma u okraje sníží výšku srázu.", "Padák dej prvnímu a ostatní nahoře zastav blokařem. Průzkumník kope jámu v hliněném okně a dole staví lávku; teprve pak pusť dav horníkem úzkým oknem se šipkami.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Mountain" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 50, 130, 50, 130, 120, 230, 120, 230, 184, 275, 183, 320, 184, 320, 242, 390, 242, 390, 308, 440, 307, 480, 308, 480, 320, 0, 320)
+script = ExtResource("2_shape")
+
+[node name="LeftRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 0, 8, 0, 14, 20, 12, 40, 15, 52, 0, 52)
+script = ExtResource("2_shape")
+
+[node name="Rim1Upper" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(124, 50, 130, 50, 130, 70, 124, 70)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Rim1Window" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(124, 70, 130, 70, 130, 86, 124, 86)
+script = ExtResource("2_shape")
+kind = 6
+
+[node name="Rim1Lower" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(124, 86, 130, 86, 130, 125, 124, 125)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Cap2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(170, 120, 220, 120, 220, 126, 170, 126)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Floor2" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(205, 150, 230, 150, 230, 156, 205, 156)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Rim4Upper" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(384, 242, 390, 242, 390, 256, 384, 256)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Rim4Window" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(384, 256, 390, 256, 390, 272, 384, 272)
+script = ExtResource("2_shape")
+kind = 6
+
+[node name="Rim4Lower" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(384, 272, 390, 272, 390, 312, 384, 312)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="PondCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(410, 308, 430, 308, 430, 311, 410, 311)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Pond" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(410, 311, 430, 311, 429, 316, 424, 318, 416, 318, 411, 316)
+script = ExtResource("2_shape")
+kind = 3
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(30, 20)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(460, 308)
+script = ExtResource("4_exit")

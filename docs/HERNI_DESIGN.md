@@ -1,7 +1,7 @@
 # Lemmings 2026 – herní design dokument
 
 Verze 1.1 · 4. 10. 2026 · stav: **schváleno autorem, realizuje se**
-([kroky 1, 2, 4 a 5 hotové](ETAPA_9_OVERENI.md))
+([kroky 1, 2, 4, 5 a 6 hotové](ETAPA_9_OVERENI.md))
 
 Dokument popisuje, co hra umí dnes, kde má slabá místa, navrhuje kampaň
 o 20 misích (15 nových) a systém obtížnosti, který se dá změřit.
@@ -361,10 +361,10 @@ N = nová mise (karta v kapitole 6), U = stávající s úpravou (5.4).
 | 14 | Brod | `brod` | N10 | most přes vodu, uvolnění blokaře | 52–58 (změřeno 56) |
 | 15 | Voda, láva a past | `voda-lava-past` | stávající | kombinace nebezpečí (změřeno 61) | 58–64 |
 | 16 | Pod sopkou | `pod-sopkou` | N11 | zkouška: horník pod lávou, past, čas | 62–68 (změřeno 63) |
-| 17 | Dvě líhně | `dve-lihne` | N12 | dvě skupiny současně | 63–70 |
-| 18 | Lávová lávka | `lavova-lavka` | N13 | přesnost na doraz | 72–78 |
-| 19 | Velký sestup | `velky-sestup` | N14 | sestup bez padáků | 80–86 |
-| 20 | Origami finále | `origami-finale` | N15 | vše dohromady | 85–92 |
+| 17 | Dvě líhně | `dve-lihne` | N12 | dvě skupiny současně | 63–70 (změřeno 66) |
+| 18 | Lávová lávka | `lavova-lavka` | N13 | přesnost na doraz | 72–78 (změřeno 73) |
+| 19 | Velký sestup | `velky-sestup` | N14 | sestup bez padáků | 80–86 (změřeno 84) |
+| 20 | Origami finále | `origami-finale` | N15 | vše dohromady | 85–92 (změřeno 91) |
 
 ### 5.3 Křivka obtížnosti (cíl)
 
@@ -388,9 +388,9 @@ Jeden dílek = 4 body indexu.
 15 Voda, láva a past  ███████████████ 61
 16 Pod sopkou ★       ███████████████▌ 63
 17 Dvě líhně          ████████████████▌ 66
-18 Lávová lávka       ██████████████████▌ 75
-19 Velký sestup       ████████████████████▌ 82
-20 Origami finále ★   ██████████████████████ 89
+18 Lávová lávka       ██████████████████▎ 73
+19 Velký sestup       █████████████████████ 84
+20 Origami finále ★   ██████████████████████▊ 91
 ```
 ★ = zkouška kapitoly. Pila je záměrná: po zkoušce přijde oddech.
 
@@ -680,13 +680,12 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 
 ### N12 · Dvě líhně
 
-`dve-lihne` · IV/17 · **Těžká** (63–70) · nápad: ne
+`dve-lihne` · IV/17 · **Těžká** (63–70, změřeno 66) · nápad: ne
 
 - **Učí:** dvě skupiny najednou, dělení pozornosti.
-- **Mapa 640 × 200** · lumíci 30 (dvě líhně střídavě), cíl 22 ·
-  vypouštění 40 · čas 4:00
-- **Dovednosti:** stavitel 4, blokař 1, bombič 1, kopáč 1 ·
-  **hvězdy:** 22 / 25 / 28
+- **Mapa 640 × 200** · lumíci 30 (dvě líhně střídavě), cíl 26 ·
+  vypouštění 40 · čas 2:00
+- **Dovednosti:** stavitel 4, blokař 1, bombič 1 · **hvězdy:** 26 / 28 / 29
 
 ```
   H         E          H
@@ -694,67 +693,92 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 ███████████████ ≈≈ ███████
 ```
 
-- **Mapa:** uprostřed kopec s východem. Zleva je kopec 20 px vysoko –
-  dva stavitelé v řadě přímo ke svahu (nedokončené schody jsou bezpečné,
-  končí u stěny). Pravá skupina jde nejdřív doprava, odrazí se a míří ke
-  kanálu (20 px vody): lávka (okno ≈ 6 tiků), blokař drží dav, pak bomba.
+- **Mapa:** uprostřed kopec s východem. Zleva je stěna kopce 20 px –
+  dva stavitelé v řadě přímo ke stěně (nedokončené schody jsou bezpečné,
+  končí u stěny). Zprava je kopec nižší (stupeň 14 px, nahoru 6 px).
+  Pravá skupina jde nejdřív doprava, odrazí se od skály a míří ke kanálu
+  (20 px vody): lávka od samého břehu (okno 8 tiků), blokař ~40 px za
+  ní drží dav, po přechodu lávky bomba.
 - **Bez zásahu:** pravá skupina se utopí, levá se přelévá.
+- **Stavba:** cíl 26 a čas 2:00 (při původních 22 a 4:00 index 52).
+  Kopáč vypuštěn – nebyl k ničemu.
 
 ### N13 · Lávová lávka
 
-`lavova-lavka` · IV/18 · **Těžká** (72–78) · nápad: ne
+`lavova-lavka` · IV/18 · **Těžká** (72–78, změřeno 73) · nápad: ne
 
 - **Učí:** přesnost na doraz (pauza, krok o tik).
-- **Mapa 560 × 180** · lumíci 20, cíl 17 · vypouštění 50 · čas 3:30
-- **Dovednosti:** stavitel 3, blokař 1, bombič 1 · **hvězdy:** 17 / 18 / 19
+- **Mapa 560 × 180** · lumíci 20, cíl 18 · vypouštění 50 · čas 1:55
+- **Dovednosti:** stavitel 4, blokař 1, bombič 1 · **hvězdy:** 18 / 19 / 19
 
 ```
- H                          E
-██████^^^^████████^^^^████████
-      21 px       21 px
+ H                                    E
+██████^^^^██████^^^^██████^^^^████████
+      22 px     22 px     22 px
 ```
 
-- **Klíčová čísla:** jámy jsou široké 21 px – jedna lávka (24 px + cihla)
-  je přesně na hraně, stavitel musí začít 0–4 px od okraje (okno 4–5 tiků).
-- **Řešení:** blokař drží dav, stavitel u první jámy, pak u druhé,
+- **Klíčová čísla:** jámy jsou široké 22 px – jedna lávka je přesně
+  na hraně, stavitel musí začít u samého okraje (okno 6 tiků u každé
+  jámy).
+- **Řešení:** blokař drží dav, první lumík staví u všech tří jam,
   bomba na blokaře. Jeden stavitel navíc opraví jeden chybný pokus.
+- **Stavba:** tři jámy místo dvou a čas 1:55 (se dvěma jamami index 60).
+  Mistrovský výsledek 19 (blokař padne), proto ★★ i ★★★ za 19.
 
 ### N14 · Velký sestup
 
-`velky-sestup` · IV/19 · **Mistrovská** (80–86) · nápad: ano
+`velky-sestup` · IV/19 · **Mistrovská** (80–86, změřeno 84) · nápad: ano
 
-- **Učí:** sestup bez dost padáků – tunely a jámy rozdělí pády na ≤ 60 px.
-- **Mapa 400 × 320** (vysoká) · lumíci 25, cíl 20 · vypouštění 50 · čas 4:00
-- **Dovednosti:** padák 2, horník 3, kopáč 2, stavitel 1, blokař 1 ·
-  **hvězdy:** 20 / 22 / 24
+- **Učí:** sestup bez padáků – tunely a jámy rozdělí pády na ≤ 60 px.
+- **Mapa 480 × 320** (vysoká) · lumíci 25, cíl 20 · vypouštění 50 · čas 1:40
+- **Dovednosti:** padák 1, blokař 1, horník 2, kopáč 1, stavitel 1 ·
+  **hvězdy:** 20 / 21 / 22
 
 ```
  H
 █████████▓
      ↓70 ███████▓
         ↓64 ████████
-           ↓58 ███≈≈█E
+           ↓58 ███▓
+              ↓66 ███≈≈██E
 ```
 
-- **Mapa:** čtyři terasy, srázy 70, 64, 58 a 66 px; ocelové lemy určují,
-  kde jde kopat. Dole jezírko před východem.
-- **Řešení:** první sráz horníkem (tunel sníží pád), druhý kopáčem
-  v hliněném okně mezi ocelí, třetí (58 px) je bezpečný, čtvrtý horníkem;
-  průzkumník s padákem postaví dole lávku přes jezírko dřív, než dorazí dav.
+- **Mapa:** čtyři terasy, srázy 70, 64, 58 a 66 px. U prvního a čtvrtého
+  srázu ocelový lem s oknem se šipkami → (16 px): horníkův tunel jím projde
+  jen, když horník začne v pásu 4 px (asi 70 px před prvním a 60 px
+  před čtvrtým srázem). U druhého srázu
+  ocelová krusta a hliněné okno 10 px u okraje; jáma v něm má ocelové dno
+  30 px pod povrchem, takže z ní je sráz už jen 34 px. Dole jezírko 20 px.
+- **Řešení:** padák prvnímu (průzkumník), druhý se nahoře stane blokařem
+  a drží dav. Průzkumník kope jámu u druhého srázu a dole staví lávku.
+  Teprve pak horník z davu prvním oknem, třetí sráz (58) je bezpečný,
+  na čtvrté terase druhý horník. Lumíci těsně za horníkem ho předběhnou
+  dřív, než vznikne tunel (referenčně padnou dva) – 22 z 25.
+- **Proč blokař:** dav po tunelech předběhne průzkumníka (padák je pomalý)
+  a utopil by se v jezírku dřív, než je lávka.
 
 ### N15 · Origami finále
 
-`origami-finale` · IV/20 (zkouška hry) · **Mistrovská** (85–92) · nápad: ano
+`origami-finale` · IV/20 (zkouška hry) · **Mistrovská** (85–92, změřeno 91) · nápad: ano
 
 - **Učí:** všechno dohromady.
-- **Mapa 960 × 240** · lumíci 50 (dvě líhně), cíl 42 · vypouštění 40 · čas 6:00
-- **Dovednosti:** lezec 2, padák 2, bombič 2, blokař 2, stavitel 5, razič 3,
-  horník 2, kopáč 2 · **hvězdy:** 42 / 46 / 48
-- **Úseky:** A) ohrádka u řeky – most a uvolnění; B) útes s jednosměrnou
-  zdí – směr ražení; C) chodba se dvěma pastmi – zrychlit vypouštění;
-  D) lávová jáma na doraz; E) výstup k východu – řetězení stavitelů.
-  Druhá líheň výš shazuje lumíky rovnou do úseku C – potřebují padák,
-  nebo cestu horníkem.
+- **Mapa 960 × 240** · lumíci 40 (jedna líheň), cíl 34 · vypouštění 30 · čas 4:00
+- **Dovednosti:** lezec 1, padák 1, stavitel 6, razič 3, kopáč 2 ·
+  **hvězdy:** 34 / 35 / 36
+- **Úseky:** A) ohrada a řeka 30 px – lezec přeleze ohradu, dvoje schody
+  přes řeku, razič pak otevře ohradu zevnitř; B) skála se šipkami →
+  (razič) a skála se šipkami ← (nejde prorazit, kopáč před ní spadne
+  do chodby pod skálou); C) uzavřená chodba se dvěma kytkami (dobíjení
+  150) – průzkumník ji přeleze po střeše a seskočí s padákem 70 px,
+  dav pustí razič až nakonec; D) lávová jáma 22 px na doraz; E) útes
+  26 px – dvoje schody (začít 50–52 px před útesem).
+- **Řešení:** průzkumník (lezec + padák) připraví celou cestu, dav zatím
+  čeká v ohradě a pak v úseku B. Vypouštění hned na 99. Razič otevře
+  ohradu po mostě a chodbu s kytkami po schodech na útes; kytky snědí 4.
+- **Past na nepozorné:** stavitel, který u útesu narazí do stěny, se
+  otočí a pod lávkou spadne do lávy.
+- **Stavba:** jedna líheň místo dvou a bez blokaře, bombiče a horníka –
+  mise zůstala čitelná a pestrost (5 druhů) je i tak plná.
 
 ---
 
@@ -805,7 +829,8 @@ na konec kapitoly I, hvězdy, Hřiště mimo kampaň, názvy misí a kapitol,
 vyřazení 2.5D zobrazení a trvalé uložení podpisového klíče Androidu.
 
 **Stav realizace:** kroky 1 (systémy kampaně), 2 (kapitola I), 4
-(kapitola II) a 5 (kapitola III) jsou hotové,
+(kapitola II), 5 (kapitola III) a 6 (kapitola IV) jsou hotové – kampaň
+má všech 20 misí,
 2.5D je vyřazené, export hlídá stálý podpis
 ([ověření](ETAPA_9_OVERENI.md)). Změřené indexy kapitoly I: 15, 14, 18,
 23, 32, 38. Při stavbě se upravily rozměry N1 a N3 (mělčí jeskyně – pád
@@ -824,6 +849,11 @@ a 3 stavitele (při původních číslech index 48, pod pásmem). Pod sopkou
 má čas 2:00 a kytku s dobíjením 120 (při 50 by snědla 5–6 a mistrovský
 výsledek by splynul s cílem); stupeň na louce a jáma v jeskyni drží dav
 pohromadě.
+
+Kapitola IV změřeno: 66, 73, 84, 91. Dvě líhně mají cíl 26 a čas 2:00,
+Lávová lávka tři jámy po 22 px a čas 1:55, Velký sestup blokaře, který
+drží dav nahoře, a Origami finále jednu líheň. Hřiště se v menu přesunulo
+do záhlaví, aby se vešly čtyři záložky kapitol.
 
 ---
 

@@ -269,7 +269,13 @@ func _build_levels() -> void:
 	head.add_child(PaperUi.spacer())
 	_summary = PaperUi.label("", 20, PaperUi.TEXT_DIM)
 	head.add_child(_summary)
-	# Kapitoly jako záložky; Hřiště vedle nich.
+	_playground_button = PaperUi.button("Hřiště", Vector2(150, 52), "play")
+	_playground_button.add_theme_font_size_override("font_size", 18)
+	_playground_button.pressed.connect(func() -> void:
+		clicked.emit()
+		playground_requested.emit())
+	head.add_child(_playground_button)
+	# Kapitoly jako záložky (Hřiště je v záhlaví, aby se vešly všechny čtyři).
 	var tabs := HBoxContainer.new()
 	tabs.add_theme_constant_override("separation", 8)
 	col.add_child(tabs)
@@ -284,13 +290,6 @@ func _build_levels() -> void:
 			show_chapter(c))
 		tabs.add_child(tab)
 		_chapter_tabs.append(tab)
-	tabs.add_child(PaperUi.spacer())
-	_playground_button = PaperUi.button("Hřiště", Vector2(150, 48), "play")
-	_playground_button.add_theme_font_size_override("font_size", 18)
-	_playground_button.pressed.connect(func() -> void:
-		clicked.emit()
-		playground_requested.emit())
-	tabs.add_child(_playground_button)
 	_grid = GridContainer.new()
 	_grid.columns = 3
 	# Stejná šířka i pro kapitolu s jedinou misí (3 karty + mezery).

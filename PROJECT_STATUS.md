@@ -14,10 +14,10 @@ Vývoj a kontroly probíhají v cloudu.
 ## ⏭️ Příští krok
 **Kampaň se staví podle schváleného [herního designu](docs/HERNI_DESIGN.md).**
 Hotové: kapitoly, hvězdy, úvodní karta mise, nápověda, Hřiště,
-kapitola I (15 → 14 → 18 → 23 → 32 → 38), kapitola II (33 → 36 → 42 →
-51 → 55) a **kapitola III Voda a oheň** se čtyřmi novými misemi:
-Hladová kytka 37, Šipky v útesu 50, Brod 56, Voda, láva a past 61,
-Pod sopkou 63 – vše v cílových pásmech.
+kapitola I (15 → 14 → 18 → 23 → 32 → 38), II (33 → 36 → 42 → 51 → 55),
+III (37 → 50 → 56 → 61 → 63) a **kapitola IV Bouřková hora**: Dvě líhně
+66, Lávová lávka 73, Velký sestup 84, Origami finále 91. **Kampaň má
+všech 20 misí**, všechny v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
@@ -28,14 +28,19 @@ Další kroky:
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
    rozhodnutí (viz Známé bugy).
-3. Kapitola IV (mise N12–N15: Dvě líhně, Lávová lávka, Velký sestup,
-   Origami finále) a pomocníci (krok o tik, zpomalení, ukázka řešení).
+3. Pomocníci (krok o tik, zpomalení, ukázka řešení) – kapitola IV má
+   okna jen 2–8 tiků. Pak ladění křivky podle tvého hraní.
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Etapa 9, krok 6 – kapitola IV:** mise Dvě líhně (dvě skupiny),
+  Lávová lávka (tři jámy na doraz), Velký sestup (průzkumník s padákem,
+  blokař, horníci oknem v ocelových lemech) a Origami finále (vše
+  dohromady); Hřiště v menu přesunuto do záhlaví. Report v pořádku
+  pro všech 20 misí.
 - **Android APK 0.9.0** ve větvi `downloads/android-0.9.0` (versionCode 10,
   stejný podpis): kapitola III, 16 misí. Herní soubory z APK prošly
   průchodem menu.

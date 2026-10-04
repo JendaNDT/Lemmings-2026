@@ -129,6 +129,9 @@ func _next_day() -> void:
 	_app.menu.show_chapter(2)
 	await _frames(4)
 	await _capture("14-kapitola-3")
+	_app.menu.show_chapter(3)
+	await _frames(4)
+	await _capture("15-kapitola-4")
 	_app.queue_free()
 	await _frames(4)
 

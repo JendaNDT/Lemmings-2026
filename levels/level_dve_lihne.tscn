@@ -1,0 +1,60 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="DveLihne" type="Node2D"]
+script = ExtResource("1_def")
+title = "Dvě líhně"
+level_id = "dve-lihne"
+size = Vector2i(640, 200)
+lemming_count = 30
+save_required = 26
+release_rate = 40
+time_limit_seconds = 120
+bombers = 1
+blockers = 1
+builders = 4
+master_saved = 29
+difficulty_index = 66
+introduces = "Dvě skupiny najednou"
+briefing = "Na Bouřkové hoře se otevřely dvě líhně. Východ je na kopci mezi nimi – a zprava teče kanál."
+hints = PackedStringArray("Pravá skupina se nejdřív odrazí od skály a pak míří rovnou do kanálu. Začni u ní.", "Vpravo lávka od samého břehu a blokař za ní; vlevo dvoje schody ke stěně kopce. Blokaře nakonec uvolní bomba.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ground" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 150, 80, 149, 170, 151, 250, 150, 250, 130, 290, 129, 340, 130, 348, 136, 380, 136, 380, 150, 470, 149, 560, 151, 640, 150, 640, 200, 0, 200)
+script = ExtResource("2_shape")
+
+[node name="LeftRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 60, 9, 56, 15, 70, 13, 110, 16, 152, 0, 152)
+script = ExtResource("2_shape")
+
+[node name="RightRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(640, 60, 631, 56, 625, 70, 627, 110, 624, 152, 640, 152)
+script = ExtResource("2_shape")
+
+[node name="CanalCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(380, 150, 400, 150, 400, 153, 380, 153)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Canal" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(380, 153, 400, 153, 399, 168, 394, 176, 386, 176, 381, 168)
+script = ExtResource("2_shape")
+kind = 3
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(60, 120)
+script = ExtResource("3_hatch")
+
+[node name="Hatch2" type="Marker2D" parent="."]
+position = Vector2(590, 120)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(310, 130)
+script = ExtResource("4_exit")
