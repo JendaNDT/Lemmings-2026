@@ -20,10 +20,10 @@ se čtyřmi novými misemi: Propadlo 33, Ocelové kořeny 36, Cesta skrz zeď
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet APK 0.7.0 na telefonu** – aktualizuje 0.6.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.7.0/android/Lemmings-2026-Android-0.7.0.apk).
-   Zajímá mě: čitelnost úvodní karty, jestli jsou první mise opravdu
-   snadné a jestli hvězdy motivují. [Návod](docs/ANDROID_DEMO.md).
+1. **Vyzkoušet APK 0.8.0 na telefonu** – aktualizuje 0.7.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.8.0/android/Lemmings-2026-Android-0.8.0.apk).
+   Zajímá mě: jestli jsou nové mise kapitoly II zábavné, srozumitelné
+   a jestli obtížnost roste plynule. [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
    rozhodnutí (viz Známé bugy).
@@ -35,6 +35,8 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.8.0** ve větvi `downloads/android-0.8.0` (versionCode 9,
+  stejný podpis): kapitola II. Herní soubory z APK prošly průchodem menu.
 - **Etapa 9, krok 4 – kapitola II:** mise Propadlo (bomba na terén),
   Ocelové kořeny (razič, ocel), Dlouhá lávka (dva stavitelé v řadě,
   ohrádka) a Mlýnský spěch (vypouštění a čas) s referenčními řešeními,

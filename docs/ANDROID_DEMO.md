@@ -1,42 +1,44 @@
-# Android demo 0.7.0
+# Android demo 0.8.0
 
-Vývojové APK s **kampaní po kapitolách**, hvězdami, úvodními kartami misí,
-nápovědou, novými výukovými misemi kapitoly I a Hřištěm (etapa 9), dále
+Vývojové APK s **kapitolou II Skalní les** (nové mise Propadlo, Ocelové
+kořeny, Dlouhá lávka a Mlýnský spěch), kampaní po kapitolách, hvězdami,
+úvodními kartami misí, nápovědou, misemi kapitoly I a Hřištěm (etapa 9), dále
 menu, ukládáním postupu, origami grafikou a zvuky. Hudba přijde později.
 Popis změn: [etapa 9](ETAPA_9_OVERENI.md), [herní design](HERNI_DESIGN.md),
 [etapa 6](ETAPA_6_OVERENI.md), [zvuky](ZVUK.md).
 
-![Úvodní karta mise spuštěná z herních souborů APK 0.7.0 (Linux, dotykový profil, ne telefon)](images/android-0.7.0.jpg)
+![Kapitola II ve výběru misí, spuštěno z herních souborů APK 0.8.0 (Linux, dotykový profil, ne telefon)](images/android-0.8.0.jpg)
 
 ## Stažení a instalace
 
-[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.7.0/android/Lemmings-2026-Android-0.7.0.apk) (61 MiB).
+[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.8.0/android/Lemmings-2026-Android-0.8.0.apk) (61 MiB).
 
-Soubor `Lemmings-2026-Android-0.7.0.apk` je v samostatné větvi
-`downloads/android-0.7.0`, spolu s návodem a SHA-256 kontrolním součtem.
-Starší APK zůstávají ve větvích `downloads/android-0.6.0` a dřívějších.
+Soubor `Lemmings-2026-Android-0.8.0.apk` je v samostatné větvi
+`downloads/android-0.8.0`, spolu s návodem a SHA-256 kontrolním součtem.
+Starší APK zůstávají ve větvích `downloads/android-0.7.0` a dřívějších.
 Stáhnout na telefon nebo tablet, otevřít a případně povolit instalaci
 z použitého prohlížeče či správce souborů. Hra se jmenuje
 **Lemmings 2026 Demo** a běží na šířku.
 
-**Aktualizace z 0.5.0 nebo 0.6.0** proběhne přímo (stejný testovací
-podpis) a uložený postup zůstane. Z verze 0.4.0 a starší je potřeba
+**Aktualizace z 0.5.0, 0.6.0 nebo 0.7.0** proběhne přímo (stejný testovací
+podpis) a uložený postup i hvězdy zůstanou. Z verze 0.4.0 a starší je potřeba
 nejdřív odinstalovat (jiný podpis).
 
-Mise se odemykají postupně; kdo už splnil „První kroky“ (dřív mise 1,
-teď 6), má otevřené i nové mise před nimi. Všechny mise hned otevře
+Mise se odemykají postupně; kdo už splnil „První kroky“ (mise 6), má
+otevřenou první misi kapitoly II. Kdo splnil Cestu skrz zeď (teď mise 9),
+má otevřené i nové mise před ní. Všechny mise hned otevře
 **Nastavení → Hra → Všechny mise odemčené**.
 
 - Android 7.0 / API 24 a novější, OpenGL ES 3.0.
 - Architektury `arm64-v8a` a `armeabi-v7a` v jednom APK.
-- Verze 0.7.0, versionCode 8, balíček `org.lemmings2026.demo`.
+- Verze 0.8.0, versionCode 9, balíček `org.lemmings2026.demo`.
 - Target SDK 36; aplikace nepožaduje žádná Android oprávnění.
 - Testovací podpis, schémata v2/v3. Není určený pro vydání do Google Play;
   soukromý klíč je mimo repozitář i předávané artefakty.
-  Certifikát SHA-256 (stejný jako 0.5.0 a 0.6.0, ověřuje ho export):
+  Certifikát SHA-256 (stejný jako 0.5.0–0.7.0, ověřuje ho export):
   `fdb924fa25c6dfec478caa66dd8ba03ec91909d475de240d9213a50f6681407f`.
 
-SHA-256 APK: `0f5b699ff6b978fc429cf1fdfa1e3ec2dd5ec0f656f38c6f2c53d427f23fc8f7`.
+SHA-256 APK: `8e6ff4f9c8d82701e0c9a0ba6459c70aecd00115a2faec954b184434da105fb7`.
 
 ## Ovládání a profil
 
@@ -53,7 +55,7 @@ příkaz. Dotyky začaté na HUDu se nepřenesou do herní plochy.
 
 Mise se vybírají v menu (karty se zámky). Osm dovedností se vejde
 na společný spodní řádek. Reproduktor vpravo v liště zvuk ztlumí (volba
-se pamatuje). **Ukončit** vyžaduje potvrzení; v dialogu se čas zastaví
+se pamatuje). **Odpálit vše** vyžaduje potvrzení; v dialogu se čas zastaví
 a klepnutí nepřidělí dovednost postavě pod oknem.
 
 Dotykový výběr má širší dosah (v nastavení Běžný / Velký) a vybírá
@@ -69,16 +71,18 @@ a vypnuté 2D MSAA. Herní logika se podle platformy nevětví.
 
 - Před exportem prošla kompletní kontrola `python scripts/check.py`:
   76 GDScriptů, 13 sad, 380 kontrol (simulace, kampaň, hvězdy, úvodní
-  karta, ukládání, menu, dotyk, zvuky, obtížnost misí).
+  karta, ukládání, menu, dotyk, zvuky, obtížnost misí). Report obtížnosti:
+  všech 12 misí v cílovém pásmu, každá má ověřené referenční řešení.
 - Export ověřil otisk podpisového klíče a hotové APK apksignerem (v2/v3,
-  stejný certifikát jako 0.5.0 a 0.6.0); zarovnání `zipalign -c 4`,
-  manifest (0.7.0 / 8, API 24/36, žádná oprávnění), licence písma OFL,
+  stejný certifikát jako 0.5.0–0.7.0); zarovnání `zipalign -c 4`,
+  manifest (0.8.0 / 9, API 24/36, žádná oprávnění), licence písma OFL,
   origami a zvuků. Testy, dokumentace ani skripty se nebalí.
 - Herní soubory vytažené přímo z APK prošly v Linuxu (Compatibility,
   softwarový llvmpipe, dotykový profil 20 : 9) celým průchodem
   `scripts/qa_menu.gd`: úvodní karta, mise 1 vyhraná 10/10 klepnutím,
   výsledek s hvězdami, další mise, pauza s nápovědou, nastavení, odchod
-  s rozehraným pokusem a nové spuštění s obnovou.
+  s rozehraným pokusem a nové spuštění s obnovou; kampaň v balíčku má
+  12 misí a kapitola II ukazuje všech pět karet.
 
 Linuxové spuštění nepotvrzuje instalaci ani běh Android Activity.
 Nativní výkon, systémové tlačítko Zpět a čitelnost karet na malém

@@ -16,6 +16,8 @@ po kapitole I. Každá mise začne **úvodní kartou** (cíl, dovednosti
 s popisem, co je nového, obtížnost) a za výsledek dostaneš **1–3 hvězdy**.
 V pauze (tlačítko **Menu**, **Esc**, na Androidu **Zpět**) je **nápověda**,
 nastavení a návrat do menu. Postup, hvězdy a rozehraná mise se ukládají.
+Hotové jsou kapitoly I (6 misí) a II (5 misí); obtížnost každé mise je
+změřená z ověřeného řešení.
 
 ![Výběr misí, úvodní karta, výsledek a pauza s nápovědou](docs/images/kampan-kapitola-1.jpg)
 
@@ -69,15 +71,16 @@ Výchozí scéna je `main/game_origami.tscn`.
 
 ## Testovací verze pro Android
 
-[**Stáhnout Android APK 0.7.0 (61 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.7.0/android/Lemmings-2026-Android-0.7.0.apk)
+[**Stáhnout Android APK 0.8.0 (61 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.8.0/android/Lemmings-2026-Android-0.8.0.apk)
 
 Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.7.0).
+[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.8.0).
 
-APK 0.7.0 má kampaň s kapitolami, hvězdami, úvodními kartami a nápovědou,
-nové výukové mise kapitoly I, Hřiště, menu a ukládání, origami grafiku
+APK 0.8.0 má kapitolu II Skalní les se čtyřmi novými misemi, kampaň
+s kapitolami, hvězdami, úvodními kartami a nápovědou, výukové mise
+kapitoly I, Hřiště, menu a ukládání, origami grafiku
 a zvuky. Je určené pro Android 7.0+ s OpenGL ES 3.0 (32bitový
-i 64bitový ARM). Verzi 0.5.0 a 0.6.0 přímo aktualizuje (stejný testovací
+i 64bitový ARM). Verze 0.5.0–0.7.0 přímo aktualizuje (stejný testovací
 podpis); 0.4.0 a starší nejdřív odinstaluj.
 
 Hraje se na šířku. Klepni na dovednost a potom na postavu, jedním prstem
