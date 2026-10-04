@@ -1,27 +1,26 @@
-# Android demo 0.10.0
+# Android demo 0.11.0
 
-Vývojové APK s **celou kampaní – 20 misí ve čtyřech kapitolách**, nově
-kapitola IV Bouřková hora (Dvě líhně, Lávová lávka, Velký sestup
-a Origami finále), hvězdami, úvodními kartami misí, nápovědou a Hřištěm
-(etapa 9), dále
+Vývojové APK s **pomocníky** (krok o tik, zpomalení ½×, ukázka řešení
+každé mise) a **celou kampaní – 20 misí ve čtyřech kapitolách**
+s hvězdami, úvodními kartami misí, nápovědou a Hřištěm (etapa 9), dále
 menu, ukládáním postupu, origami grafikou a zvuky. Hudba přijde později.
 Popis změn: [etapa 9](ETAPA_9_OVERENI.md), [herní design](HERNI_DESIGN.md),
 [etapa 6](ETAPA_6_OVERENI.md), [zvuky](ZVUK.md).
 
-![Kapitola IV ve výběru misí, spuštěno z herních souborů APK 0.10.0 (Linux, dotykový profil, ne telefon)](images/android-0.10.0.jpg)
+![Pomocníci z herních souborů APK 0.11.0: Krok a ½× v pauze, menu s Ukázkou řešení, běžící ukázka a její konec (Linux, dotykový profil, ne telefon)](images/android-0.11.0.jpg)
 
 ## Stažení a instalace
 
-[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.10.0/android/Lemmings-2026-Android-0.10.0.apk) (61 MiB).
+[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.11.0/android/Lemmings-2026-Android-0.11.0.apk) (61 MiB).
 
-Soubor `Lemmings-2026-Android-0.10.0.apk` je v samostatné větvi
-`downloads/android-0.10.0`, spolu s návodem a SHA-256 kontrolním součtem.
-Starší APK zůstávají ve větvích `downloads/android-0.9.0` a dřívějších.
+Soubor `Lemmings-2026-Android-0.11.0.apk` je v samostatné větvi
+`downloads/android-0.11.0`, spolu s návodem a SHA-256 kontrolním součtem.
+Starší APK zůstávají ve větvích `downloads/android-0.10.0` a dřívějších.
 Stáhnout na telefon nebo tablet, otevřít a případně povolit instalaci
 z použitého prohlížeče či správce souborů. Hra se jmenuje
 **Lemmings 2026 Demo** a běží na šířku.
 
-**Aktualizace z 0.5.0 až 0.9.0** proběhne přímo (stejný testovací
+**Aktualizace z 0.5.0 až 0.10.0** proběhne přímo (stejný testovací
 podpis) a uložený postup i hvězdy zůstanou. Z verze 0.4.0 a starší je potřeba
 nejdřív odinstalovat (jiný podpis).
 
@@ -32,14 +31,14 @@ má otevřené i nové mise před ní. Všechny mise hned otevře
 
 - Android 7.0 / API 24 a novější, OpenGL ES 3.0.
 - Architektury `arm64-v8a` a `armeabi-v7a` v jednom APK.
-- Verze 0.10.0, versionCode 11, balíček `org.lemmings2026.demo`.
+- Verze 0.11.0, versionCode 12, balíček `org.lemmings2026.demo`.
 - Target SDK 36; aplikace nepožaduje žádná Android oprávnění.
 - Testovací podpis, schémata v2/v3. Není určený pro vydání do Google Play;
   soukromý klíč je mimo repozitář i předávané artefakty.
-  Certifikát SHA-256 (stejný jako 0.5.0–0.9.0, ověřuje ho export):
+  Certifikát SHA-256 (stejný jako 0.5.0–0.10.0, ověřuje ho export):
   `fdb924fa25c6dfec478caa66dd8ba03ec91909d475de240d9213a50f6681407f`.
 
-SHA-256 APK: `fc55ccaf0320bbddd42fa7c3ff6965dd9d401d26d67644e1fa1bcf44231818eb`.
+SHA-256 APK: `081c654baa70652e8534707c86f48e88797b43c56f7a7cac0444b3f32ed18d39`.
 
 ## Ovládání a profil
 
@@ -75,12 +74,12 @@ a vypnuté 2D MSAA. Herní logika se podle platformy nevětví.
 ## Ověření a omezení
 
 - Před exportem prošla kompletní kontrola `python scripts/check.py`:
-  76 GDScriptů, 13 sad, 381 kontrol (simulace, kampaň, hvězdy, úvodní
-  karta, ukládání, menu, dotyk, zvuky, obtížnost misí). Report obtížnosti:
+  78 GDScriptů, 14 sad, 393 kontrol (simulace, kampaň, hvězdy, úvodní
+  karta, ukládání, menu, dotyk, zvuky, obtížnost misí, pomocníci). Report obtížnosti:
   všech 20 misí v cílovém pásmu, každá má ověřené referenční řešení.
 - Export ověřil otisk podpisového klíče a hotové APK apksignerem (v2/v3,
-  stejný certifikát jako 0.5.0–0.9.0); zarovnání `zipalign -c 4`,
-  manifest (0.10.0 / 11, API 24/36, žádná oprávnění), licence písma OFL,
+  stejný certifikát jako 0.5.0–0.10.0); zarovnání `zipalign -c 4`,
+  manifest (0.11.0 / 12, API 24/36, žádná oprávnění), licence písma OFL,
   origami a zvuků. Testy, dokumentace ani skripty se nebalí.
 - Herní soubory vytažené přímo z APK prošly v Linuxu (Compatibility,
   softwarový llvmpipe, dotykový profil 20 : 9) celým průchodem
@@ -88,6 +87,8 @@ a vypnuté 2D MSAA. Herní logika se podle platformy nevětví.
   výsledek s hvězdami, další mise, pauza s nápovědou, nastavení, odchod
   s rozehraným pokusem a nové spuštění s obnovou; kampaň v balíčku má
   20 misí a všechny čtyři záložky kapitol se vejdou i v profilu 20 : 9.
+  Z týchž souborů proběhla i Ukázka řešení mise Propadlo (9 z 10 =
+  mistrovský výsledek), Krok a zpomalení.
 
 Linuxové spuštění nepotvrzuje instalaci ani běh Android Activity.
 Nativní výkon, systémové tlačítko Zpět a čitelnost karet na malém

@@ -21,10 +21,11 @@ všech 20 misí**, všechny v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet APK 0.10.0 na telefonu** – aktualizuje 0.9.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.10.0/android/Lemmings-2026-Android-0.10.0.apk).
-   Zajímá mě: jestli jsou nové mise zábavné a srozumitelné, jestli
-   obtížnost roste plynule a jak se na telefonu hraje kapitola IV.
+1. **Vyzkoušet APK 0.11.0 na telefonu** – aktualizuje 0.10.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.11.0/android/Lemmings-2026-Android-0.11.0.apk).
+   Zajímá mě: jestli jsou mise zábavné a srozumitelné, jestli obtížnost
+   roste plynule, jak se na telefonu hraje kapitola IV a jestli pomáhá
+   Krok, zpomalení a Ukázka řešení.
    [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
@@ -36,6 +37,9 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.11.0** ve větvi `downloads/android-0.11.0` (versionCode
+  12, stejný podpis): pomocníci. Herní soubory z APK prošly průchodem
+  menu i ukázkou řešení.
 - **Pomocníci:** Krok o jeden tik v pauze, zpomalení ½× (rychlost
   1× → 3× → ½×) a Ukázka řešení v pauzovacím menu – přehraje uložené
   referenční řešení mise (`LevelDefinition.solution`, generuje
