@@ -78,6 +78,9 @@
 - Mobilní ovládání je v `TouchControls`, profil v `DeviceProfile` a nastavení
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.
+- Přelet mapy (`PaperFlyover`, vrstva `FlyoverHint`) a ukazatele k východu
+  (`PaperGuide`) jsou jen vzhled: simulace během přeletu stojí, kamera
+  zůstává jediným převodem a první klepnutí přelet jen přeskočí.
 
 ## Výtvarná reference
 - Kapitoly mají vlastní vzhled (`PaperTheme`, krajiny z

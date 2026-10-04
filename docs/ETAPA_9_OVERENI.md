@@ -192,6 +192,39 @@ Pomoc, která nemění pravidla (herní design, kapitola 4.8):
   **79 GDScriptů, 14 sad, 400 kontrol**. Tlačítka lišty jsou užší, aby se
   „−5 s“ a „Krok“ vešly i při rozhraní 130 %.
 
+## Přelet mapy a šipka k východu
+
+Orientace v mapě bez změny pravidel (herní design, kapitola 4.8):
+
+![Přelet mapy: štítek Východ u cíle, let s oddálením, šipka k východu za hry a přelet v dotykovém profilu](images/prelet-mapy.jpg)
+
+- **Přelet mapy** – po „Hrát“ na úvodní kartě kamera začne u východu
+  (o kousek širší záběr) se štítkem **Východ** nad střechou, po 1,6 s
+  plynule přeletí na startovní záběr u líhně; dlouhý let se uprostřed
+  oddálí a ukáže kus mapy. Trvá podle délky mapy 2,6–4,4 s (finále 3,9 s),
+  čas mise mezitím stojí na tiku 0. Štítek nikdy nevyjede z herní plochy
+  (u východu v jeskyni zůstane pod horní lištou).
+- **Přeskočení** – klepnutí kamkoli (průhledná vrstva v HUDu zachytí
+  první dotyk, takže nic nepřidělí), libovolná klávesa nebo Zpět.
+  Přechod aplikace na pozadí přelet ukončí a hra zůstane v pauze.
+- Restart, obnovená rozehraná mise ani Ukázka řešení přelet neopakují.
+  Vypnout jde v **Nastavení → Hra → Přelet mapy na začátku mise**
+  (výchozí zapnuto).
+- **Šipka k východu** – když východ není v záběru, u okraje herní plochy
+  je papírový odznak s domečkem a hrotem ve směru východu (u více východů
+  k nejbližšímu). Při přeletu a po konci mise se neukazuje, roste
+  s velikostí rozhraní a nepřijímá vstup.
+- Nový test `tests/test_flyover.gd` (17 kontrol): přelet začne u východu
+  se štítkem a skončí přesně na startovním záběru, simulace během něj
+  stojí, oddálení dlouhého letu, přeskočení klávesou, klepnutím (nic
+  nepřidělí), Zpět a přechodem na pozadí (zůstane pauza), restart
+  a ukázka bez přeletu, šipka u okraje a její zmizení, velikost
+  rozhraní a vypnutí v nastavení (uloží se na disk). `test_menu`
+  ověřuje přelet po kartě i Zpět; grafický průchod `scripts/qa_menu.gd`
+  přelet přeskočí skutečným kliknutím (počítač i dotykový profil).
+- Celá kontrola `python scripts/check.py`: **83 GDScriptů, 15 sad,
+  419 kontrol, vše v pořádku**.
+
 ## Vyřazení 2.5D
 
 Smazána scéna `main/game_3d.tscn`, `view/clay_*`, podklady

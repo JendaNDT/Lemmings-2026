@@ -157,6 +157,7 @@ func _build_controls(page: VBoxContainer) -> void:
 
 
 func _build_game(page: VBoxContainer) -> void:
+	_toggle(page, "flyover", "Přelet mapy na začátku mise")
 	_toggle(page, "unlock_all", "Všechny mise odemčené (vývojová verze)")
 	if allow_reset:
 		var reset := PaperUi.button("Smazat postup…", Vector2(260, 52))

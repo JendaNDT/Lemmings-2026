@@ -90,7 +90,10 @@ func _test_first_day() -> void:
 	game.call("_try_assign_touch", Vector2(640, 300))
 	check(sim.replay_log.is_empty(), "klepnutí přes úvodní kartu nic nepřidělí")
 	hud.briefing.close()
-	check(not hud.briefing.visible and not game.get("_paused"), "„Hrát“ kartu zavře a spustí čas")
+	check(not hud.briefing.visible and game.get("_flyover") and game.get("_paused"),
+		"„Hrát“ kartu zavře a ukáže přelet mapy (čas zatím stojí)")
+	game.call("_end_flyover")
+	check(not game.get("_paused"), "po přeletu se spustí čas")
 	_solve(game, sim, "dira-v-louce")
 	check(sim.finished and sim.is_won() and hud.result_open() and sim.saved == 10,
 		"mise 1 vyhraná referenčním řešením 10/10, ukáže se výsledek")
@@ -105,6 +108,7 @@ func _test_first_day() -> void:
 	check(_app.game == game and title.text == "2 · Schody na terasu" and not hud.result_open()
 		and hud.briefing.visible, "Další spustí misi 2 ve stejné instanci hry s úvodní kartou")
 	hud.briefing.close()
+	game.call("_end_flyover")
 	_step(game, 60)
 	var pressed := InputEventKey.new()
 	pressed.physical_keycode = KEY_ESCAPE
@@ -209,6 +213,7 @@ func _test_settings_in_game() -> void:
 	check(game != null and (hud.get("_title") as Label).text == "Hřiště",
 		"Hřiště se spustí mimo kampaň (vývojové odemčení)")
 	hud.briefing.close()
+	game.call("_end_flyover")
 	var world: PaperWorld = game.get_node("PaperWorld")
 	settings.set_value("ui_scale", 1.3)
 	await _frames(2)
@@ -270,8 +275,11 @@ func _test_back_and_background() -> void:
 	var game := _game()
 	var hud: Hud = game.get_node("Hud")
 	game.propagate_notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
-	check(not hud.briefing.visible and not hud.pause_menu_open(),
-		"Zpět na úvodní kartě ji zavře a spustí misi")
+	check(not hud.briefing.visible and not hud.pause_menu_open() and game.get("_flyover"),
+		"Zpět na úvodní kartě ji zavře a začne přelet mapy")
+	game.propagate_notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
+	check(not game.get("_flyover") and not game.get("_paused") and not hud.pause_menu_open(),
+		"další Zpět přelet přeskočí a spustí misi")
 	_step(game, 40)
 	game.propagate_notification(Node.NOTIFICATION_WM_GO_BACK_REQUEST)
 	check(hud.pause_menu_open(), "Zpět na Androidu otevře pauzovací menu")

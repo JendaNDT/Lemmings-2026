@@ -4,7 +4,7 @@ extends Node2D
 ##
 ## Pořadí kreslení: nebe → čtyři paralaxní vrstvy → herní rovina (terén, tráva,
 ## líheň, východ a pasti, postavy, přední pruhy vody a lávy, ústřižky) →
-## popředí. HUD je samostatná CanvasLayer.
+## popředí → ukazatele (štítek a šipka k východu). HUD je samostatná CanvasLayer.
 ## Herní rovina má jedinou transformaci z PaperCamera; vrstvy ji jen čtou.
 
 const LAYER_DIR := "res://assets/origami/layers/"
@@ -35,6 +35,10 @@ var fx: PaperFx
 var foreground: PaperForeground
 var plane: Node2D
 var layers: Array[PaperParallax] = []
+## Ukazatele k východu (štítek při přeletu, šipka u okraje).
+var guide: PaperGuide
+## Běžící přelet mapy (null = žádný).
+var flyover: PaperFlyover
 var quality := 2
 ## Vzhled kapitoly (PaperTheme): krajina, nebe, barvy terénu a trávy, světlo, počasí.
 var theme := PaperTheme.BY_CHAPTER[0]
@@ -118,6 +122,10 @@ func _ready() -> void:
 	_grain.draw.connect(func() -> void:
 		_grain.draw_rect(Rect2(Vector2.ZERO, camera.viewport_size()), Color.WHITE))
 	add_child(_grain)
+	guide = PaperGuide.new()
+	guide.name = "Guide"
+	guide.camera = camera
+	add_child(guide)
 
 
 ## Mraky plují pomalu, každý jinou rychlostí; hejnko tří ptáčků mává křídly.
@@ -176,6 +184,8 @@ func setup(sim: LevelSim) -> void:
 	fx.clear()
 	fx.sim = sim
 	foreground.sim = sim
+	guide.setup(sim.spec.exits)
+	flyover = null
 	var focus := Vector2(sim.spec.width * 0.5, sim.spec.height * 0.45)
 	if not sim.spec.hatches.is_empty():
 		focus = Vector2(sim.spec.hatches[0]) + Vector2(60, 26)
@@ -210,6 +220,38 @@ func update_frame(alpha: float, events: Array[Dictionary], delta: float) -> void
 	fx.handle_events(events)
 	fx.advance(delta)
 	foreground.update(get_process_delta_time())
+	# Šipka k východu jen za hry; při přeletu východ ukazuje štítek.
+	guide.edge_arrow = _sim != null and not _sim.finished and flyover == null
+	guide.exit_tag = flyover.exit_tag() if flyover != null else 0.0
+	guide.update(get_process_delta_time())
+	_apply_camera()
+
+
+## Přelet mapy: kamera začne u východu a přeletí na startovní záběr.
+## Vrací false, když mise východ nemá (není co ukázat).
+func start_flyover() -> bool:
+	if _sim == null or _sim.spec.exits.is_empty():
+		return false
+	flyover = PaperFlyover.new(camera, Vector2(_sim.spec.exits[0]))
+	_apply_camera()
+	return true
+
+
+## Posune přelet o skutečný čas; vrací true, dokud ještě běží.
+func advance_flyover(delta: float) -> bool:
+	if flyover == null:
+		return false
+	flyover.advance(delta)
+	return not flyover.done
+
+
+## Ukončí přelet (i předčasně): kamera skočí na startovní záběr.
+func finish_flyover() -> void:
+	if flyover == null:
+		return
+	flyover.finish()
+	flyover = null
+	guide.exit_tag = 0.0
 	_apply_camera()
 
 
@@ -226,6 +268,11 @@ func set_quality(level: int) -> void:
 	fx.petals = q[5]
 	fx.weather_level = quality
 	fx.max_scraps = q[6]
+
+
+## Velikost rozhraní z nastavení: ukazatele k východu rostou s HUDem.
+func set_ui_scale(value: float) -> void:
+	guide.ui_scale = value
 
 
 ## Světlo a paprsky jen při vysoké kvalitě; blesk tématu (bouřka) vždy.

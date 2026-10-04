@@ -160,7 +160,8 @@ z referenčních řešení je hotové (`scripts/difficulty_report.gd`).
 (kapitoly, hvězdy, úvodní karta, nápověda, Hřiště) a všechny čtyři
 kapitoly (20 misí, z toho 15 nových), vše v cílových pásmech;
 [ověření](ETAPA_9_OVERENI.md). Hotoví jsou i pomocníci (krok o tik,
-zpomalení, ukázka řešení). Další: ladění křivky podle hraní.
+zpomalení, ukázka řešení, přetočení o 5 s), vlastní vzhled kapitol
+a přelet mapy se šipkou k východu. Další: ladění křivky podle hraní.
 
 ## Etapa 10 — Pohodlí a betatest
 

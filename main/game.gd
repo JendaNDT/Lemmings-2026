@@ -57,6 +57,8 @@ var _demo_focus_until := 0
 var _demo_seen := false
 ## Záložky stavu pro přetáčení (vzestupně podle tiku, bez příkazů svého tiku).
 var _snapshots: Array[LevelSim] = []
+## Běží přelet mapy (po úvodní kartě): čas stojí, klepnutí ho přeskočí.
+var _flyover := false
 
 @onready var _world: Node2D = $World
 @onready var _terrain_view: TerrainView = $World/TerrainView
@@ -79,6 +81,7 @@ func _ready() -> void:
 	_hud.menu_pressed.connect(_open_pause_menu)
 	_hud.menu_action.connect(_on_menu_action)
 	_hud.briefing.closed.connect(_on_briefing_closed)
+	_hud.flyover.skipped.connect(func() -> void: _end_flyover())
 	_hud.skill_selected.connect(_select_skill)
 	_hud.release_rate_step.connect(_change_release_rate)
 	_hud.pause_pressed.connect(_toggle_pause)
@@ -113,6 +116,8 @@ func _ready() -> void:
 func _load_level(intro := true, demo := false) -> void:
 	_hud.close_nuke_confirmation()
 	_hud.close_pause_menu()
+	_flyover = false
+	_hud.flyover.hide()
 	if _touch != null:
 		_touch.clear()
 	if _level != null:
@@ -185,6 +190,8 @@ func _load_level(intro := true, demo := false) -> void:
 func _process(delta: float) -> void:
 	if _sim == null:
 		return
+	if _flyover and not _view.advance_flyover(delta):
+		_end_flyover()
 	var tick_time := 1.0 / SimConst.TICKS_PER_SECOND
 	if not _paused and not _sim.finished:
 		_accumulator += delta * _speed
@@ -217,7 +224,8 @@ func _process(delta: float) -> void:
 	if Input.get_current_cursor_shape() != cursor:
 		Input.set_default_cursor_shape(cursor)
 
-	_hud.refresh(_paused, _speed)
+	# Při přeletu vypadá lišta jako za běhu (čas se rozběhne hned po něm).
+	_hud.refresh(_paused and not _flyover, _speed)
 	if _sim.finished and not _result_shown:
 		_result_shown = true
 		_hud.show_result(_sim, _record_result())
@@ -225,23 +233,7 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	var escape: bool = event is InputEventKey and event.pressed and not event.echo \
-		and event.physical_keycode == KEY_ESCAPE
-	if _hud.confirmation_open():
-		if escape:
-			_decide_nuke(false)
-		return
-	if _hud.briefing.visible:
-		if event is InputEventKey and event.pressed and not event.echo \
-				and event.physical_keycode in [KEY_ESCAPE, KEY_ENTER, KEY_SPACE, KEY_KP_ENTER]:
-			_hud.briefing.close()
-		return
-	if _hud.pause_menu_open() or _hud.result_open():
-		if escape and _hud.pause_menu_open():
-			_on_menu_action("resume")
-		return
-	if escape:
-		_open_pause_menu()
+	if _overlay_input(event):
 		return
 	if event is InputEventMouseButton:
 		var mb := event as InputEventMouseButton
@@ -284,6 +276,31 @@ func _unhandled_input(event: InputEvent) -> void:
 				_change_release_rate(1)
 
 
+## Vstup, když je otevřené okno HUDu nebo běží přelet (true = vstup patří jim).
+## Esc mimo okna otevře pauzovací menu.
+func _overlay_input(event: InputEvent) -> bool:
+	var key: bool = event is InputEventKey and event.pressed and not event.echo
+	var escape: bool = key and event.physical_keycode == KEY_ESCAPE
+	if _hud.confirmation_open():
+		if escape:
+			_decide_nuke(false)
+	elif _hud.briefing.visible:
+		if key and event.physical_keycode in [KEY_ESCAPE, KEY_ENTER, KEY_SPACE, KEY_KP_ENTER]:
+			_hud.briefing.close()
+	elif _flyover:
+		# Myš a dotyk zachytí vrstva přeletu v HUDu; klávesa přelet přeskočí.
+		if key:
+			_end_flyover()
+	elif _hud.pause_menu_open() or _hud.result_open():
+		if escape and _hud.pause_menu_open():
+			_on_menu_action("resume")
+	elif escape:
+		_open_pause_menu()
+	else:
+		return false
+	return true
+
+
 func _input(event: InputEvent) -> void:
 	if _touch != null and not _result_shown and not _overlay_open():
 		_touch.handle(event, get_viewport().get_visible_rect().size)
@@ -291,6 +308,8 @@ func _input(event: InputEvent) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_PAUSED:
+		# Přelet skončí, ale hra zůstane stát (obnovení pohybu je na hráči).
+		_end_flyover(false)
 		_paused = true
 		_pause_before_confirmation = true
 		_pause_before_menu = true
@@ -307,6 +326,8 @@ func _notification(what: int) -> void:
 			_decide_nuke(false)
 		elif _hud.briefing.visible:
 			_hud.briefing.close()
+		elif _flyover:
+			_end_flyover()
 		elif _hud.settings_open():
 			_hud.close_settings()
 		elif _hud.pause_menu_open():
@@ -634,16 +655,38 @@ func _apply_settings() -> void:
 		_view.set_quality(settings.quality)
 	if _view.has_method("set_stop_motion"):
 		_view.set_stop_motion(settings.stop_motion)
+	if _view.has_method("set_ui_scale"):
+		_view.set_ui_scale(settings.ui_scale)
 
 
-## Je otevřené okno, které patří HUDu (potvrzení, pauza, úvodní karta)?
+## Je otevřené okno, které patří HUDu (potvrzení, pauza, úvodní karta, přelet)?
 func _overlay_open() -> bool:
-	return _hud.confirmation_open() or _hud.pause_menu_open() or _hud.briefing.visible
+	return _hud.confirmation_open() or _hud.pause_menu_open() or _hud.briefing.visible \
+		or _flyover
 
 
+## Po úvodní kartě přelet mapy (lze vypnout v nastavení), pak se spustí čas.
 func _on_briefing_closed() -> void:
+	if settings.flyover and _view != null and _view.start_flyover():
+		_flyover = true
+		if _touch != null:
+			_touch.clear()
+		_hud.flyover.show()
+		return
 	_paused = false
 	_audio.play_ui("resume")
+
+
+## Konec přeletu mapy (doletěl nebo ho hráč přeskočil). `start` = spustit čas.
+func _end_flyover(start := true) -> void:
+	if not _flyover:
+		return
+	_flyover = false
+	_view.finish_flyover()
+	_hud.flyover.hide()
+	if start:
+		_paused = false
+		_audio.play_ui("resume")
 
 
 ## Údaje pro úvodní kartu mise.

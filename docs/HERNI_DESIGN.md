@@ -335,6 +335,13 @@ výsledek ukázku nabídne. **Krok** v pauze posune hru o jeden tik
 záložku stavu každých 5 s (minutu zpět) a přehraje jen kousek záznamu;
 pozdější příkazy se zahodí, kamera, pauza i rychlost zůstanou.
 
+**Orientace v mapě (4. 10. 2026):** po úvodní kartě **přelet mapy** –
+kamera ukáže východ se štítkem „Východ“ a přeletí k líhni (asi 2,6–4,4 s,
+čas mise mezitím stojí). Klepnutí, klávesa nebo Zpět přelet přeskočí;
+restart, obnovená mise ani ukázka ho neopakují, vypnout jde v Nastavení →
+Hra. Během hry ukazuje **šipka u okraje** směr k východu, když není
+v záběru.
+
 ---
 
 ## 5. Kampaň

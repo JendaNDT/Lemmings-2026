@@ -29,6 +29,7 @@ func _run() -> void:
 	(game.get_node("PaperWorld") as PaperWorld).camera.input_enabled = false
 	var hud: Hud = game.get_node("Hud")
 	hud.briefing.close()
+	game.call("_end_flyover")
 	_test_speed(game, hud)
 	_test_step(game, hud)
 	_test_rewind(game, hud)

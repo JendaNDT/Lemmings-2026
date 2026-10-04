@@ -55,6 +55,12 @@ func _first_day() -> void:
 	var hud: Hud = game.get_node("Hud")
 	_expect(hud.briefing.visible, "mise začíná úvodní kartou")
 	await _click(_find_button(hud, "Hrát"))
+	await _frames(12)
+	await _capture("03-prelet")
+	_expect(game.get("_flyover") and hud.flyover.visible, "po kartě začne přelet mapy")
+	await _click(hud.flyover)
+	_expect(not game.get("_flyover") and not game.get("_paused"),
+		"klepnutí přelet přeskočí a spustí misi")
 	await _frames(30)
 	await _capture("03-mise-1")
 	await _win_mission_one(game)
@@ -67,6 +73,7 @@ func _first_day() -> void:
 	_expect(sim.spec.title == "Schody na terasu", "tlačítko Další spustí misi 2")
 	await _capture("04-uvodni-karta-2")
 	await _click(_find_button(hud, "Hrát"))
+	await _click(hud.flyover)
 	# Kousek mise 2, pak pauzovací menu, nápověda a nastavení.
 	await _play(game, 120)
 	Input.parse_input_event(_key(KEY_ESCAPE))

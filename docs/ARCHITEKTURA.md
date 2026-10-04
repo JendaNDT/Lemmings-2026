@@ -240,6 +240,7 @@ App (main/app.gd)
 | `main/progress.gd` | `Progress`: splněné mise, rekordy (víc zachráněných, při shodě kratší čas), počty pokusů, poslední mise a rozehraný pokus. `user://progress.json`. |
 | `main/campaign.gd` | `Campaign`: pořadí misí, kapitoly, Hřiště, číslo mise z pořadí, prahy hvězd; údaje čte ze scén bez vytvoření. |
 | `ui/briefing_card.gd` | `BriefingCard`: úvodní karta mise (cíl, dovednosti s popisem, novinka, pásmo, hvězdy). |
+| `ui/flyover_hint.gd` | `FlyoverHint`: průhledná vrstva přeletu mapy; první klepnutí přelet přeskočí a nic nepřidělí. |
 | `ui/menu_screens.gd`, `ui/settings_panel.gd`, `ui/menu_backdrop.gd` | Obrazovky menu, nastavení (sdílené s pauzou ve hře) a pozadí. |
 | `ui/paper_ui.gd` | `PaperUi`: společný papírový vzhled HUDu i menu. |
 
@@ -298,6 +299,8 @@ a kameru (`screen_to_logic`, `logic_to_screen`, `pan_screen`, `zoom_at`).
 | `PaperForeground` | Nízké trsy rostlin u spodní lišty (rozostřené, blíž než herní rovina), kývají se ve větru; zprůhlední, když je za nimi postava, líheň nebo východ. Vstup nepřijímají. |
 | Světlo (`paper_light.gdshader`) | Přičítací vrstva: teplá záře slunce zleva shora a jemné paprsky, pomalu se posouvají s herním časem. |
 | Zrnitost (`paper_grain.gdshader`) | Násobící vrstva přes celou herní scénu pod HUDem: papírové žíhání, ztmavení rohů a chladnější strana odvrácená od slunce. |
+| `PaperFlyover` | Přelet mapy po úvodní kartě: kamera začne u východu (širší záběr), po 1,6 s přeletí s oddálením na startovní záběr u líhně. Řídí ho skutečný čas; simulace mezitím stojí na tiku 0. |
+| `PaperGuide` | Ukazatele v obrazovkových souřadnicích nad krajinou: štítek „Východ“ nad střechou při přeletu a odznak s domečkem u okraje herní plochy, když je východ mimo záběr. Polohy jen přes `PaperCamera`, vstup nepřijímá, roste s velikostí rozhraní. |
 
 **Přesnost terénu.** Hrana leží na izočáře 0,5 bilineárně interpolované
 masky (bez mipmap; rozmazané úrovně slouží jen ke stínům a okrajům). Šum trhaného okraje je omezený na ±0,4, takže střed každé buňky
@@ -325,7 +328,8 @@ Podklady jsou v `assets/origami/` s původem, licencí a manifestem
 
 - Zrychlení a pauza (hotovo), přidělování v pauze (hotovo).
 - Zvýraznění lumíka pod kurzorem + chytrý výběr (hotovo).
-- Přetáčení času o pár sekund zpět, okamžitý restart.
+- Přetáčení času o pár sekund zpět (hotovo, −5 s), okamžitý restart (hotovo).
+- Přelet mapy na začátku mise a šipka k východu mimo záběr (hotovo).
 - Replay vlastního řešení, sdílení řešení.
 - Výběr jen lumíků jdoucích doleva/doprava (jako v NeoLemmixu).
 - Minimapa, přiblížení/oddálení.

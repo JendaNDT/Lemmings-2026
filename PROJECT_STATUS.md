@@ -37,6 +37,11 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Přelet mapy:** po úvodní kartě kamera ukáže východ se štítkem
+  „Východ“ a přeletí k líhni (2,6–4,4 s, čas stojí); klepnutí, klávesa
+  nebo Zpět ho přeskočí, vypnout jde v Nastavení → Hra. Za hry ukazuje
+  **šipka u okraje** k východu mimo záběr (`PaperFlyover`, `PaperGuide`,
+  `FlyoverHint`, test `test_flyover`).
 - **Android APK 0.12.0** ve větvi `downloads/android-0.12.0` (versionCode
   13, stejný podpis): vzhled kapitol a přetočení o 5 s. Herní soubory z APK
   prošly průchodem menu a první mise každé kapitoly se spustila se svým

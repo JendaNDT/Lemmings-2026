@@ -35,6 +35,8 @@ var edge_scroll := true
 var scroll_speed := 1.0
 var tap_reach := TAP_REACHES[0]
 var confirm_nuke := true
+## Přelet mapy na začátku mise (od východu k líhni).
+var flyover := true
 ## Vývojová volba: všechny mise jsou hned dostupné.
 var unlock_all := false
 ## Jak dopadlo poslední načtení (SaveFile.Status) – pro testy a ladění.
@@ -77,7 +79,7 @@ func to_dict() -> Dictionary:
 			"ui_scale": ui_scale, "quality": int(quality)},
 		"controls": {"edge_scroll": edge_scroll, "scroll_speed": scroll_speed,
 			"tap_reach": tap_reach, "confirm_nuke": confirm_nuke},
-		"game": {"unlock_all": unlock_all},
+		"game": {"flyover": flyover, "unlock_all": unlock_all},
 	}
 
 
@@ -99,7 +101,9 @@ func from_dict(data: Dictionary) -> void:
 	scroll_speed = _choice(_number(controls, "scroll_speed", scroll_speed), SCROLL_SPEEDS)
 	tap_reach = _choice(_number(controls, "tap_reach", tap_reach), TAP_REACHES)
 	confirm_nuke = _bool(controls, "confirm_nuke", confirm_nuke)
-	unlock_all = _bool(_section(data, "game"), "unlock_all", unlock_all)
+	var game := _section(data, "game")
+	flyover = _bool(game, "flyover", flyover)
+	unlock_all = _bool(game, "unlock_all", unlock_all)
 
 
 ## Změna jedné hodnoty (z obrazovky nastavení); ohlásí ji signálem.
@@ -115,6 +119,7 @@ func set_value(key: String, value: Variant) -> void:
 		"scroll_speed": scroll_speed = _choice(float(value), SCROLL_SPEEDS)
 		"tap_reach": tap_reach = _choice(float(value), TAP_REACHES)
 		"confirm_nuke": confirm_nuke = bool(value)
+		"flyover": flyover = bool(value)
 		"unlock_all": unlock_all = bool(value)
 		_:
 			if not key.begins_with("volume_") or not volumes.has(key.trim_prefix("volume_")):

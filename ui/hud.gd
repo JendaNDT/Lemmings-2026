@@ -53,6 +53,8 @@ const SKILL_GAP := 6.0
 var settings: GameSettings
 ## Úvodní karta mise (otevírá ji hra na začátku mise).
 var briefing: BriefingCard
+## Vrstva přeletu mapy (ukazuje ji hra po úvodní kartě).
+var flyover: FlyoverHint
 ## Velikost rozhraní (1.0 = návrhová); lišty se zvětší, herní plocha zmenší.
 var ui_scale := 1.0
 var _sim: LevelSim
@@ -388,6 +390,8 @@ func _build() -> void:
 
 	_build_result()
 	_build_pause_menu()
+	flyover = FlyoverHint.new()
+	_root.add_child(flyover)
 	_build_briefing()
 	_build_confirmation()
 
