@@ -21,11 +21,11 @@ všech 20 misí**, všechny v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet APK 0.11.0 na telefonu** – aktualizuje 0.10.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.11.0/android/Lemmings-2026-Android-0.11.0.apk).
-   Zajímá mě: jestli jsou mise zábavné a srozumitelné, jestli obtížnost
-   roste plynule, jak se na telefonu hraje kapitola IV a jestli pomáhá
-   Krok, zpomalení a Ukázka řešení.
+1. **Vyzkoušet APK 0.12.0 na telefonu** – aktualizuje 0.11.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.12.0/android/Lemmings-2026-Android-0.12.0.apk).
+   Zajímá mě: jak se ti líbí vzhled kapitol (les, sopka, bouřka), jestli
+   déšť a jiskry nezpomalují telefon, jestli pomáhá −5 s, Krok, zpomalení
+   a Ukázka řešení a jestli obtížnost roste plynule.
    [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
@@ -37,6 +37,10 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.12.0** ve větvi `downloads/android-0.12.0` (versionCode
+  13, stejný podpis): vzhled kapitol a přetočení o 5 s. Herní soubory z APK
+  prošly průchodem menu a první mise každé kapitoly se spustila se svým
+  vzhledem.
 - **Vzhled kapitol:** II. Skalní les (skalní město, jedle, mech), III. Voda
   a oheň (sopky s kouřem, žhnoucí pukliny, jiskry), IV. Bouřková hora
   (bouřkové mraky, sněžné štíty, déšť, blesky); vlastní barvy terénu
