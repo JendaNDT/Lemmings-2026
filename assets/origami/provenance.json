@@ -12,9 +12,10 @@
     "scipy": "1.17.1"
   },
   "generator_sha256": {
-    "build_all.py": "11668cc2428f6b8112ba04ef53d7a8179fba14bfa9e86414021199d55bbcb201",
+    "build_all.py": "671b6b5a908cb7ce6ce94e8775a18703154bfa5d665907d314cb12ec21c6b6b0",
     "build_backgrounds.py": "948cfd7122929b00b8c7799f39bf1fe141746cc707b66b4b36d6120cb53c8365",
     "build_character.py": "b4547bc991f198c2e636f69506f424263727bcf3de944f7952f147353d0b739c",
+    "build_icon.py": "4eeaff54becbc7ffc2f801ed5a2f2253722028ed16fe07fdb0522a4e083eccec",
     "build_props.py": "f64534d859f114d5ed19358e512c93aafff0d6bedde28cca0c495faf1f07ced9",
     "build_themes.py": "ab93d2767ab792faa12e7a1fb3aadd37e9439a85001d462076f538dadb817db8",
     "build_ui.py": "f1313040ff18af98ad8ec5b06e6b83bc1089f6239574ea143b7e1b0bea9fefa1",
@@ -32,6 +33,7 @@
     "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
     "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",
     "ui": "papírové panely HUDu (9 dílů), 8 ikon dovedností a 2 ikony zvuku (SVG)",
+    "icon": "ikona aplikace Paperlings (postavička z dílů atlasu ve 3× rozlišení na papírovém kopci): PNG 1024/256, Android 192 a adaptivní 432 (pozadí a popředí), .ico a .icns",
     "source/previews": "kontaktní arch póz pro vizuální kontrolu (není ve hře)"
   },
   "limitations": [

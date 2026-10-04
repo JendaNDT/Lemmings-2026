@@ -16,6 +16,34 @@
       "sha256": "47d38c44b3efed7c47fa7deceb46b1d598386ad657c2b23312b6464a7abaf31d"
     },
     {
+      "path": "assets/origami/icon/android_192.png",
+      "sha256": "d9edc51ddce02bde28f133be394275974a0bf066a056e79f9f42d4fb91d0cf88"
+    },
+    {
+      "path": "assets/origami/icon/android_bg_432.png",
+      "sha256": "b5d8137a2ff13329ad609c963c7690f906f21a4311ca6663f1f167d3d93c44f7"
+    },
+    {
+      "path": "assets/origami/icon/android_fg_432.png",
+      "sha256": "825826de11498404a6344772acd855cf1a2d9b68aa8715d8fa93db8c1b73e303"
+    },
+    {
+      "path": "assets/origami/icon/icon_1024.png",
+      "sha256": "a4189d79953e40b4efcdb3d00d8d802a501bb6ca7ff9d9e02b200012f3d523a8"
+    },
+    {
+      "path": "assets/origami/icon/icon_256.png",
+      "sha256": "9378b68a97ec567789a8dab165fd0a0d8d72db9d6152df0ab426cd628144548b"
+    },
+    {
+      "path": "assets/origami/icon/paperlings.icns",
+      "sha256": "d6cdb3d04183fb93455ab5ab04d6b42f1d9fea110c96f5cdb7a979e581ce97e6"
+    },
+    {
+      "path": "assets/origami/icon/paperlings.ico",
+      "sha256": "a9203205d6a73ae880745201d064365f03364dae723ddbcdc063b1c3ca98234c"
+    },
+    {
       "path": "assets/origami/layers/bird_0.png",
       "sha256": "c680f3113a585ba8147cfa2f9e1bfc24d004470f26488ba129ebf3f8d7d0a26c"
     },
@@ -313,7 +341,7 @@
     },
     {
       "path": "assets/origami/provenance.json",
-      "sha256": "57264edc36f64a44bbf7511903bc499ef2f5c321e1305f36a72f5852da6dfdd2"
+      "sha256": "2d2750aac030da2554885b738a7960ab7325dc43e5cc0767e7e858e226e3ec2b"
     },
     {
       "path": "assets/origami/source/.gdignore",
@@ -321,7 +349,7 @@
     },
     {
       "path": "assets/origami/source/build_all.py",
-      "sha256": "11668cc2428f6b8112ba04ef53d7a8179fba14bfa9e86414021199d55bbcb201"
+      "sha256": "671b6b5a908cb7ce6ce94e8775a18703154bfa5d665907d314cb12ec21c6b6b0"
     },
     {
       "path": "assets/origami/source/build_backgrounds.py",
@@ -330,6 +358,10 @@
     {
       "path": "assets/origami/source/build_character.py",
       "sha256": "b4547bc991f198c2e636f69506f424263727bcf3de944f7952f147353d0b739c"
+    },
+    {
+      "path": "assets/origami/source/build_icon.py",
+      "sha256": "4eeaff54becbc7ffc2f801ed5a2f2253722028ed16fe07fdb0522a4e083eccec"
     },
     {
       "path": "assets/origami/source/build_props.py",

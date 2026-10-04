@@ -26,11 +26,12 @@ sys.path.insert(0, str(HERE))
 
 import build_backgrounds  # noqa: E402
 import build_character  # noqa: E402
+import build_icon  # noqa: E402
 import build_props  # noqa: E402
 import build_themes  # noqa: E402
 import build_ui  # noqa: E402
 
-GENERATED = ["layers", "paper", "props", "actor", "ui", "source/previews"]
+GENERATED = ["layers", "paper", "props", "actor", "ui", "icon", "source/previews"]
 
 
 def generate(out: Path) -> None:
@@ -39,6 +40,7 @@ def generate(out: Path) -> None:
     build_props.build(out)
     build_character.build(out)
     build_ui.build(out)
+    build_icon.build(out)
 
 
 def digest(path: Path) -> str:
@@ -88,6 +90,9 @@ def write_manifest() -> None:
             "props": "líheň (chatka, kůl, příčka žebříku, padací dvířka), východ (domek, vlajka)",
             "actor": "atlas dílů origami postavy, kostra, 13 animací a mapování stavů",
             "ui": "papírové panely HUDu (9 dílů), 8 ikon dovedností a 2 ikony zvuku (SVG)",
+            "icon": "ikona aplikace Paperlings (postavička z dílů atlasu ve 3× rozlišení "
+                    "na papírovém kopci): PNG 1024/256, Android 192 a adaptivní 432 "
+                    "(pozadí a popředí), .ico a .icns",
             "source/previews": "kontaktní arch póz pro vizuální kontrolu (není ve hře)",
         },
         "limitations": [
