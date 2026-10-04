@@ -1,0 +1,4 @@
+# SHA-256 otisk certifikátu testovacího podpisu Android APK (veřejný údaj, ne klíč).
+# APK od verze 0.5.0 se podepisují tímto klíčem, aby šla instalovat
+# jako aktualizace. Soukromý klíč do repozitáře nepatří.
+fdb924fa25c6dfec478caa66dd8ba03ec91909d475de240d9213a50f6681407f
