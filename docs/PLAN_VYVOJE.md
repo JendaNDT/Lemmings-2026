@@ -151,6 +151,11 @@ U každého levelu uchovávat alespoň jedno strojově přehratelné ověřené 
 
 **Podmínka dokončení:** lze dokončit celou kampaň, všechny levely mají ověřené řešení a obtížnost nemá nechtěné skoky.
 
+**Návrh (4. 10. 2026):** [herní design dokument](HERNI_DESIGN.md) – 20 misí
+ve 4 kapitolách (15 nových), měřitelný systém obtížnosti (index 0–100,
+pět pásem, hvězdy, pomocníci) a pořadí realizace. Měření obtížnosti
+z referenčních řešení je hotové (`scripts/difficulty_report.gd`).
+
 ## Etapa 10 — Pohodlí a betatest
 
 Doladit výběr v davu, zvýraznění cíle, vysvětlení nedostupných dovedností, zkratky a rychlé opakování pokusu. Podle testování doplnit výběr podle směru a minimapu.

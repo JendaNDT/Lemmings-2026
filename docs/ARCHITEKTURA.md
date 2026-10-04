@@ -181,6 +181,12 @@ nezničí. Pořadí kampaně určuje `main/campaign.gd` (`Campaign.SCENES`);
 název a počty si kampaň čte přímo ze scény. Chybějící id hlásí
 `LevelValidator` jako varování u kořene levelu.
 
+Obtížnost mise se měří, ne odhaduje: `LevelDifficulty`
+(`level_tools/level_difficulty.gd`) odehraje referenční řešení
+z `tests/reference_plans.gd` na čisté simulaci, změří rezervu, čas,
+zásahy a časové okno každého zásahu a spočítá index 0–100 a pásmo.
+Návrh kampaně a pravidla: [`HERNI_DESIGN.md`](HERNI_DESIGN.md).
+
 Později přibude: kusy terénu jako obrázky (z alfa kanálu se vyrobí
 maska), dekorace, světla a částice umístěné přímo ve scéně levelu.
 

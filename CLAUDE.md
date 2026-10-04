@@ -60,6 +60,10 @@
   nová položka nastavení potřebuje výchozí hodnotu a rozsah v `GameSettings`.
   Nová mise potřebuje jedinečné `level_id` (po vydání neměnit) a zařazení
   do `Campaign.SCENES`. Rozehraná mise se ukládá jen jako `replay_log` + tik.
+- Kampaň a obtížnost navrhuje `docs/HERNI_DESIGN.md`. Každá mise má
+  referenční řešení v `tests/reference_plans.gd`; její změřený index
+  (`scripts/difficulty_report.gd`, `LevelDifficulty`) musí ležet v cílovém
+  rozsahu z dokumentu. Po změně pravidel nebo misí report znovu spustit.
 - Mobilní ovládání je v `TouchControls`, profil v `DeviceProfile` a nastavení
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.

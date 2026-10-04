@@ -1,5 +1,5 @@
 # Lemmings 2026 – Project Status
-*Naposled aktualizováno: 03. 10. 2026*
+*Naposled aktualizováno: 04. 10. 2026*
 
 ## 🎯 Co to je
 Moderní předělávka hry Lemmings (1991) s grafikou odpovídající roku 2026.
@@ -12,31 +12,32 @@ také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**Etapa 6 je technicky hotová:** hlavní menu nad papírovou krajinou,
-výběr misí se zámky a rekordy, nastavení (zvuk, zobrazení, ovládání, hra),
-pauzovací menu (Menu / Esc / Zpět), výsledek s další misí a ukládání
-postupu i rozehrané mise (obnova přes replay). Průchod „spuštění → výhra →
-další den“ prošel automaticky. [Ověření etapy 6](docs/ETAPA_6_OVERENI.md).
+**Herní design dokument je hotový:** [docs/HERNI_DESIGN.md](docs/HERNI_DESIGN.md)
+– analýza hry, 19 slabých míst, měřitelný systém obtížnosti (index 0–100,
+pět pásem, hvězdy, pomocníci), kampaň 20 misí ve 4 kapitolách
+s 15 novými misemi a pořadí realizace. Změřená obtížnost dnešních misí:
+30 → 44 → 30 → 54 → 27 → 61 (křivka skáče).
 
-Etapa 5 (voda, láva, pasti, jednosměrné zdi, mise 6) a zvuky jsou hotové:
-[etapa 5](docs/ETAPA_5_OVERENI.md), [vzhled](docs/ORIGAMI_OVERENI.md),
-[zvuky](docs/ZVUK.md).
+Etapa 6 (menu, nastavení, ukládání) je technicky hotová:
+[ověření](docs/ETAPA_6_OVERENI.md). Etapa 5 a zvuky také.
 
 Další kroky:
-1. **Vyzkoušet APK 0.6.0 na telefonu** (menu, ukládání, origami, zvuky):
-   [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.6.0/android/Lemmings-2026-Android-0.6.0.apk).
-   Aktualizuje 0.5.0; všechny mise odemkne Nastavení → Hra; počítadlo FPS
-   je v Nastavení → Zobrazení. [Návod](docs/ANDROID_DEMO.md).
-2. **Vyzkoušet na Macu** (Godot 4.7.1: otevřít projekt, F5) – menu, mise 6,
-   zvuky a uložení postupu po novém spuštění.
-3. Poslechnout zvuky a doladit obtížnost mise 6 podle tvého názoru.
-4. Etapa 7 bod 5: nápověda pro nového hráče a další mise.
+1. **Přečíst herní design a rozhodnout** otázky v jeho kapitole 9
+   (struktura kampaně, hvězdy, Hřiště, názvy, 2.5D, podpisový klíč).
+2. **APK 0.6.0 nejde nainstalovat** – čekám na přesné znění hlášky;
+   nejspíš konflikt podpisu se starší verzí (odinstalovat a zkusit znovu).
+3. Pak etapa 9 podle dokumentu: nejdřív systémy kampaně (kapitoly,
+   hvězdy, úvodní karta mise), potom kapitola I s misemi N1–N3.
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Herní design a systém obtížnosti:** `docs/HERNI_DESIGN.md`;
+  `LevelDifficulty` (index z referenčního řešení, okna zásahů),
+  `ReferencePlans` (řešení všech misí), `scripts/difficulty_report.gd`,
+  test `tests/test_difficulty.gd`.
 - **Android APK 0.6.0** ve větvi `downloads/android-0.6.0`: menu, nastavení,
   ukládání, origami, mise 1–6, zvuky; versionCode 7, stejný testovací podpis
   jako 0.5.0. Herní soubory z APK prošly celým průchodem menu v Linuxu.
@@ -175,6 +176,11 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - Editor levelů ve hře
 
 ## 🐛 Známé bugy
+- APK 0.6.0 podle autora nejde nainstalovat (4. 10.). Soubor je ověřený
+  (podpis, manifest, stažení z GitHubu); čeká se na znění hlášky.
+  Nejpravděpodobnější příčina: nainstalovaná 0.4.0 s jiným podpisem.
+- Testovací podpisový klíč Androidu není uložený trvale – nové cloudové
+  prostředí vytvoří jiný a aktualizace přes starou verzi selže.
 - 2.5D porovnávací scéna nekreslí vodu, lávu ani pasti (jen nespadne).
 - Origami grafika zatím neběžela na Macu ani Androidu; výkon na skutečné
   GPU není změřený (cloud kreslí softwarově, ~0,2 s na snímek).
@@ -243,6 +249,8 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - `main/save_file.gd`, `main/game_settings.gd`, `main/progress.gd`, `main/campaign.gd` –
   bezpečné ukládání, nastavení, postup a pořadí misí
 - `ui/menu_screens.gd`, `ui/settings_panel.gd`, `ui/menu_backdrop.gd`, `ui/paper_ui.gd` – menu
+- `docs/HERNI_DESIGN.md`, `level_tools/level_difficulty.gd`, `tests/reference_plans.gd`,
+  `scripts/difficulty_report.gd` – herní design a měření obtížnosti
 - `tests/test_save.gd`, `tests/test_menu.gd`, `scripts/qa_menu.gd`,
   `docs/ETAPA_6_OVERENI.md` – ověření etapy 6
 - `view/terrain.gdshader` – vzhled terénu

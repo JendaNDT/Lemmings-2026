@@ -4,7 +4,8 @@ Moderní předělávka klasické hry Lemmings (1991) v enginu Godot.
 
 Architektura: [`docs/ARCHITEKTURA.md`](docs/ARCHITEKTURA.md) ·
 Stav projektu: [`PROJECT_STATUS.md`](PROJECT_STATUS.md) ·
-Plán vývoje: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md)
+Plán vývoje: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md) ·
+Herní design: [`docs/HERNI_DESIGN.md`](docs/HERNI_DESIGN.md)
 
 ## Novinka: menu, nastavení a ukládání postupu (etapa 6)
 
