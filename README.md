@@ -7,22 +7,22 @@ Stav projektu: [`PROJECT_STATUS.md`](PROJECT_STATUS.md) ·
 Plán vývoje: [`docs/PLAN_VYVOJE.md`](docs/PLAN_VYVOJE.md) ·
 Herní design: [`docs/HERNI_DESIGN.md`](docs/HERNI_DESIGN.md)
 
-## Novinka: menu, nastavení a ukládání postupu (etapa 6)
+## Novinka: kampaň s kapitolami a hvězdami
 
-Hra startuje **hlavním menu** nad papírovou krajinou: *Začít hrát /
-Pokračovat*, *Mise* (výběr se zámky – další mise se otevře po splnění
-předchozí), *Nastavení* (hlasitosti, velikost rozhraní, kvalita efektů,
-ovládání). Ve hře je tlačítko **Menu** (nebo **Esc**, na Androidu **Zpět**)
-s pauzou, nastavením a návratem do menu. Výsledek mise nabídne
-**další misi**. Splněné mise, rekordy a nastavení se ukládají; rozehraná
-mise se při odchodu uloží a **Pokračovat** ji obnoví přesně tam, kde jsi
-skončil (i druhý den).
+Hra startuje **hlavním menu** nad papírovou krajinou. **Mise** jsou
+rozdělené do kapitol (I. Papírová louka, II. Skalní les, III. Voda a oheň)
+a odemykají se postupně; **Hřiště** se všemi dovednostmi se otevře
+po kapitole I. Každá mise začne **úvodní kartou** (cíl, dovednosti
+s popisem, co je nového, obtížnost) a za výsledek dostaneš **1–3 hvězdy**.
+V pauze (tlačítko **Menu**, **Esc**, na Androidu **Zpět**) je **nápověda**,
+nastavení a návrat do menu. Postup, hvězdy a rozehraná mise se ukládají.
 
-![Hlavní menu](docs/images/etapa6-hlavni-menu.jpg)
+![Výběr misí, úvodní karta, výsledek a pauza s nápovědou](docs/images/kampan-kapitola-1.jpg)
 
-![Výběr misí, výsledek, pauza a nastavení](docs/images/etapa6-obrazovky.jpg)
-
-Popis a ověření: [`docs/ETAPA_6_OVERENI.md`](docs/ETAPA_6_OVERENI.md).
+Návrh celé kampaně (20 misí) a systém obtížnosti:
+[`docs/HERNI_DESIGN.md`](docs/HERNI_DESIGN.md) · stav a ověření:
+[`docs/ETAPA_9_OVERENI.md`](docs/ETAPA_9_OVERENI.md) · menu a ukládání:
+[`docs/ETAPA_6_OVERENI.md`](docs/ETAPA_6_OVERENI.md).
 
 ## Výchozí zobrazení — 2D origami
 
@@ -69,18 +69,16 @@ Výchozí scéna je `main/game_origami.tscn`.
 
 ## Testovací verze pro Android
 
-[**Stáhnout Android APK 0.6.0 (66 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.6.0/android/Lemmings-2026-Android-0.6.0.apk)
+[**Stáhnout Android APK 0.7.0 (61 MiB)**](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.7.0/android/Lemmings-2026-Android-0.7.0.apk)
 
 Instalátor, návod a kontrolní součet jsou v samostatné
-[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.6.0).
+[větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-0.7.0).
 
-APK `Lemmings-2026-Android-0.6.0.apk` má hlavní menu, výběr misí,
-nastavení a ukládání postupu, origami grafiku, šest misí a zvuky.
-Je určené pro telefony a tablety s Androidem 7.0+ a OpenGL ES 3.0,
-včetně 32bitového a 64bitového ARM. Stáhni APK přímo na zařízení a otevři
-jej; případné povolení instalace se týká aplikace, ze které soubor otevíráš.
-Verzi 0.5.0 přímo aktualizuje; **0.4.0 a starší nejdřív odinstaluj**
-(jiný testovací podpis). Všechny mise hned odemkneš v Nastavení → Hra.
+APK 0.7.0 má kampaň s kapitolami, hvězdami, úvodními kartami a nápovědou,
+nové výukové mise kapitoly I, Hřiště, menu a ukládání, origami grafiku
+a zvuky. Je určené pro Android 7.0+ s OpenGL ES 3.0 (32bitový
+i 64bitový ARM). Verzi 0.5.0 a 0.6.0 přímo aktualizuje (stejný testovací
+podpis); 0.4.0 a starší nejdřív odinstaluj.
 
 Hraje se na šířku. Klepni na dovednost a potom na postavu, jedním prstem
 posouvej scénu a dvěma prsty přibližuj. Tlačítko Zpět otevře pauzovací
@@ -92,7 +90,8 @@ herních souborů z APK v cloudu jsou ověřené; instalace a výkon přímo
 na Androidu zatím ne. Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 
 Pro opakování exportu nastav v editoru Godotu Android SDK a Java SDK,
-nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`.
+nainstaluj šablony Godotu 4.7 a spusť `bash scripts/export_android.sh`
+(ověří, že APK má stejný podpis jako předchozí verze).
 
 ## Starší verze
 
@@ -200,8 +199,8 @@ kontrolní průchod jsou v [`docs/ETAPA_3_OVERENI.md`](docs/ETAPA_3_OVERENI.md).
 | Zrychlení 3× | **F** |
 | Vypouštění pomaleji / rychleji | **−** / **=** (nebo na numerické klávesnici) |
 | Restart levelu | **R** |
-| Menu (pauza, nastavení, výběr misí) | **Esc**, tlačítko **Menu** vlevo dole, na Androidu **Zpět** |
-| Hromadné ukončení | **N** nebo **Ukončit**, poté potvrzení; **Esc** zruší dialog |
+| Menu (pauza, nápověda, nastavení, výběr misí) | **Esc**, tlačítko **Menu** vlevo dole, na Androidu **Zpět** |
+| Odpálit vše (hromadné ukončení) | **N** nebo **Odpálit vše**, poté potvrzení; **Esc** zruší dialog |
 | Stop-motion ↔ plynulý pohyb postav (jen vzhled) | **M** |
 | Zvuk zapnout / ztlumit | **T** nebo tlačítko s reproduktorem v dolní liště |
 

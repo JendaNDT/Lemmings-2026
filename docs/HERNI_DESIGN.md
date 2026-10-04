@@ -1,6 +1,7 @@
 # Lemmings 2026 – herní design dokument
 
-Verze 1.0 · 4. 10. 2026 · stav: **návrh ke schválení autorem**
+Verze 1.1 · 4. 10. 2026 · stav: **schváleno autorem, realizuje se**
+([kroky 1–2 hotové](ETAPA_9_OVERENI.md))
 
 Dokument popisuje, co hra umí dnes, kde má slabá místa, navrhuje kampaň
 o 20 misích (15 nových) a systém obtížnosti, který se dá změřit.
@@ -399,7 +400,7 @@ Jeden dílek = 4 body indexu.
 |---|---|---|---|
 | Šikmý tunel | 6 / 6, mapa z obdélníků | 8 lumíků, cíl 6, nakreslit krajinu | rezerva pro pásmo Lehká |
 | Lezec a padák | 6 / 6, lezci 6, padáky 6 | 8 lumíků, cíl 6, lezci 10, padáky 10, krajina | nulová rezerva i zásoba (index 44 → ~30) |
-| První kroky | cíl 10 / 20 | cíl 14 / 20, nápovědy | jako zkouška kapitoly I (30 → ~38) |
+| První kroky | cíl 10 / 20 | cíl 13 / 20, nápovědy | jako zkouška kapitoly I (30 → 38) |
 | Cesta skrz zeď | 4 / 3, bombič 1 | 12 lumíků, cíl 9, bombič 2, krajina | 4 lumíci působí prázdně; druhá šance |
 | Všech osm dovedností | mise 5 | Hřiště mimo kampaň | pískoviště nemá být v řetězu |
 | Všechny | čísla v názvech | číslo z pořadí kampaně | přeřazení bez přejmenování |
@@ -433,11 +434,12 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 ████████████████
 ```
 
-- **Mapa:** louka (y 70–110) přes celou šířku, pod ní jeskyně s podlahou
-  y 150 a východem. Líheň 25 px nad loukou.
+- **Mapa:** louka (tloušťka 30 px) přes celou šířku, pod ní jeskyně
+  s podlahou 55 px pod povrchem a východem. Líheň 25 px nad loukou.
 - **Bez zásahu:** lumíci chodí sem a tam, nikdo neumře, čas vyprší.
-- **Řešení:** kopáč kdekoli na louce; 40 px kopání ≈ 5 s, pád do jeskyně
-  40 px je bezpečný, ostatní propadnou dírou.
+- **Řešení:** kopáč kdekoli na louce; 30 px kopání ≈ 3,5 s. Ostatní
+  propadnou dírou z povrchu až na dno jeskyně (55 px) – proto musí být
+  jeskyně mělčí než 60 px pod povrchem.
 - **Nápověda:** „Východ je pod zemí.“ → zvýraznit Kopáče → ukázka.
 
 ### N2 · Schody na terasu
@@ -478,10 +480,11 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 ███████████████
 ```
 
-- **Mapa:** plošina (tloušťka 40 px) končí vpravo srázem pod okraj mapy.
-  Pod plošinou jeskyně s východem vlevo. Líheň je jen 80 px od srázu.
+- **Mapa:** plošina (tloušťka 30 px) končí vpravo srázem pod okraj mapy.
+  Pod plošinou jeskyně s východem vlevo, dno 52 px pod povrchem.
+  Líheň je jen 80 px od srázu.
 - **Klíčová čísla:** první lumík je u srázu za ≈ 4,7 s, prokopání trvá
-  také ≈ 4,7 s – bez blokaře jich několik spadne.
+  ≈ 3,5 s – bez blokaře jich několik spadne.
 - **Bez zásahu:** všichni spadnou ze srázu.
 - **Řešení:** blokař mezi líhní a srázem, kopáč vlevo od něj; dav propadne
   do jeskyně. Blokař zůstane nahoře (proto mistrovský výsledek 14).
@@ -786,16 +789,17 @@ dekorace → tvoje hraní.
 
 ---
 
-## 9. Rozhodnutí pro autora
+## 9. Rozhodnutí autora (4. 10. 2026)
 
-1. **Struktura kampaně:** souhlasíš se 4 kapitolami a s tím, že První
-   kroky se přesunou na konec kapitoly I a nové výukové mise půjdou před ně?
-2. **Hvězdy:** chceš hodnocení 1–3 hvězdami?
-3. **Hřiště** mimo kampaň – ano?
-4. **Názvy misí** a kapitol – líbí se, nebo navrhneš vlastní?
-5. **2.5D zobrazení** – můžeme ho vyřadit a ušetřit údržbu?
-6. **Podpisový klíč Androidu** – chceš ho uložit natrvalo, aby šly
-   aktualizace bez ztráty postupu?
+Autor schválil všech šest bodů: strukturu kampaně a přesun Prvních kroků
+na konec kapitoly I, hvězdy, Hřiště mimo kampaň, názvy misí a kapitol,
+vyřazení 2.5D zobrazení a trvalé uložení podpisového klíče Androidu.
+
+**Stav realizace:** kroky 1 (systémy kampaně) a 2 (kapitola I) jsou hotové,
+2.5D je vyřazené, export hlídá stálý podpis
+([ověření](ETAPA_9_OVERENI.md)). Změřené indexy kapitoly I: 15, 14, 18,
+23, 32, 38. Při stavbě se upravily rozměry N1 a N3 (mělčí jeskyně – pád
+z povrchu musí být pod 60 px) a cíl Prvních kroků na 13 z 20.
 
 ---
 

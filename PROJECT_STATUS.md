@@ -12,28 +12,39 @@ také testovací APK pro Android, do budoucna Windows.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
-**Herní design dokument je hotový:** [docs/HERNI_DESIGN.md](docs/HERNI_DESIGN.md)
-– analýza hry, 19 slabých míst, měřitelný systém obtížnosti (index 0–100,
-pět pásem, hvězdy, pomocníci), kampaň 20 misí ve 4 kapitolách
-s 15 novými misemi a pořadí realizace. Změřená obtížnost dnešních misí:
-30 → 44 → 30 → 54 → 27 → 61 (křivka skáče).
-
-Etapa 6 (menu, nastavení, ukládání) je technicky hotová:
-[ověření](docs/ETAPA_6_OVERENI.md). Etapa 5 a zvuky také.
+**Kampaň se staví podle schváleného [herního designu](docs/HERNI_DESIGN.md).**
+Hotové: kapitoly, hvězdy, úvodní karta mise, nápověda, Hřiště
+a kapitola I se šesti misemi (3 nové, 3 upravené) – obtížnost změřená
+v cílových pásmech 15 → 14 → 18 → 23 → 32 → 38. 2.5D zobrazení je
+vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Přečíst herní design a rozhodnout** otázky v jeho kapitole 9
-   (struktura kampaně, hvězdy, Hřiště, názvy, 2.5D, podpisový klíč).
-2. **APK 0.6.0 nejde nainstalovat** – čekám na přesné znění hlášky;
-   nejspíš konflikt podpisu se starší verzí (odinstalovat a zkusit znovu).
-3. Pak etapa 9 podle dokumentu: nejdřív systémy kampaně (kapitoly,
-   hvězdy, úvodní karta mise), potom kapitola I s misemi N1–N3.
+1. **Vyzkoušet APK 0.7.0 na telefonu** – aktualizuje 0.6.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.7.0/android/Lemmings-2026-Android-0.7.0.apk).
+   Zajímá mě: čitelnost úvodní karty, jestli jsou první mise opravdu
+   snadné a jestli hvězdy motivují. [Návod](docs/ANDROID_DEMO.md).
+2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
+   jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
+   rozhodnutí (viz Známé bugy).
+3. Kapitola II (mise N4–N7: Ocelové kořeny, Propadlo, Dlouhá lávka,
+   Mlýnský spěch), pak III a IV a pomocníci (krok o tik, zpomalení,
+   ukázka řešení).
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Etapa 9, kroky 1–2:** `Campaign` s kapitolami a Hřištěm, číslo mise
+  z pořadí, hvězdy (★★★ = referenční řešení), tolerantní odemykání,
+  `BriefingCard`, nápověda v pauze a po neúspěších, „Odpálit vše“;
+  mise Díra v louce, Schody na terasu, Hlídka u srázu + úpravy Šikmého
+  tunelu, Lezce a padáku, Prvních kroků a Cesty skrz zeď. Kontrola:
+  76 GDScriptů, 13 sad, 380 kontrol.
+- **Vyřazení 2.5D:** scéna, `view/clay_*`, `assets/clay`, 3D model a testy
+  pryč; písmo v `assets/fonts/`; APK o 5 MB menší.
+- **Android APK 0.7.0** ve větvi `downloads/android-0.7.0`; export ověřuje
+  stálý podpis (`scripts/android_signing.txt`).
 - **Herní design a systém obtížnosti:** `docs/HERNI_DESIGN.md`;
   `LevelDifficulty` (index z referenčního řešení, okna zásahů),
   `ReferencePlans` (řešení všech misí), `scripts/difficulty_report.gd`,
@@ -176,11 +187,11 @@ Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odlo�
 - Editor levelů ve hře
 
 ## 🐛 Známé bugy
-- APK 0.6.0 podle autora nejde nainstalovat (4. 10.). Soubor je ověřený
-  (podpis, manifest, stažení z GitHubu); čeká se na znění hlášky.
-  Nejpravděpodobnější příčina: nainstalovaná 0.4.0 s jiným podpisem.
-- Testovací podpisový klíč Androidu není uložený trvale – nové cloudové
-  prostředí vytvoří jiný a aktualizace přes starou verzi selže.
+- Testovací podpisový klíč Androidu žije jen v tomto cloudovém prostředí.
+  Export teď s jiným klíčem skončí chybou (žádné tiché „nejde nainstalovat“),
+  ale až prostředí zanikne, další APK půjde nainstalovat jen po odinstalaci.
+  Vynesení klíče do souboru pro uložení zastavila bezpečnostní kontrola
+  prostředí – čeká na rozhodnutí autora.
 - Origami grafika zatím neběžela na Macu ani Androidu; výkon na skutečné
   GPU není změřený (cloud kreslí softwarově, ~0,2 s na snímek).
 - Proti mockupu je generovaná krajina jednodušší a postavy jsou při

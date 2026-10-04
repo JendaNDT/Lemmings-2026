@@ -238,7 +238,8 @@ App (main/app.gd)
 | `main/save_file.gd` | `SaveFile`: bezpečný zápis. Dva řádky – hlavička (hra, verze formátu, SHA-256 dat) a data v JSON. Zápis jde do `.tmp`, ten se ověří, předchozí platná verze se zkopíruje do `.bak` a teprve pak se `.tmp` přejmenuje. Poškozený soubor se odloží jako `.corrupt` a načte se záloha. |
 | `main/game_settings.gd` | `GameSettings`: hlasitosti sběrnic, ztlumení, celá obrazovka, pohyb postav, FPS, velikost rozhraní, kvalita efektů, posun kamery, dosah klepnutí, potvrzení Ukončit, vývojové odemčení misí. Každá hodnota má výchozí stav a povolený rozsah. `user://settings.json`. |
 | `main/progress.gd` | `Progress`: splněné mise, rekordy (víc zachráněných, při shodě kratší čas), počty pokusů, poslední mise a rozehraný pokus. `user://progress.json`. |
-| `main/campaign.gd` | `Campaign`: pořadí misí a jejich údaje čtené ze scén bez vytvoření. |
+| `main/campaign.gd` | `Campaign`: pořadí misí, kapitoly, Hřiště, číslo mise z pořadí, prahy hvězd; údaje čte ze scén bez vytvoření. |
+| `ui/briefing_card.gd` | `BriefingCard`: úvodní karta mise (cíl, dovednosti s popisem, novinka, pásmo, hvězdy). |
 | `ui/menu_screens.gd`, `ui/settings_panel.gd`, `ui/menu_backdrop.gd` | Obrazovky menu, nastavení (sdílené s pauzou ve hře) a pozadí. |
 | `ui/paper_ui.gd` | `PaperUi`: společný papírový vzhled HUDu i menu. |
 
@@ -252,6 +253,10 @@ okna. Obnovená mise začne v pauze.
 **Změna formátu:** každý soubor nese verzi. Neznámé nebo poškozené položky
 se nahradí výchozími; soubor z novější verze hry se před přepsáním
 odloží vedle (`.v2`…). Starší `settings.cfg` (jen ztlumení) se převezme.
+
+Mise nese v Inspectoru (skupina Kampaň) mistrovský výsledek (★★★),
+změřený index obtížnosti, štítek „Nové“, úvod a nápovědy. Odemyká se vše
+do nejdál splněné mise + 1, takže vložená mise hráče nezamkne.
 
 Hra dostane `settings` a `progress` od `App`; spuštěná samostatně (editor,
 testy) má výchozí nastavení a postup jen v paměti, nic nezapisuje.

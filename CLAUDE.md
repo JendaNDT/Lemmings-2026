@@ -65,6 +65,12 @@
   referenční řešení v `tests/reference_plans.gd`; její změřený index
   (`scripts/difficulty_report.gd`, `LevelDifficulty`) musí ležet v cílovém
   rozsahu z dokumentu. Po změně pravidel nebo misí report znovu spustit.
+  Mise nese `master_saved` (výsledek referenčního řešení = ★★★),
+  `difficulty_index`, úvod a nápovědy; report hlídá shodu s měřením.
+  Pád z povrchu do jeskyně musí být pod 60 px (jinak lumíci zemřou).
+- APK se exportuje jen přes `scripts/export_android.sh`; podpis musí
+  odpovídat otisku ve `scripts/android_signing.txt` (aktualizace přes
+  starší verzi). Klíč nikdy neukládat do repozitáře.
 - Mobilní ovládání je v `TouchControls`, profil v `DeviceProfile` a nastavení
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.
