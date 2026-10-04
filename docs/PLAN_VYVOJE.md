@@ -157,9 +157,10 @@ pět pásem, hvězdy, pomocníci) a pořadí realizace. Měření obtížnosti
 z referenčních řešení je hotové (`scripts/difficulty_report.gd`).
 
 **Stav (4. 10. 2026):** autor návrh schválil. Hotové jsou systémy kampaně
-(kapitoly, hvězdy, úvodní karta, nápověda, Hřiště) a kapitola I se šesti
-misemi v cílových pásmech; [ověření](ETAPA_9_OVERENI.md). Další: kapitoly
-II–IV (mise N4–N15) a pomocníci.
+(kapitoly, hvězdy, úvodní karta, nápověda, Hřiště), kapitola I se šesti
+misemi a kapitola II s pěti misemi (N4–N7 + Cesta skrz zeď), vše
+v cílových pásmech; [ověření](ETAPA_9_OVERENI.md). Další: kapitoly
+III–IV (mise N8–N15) a pomocníci.
 
 ## Etapa 10 — Pohodlí a betatest
 

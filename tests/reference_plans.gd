@@ -23,6 +23,14 @@ static func plan_for(id: String) -> Callable:
 			return _miner
 		"cesta-skrz-zed":
 			return _bomber
+		"ocelove-koreny":
+			return _steel_roots
+		"propadlo":
+			return _trapdoor
+		"dlouha-lavka":
+			return _long_bridge
+		"mlynsky-spech":
+			return _mill_rush
 		"voda-lava-past":
 			return _hazards
 	return Callable()
@@ -119,3 +127,66 @@ static func _hazards(sim: LevelSim, s: Dictionary) -> void:
 				if sim.assign_skill(lem, Lemming.Skill.BASHER):
 					s["bash"] = sim.tick_count
 				break
+
+
+## Razič u hliněného kmene (x = 145), za ním kopáč do jeskyně (x = 240).
+static func _steel_roots(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER or lem.dir != 1:
+			continue
+		if not s.get("bashed", false) and lem.x == 145:
+			s["bashed"] = sim.assign_skill(lem, Lemming.Skill.BASHER)
+		elif s.get("bashed", false) and not s.get("dug", false) and lem.x == 240:
+			s["dug"] = sim.assign_skill(lem, Lemming.Skill.DIGGER)
+
+
+## Bomba prvnímu lumíkovi hned po dopadu; v jeskyni stavitel před stupněm.
+static func _trapdoor(sim: LevelSim, s: Dictionary) -> void:
+	if sim.lemmings.is_empty():
+		return
+	var first := sim.lemmings[0]
+	if not s.get("bomb", false) and first.state == Lemming.State.WALKER:
+		s["bomb"] = sim.assign_skill(first, Lemming.Skill.BOMBER)
+	for lem in sim.lemmings:
+		if not s.get("built", false) and not lem.removed and lem.state == Lemming.State.WALKER \
+				and lem.dir == 1 and lem.y == 130 and lem.x == 236:
+			s["built"] = sim.assign_skill(lem, Lemming.Skill.BUILDER)
+
+
+## Lezec přeleze ohrádku, postaví dvoje schody přes propast (druhé při
+## pokrčení ramen) a po dokončení razič otevře ohrádku zevnitř.
+static func _long_bridge(sim: LevelSim, s: Dictionary) -> void:
+	if sim.lemmings.is_empty():
+		return
+	var hero := sim.lemmings[0]
+	if not s.has("climb") and not hero.removed:
+		if sim.assign_skill(hero, Lemming.Skill.CLIMBER):
+			s["climb"] = sim.tick_count
+	elif not s.has("b1") and hero.state == Lemming.State.WALKER and hero.dir == 1 \
+			and hero.x == 214 and hero.y == 120:
+		if sim.assign_skill(hero, Lemming.Skill.BUILDER):
+			s["b1"] = sim.tick_count
+	elif s.has("b1") and not s.has("b2") and hero.state == Lemming.State.SHRUGGING:
+		if sim.assign_skill(hero, Lemming.Skill.BUILDER):
+			s["b2"] = sim.tick_count
+	elif s.has("b2") and not s.has("bash") and hero.state != Lemming.State.BUILDER:
+		for lem in sim.lemmings:
+			if lem.id != 0 and not lem.removed and lem.state == Lemming.State.WALKER \
+					and lem.dir == 1 and lem.x >= 142 and lem.x <= 146:
+				if sim.assign_skill(lem, Lemming.Skill.BASHER):
+					s["bash"] = sim.tick_count
+				break
+
+
+## Razič prorazí hráz, hned potom vypouštění na 99, stavitel před stupněm k mlýnu.
+static func _mill_rush(sim: LevelSim, s: Dictionary) -> void:
+	if s.get("bashed", false) and not s.get("fast", false):
+		s["fast"] = sim.change_release_rate(SimConst.MAX_RELEASE_RATE - sim.release_rate)
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER or lem.dir != 1:
+			continue
+		if not s.get("bashed", false) and lem.x == 195:
+			s["bashed"] = sim.assign_skill(lem, Lemming.Skill.BASHER)
+		elif not s.get("built", false) and lem.x == 370 and lem.y == 120:
+			s["built"] = sim.assign_skill(lem, Lemming.Skill.BUILDER)
+

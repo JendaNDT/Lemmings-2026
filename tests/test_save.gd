@@ -143,7 +143,7 @@ func _test_campaign() -> void:
 		level.free()
 	check(ok, "každá mise má jedinečné id, mistrovský výsledek nad cílem, úvod a nápovědu; "
 		+ "kampaň čte údaje přímo ze scén")
-	check(Campaign.index_of("voda-lava-past") == 7 and Campaign.index_of("neexistuje") == -1,
+	check(Campaign.index_of("voda-lava-past") == 11 and Campaign.index_of("neexistuje") == -1,
 		"mise se dohledá podle identifikátoru")
 	var covered := 0
 	for c in Campaign.CHAPTERS.size():

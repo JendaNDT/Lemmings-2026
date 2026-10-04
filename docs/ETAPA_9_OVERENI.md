@@ -1,9 +1,9 @@
-# Etapa 9 – kampaň: systémy a kapitola I
+# Etapa 9 – kampaň: systémy, kapitola I a II
 
 4. října 2026. Podle schváleného [herního designu](HERNI_DESIGN.md)
-(autor odsouhlasil všech šest rozhodnutí) jsou hotové kroky 1 a 2 plánu
-realizace: systémy kampaně a kapitola I. Zároveň bylo vyřazeno 2.5D
-zobrazení a export Androidu hlídá stálý podpis.
+(autor odsouhlasil všech šest rozhodnutí) jsou hotové kroky 1, 2 a 4 plánu
+realizace: systémy kampaně, kapitola I a kapitola II. Zároveň bylo
+vyřazeno 2.5D zobrazení a export Androidu hlídá stálý podpis.
 
 ![Výběr misí po kapitolách, úvodní karta, výsledek s hvězdami a pauza s nápovědou](images/kampan-kapitola-1.jpg)
 
@@ -56,6 +56,37 @@ smrtelné) – jeskyně je proto mělčí (pád 55 a 52 px). Šikmý tunel měl
 v prvním náčrtu sráz se schůdky, které šly sejít bez zásahu – sráz je
 svislý. První kroky mají cíl 13 místo 14, aby zůstaly v pásmu Lehká.
 
+## Kapitola II – Skalní les
+
+Čtyři nové mise (N4–N7) a upravená Cesta skrz zeď. Snímky jsou ze
+skutečné hry během referenčního řešení:
+
+![Propadlo, Ocelové kořeny, Dlouhá lávka a Mlýnský spěch](images/kampan-kapitola-2.jpg)
+
+| # | Mise | Lumíci / cíl | Hvězdy | Učí | Index | Pásmo | Cíl z designu |
+|---|---|---|---|---|---|---|---|
+| 7 | Propadlo | 10 / 7 | 7 / 8 / 9 | bomba otevře podlahu | 33 | Lehká | 30–38 |
+| 8 | Ocelové kořeny | 20 / 13 | 13 / 17 / 20 | razič, ocel ho zastaví | 36 | Lehká | 32–39 |
+| 9 | Cesta skrz zeď | 12 / 9 | 9 / 10 / 11 | blokař + bomba | 42 | Střední | 38–45 |
+| 10 | Dlouhá lávka | 20 / 15 | 15 / 18 / 20 | dva stavitelé v řadě | 51 | Střední | 45–52 |
+| 11 | Mlýnský spěch | 40 / 34 | 34 / 37 / 40 | rychlost vypouštění, čas | 55 | Střední | 50–56 |
+
+Celá křivka kampaně: 15 → 14 → 18 → 23 → 32 → 38 | 33 → 36 → 42 → 51 → 55
+| 61. Začátek kapitoly II je záměrně o kousek lehčí než finále kapitoly I
+(nová kapitola = nádech). Každá mise má úvod, štítek „Nové“ a dvě nápovědy.
+
+**Co měření při stavbě odhalilo:**
+- **Razič** musí začít do 8 px od zdi, takže okno pro jeho přidělení je
+  vždy nejvýš 8 tiků. Pravidlo pásma Lehká je proto okno ≥ 8 tiků
+  (v designu bylo 9) a Ocelové kořeny se prohodily s Propadlem.
+- **Škvíra pod předměty:** zeď ohrádky v Dlouhé lávce končila 1 px nad
+  zemí a lumíci pod ní prošli. Zdi, kmeny a hráze jsou teď zapuštěné
+  do terénu (pravidlo v `CLAUDE.md`).
+- **Mlýnský spěch** při limitu 2:00 šel splnit i bez zvýšení vypouštění –
+  limit je 1:50. Bez zásahu nikdo nedojde.
+- Ocelové kořeny mají cíl 13 (při 15 byl index mimo pásmo), Dlouhá lávka
+  propast 40 px a cíl 15.
+
 ## Vyřazení 2.5D
 
 Smazána scéna `main/game_3d.tscn`, `view/clay_*`, podklady
@@ -76,7 +107,8 @@ cloudovém prostředí – trvalé uložení mimo něj čeká na rozhodnutí aut
 
 - `python scripts/check.py`: **76 GDScriptů, 13 sad, 380 kontrol, vše
   v pořádku** (bez 3D sad; nové kontroly kampaně, hvězd, odemykání,
-  úvodní karty a Hřiště).
+  úvodní karty a Hřiště). Po kapitole II znovu: 380 kontrol v pořádku
+  (testy procházejí všechny mise kampaně, takže pokryjí i nové).
 - `tests/test_save.gd` (44): kapitoly navazují, číslování, Hřiště mimo
   kampaň, prahy hvězd, odemykání po vložení misí, Hřiště po kapitole I,
   každá mise má úvod, nápovědu a mistrovský výsledek nad cílem.
@@ -85,14 +117,15 @@ cloudovém prostředí – trvalé uložení mimo něj čeká na rozhodnutí aut
   odchod s rozehraným pokusem, „další den“, Hřiště, Zpět.
 - `tests/test_difficulty.gd`: každá mise kampaně má referenční řešení,
   vyhraje a zachrání přesně mistrovský výsledek.
-- `scripts/difficulty_report.gd`: všech 8 misí v cílovém pásmu, index
-  zapsaný v misi odpovídá měření.
+- `scripts/difficulty_report.gd`: všech 12 misí v cílovém pásmu, index
+  zapsaný v misi odpovídá měření, žádná nejde vyhrát bez zásahu.
 - Grafický průchod `scripts/qa_menu.gd` na počítači i v dotykovém profilu
   a znovu **nad herními soubory vytaženými z APK 0.7.0**.
 
 ## Meze
 
 - Na telefonu a Macu neověřeno (výkon, čitelnost karty na malém displeji).
-- Kapitoly II a III mají zatím jen po jedné misi; dalších 12 misí
-  (N4–N15) a pomocníci (krok o tik, zpomalení, ukázka řešení) jsou další
-  kroky plánu.
+- Kapitola III má zatím jednu misi; dalších 8 misí (N8–N15) a pomocníci
+  (krok o tik, zpomalení, ukázka řešení) jsou další kroky plánu.
+- Nové mise kapitoly II zatím nikdo nehrál – měření říká jen, že jsou
+  řešitelné a jak těsná jsou okna; zábavnost ověří až tvoje hraní.

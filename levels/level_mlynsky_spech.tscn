@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="MlynskySpech" type="Node2D"]
+script = ExtResource("1_def")
+title = "Mlýnský spěch"
+level_id = "mlynsky-spech"
+size = Vector2i(600, 180)
+lemming_count = 40
+save_required = 34
+release_rate = 20
+time_limit_seconds = 110
+builders = 2
+bashers = 2
+master_saved = 40
+difficulty_index = 55
+introduces = "Rychlost vypouštění"
+briefing = "Mlýn zavírá za necelé dvě minuty a lumíků je čtyřicet."
+hints = PackedStringArray("Tlačítkem + u vypouštění vyjdou lumíci z líhně rychleji.", "Prorazte hráz, postav schody k mlýnu a pak zvyš vypouštění až na 99.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Path" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 120, 100, 119, 200, 120, 300, 121, 380, 120, 380, 112, 480, 111, 600, 112, 600, 180, 0, 180)
+script = ExtResource("2_shape")
+
+[node name="Dam" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(200, 130, 200, 98, 204, 95, 210, 96, 212, 100, 212, 130)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(40, 95)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(560, 112)
+script = ExtResource("4_exit")

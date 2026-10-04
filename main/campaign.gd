@@ -15,15 +15,19 @@ const SCENES: Array[PackedScene] = [
 	preload("res://levels/level_climb_float.tscn"),
 	preload("res://levels/level_01.tscn"),
 	# II. Skalní les
+	preload("res://levels/level_propadlo.tscn"),
+	preload("res://levels/level_ocelove_koreny.tscn"),
 	preload("res://levels/level_bomber.tscn"),
+	preload("res://levels/level_dlouha_lavka.tscn"),
+	preload("res://levels/level_mlynsky_spech.tscn"),
 	# III. Voda a oheň
 	preload("res://levels/level_hazards.tscn"),
 ]
 ## Kapitoly: [římské číslo, název, index první mise, počet misí].
 const CHAPTERS := [
 	["I", "Papírová louka", 0, 6],
-	["II", "Skalní les", 6, 1],
-	["III", "Voda a oheň", 7, 1],
+	["II", "Skalní les", 6, 5],
+	["III", "Voda a oheň", 11, 1],
 ]
 ## Pískoviště se všemi dovednostmi; otevře se po splnění kapitoly I.
 const PLAYGROUND := preload("res://levels/level_playground.tscn")

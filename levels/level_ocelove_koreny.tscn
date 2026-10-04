@@ -1,0 +1,59 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="OceloveKoreny" type="Node2D"]
+script = ExtResource("1_def")
+title = "Ocelové kořeny"
+level_id = "ocelove-koreny"
+size = Vector2i(520, 200)
+lemming_count = 20
+save_required = 13
+release_rate = 50
+time_limit_seconds = 240
+bashers = 2
+miners = 1
+diggers = 1
+master_saved = 20
+difficulty_index = 36
+introduces = "Razič"
+briefing = "Lesní cestu přehradily kmeny. Jeden je z hlíny, druhý má ocelové jádro."
+hints = PackedStringArray("Razič prorazí hlínu, ale o ocel se zastaví.", "Raziče přiděl těsně před prvním kmenem. Za ním je pod zemí jeskyně – kopej tam, ne před kmenem.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="ForestFloor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 100, 60, 99, 120, 101, 200, 100, 200, 200, 0, 200)
+script = ExtResource("2_shape")
+
+[node name="CaveRoof" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(200, 100, 280, 99, 360, 101, 440, 100, 520, 100, 520, 130, 430, 131, 330, 129, 240, 131, 200, 130)
+script = ExtResource("2_shape")
+
+[node name="CaveFloor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(200, 150, 290, 149, 380, 151, 520, 150, 520, 200, 200, 200)
+script = ExtResource("2_shape")
+
+[node name="TrunkA" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(150, 110, 150, 70, 156, 62, 163, 60, 170, 63, 174, 72, 175, 110)
+script = ExtResource("2_shape")
+
+[node name="TrunkB" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(296, 110, 297, 66, 303, 58, 312, 56, 320, 59, 325, 67, 326, 110)
+script = ExtResource("2_shape")
+
+[node name="SteelCore" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(302, 110, 302, 68, 320, 68, 320, 110)
+script = ExtResource("2_shape")
+kind = 1
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(60, 75)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(470, 150)
+script = ExtResource("4_exit")

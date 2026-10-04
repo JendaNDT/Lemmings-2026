@@ -68,6 +68,8 @@
   Mise nese `master_saved` (výsledek referenčního řešení = ★★★),
   `difficulty_index`, úvod a nápovědy; report hlídá shodu s měřením.
   Pád z povrchu do jeskyně musí být pod 60 px (jinak lumíci zemřou).
+  Zdi, kmeny a hráze na zemi zapustit pod povrch (spodní hrana pod
+  terénem), jinak pod nimi lumíci projdou škvírou.
 - APK se exportuje jen přes `scripts/export_android.sh`; podpis musí
   odpovídat otisku ve `scripts/android_signing.txt` (aktualizace přes
   starší verzi). Klíč nikdy neukládat do repozitáře.

@@ -1,7 +1,7 @@
 # Lemmings 2026 – herní design dokument
 
 Verze 1.1 · 4. 10. 2026 · stav: **schváleno autorem, realizuje se**
-([kroky 1–2 hotové](ETAPA_9_OVERENI.md))
+([kroky 1, 2 a 4 hotové](ETAPA_9_OVERENI.md))
 
 Dokument popisuje, co hra umí dnes, kde má slabá místa, navrhuje kampaň
 o 20 misích (15 nových) a systém obtížnosti, který se dá změřit.
@@ -243,7 +243,7 @@ na ni hráč musí přijít. Proto má každá mise navíc štítek **„nápad�
 | Pásmo | Index | Hráč vidí | Rezerva záchrany | Nejtěsnější okno | Čas (z limitu) |
 |---|---|---|---|---|---|
 | 1 Seznámení | 0–19 | ● | ≥ 30 % | ≥ 17 tiků (1 s) | ≤ 50 % |
-| 2 Lehká | 20–39 | ●● | ≥ 20 % | ≥ 9 tiků | ≤ 50 % |
+| 2 Lehká | 20–39 | ●● | ≥ 20 % | ≥ 8 tiků (razič začíná do 8 px od zdi) | ≤ 50 % |
 | 3 Střední | 40–59 | ●●● | ≥ 10 % | ≥ 6 tiků | ≤ 75 % |
 | 4 Těžká | 60–79 | ●●●● | ≥ 5 % | ≥ 4 tiky | ≤ 90 % |
 | 5 Mistrovská | 80–100 | ●●●●● | může být 0 | ≥ 2 tiky | bez omezení |
@@ -351,11 +351,11 @@ N = nová mise (karta v kapitole 6), U = stávající s úpravou (5.4).
 | 4 | Hlídka u srázu | `hlidka-u-srazu` | N3 | blokař chrání dav | 18–26 |
 | 5 | Lezec a padák | `lezec-a-padak` | U | trvalé vlastnosti | 26–34 |
 | 6 | První kroky | `prvni-kroky` | U | zkouška: razič + stavitel + kopáč | 33–40 |
-| 7 | Ocelové kořeny | `ocelove-koreny` | N4 | razič, ocel ho zastaví | 25–32 |
-| 8 | Propadlo | `propadlo` | N5 | bomba otevře podlahu | 32–40 |
-| 9 | Cesta skrz zeď | `cesta-skrz-zed` | U | blokař + bomba | 38–45 |
-| 10 | Dlouhá lávka | `dlouha-lavka` | N6 | dva stavitelé v řadě, ohrádka | 45–52 |
-| 11 | Mlýnský spěch | `mlynsky-spech` | N7 | zkouška: vypouštění a čas | 50–56 |
+| 7 | Propadlo | `propadlo` | N5 | bomba otevře podlahu | 30–38 (změřeno 33) |
+| 8 | Ocelové kořeny | `ocelove-koreny` | N4 | razič, ocel ho zastaví | 32–39 (změřeno 36) |
+| 9 | Cesta skrz zeď | `cesta-skrz-zed` | U | blokař + bomba | 38–45 (změřeno 42) |
+| 10 | Dlouhá lávka | `dlouha-lavka` | N6 | dva stavitelé v řadě, ohrádka | 45–52 (změřeno 51) |
+| 11 | Mlýnský spěch | `mlynsky-spech` | N7 | zkouška: vypouštění a čas | 50–56 (změřeno 55) |
 | 12 | Hladová kytka | `hladova-kytka` | N8 | past se dobíjí – hustý dav projde (nápad) | 30–38 |
 | 13 | Šipky v útesu | `sipky-v-utesu` | N9 | jednosměrné zdi | 45–52 |
 | 14 | Brod | `brod` | N10 | most přes vodu, uvolnění blokaře | 52–58 |
@@ -377,11 +377,11 @@ Jeden dílek = 4 body indexu.
  4 Hlídka u srázu     █████▌ 22
  5 Lezec a padák      ███████▌ 30
  6 První kroky ★      █████████ 37
- 7 Ocelové kořeny     ███████ 28
- 8 Propadlo           █████████ 36
+ 7 Propadlo           ████████ 33
+ 8 Ocelové kořeny     █████████ 36
  9 Cesta skrz zeď     ██████████▌ 42
-10 Dlouhá lávka       ████████████ 48
-11 Mlýnský spěch ★    █████████████ 53
+10 Dlouhá lávka       ████████████▌ 51
+11 Mlýnský spěch ★    █████████████▌ 55
 12 Hladová kytka      ████████▌ 34
 13 Šipky v útesu      ████████████ 49
 14 Brod               █████████████▌ 55
@@ -491,11 +491,11 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 
 ### N4 · Ocelové kořeny
 
-`ocelove-koreny` · II/7 · **Lehká** (25–32) · nápad: ne
+`ocelove-koreny` · II/8 · **Lehká** (32–39, změřeno 36) · nápad: ne
 
 - **Učí:** razič (musí začít do 8 px od překážky); ocel ho zastaví.
-- **Mapa 520 × 200** · lumíci 20, cíl 15 · vypouštění 50 · čas 4:00
-- **Dovednosti:** razič 2, kopáč 1, horník 1 · **hvězdy:** 15 / 18 / 20
+- **Mapa 520 × 200** · lumíci 20, cíl 13 · vypouštění 50 · čas 4:00
+- **Dovednosti:** razič 2, kopáč 1, horník 1 · **hvězdy:** 13 / 17 / 20
 
 ```
   H    █      ▓
@@ -509,12 +509,12 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
   prvního kmene sahá hlína až ke dnu mapy.
 - **Past na nepozorné:** kopáč vlevo od prvního kmene prokope dno
   a lumíci vypadnou z mapy; razič u ocelového kmene cinkne a vzdá to.
-- **Řešení:** razič u prvního kmene (okno ≈ 9 tiků), kopáč mezi kmeny
-  → dav spadne 40 px do jeskyně. Horník před ocelovým kmenem je druhá cesta.
+- **Řešení:** razič u prvního kmene (okno 8 tiků – razič musí začít do 8 px
+  od kmene), kopáč mezi kmeny → dav spadne 50 px z povrchu do jeskyně. Horník před ocelovým kmenem je druhá cesta.
 
 ### N5 · Propadlo
 
-`propadlo` · II/8 · **Lehká** (32–40) · nápad: ano
+`propadlo` · II/7 · **Lehká** (30–38, změřeno 33) · nápad: ano
 
 - **Učí:** bomba ničí i podlahu; časování výbuchu (5 s ≈ 85 px chůze).
 - **Mapa 360 × 180** · lumíci 10, cíl 7 · vypouštění 50 · čas 3:00
@@ -529,7 +529,7 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 ```
 
 - **Mapa:** tenká plošina (10 px) nad jeskyní, vpravo končí srázem.
-  V jeskyni (pád 48 px) je východ na stupni 10 px.
+  V jeskyni (pád 50 px z povrchu) je východ na stupni 10 px.
 - **Bez zásahu:** všichni spadnou ze srázu.
 - **Řešení:** bombič prvnímu lumíkovi hned po dopadu; vybuchne nad
   jeskyní a kráter (32 px) prorazí podlahu. V jeskyni stavitel před stupněm.
@@ -537,23 +537,23 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 
 ### N6 · Dlouhá lávka
 
-`dlouha-lavka` · II/10 · **Střední** (45–52) · nápad: ano
+`dlouha-lavka` · II/10 · **Střední** (45–52, změřeno 51) · nápad: ano
 
 - **Učí:** dva stavitelé v řadě (druhého přidělit, když první pokrčí
   rameny); ohrádka drží dav, dokud není most hotový.
-- **Mapa 480 × 200** · lumíci 20, cíl 16 · vypouštění 30 · čas 4:00
-- **Dovednosti:** lezec 1, stavitel 3, razič 1 · **hvězdy:** 16 / 18 / 20
+- **Mapa 480 × 200** · lumíci 20, cíl 15 · vypouštění 30 · čas 4:00
+- **Dovednosti:** lezec 1, stavitel 3, razič 1 · **hvězdy:** 15 / 18 / 20
 
 ```
  H   █         E
 █████████   ████████
 █████████   ████████
-   ohrádka  propast 44 px
+   ohrádka  propast 40 px
 ```
 
-- **Mapa:** líheň v ohrádce (zeď 20 px), za ní propast 44 px, za propastí
-  východ.
-- **Klíčová čísla:** jedny schody = 24 px, propast 44 px → dvoje schody.
+- **Mapa:** líheň v ohrádce (zeď 20 px), za ní propast 40 px, za propastí
+  východ. Zeď ohrádky je zapuštěná do terénu, aby pod ní nebyla škvíra.
+- **Klíčová čísla:** jedny schody = 24 px, propast 40 px → dvoje schody.
   Nedokončený most = smrt pro každého, kdo po něm půjde.
 - **Bez zásahu:** nikdo neumře (dav se přelévá v ohrádce).
 - **Řešení:** lezec přeleze zeď; u propasti stavitel a při pokrčení ramen
@@ -561,10 +561,10 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 
 ### N7 · Mlýnský spěch
 
-`mlynsky-spech` · II/11 (zkouška) · **Střední** (50–56) · nápad: ano
+`mlynsky-spech` · II/11 (zkouška) · **Střední** (50–56, změřeno 55) · nápad: ano
 
 - **Učí:** rychlost vypouštění a časový limit.
-- **Mapa 600 × 180** · lumíci 40, cíl 34 · vypouštění 20 · čas 2:00
+- **Mapa 600 × 180** · lumíci 40, cíl 34 · vypouštění 20 · čas 1:50
 - **Dovednosti:** razič 2, stavitel 2 · **hvězdy:** 34 / 37 / 40
 
 ```
@@ -795,11 +795,18 @@ Autor schválil všech šest bodů: strukturu kampaně a přesun Prvních kroků
 na konec kapitoly I, hvězdy, Hřiště mimo kampaň, názvy misí a kapitol,
 vyřazení 2.5D zobrazení a trvalé uložení podpisového klíče Androidu.
 
-**Stav realizace:** kroky 1 (systémy kampaně) a 2 (kapitola I) jsou hotové,
+**Stav realizace:** kroky 1 (systémy kampaně), 2 (kapitola I) a 4
+(kapitola II) jsou hotové,
 2.5D je vyřazené, export hlídá stálý podpis
 ([ověření](ETAPA_9_OVERENI.md)). Změřené indexy kapitoly I: 15, 14, 18,
 23, 32, 38. Při stavbě se upravily rozměry N1 a N3 (mělčí jeskyně – pád
 z povrchu musí být pod 60 px) a cíl Prvních kroků na 13 z 20.
+
+Kapitola II změřeno: 33, 36, 42, 51, 55. Propadlo a Ocelové kořeny se
+prohodily (razič má okno nejvýš 8 tiků, kořeny jsou proto o kousek těžší),
+pravidlo pásma Lehká je okno ≥ 8 tiků. Ocelové kořeny mají cíl 13,
+Dlouhá lávka propast 40 px a cíl 15, Mlýnský spěch limit 1:50 (při 2:00
+by cíl 34 šel splnit i bez zvýšení vypouštění).
 
 ---
 

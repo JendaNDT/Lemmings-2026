@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="DlouhaLavka" type="Node2D"]
+script = ExtResource("1_def")
+title = "Dlouhá lávka"
+level_id = "dlouha-lavka"
+size = Vector2i(480, 200)
+lemming_count = 20
+save_required = 15
+release_rate = 30
+time_limit_seconds = 240
+climbers = 1
+builders = 3
+bashers = 1
+master_saved = 20
+difficulty_index = 51
+introduces = "Dva stavitelé v řadě"
+briefing = "Dav čeká v ohrádce. Propast je delší než jedny schody."
+hints = PackedStringArray("Když stavitel pokrčí rameny, přiděl mu dalšího stavitele – schody pokračují.", "Lezec přeleze ohrádku a postaví lávku; teprve potom razič otevře ohrádku zevnitř.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="LeftBank" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 120, 70, 119, 140, 121, 220, 120, 220, 200, 0, 200)
+script = ExtResource("2_shape")
+
+[node name="PenWall" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(150, 132, 150, 101, 155, 99, 160, 101, 160, 132)
+script = ExtResource("2_shape")
+
+[node name="RightBank" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(260, 120, 330, 119, 400, 121, 480, 120, 480, 200, 260, 200)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(60, 95)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(430, 120)
+script = ExtResource("4_exit")

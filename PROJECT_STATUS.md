@@ -13,10 +13,11 @@ Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
 **Kampaň se staví podle schváleného [herního designu](docs/HERNI_DESIGN.md).**
-Hotové: kapitoly, hvězdy, úvodní karta mise, nápověda, Hřiště
-a kapitola I se šesti misemi (3 nové, 3 upravené) – obtížnost změřená
-v cílových pásmech 15 → 14 → 18 → 23 → 32 → 38. 2.5D zobrazení je
-vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
+Hotové: kapitoly, hvězdy, úvodní karta mise, nápověda, Hřiště,
+kapitola I (15 → 14 → 18 → 23 → 32 → 38) a **kapitola II Skalní les**
+se čtyřmi novými misemi: Propadlo 33, Ocelové kořeny 36, Cesta skrz zeď
+42, Dlouhá lávka 51, Mlýnský spěch 55 – vše v cílových pásmech.
+2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
 1. **Vyzkoušet APK 0.7.0 na telefonu** – aktualizuje 0.6.0 bez ztráty
@@ -26,15 +27,19 @@ Další kroky:
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
    rozhodnutí (viz Známé bugy).
-3. Kapitola II (mise N4–N7: Ocelové kořeny, Propadlo, Dlouhá lávka,
-   Mlýnský spěch), pak III a IV a pomocníci (krok o tik, zpomalení,
-   ukázka řešení).
+3. Kapitola III (mise N8–N11: Hladová kytka, Šipky v útesu, Brod,
+   Pod sopkou), pak IV a pomocníci (krok o tik, zpomalení, ukázka řešení).
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Etapa 9, krok 4 – kapitola II:** mise Propadlo (bomba na terén),
+  Ocelové kořeny (razič, ocel), Dlouhá lávka (dva stavitelé v řadě,
+  ohrádka) a Mlýnský spěch (vypouštění a čas) s referenčními řešeními,
+  úvody a nápovědami; report obtížnosti v pořádku pro všech 12 misí.
+  Poučení: razič má okno nejvýš 8 tiků, předměty na zemi zapustit do terénu.
 - **Etapa 9, kroky 1–2:** `Campaign` s kapitolami a Hřištěm, číslo mise
   z pořadí, hvězdy (★★★ = referenční řešení), tolerantní odemykání,
   `BriefingCard`, nápověda v pauze a po neúspěších, „Odpálit vše“;

@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="Propadlo" type="Node2D"]
+script = ExtResource("1_def")
+title = "Propadlo"
+level_id = "propadlo"
+size = Vector2i(360, 180)
+lemming_count = 10
+save_required = 7
+release_rate = 50
+time_limit_seconds = 180
+bombers = 2
+builders = 2
+master_saved = 9
+difficulty_index = 33
+introduces = "Bomba na terén"
+briefing = "Plošina je tenká jako papír a vpravo končí srázem. Jeskyně pod ní vede k východu."
+hints = PackedStringArray("Výbuch zničí i podlahu pod bombičem.", "Bombu přiděl prvnímu lumíkovi hned po dopadu – vybuchne asi po 85 px chůze. V jeskyni postav schody na stupeň.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="ThinFloor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 80, 90, 79, 180, 81, 260, 80, 330, 80, 330, 180, 320, 180, 320, 90, 240, 91, 150, 89, 60, 91, 0, 90)
+script = ExtResource("2_shape")
+
+[node name="CaveFloor" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 130, 90, 129, 180, 131, 250, 130, 250, 120, 285, 119, 320, 120, 320, 180, 0, 180)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(40, 55)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(290, 120)
+script = ExtResource("4_exit")
