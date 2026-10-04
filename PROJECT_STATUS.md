@@ -21,9 +21,9 @@ Pod sopkou 63 – vše v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
 Další kroky:
-1. **Vyzkoušet APK 0.8.0 na telefonu** – aktualizuje 0.7.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.8.0/android/Lemmings-2026-Android-0.8.0.apk).
-   Zajímá mě: jestli jsou nové mise kapitoly II zábavné, srozumitelné
+1. **Vyzkoušet APK 0.9.0 na telefonu** – aktualizuje 0.8.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.9.0/android/Lemmings-2026-Android-0.9.0.apk).
+   Zajímá mě: jestli jsou nové mise kapitol II a III zábavné, srozumitelné
    a jestli obtížnost roste plynule. [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
@@ -36,6 +36,9 @@ Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiš
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Android APK 0.9.0** ve větvi `downloads/android-0.9.0` (versionCode 10,
+  stejný podpis): kapitola III, 16 misí. Herní soubory z APK prošly
+  průchodem menu.
 - **Etapa 9, krok 5 – kapitola III:** mise Hladová kytka (past se dobíjí),
   Šipky v útesu (jednosměrné zdi), Brod (voda, most, blokař s bombou)
   a Pod sopkou (zkouška: horník pod lávou, kytka, čas) s referenčními
