@@ -21,7 +21,7 @@ bashers = 1
 diggers = 1
 master_saved = 8
 difficulty_index = 61
-introduces = "Voda, láva, past, šipky"
+introduces = "Láva"
 briefing = "Voda topí, láva pálí a kytka hlídá chodbu. Zeď se šipkami prorazíš jen ve směru šipek."
 hints = PackedStringArray("Přes vodu postav most z cihel; lávu obejdi podzemím.", "První lumík: lezec, most přes jezírko a kopáč za lávou. Později razič u zdi se šipkami.")
 

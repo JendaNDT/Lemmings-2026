@@ -16,8 +16,8 @@ po kapitole I. Každá mise začne **úvodní kartou** (cíl, dovednosti
 s popisem, co je nového, obtížnost) a za výsledek dostaneš **1–3 hvězdy**.
 V pauze (tlačítko **Menu**, **Esc**, na Androidu **Zpět**) je **nápověda**,
 nastavení a návrat do menu. Postup, hvězdy a rozehraná mise se ukládají.
-Hotové jsou kapitoly I (6 misí) a II (5 misí); obtížnost každé mise je
-změřená z ověřeného řešení.
+Hotové jsou kapitoly I (6 misí), II (5 misí) a III (5 misí); obtížnost
+každé mise je změřená z ověřeného řešení.
 
 ![Výběr misí, úvodní karta, výsledek a pauza s nápovědou](docs/images/kampan-kapitola-1.jpg)
 

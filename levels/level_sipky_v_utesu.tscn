@@ -1,0 +1,61 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+
+[node name="SipkyVUtesu" type="Node2D"]
+script = ExtResource("1_def")
+title = "Šipky v útesu"
+level_id = "sipky-v-utesu"
+size = Vector2i(520, 200)
+lemming_count = 20
+save_required = 16
+release_rate = 50
+time_limit_seconds = 240
+bashers = 2
+miners = 2
+diggers = 1
+master_saved = 20
+difficulty_index = 50
+introduces = "Jednosměrné zdi"
+briefing = "Útes je protkaný šipkami. Razič i horník projdou zdí jen ve směru šipek, kopáč kudy chce."
+hints = PackedStringArray("Proti šipkám razič jen cinkne. Kopáč šipky nezajímají.", "Nahoře prorazte první zeď, mezi zdmi kopej dolů. Dole veď horníka šikmo skrz útes – rovně je to na druhé straně moc vysoko.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Upper" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 60, 80, 59, 160, 61, 250, 60, 330, 60, 330, 70, 140, 70, 140, 200, 0, 200)
+script = ExtResource("2_shape")
+
+[node name="Middle" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(140, 100, 220, 99, 330, 100, 330, 200, 140, 200)
+script = ExtResource("2_shape")
+
+[node name="ArrowWallRight" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(118, 70, 118, 28, 124, 22, 134, 22, 140, 28, 140, 70)
+script = ExtResource("2_shape")
+kind = 6
+
+[node name="ArrowWallLeft" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(250, 70, 250, 22, 256, 16, 268, 16, 274, 22, 274, 70)
+script = ExtResource("2_shape")
+kind = 5
+
+[node name="Cliff" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(330, 60, 380, 58, 440, 60, 440, 200, 330, 200)
+script = ExtResource("2_shape")
+kind = 6
+
+[node name="Lower" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(440, 170, 480, 169, 520, 170, 520, 200, 440, 200)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(50, 35)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(490, 170)
+script = ExtResource("4_exit")

@@ -1,7 +1,7 @@
 # Lemmings 2026 – herní design dokument
 
 Verze 1.1 · 4. 10. 2026 · stav: **schváleno autorem, realizuje se**
-([kroky 1, 2 a 4 hotové](ETAPA_9_OVERENI.md))
+([kroky 1, 2, 4 a 5 hotové](ETAPA_9_OVERENI.md))
 
 Dokument popisuje, co hra umí dnes, kde má slabá místa, navrhuje kampaň
 o 20 misích (15 nových) a systém obtížnosti, který se dá změřit.
@@ -356,11 +356,11 @@ N = nová mise (karta v kapitole 6), U = stávající s úpravou (5.4).
 | 9 | Cesta skrz zeď | `cesta-skrz-zed` | U | blokař + bomba | 38–45 (změřeno 42) |
 | 10 | Dlouhá lávka | `dlouha-lavka` | N6 | dva stavitelé v řadě, ohrádka | 45–52 (změřeno 51) |
 | 11 | Mlýnský spěch | `mlynsky-spech` | N7 | zkouška: vypouštění a čas | 50–56 (změřeno 55) |
-| 12 | Hladová kytka | `hladova-kytka` | N8 | past se dobíjí – hustý dav projde (nápad) | 30–38 |
-| 13 | Šipky v útesu | `sipky-v-utesu` | N9 | jednosměrné zdi | 45–52 |
-| 14 | Brod | `brod` | N10 | most přes vodu, uvolnění blokaře | 52–58 |
+| 12 | Hladová kytka | `hladova-kytka` | N8 | past se dobíjí – hustý dav projde (nápad) | 30–38 (změřeno 37) |
+| 13 | Šipky v útesu | `sipky-v-utesu` | N9 | jednosměrné zdi | 45–52 (změřeno 50) |
+| 14 | Brod | `brod` | N10 | most přes vodu, uvolnění blokaře | 52–58 (změřeno 56) |
 | 15 | Voda, láva a past | `voda-lava-past` | stávající | kombinace nebezpečí (změřeno 61) | 58–64 |
-| 16 | Pod sopkou | `pod-sopkou` | N11 | zkouška: horník pod lávou, past, čas | 62–68 |
+| 16 | Pod sopkou | `pod-sopkou` | N11 | zkouška: horník pod lávou, past, čas | 62–68 (změřeno 63) |
 | 17 | Dvě líhně | `dve-lihne` | N12 | dvě skupiny současně | 63–70 |
 | 18 | Lávová lávka | `lavova-lavka` | N13 | přesnost na doraz | 72–78 |
 | 19 | Velký sestup | `velky-sestup` | N14 | sestup bez padáků | 80–86 |
@@ -382,11 +382,11 @@ Jeden dílek = 4 body indexu.
  9 Cesta skrz zeď     ██████████▌ 42
 10 Dlouhá lávka       ████████████▌ 51
 11 Mlýnský spěch ★    █████████████▌ 55
-12 Hladová kytka      ████████▌ 34
-13 Šipky v útesu      ████████████ 49
-14 Brod               █████████████▌ 55
+12 Hladová kytka      █████████ 37
+13 Šipky v útesu      ████████████▌ 50
+14 Brod               ██████████████ 56
 15 Voda, láva a past  ███████████████ 61
-16 Pod sopkou ★       ████████████████ 65
+16 Pod sopkou ★       ███████████████▌ 63
 17 Dvě líhně          ████████████████▌ 66
 18 Lávová lávka       ██████████████████▌ 75
 19 Velký sestup       ████████████████████▌ 82
@@ -582,10 +582,10 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 
 ### N8 · Hladová kytka
 
-`hladova-kytka` · III/12 (oddech) · **Lehká** (30–38) · nápad: ano
+`hladova-kytka` · III/12 (oddech) · **Lehká** (30–38, změřeno 37) · nápad: ano
 
 - **Učí:** past sežere jednoho a pak se dobíjí – hustý dav projde.
-- **Mapa 440 × 160** · lumíci 20, cíl 14 · vypouštění 10 · čas 3:00
+- **Mapa 440 × 160** · lumíci 20, cíl 14 · vypouštění 10 · čas 4:00
 - **Dovednosti:** stavitel 2, blokař 1, bombič 1 · past s dobíjením 60 tiků
 - **Hvězdy:** 14 / 16 / 18
 
@@ -596,17 +596,20 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 ```
 
 - **Klíčová čísla:** při vypouštění 10 (každých 48 tiků) kytka sní
-  každého druhého. Při 99 (každé 4 tiky) jich za jedno dobíjení projde 15.
+  každého druhého (změřeno: 10 z 20 – na cíl to nestačí). Při 99 (každé
+  4 tiky) jich za jedno dobíjení projde 15; sní jen 4 (16 = ★★).
 - **Bez zásahu:** dav se přelévá před stupněm, nikdo nedojde.
-- **Řešení A:** stavitel na stupeň (okno ≈ 20 tiků, nedokončené schody
-  jsou bezpečné), pak zvýšit vypouštění na 99. **Řešení B:** blokař před
-  kytkou zadrží dav, bombič na blokaře ho uvolní a dav projde pohromadě.
+- **Řešení A:** stavitel na stupeň (okno 26 tiků, nedokončené schody
+  jsou bezpečné), pak zvýšit vypouštění na 99 → 16. **Řešení B**
+  (referenční, 18 = ★★★): stavitel, za stupněm blokař před kytkou
+  (zpátky na stupeň se nevyleze, dav se nahustí), až jsou všichni u něj,
+  bombič na blokaře – kytka sní jen jednoho.
 - **Poznámka:** jádro mise je nápad, provedení je snadné –
   nápověda 1: „Kytka se po jídle chvíli dobíjí.“
 
 ### N9 · Šipky v útesu
 
-`sipky-v-utesu` · III/13 · **Střední** (45–52) · nápad: ne
+`sipky-v-utesu` · III/13 · **Střední** (45–52, změřeno 50) · nápad: ne
 
 - **Učí:** jednosměrné zdi – razič a horník jen po šipkách, kopáč vždy.
 - **Mapa 520 × 200** · lumíci 20, cíl 16 · vypouštění 50 · čas 4:00
@@ -622,18 +625,21 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 ```
 
 - **Mapa:** tři patra. Horní: zeď → (prorazit doprava), pak zeď ←
-  (nejde razit ani horníkem). Kopáčem dolů do středního patra (30 px),
-  tam zeď → horníkem šikmo dolů k východu.
+  (nejde razit ani horníkem). Kopáčem dolů do střední jeskyně (pád
+  40 px). Vpravo je celý útes ze šipek →: razič by z něj vyšel 70 px nad
+  dolním patrem (smrt), horník šikmo dolů vyjde jen 15 px nad zemí.
+- **Klíčová čísla:** okno raziče 8 tiků, horníka 28 tiků (začne-li dřív,
+  tunel vede pod úrovní východu).
 - **Bez zásahu:** nikdo neumře, nikdo nedojde.
 - **Chyba–učení:** razič u zdi ← jen cinkne.
 
 ### N10 · Brod
 
-`brod` · III/14 · **Střední** (52–58) · nápad: ne
+`brod` · III/14 · **Střední** (52–58, změřeno 56) · nápad: ne
 
 - **Učí:** voda; most z cihel přes vodu; uvolnění blokaře bombou.
-- **Mapa 480 × 180** · lumíci 15, cíl 11 · vypouštění 30 · čas 4:00
-- **Dovednosti:** stavitel 4, blokař 1, bombič 1 · **hvězdy:** 11 / 12 / 13
+- **Mapa 480 × 180** · lumíci 15, cíl 12 · vypouštění 30 · čas 2:30
+- **Dovednosti:** stavitel 3, blokař 1, bombič 1 · **hvězdy:** 12 / 13 / 14
 
 ```
  H                     E
@@ -644,15 +650,16 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 
 - **Bez zásahu:** všichni se utopí.
 - **Řešení:** první lumík staví od břehu (dva stavitelé v řadě), druhý
-  jako blokař ~15 px za ním drží dav. Po dokončení mostu bombič na blokaře.
+  jako blokař ~35 px za ním drží dav (kráter bomby má poloměr 16 px –
+  blíž by rozbil začátek mostu). Po dokončení mostu bombič na blokaře.
 
 ### N11 · Pod sopkou
 
-`pod-sopkou` · III/16 (zkouška) · **Těžká** (62–68) · nápad: ano
+`pod-sopkou` · III/16 (zkouška) · **Těžká** (62–68, změřeno 63) · nápad: ano
 
 - **Učí:** horník pod lávou (hloubka tunelu), dav ve frontě, čas.
-- **Mapa 600 × 220** · lumíci 25, cíl 20 · vypouštění 50 · čas 2:30
-- **Dovednosti:** horník 2, stavitel 3 · past (dobíjení 50) · **hvězdy:** 20 / 21 / 22
+- **Mapa 600 × 220** · lumíci 25, cíl 20 · vypouštění 50 · čas 2:00
+- **Dovednosti:** horník 2, stavitel 3 · past (dobíjení 120) · **hvězdy:** 20 / 21 / 22
 
 ```
  H      ^^^^^^   ▓
@@ -661,12 +668,14 @@ stavbu; doladí se při měření. Hvězdy: ★ / ★★ / ★★★ = zachráni
 █████████████████████████
 ```
 
-- **Mapa:** na povrchu lávové jezero (20 px hluboké) a ocelová skála.
-  Pod povrchem jeskyně s pastí a východem na římse 20 px.
-- **Klíčová čísla:** tunel klesá 1 px na 2 px. Pod jezerem musí být strop
-  tunelu hlouběji než dno lávy → začít nejpozději ≈ 60 px před jezerem.
-  Dav čeká v tunelu za horníkem a vpadne do jeskyně pohromadě, past sní
-  jen 1–2. Římsa 20 px = dva stavitelé v řadě.
+- **Mapa:** louka končí stupněm 10 px dolů (zpátky se nevyleze – dav
+  zůstane pohromadě mezi stupněm a jezerem). Lávové jezero 80 px široké,
+  20 px hluboké. Pod ním jeskyně: kytka, pak jáma 12 px (zpátky ke kytce
+  se nevyleze) a římsa s východem 20 px nad jámou.
+- **Klíčová čísla:** tunel klesá 1 px na 2 px. Horník musí začít 46–90 px
+  před jezerem (změřeno): později vede tunel lávou, dřív mine jeskyni.
+  S vypouštěním 99 přijde dav ke kytce pohromadě a ta sní 3 (bez
+  zrychlení 5 – jen na ★). Římsa 20 px = dva stavitelé v řadě.
 - **Bez zásahu:** všichni shoří v jezeře.
 
 ### N12 · Dvě líhně
@@ -795,8 +804,8 @@ Autor schválil všech šest bodů: strukturu kampaně a přesun Prvních kroků
 na konec kapitoly I, hvězdy, Hřiště mimo kampaň, názvy misí a kapitol,
 vyřazení 2.5D zobrazení a trvalé uložení podpisového klíče Androidu.
 
-**Stav realizace:** kroky 1 (systémy kampaně), 2 (kapitola I) a 4
-(kapitola II) jsou hotové,
+**Stav realizace:** kroky 1 (systémy kampaně), 2 (kapitola I), 4
+(kapitola II) a 5 (kapitola III) jsou hotové,
 2.5D je vyřazené, export hlídá stálý podpis
 ([ověření](ETAPA_9_OVERENI.md)). Změřené indexy kapitoly I: 15, 14, 18,
 23, 32, 38. Při stavbě se upravily rozměry N1 a N3 (mělčí jeskyně – pád
@@ -807,6 +816,14 @@ prohodily (razič má okno nejvýš 8 tiků, kořeny jsou proto o kousek těžš
 pravidlo pásma Lehká je okno ≥ 8 tiků. Ocelové kořeny mají cíl 13,
 Dlouhá lávka propast 40 px a cíl 15, Mlýnský spěch limit 1:50 (při 2:00
 by cíl 34 šel splnit i bez zvýšení vypouštění).
+
+Kapitola III změřeno: 37, 50, 56, 61, 63. Referenční řešení Hladové
+kytky je blokař s bombou (18 z 20); zrychlené vypouštění dá 16 (★★),
+proto má mise čas 4:00 (při 3:00 index 39, nad pásmem). Brod má cíl 12, čas 2:30
+a 3 stavitele (při původních číslech index 48, pod pásmem). Pod sopkou
+má čas 2:00 a kytku s dobíjením 120 (při 50 by snědla 5–6 a mistrovský
+výsledek by splynul s cílem); stupeň na louce a jáma v jeskyni drží dav
+pohromadě.
 
 ---
 

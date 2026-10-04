@@ -1,0 +1,62 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://level_tools/lemming_trap.gd" id="5_trap"]
+
+[node name="PodSopkou" type="Node2D"]
+script = ExtResource("1_def")
+title = "Pod sopkou"
+level_id = "pod-sopkou"
+size = Vector2i(600, 220)
+lemming_count = 25
+save_required = 20
+release_rate = 50
+time_limit_seconds = 120
+builders = 3
+miners = 2
+master_saved = 22
+difficulty_index = 63
+introduces = "Zkouška kapitoly"
+briefing = "Cestu přehradilo lávové jezero. Východ je v jeskyni pod ním – a i tam hlídá kytka."
+hints = PackedStringArray("Horníkův tunel klesá jen pomalu. Začni včas, aby vedl pod lávou, ne skrz ni.", "Horníka pusť 60–80 px před jezerem a hned zvyš vypouštění – dav pak kytku přeběhne pohromadě. Na římsu postav dvoje schody.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Meadow" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 90, 70, 89, 140, 90, 140, 100, 250, 100, 330, 100, 420, 99, 520, 101, 600, 100, 600, 220, 0, 220)
+script = ExtResource("2_shape")
+
+[node name="LeftRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 14, 9, 10, 15, 26, 13, 60, 16, 92, 0, 92)
+script = ExtResource("2_shape")
+
+[node name="LakeCut" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(250, 100, 330, 100, 330, 103, 250, 103)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Lake" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(250, 103, 330, 103, 329, 118, 324, 123, 256, 123, 251, 118)
+script = ExtResource("2_shape")
+kind = 4
+
+[node name="Cave" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(300, 140, 420, 141, 590, 140, 590, 164, 470, 164, 470, 184, 400, 184, 400, 172, 300, 172)
+script = ExtResource("2_shape")
+kind = 2
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(40, 60)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(550, 164)
+script = ExtResource("4_exit")
+
+[node name="Trap" type="Marker2D" parent="."]
+position = Vector2(360, 172)
+script = ExtResource("5_trap")
+rearm_ticks = 120

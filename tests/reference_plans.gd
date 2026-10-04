@@ -33,6 +33,14 @@ static func plan_for(id: String) -> Callable:
 			return _mill_rush
 		"voda-lava-past":
 			return _hazards
+		"hladova-kytka":
+			return _hungry_plant
+		"sipky-v-utesu":
+			return _arrow_cliff
+		"brod":
+			return _ford
+		"pod-sopkou":
+			return _volcano
 	return Callable()
 
 
@@ -190,3 +198,83 @@ static func _mill_rush(sim: LevelSim, s: Dictionary) -> void:
 		elif not s.get("built", false) and lem.x == 370 and lem.y == 120:
 			s["built"] = sim.assign_skill(lem, Lemming.Skill.BUILDER)
 
+
+
+## Stavitel před kamenným stupněm, za stupněm blokař před kytkou drží dav
+## (zpátky na stupeň se nevyleze); když jsou všichni u něj, bomba ho uvolní
+## a hustý dav proběhne, než se kytka dobije.
+static func _hungry_plant(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER or lem.dir != 1:
+			continue
+		if not s.get("built", false) and lem.x == 138:
+			s["built"] = sim.assign_skill(lem, Lemming.Skill.BUILDER)
+		elif not s.has("block") and lem.x == 240 and lem.y >= 109:
+			if sim.assign_skill(lem, Lemming.Skill.BLOCKER):
+				s["block"] = lem.id
+	if not s.has("block") or s.has("bomb") or sim.spawned < sim.spec.lemming_count:
+		return
+	for lem in sim.lemmings:
+		if not lem.removed and lem.id != int(s["block"]) and lem.x < 210:
+			return
+	if sim.assign_skill(sim.lemmings[int(s["block"])], Lemming.Skill.BOMBER):
+		s["bomb"] = sim.tick_count
+
+
+## Razič prorazí zeď se šipkou doprava, mezi zdmi kopáč do střední jeskyně,
+## tam horník šikmo skrz útes.
+static func _arrow_cliff(sim: LevelSim, s: Dictionary) -> void:
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER or lem.dir != 1:
+			continue
+		if not s.get("bashed", false) and lem.x == 112:
+			s["bashed"] = sim.assign_skill(lem, Lemming.Skill.BASHER)
+		elif s.get("bashed", false) and not s.get("dug", false) and lem.y <= 62 and lem.x == 200:
+			s["dug"] = sim.assign_skill(lem, Lemming.Skill.DIGGER)
+		elif s.get("dug", false) and not s.get("mined", false) and lem.y == 100 and lem.x == 324:
+			s["mined"] = sim.assign_skill(lem, Lemming.Skill.MINER)
+
+
+## První lumík staví most (druhého stavitele při pokrčení ramen), druhý
+## jako blokař drží dav; po přechodu mostu bomba na blokaře.
+static func _ford(sim: LevelSim, s: Dictionary) -> void:
+	if sim.lemmings.is_empty():
+		return
+	var hero := sim.lemmings[0]
+	if not s.has("b1") and hero.state == Lemming.State.WALKER and hero.dir == 1 and hero.x == 232:
+		if sim.assign_skill(hero, Lemming.Skill.BUILDER):
+			s["b1"] = sim.tick_count
+	elif s.has("b1") and not s.has("b2") and hero.state == Lemming.State.SHRUGGING:
+		if sim.assign_skill(hero, Lemming.Skill.BUILDER):
+			s["b2"] = sim.tick_count
+	elif s.has("b2") and not s.has("bomb") and (hero.removed or hero.x >= 280):
+		for lem in sim.lemmings:
+			if lem.state == Lemming.State.BLOCKER and not lem.removed:
+				if sim.assign_skill(lem, Lemming.Skill.BOMBER):
+					s["bomb"] = sim.tick_count
+	if not s.has("block") and sim.lemmings.size() > 1:
+		var second := sim.lemmings[1]
+		if second.state == Lemming.State.WALKER and second.dir == 1 and second.x == 196:
+			if sim.assign_skill(second, Lemming.Skill.BLOCKER):
+				s["block"] = sim.tick_count
+
+
+## Horník asi 65 px před lávovým jezerem (tunel vede pod lávou do jeskyně),
+## hned potom vypouštění na 99, aby dav došel ke kytce pohromadě; v jámě
+## za kytkou dvoje schody na římsu s východem.
+static func _volcano(sim: LevelSim, s: Dictionary) -> void:
+	if s.has("mined") and not s.get("fast", false):
+		s["fast"] = sim.change_release_rate(SimConst.MAX_RELEASE_RATE - sim.release_rate)
+	for lem in sim.lemmings:
+		if lem.removed or lem.state != Lemming.State.WALKER or lem.dir != 1:
+			continue
+		if not s.has("mined") and lem.y == 100 and lem.x == 185:
+			if sim.assign_skill(lem, Lemming.Skill.MINER):
+				s["mined"] = lem.id
+		elif not s.has("b1") and lem.y == 184 and lem.x == 436:
+			if sim.assign_skill(lem, Lemming.Skill.BUILDER):
+				s["b1"] = lem.id
+	if s.has("b1") and not s.has("b2"):
+		var builder := sim.lemmings[int(s["b1"])]
+		if builder.state == Lemming.State.SHRUGGING and sim.assign_skill(builder, Lemming.Skill.BUILDER):
+			s["b2"] = builder.id

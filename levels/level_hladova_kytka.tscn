@@ -1,0 +1,48 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_tools/level_definition.gd" id="1_def"]
+[ext_resource type="Script" path="res://level_tools/terrain_shape.gd" id="2_shape"]
+[ext_resource type="Script" path="res://level_tools/lemming_hatch.gd" id="3_hatch"]
+[ext_resource type="Script" path="res://level_tools/lemming_exit.gd" id="4_exit"]
+[ext_resource type="Script" path="res://level_tools/lemming_trap.gd" id="5_trap"]
+
+[node name="HladovaKytka" type="Node2D"]
+script = ExtResource("1_def")
+title = "Hladová kytka"
+level_id = "hladova-kytka"
+size = Vector2i(440, 160)
+lemming_count = 20
+save_required = 14
+release_rate = 10
+time_limit_seconds = 240
+bombers = 1
+blockers = 1
+builders = 2
+master_saved = 18
+difficulty_index = 37
+introduces = "Past se dobíjí"
+briefing = "Za kamenným stupněm hlídá cestu masožravá kytka. Kolik lumíků spolkne?"
+hints = PackedStringArray("Kytka se po jídle chvíli dobíjí.", "Postav schody na stupeň a pak zvyš vypouštění – hustý dav proběhne, než se kytka dobije. Ještě hustší dav nashromáždí blokař.")
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Meadow" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 110, 70, 109, 150, 110, 150, 102, 180, 101, 210, 102, 210, 110, 300, 111, 380, 109, 440, 110, 440, 160, 0, 160)
+script = ExtResource("2_shape")
+
+[node name="LeftRock" type="Polygon2D" parent="Terrain"]
+polygon = PackedVector2Array(0, 30, 8, 26, 14, 40, 12, 80, 16, 112, 0, 112)
+script = ExtResource("2_shape")
+
+[node name="Hatch" type="Marker2D" parent="."]
+position = Vector2(50, 80)
+script = ExtResource("3_hatch")
+
+[node name="Exit" type="Marker2D" parent="."]
+position = Vector2(400, 110)
+script = ExtResource("4_exit")
+
+[node name="Trap" type="Marker2D" parent="."]
+position = Vector2(290, 111)
+script = ExtResource("5_trap")
+rearm_ticks = 60
