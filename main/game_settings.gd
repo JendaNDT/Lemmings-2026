@@ -29,6 +29,8 @@ var volumes := {"master": 1.0, "sfx": 1.0, "ui": 1.0, "ambient": 1.0, "music": 1
 var fullscreen := false
 var stop_motion := true
 var show_fps := false
+## Minimapa v rohu herní plochy.
+var minimap := true
 var ui_scale := 1.0
 var quality := Quality.HIGH
 var edge_scroll := true
@@ -76,7 +78,7 @@ func to_dict() -> Dictionary:
 	return {
 		"audio": {"muted": muted, "volumes": volumes.duplicate()},
 		"display": {"fullscreen": fullscreen, "stop_motion": stop_motion, "show_fps": show_fps,
-			"ui_scale": ui_scale, "quality": int(quality)},
+			"minimap": minimap, "ui_scale": ui_scale, "quality": int(quality)},
 		"controls": {"edge_scroll": edge_scroll, "scroll_speed": scroll_speed,
 			"tap_reach": tap_reach, "confirm_nuke": confirm_nuke},
 		"game": {"flyover": flyover, "unlock_all": unlock_all},
@@ -94,6 +96,7 @@ func from_dict(data: Dictionary) -> void:
 	fullscreen = _bool(display, "fullscreen", fullscreen)
 	stop_motion = _bool(display, "stop_motion", stop_motion)
 	show_fps = _bool(display, "show_fps", show_fps)
+	minimap = _bool(display, "minimap", minimap)
 	ui_scale = _choice(_number(display, "ui_scale", ui_scale), UI_SCALES)
 	quality = clampi(roundi(_number(display, "quality", quality)), Quality.LOW, Quality.HIGH)
 	var controls := _section(data, "controls")
@@ -113,6 +116,7 @@ func set_value(key: String, value: Variant) -> void:
 		"fullscreen": fullscreen = bool(value)
 		"stop_motion": stop_motion = bool(value)
 		"show_fps": show_fps = bool(value)
+		"minimap": minimap = bool(value)
 		"ui_scale": ui_scale = _choice(float(value), UI_SCALES)
 		"quality": quality = clampi(int(value), Quality.LOW, Quality.HIGH)
 		"edge_scroll": edge_scroll = bool(value)

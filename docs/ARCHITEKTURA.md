@@ -80,6 +80,7 @@ U nás je to stejné:
 | `lemming.gd` | Data jednoho lumíka: pozice, směr, stav, počítadla. |
 | `level_spec.gd` | Pravidla levelu: kolik lumíků, kolik zachránit, dovednosti, čas, pasti. |
 | `level_sim.gd` | Srdce hry: vypouští lumíky, každý krok je posune, hlídá východ a konec levelu. |
+| `skill_rules.gd` | Pravidla přidělování dovedností: kterou práci dovednost spouští, proč ji lumík nemůže dostat (`Refusal`, text volí rozhraní) a kolik lumíků stojí v bodě. |
 | `states/*.gd` | Jeden soubor = jeden stav lumíka. |
 
 ### Stavy lumíka (stavový automat)
@@ -241,6 +242,8 @@ App (main/app.gd)
 | `main/campaign.gd` | `Campaign`: pořadí misí, kapitoly, Hřiště, číslo mise z pořadí, prahy hvězd; údaje čte ze scén bez vytvoření. |
 | `ui/briefing_card.gd` | `BriefingCard`: úvodní karta mise (cíl, dovednosti s popisem, novinka, pásmo, hvězdy). |
 | `ui/flyover_hint.gd` | `FlyoverHint`: průhledná vrstva přeletu mapy; první klepnutí přelet přeskočí a nic nepřidělí. |
+| `ui/play_info.gd` | `PlayInfo`: štítek nad lumíkem pod kurzorem nebo prstem (stav, směr, vlastnosti, dav, důvod odmítnutí) a krátká hláška, proč přidělení nevyšlo. Vstup nepřijímá. |
+| `ui/minimap.gd` | `Minimap`: zmenšený přehled mise s lumíky a rámečkem záběru; klepnutí pošle `focus_requested`, kameru přesune hra. Simulaci jen čte. |
 | `ui/menu_screens.gd`, `ui/settings_panel.gd`, `ui/menu_backdrop.gd` | Obrazovky menu, nastavení (sdílené s pauzou ve hře) a pozadí. |
 | `ui/paper_ui.gd` | `PaperUi`: společný papírový vzhled HUDu i menu. |
 

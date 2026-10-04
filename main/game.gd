@@ -59,6 +59,8 @@ var _demo_seen := false
 var _snapshots: Array[LevelSim] = []
 ## Běží přelet mapy (po úvodní kartě): čas stojí, klepnutí ho přeskočí.
 var _flyover := false
+## Prst drží na herní ploše bez posunu: kde (náhled cíle), jinak INF.
+var _touch_preview := Vector2.INF
 
 @onready var _world: Node2D = $World
 @onready var _terrain_view: TerrainView = $World/TerrainView
@@ -82,6 +84,14 @@ func _ready() -> void:
 	_hud.menu_action.connect(_on_menu_action)
 	_hud.briefing.closed.connect(_on_briefing_closed)
 	_hud.flyover.skipped.connect(func() -> void: _end_flyover())
+	_hud.minimap.focus_requested.connect(func(point: Vector2) -> void:
+		if _view != null and not _flyover:
+			_view.camera.focus = point
+			_view.camera.refresh())
+	_hud.skill_unavailable.connect(func(skill: int) -> void:
+		if not _sim.finished and not _demo:
+			_audio.play_ui("deny")
+			_hud.info.show_notice(PlayInfo.refusal_text(SkillRules.Refusal.NO_SKILL, skill, null)))
 	_hud.skill_selected.connect(_select_skill)
 	_hud.release_rate_step.connect(_change_release_rate)
 	_hud.pause_pressed.connect(_toggle_pause)
@@ -107,6 +117,7 @@ func _ready() -> void:
 		_touch = TouchControls.new()
 		_touch.camera = _view.camera
 		_touch.tapped = _try_assign_touch
+		_touch.preview = func(point: Vector2) -> void: _touch_preview = point
 	_apply_settings()
 	_load_level()
 
@@ -215,7 +226,12 @@ func _process(delta: float) -> void:
 		_fx_view.handle_events(events)
 		_lemmings_view.alpha = alpha
 
+	var pointer := get_viewport().get_mouse_position()
 	var hovered := _sim.find_lemming_at(mouse_logic_position(), _selected_skill)
+	if _view != null and _touch_preview != Vector2.INF:
+		# Prst drží na ploše: zvýraznit lumíka, kterého klepnutí zasáhne.
+		pointer = _touch_preview
+		hovered = _touch_target(_touch_preview)
 	if _demo and _demo_focus >= 0 and _sim.tick_count < _demo_focus_until \
 			and not _sim.lemmings[_demo_focus].removed:
 		hovered = _sim.lemmings[_demo_focus]
@@ -226,7 +242,9 @@ func _process(delta: float) -> void:
 	var cursor := Input.CURSOR_CROSS if hovered != null else Input.CURSOR_ARROW
 	if Input.get_current_cursor_shape() != cursor:
 		Input.set_default_cursor_shape(cursor)
+	_show_target_info(hovered, pointer)
 
+	_update_minimap()
 	# Při přeletu vypadá lišta jako za běhu (čas se rozběhne hned po něm).
 	_hud.refresh(_paused and not _flyover, _speed)
 	if _sim.finished and not _result_shown:
@@ -306,6 +324,10 @@ func _overlay_input(event: InputEvent) -> bool:
 
 func _input(event: InputEvent) -> void:
 	if _touch != null and not _result_shown and not _overlay_open():
+		# Dotyk začatý na minimapě patří jí (posouvá pohled), ne herní ploše.
+		if event is InputEventScreenTouch and event.pressed and _hud.minimap.visible \
+				and _hud.minimap.get_global_rect().has_point(event.position):
+			return
 		_touch.handle(event, get_viewport().get_visible_rect().size)
 
 
@@ -344,22 +366,31 @@ func _notification(what: int) -> void:
 func _try_assign_touch(screen_point: Vector2) -> void:
 	if _selected_skill < 0 or _sim.finished or _overlay_open() or _demo:
 		return
+	var target := _touch_target(screen_point)
+	if target != null and not _sim.assign_skill(target, _selected_skill):
+		# Klepnutí na postavu, které dovednost přidělit nejde: zvuk a důvod.
+		_refuse(target)
+
+
+## Koho zasáhne klepnutí: nejbližší lumík v dotykovém dosahu, kterému jde
+## vybraná dovednost dát; když žádný, nejbližší živý (kvůli vysvětlení proč ne).
+func _touch_target(screen_point: Vector2) -> Lemming:
 	var best: Lemming = null
 	var best_distance := settings.tap_reach
-	# Větší dotykový dosah, ale stále jen mezi cíli, jimž lze dovednost přidělit.
+	var nearest: Lemming = null
+	var nearest_distance := settings.tap_reach
 	for lem in _sim.lemmings:
-		if not _sim.can_assign(lem, _selected_skill):
+		if lem.removed:
 			continue
 		var position: Vector2 = _view.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5))
 		var distance := screen_point.distance_to(position)
-		if distance < best_distance:
+		if distance < best_distance and _sim.can_assign(lem, _selected_skill):
 			best = lem
 			best_distance = distance
-	if best != null:
-		_sim.assign_skill(best, _selected_skill)
-	elif _nearest_lemming_distance(screen_point) < settings.tap_reach:
-		# Klepnutí na postavu, které dovednost přidělit nejde (už ji má, došly kusy…).
-		_audio.play_ui("deny")
+		if distance < nearest_distance and lem.state not in LevelSim.DYING_STATES:
+			nearest = lem
+			nearest_distance = distance
+	return best if best != null else nearest
 
 
 func _try_assign(screen_point: Vector2) -> void:
@@ -367,16 +398,48 @@ func _try_assign(screen_point: Vector2) -> void:
 		return
 	var lem := _sim.find_lemming_at(logic_position(screen_point), _selected_skill)
 	if lem != null and not _sim.assign_skill(lem, _selected_skill):
-		_audio.play_ui("deny")
+		_refuse(lem)
 
 
-func _nearest_lemming_distance(screen_point: Vector2) -> float:
-	var best := INF
-	for lem in _sim.lemmings:
-		if not lem.removed:
-			var position: Vector2 = _view.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 5))
-			best = minf(best, screen_point.distance_to(position))
-	return best
+## Minimapa sleduje aktuální simulaci (i po přetočení a v ukázce) a záběr kamery.
+func _update_minimap() -> void:
+	var minimap := _hud.minimap
+	if _view == null:
+		minimap.hide()
+		return
+	if minimap.sim != _sim:
+		minimap.setup(_sim)
+	minimap.visible = minimap.enabled
+	var vp := get_viewport().get_visible_rect().size
+	var top_left: Vector2 = _view.camera.screen_to_logic(Vector2(0.0, _hud.top_bar_height()))
+	var bottom_right: Vector2 = _view.camera.screen_to_logic(
+		Vector2(vp.x, vp.y - _hud.bottom_bar_height()))
+	minimap.view_rect = Rect2(top_left, bottom_right - top_left)
+
+
+## Dovednost nešla přidělit: zvuk odmítnutí a krátká hláška proč.
+func _refuse(lem: Lemming) -> void:
+	_audio.play_ui("deny")
+	_hud.info.show_notice(PlayInfo.refusal_text(SkillRules.refusal(_sim, lem, _selected_skill),
+		_selected_skill, lem))
+
+
+## Štítek nad lumíkem pod kurzorem nebo prstem: co dělá, dav a proč nejde
+## vybraná dovednost. Mimo herní plochu, v oknech a po konci mise zmizí.
+func _show_target_info(lem: Lemming, pointer: Vector2) -> void:
+	var visible := get_viewport().get_visible_rect()
+	var in_play := pointer.y > _hud.top_bar_height() \
+		and pointer.y < visible.size.y - _hud.bottom_bar_height()
+	if lem == null or _view == null or _sim.finished or _overlay_open() or not in_play \
+			or (DeviceProfile.touch_mode() and _touch_preview == Vector2.INF and not _demo):
+		_hud.info.show_target(null, Vector2.ZERO, 0, "")
+		return
+	var refusal := SkillRules.refusal(_sim, lem, _selected_skill) if _selected_skill >= 0 \
+		else SkillRules.Refusal.NONE
+	var reason := "" if _demo or refusal in [SkillRules.Refusal.NONE, SkillRules.Refusal.GONE,
+		SkillRules.Refusal.FINISHED] else PlayInfo.refusal_text(refusal, _selected_skill, lem)
+	var head: Vector2 = _view.camera.logic_to_screen(Vector2(lem.x + 0.5, lem.y - 13))
+	_hud.info.show_target(lem, head, SkillRules.crowd_at(_sim, logic_position(pointer)), reason)
 
 
 ## Kde zvuk zní: místo v prostoru, ve kterém poslouchá obrazovka.
@@ -644,6 +707,7 @@ func _apply_settings() -> void:
 	_hud.set_sound(not settings.muted)
 	_hud.show_fps(settings.show_fps)
 	_hud.set_ui_scale(settings.ui_scale)
+	_hud.minimap.enabled = settings.minimap
 	var top := _hud.top_bar_height()
 	var bottom := _hud.bottom_bar_height()
 	_camera.top_padding = top

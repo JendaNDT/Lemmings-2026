@@ -18,6 +18,8 @@ signal nuke_decided(confirmed: bool)
 signal sound_pressed
 ## Tlačítko Menu (otevře pauzovací menu).
 signal menu_pressed
+## Klepnutí na dovednost, které už nezbývá žádný kus.
+signal skill_unavailable(skill: int)
 ## Volba v pauzovacím menu nebo ve výsledku: "resume", "restart", "next",
 ## "levels", "main_menu", "demo" (ukázka řešení).
 signal menu_action(action: String)
@@ -55,6 +57,10 @@ var settings: GameSettings
 var briefing: BriefingCard
 ## Vrstva přeletu mapy (ukazuje ji hra po úvodní kartě).
 var flyover: FlyoverHint
+## Štítek nad lumíkem a hlášky při hraní (proč dovednost nejde dát).
+var info: PlayInfo
+## Minimapa v pravém horním rohu herní plochy.
+var minimap: Minimap
 ## Velikost rozhraní (1.0 = návrhová); lišty se zvětší, herní plocha zmenší.
 var ui_scale := 1.0
 var _sim: LevelSim
@@ -206,6 +212,9 @@ func show_fps(enabled: bool) -> void:
 ## Velikost rozhraní: lišty a dialogy se zvětší, herní plocha je pod nimi.
 func set_ui_scale(value: float) -> void:
 	ui_scale = value
+	minimap.ui_scale = value
+	if minimap.sim != null:
+		minimap.setup(minimap.sim)
 	_fit()
 
 
@@ -388,6 +397,10 @@ func _build() -> void:
 	_skills_box.add_theme_constant_override("separation", int(SKILL_GAP))
 	rows.add_child(_skills_box)
 
+	info = PlayInfo.new()
+	_root.add_child(info)
+	minimap = Minimap.new()
+	_root.add_child(minimap)
 	_build_result()
 	_build_pause_menu()
 	flyover = FlyoverHint.new()
@@ -546,6 +559,10 @@ func _add_skill_button(skill: int, hotkey: int) -> void:
 	button.tooltip_text = SKILL_TIPS[skill]
 	button.toggle_mode = true
 	button.pressed.connect(func() -> void: skill_selected.emit(skill))
+	# Vypnuté tlačítko (došly kusy) aspoň řekne proč.
+	button.gui_input.connect(func(event: InputEvent) -> void:
+		if button.disabled and event is InputEventMouseButton and event.is_pressed():
+			skill_unavailable.emit(skill))
 	var icon := TextureRect.new()
 	icon.texture = PaperUi.icon(SKILL_ICONS[skill])
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE

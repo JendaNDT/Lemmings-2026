@@ -8,6 +8,9 @@ const DRAG_THRESHOLD := 14.0
 const MAX_ZOOM_STEP := 1.5
 var camera
 var tapped := Callable()
+## Náhled cíle: volá se s bodem dotyku, dokud jde o klepnutí (prst drží bez
+## posunu), a s Vector2.INF, když se z dotyku stane posun, gesto nebo konec.
+var preview := Callable()
 var _points: Dictionary = {}
 var _start := Vector2.ZERO
 var _moved := false
@@ -16,6 +19,12 @@ var _moved := false
 func clear() -> void:
 	_points.clear()
 	_moved = false
+	_preview(Vector2.INF)
+
+
+func _preview(point: Vector2) -> void:
+	if preview.is_valid():
+		preview.call(point)
 
 
 func handle(event: InputEvent, viewport_size: Vector2) -> void:
@@ -34,12 +43,15 @@ func _touch(event: InputEventScreenTouch, viewport_size: Vector2) -> void:
 		if _points.size() == 1:
 			_start = event.position
 			_moved = false
+			_preview(event.position)
 		else:
 			_moved = true
+			_preview(Vector2.INF)
 	elif _points.has(event.index):
 		var is_tap := _points.size() == 1 and not _moved and not event.canceled \
 			and event.position.distance_to(_start) < DRAG_THRESHOLD
 		_points.erase(event.index)
+		_preview(Vector2.INF)
 		if is_tap and tapped.is_valid():
 			tapped.call(event.position)
 
@@ -53,6 +65,7 @@ func _drag(event: InputEventScreenDrag) -> void:
 		if not _moved and event.position.distance_to(_start) < DRAG_THRESHOLD:
 			return
 		_moved = true
+		_preview(Vector2.INF)
 		camera.pan_screen(previous, event.position)
 		return
 	# Dva prsty současně posouvají i přibližují kolem svého středu.

@@ -110,6 +110,16 @@ func _test_settings() -> void:
 	check(not odd.muted and odd.volumes["sfx"] == 1.0 and odd.volumes["ui"] == 0.0
 		and odd.volumes["ambient"] == 1.0 and odd.scroll_speed == 1.6 and odd.stop_motion,
 		"nesmyslné nebo neznámé položky se nahradí výchozími")
+	# Nastavení ze starší verze (0.12 a dřív) nemá přelet ani minimapu: obojí zapnuto,
+	# uložené volby zůstanou.
+	var older := GameSettings.new()
+	older.from_dict({"audio": {"muted": true}, "display": {"stop_motion": false,
+		"ui_scale": 1.3, "quality": 0}, "controls": {"confirm_nuke": false},
+		"game": {"unlock_all": true}})
+	check(older.flyover and older.minimap and older.muted and not older.stop_motion
+		and older.ui_scale == 1.3 and older.quality == GameSettings.Quality.LOW
+		and not older.confirm_nuke and older.unlock_all,
+		"nastavení ze starší verze: nové volby (přelet, minimapa) výchozí, staré zůstanou")
 	# Novější verze formátu: načte se, co známe, a původní soubor zůstane vedle.
 	SaveFile.write(path, {"audio": {"muted": true}, "novinka": {"x": 1}}, GameSettings.FORMAT + 1)
 	var newer := GameSettings.load_from(path)

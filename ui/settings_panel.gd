@@ -136,6 +136,7 @@ func _build_display(page: VBoxContainer) -> void:
 		["Nízká", "Střední", "Vysoká"])
 	page.add_child(_hint("Nízká vypne zrnitost papíru, světlo, opar, popředí a mraky; "
 		+ "šetří výkon slabších telefonů. Hra se hraje stejně."))
+	_toggle(page, "minimap", "Minimapa v rohu (klepnutím přesuneš pohled)")
 	_toggle(page, "show_fps", "Ukazovat snímky za sekundu (FPS)")
 
 
@@ -148,12 +149,14 @@ func _build_controls(page: VBoxContainer) -> void:
 		["Běžný", "Velký"])
 	_toggle(page, "confirm_nuke", "Ptát se před „Odpálit vše“")
 	if DeviceProfile.touch_mode():
-		page.add_child(_hint("Klepni na dovednost a pak na postavu. Jedním prstem posouváš "
-			+ "krajinu, dvěma přibližuješ. Tlačítko Zpět otevře menu."))
+		page.add_child(_hint("Klepni na dovednost a pak na postavu – dokud prst držíš, "
+			+ "štítek ukáže, koho zasáhneš. Jedním prstem posouváš krajinu, dvěma přibližuješ. "
+			+ "Tlačítko Zpět otevře menu."))
 	else:
 		page.add_child(_hint("Myš: levé tlačítko přidělí dovednost, pravé nebo prostřední "
 			+ "táhne kamerou, kolečko přibližuje. Klávesy: 1–8 dovednosti, mezerník pauza, "
-			+ "F zrychlení, R znovu, N odpálit vše, T zvuk, M pohyb postav, Esc menu."))
+			+ "tečka krok o tik, Backspace −5 s, F rychlost, R znovu, N odpálit vše, T zvuk, "
+			+ "M pohyb postav, Esc menu."))
 
 
 func _build_game(page: VBoxContainer) -> void:

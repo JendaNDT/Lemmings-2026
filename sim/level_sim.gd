@@ -153,22 +153,9 @@ func remove_lemming(lem: Lemming, was_saved: bool) -> void:
 
 # --- Přidělování dovedností ----------------------------------------------------
 
+## Jde lumíkovi dovednost přidělit? Důvody odmítnutí: SkillRules.refusal().
 func can_assign(lem: Lemming, skill: int) -> bool:
-	if lem == null or lem.removed or finished:
-		return false
-	if (lem.id < 0 or lem.id >= lemmings.size() or lemmings[lem.id] != lem
-			or int(skills.get(skill, 0)) <= 0
-			or lem.state in DYING_STATES):
-		return false
-	match skill:
-		Lemming.Skill.CLIMBER:
-			return not lem.can_climb
-		Lemming.Skill.FLOATER:
-			return not lem.has_floater
-		Lemming.Skill.BOMBER:
-			return lem.bomb_ticks < 0
-	var target := _state_for_skill(skill)
-	return target >= 0 and lem.state in Lemming.WORKING_STATES and lem.state != target
+	return SkillRules.refusal(self, lem, skill) == SkillRules.Refusal.NONE
 
 
 func assign_skill(lem: Lemming, skill: int) -> bool:
@@ -217,24 +204,9 @@ func _assign_skill_command(target: int, skill: int) -> bool:
 		Lemming.Skill.BOMBER:
 			lem.bomb_ticks = SimConst.BOMB_TICKS
 		_:
-			set_state(lem, _state_for_skill(skill) as Lemming.State)
+			set_state(lem, SkillRules.state_for_skill(skill) as Lemming.State)
 	emit_event("assign", lem)
 	return true
-
-
-func _state_for_skill(skill: int) -> int:
-	match skill:
-		Lemming.Skill.BLOCKER:
-			return Lemming.State.BLOCKER
-		Lemming.Skill.BUILDER:
-			return Lemming.State.BUILDER
-		Lemming.Skill.BASHER:
-			return Lemming.State.BASHER
-		Lemming.Skill.DIGGER:
-			return Lemming.State.DIGGER
-		Lemming.Skill.MINER:
-			return Lemming.State.MINER
-	return -1
 
 
 func start_nuke() -> bool:

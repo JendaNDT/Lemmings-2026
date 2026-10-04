@@ -22,23 +22,38 @@ Podzemní vodopád 58, Hluboká šachta 67) – **kampaň má 24 misí**, všech
 v cílových pásmech.
 2.5D zobrazení je vyřazené. [Ověření](docs/ETAPA_9_OVERENI.md).
 
+**Etapa 10 – pohodlí a betatest** je technicky hotová: hra řekne, proč
+dovednost nejde dát, štítek nad lumíkem ukáže, co dělá a kolik jich je
+v davu, prst držený na ploše předem ukáže cíl, v rohu je minimapa.
+Maraton celé kampaně a kontrola devíti rozlišení prošly
+([ověření](docs/ETAPA_10_OVERENI.md)).
+
 Další kroky:
-1. **Vyzkoušet APK 0.14.0 na telefonu** – aktualizuje 0.13.0 bez ztráty
-   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.14.0/android/Lemmings-2026-Android-0.14.0.apk).
-   Zajímá mě: jak se ti hrají patrové mise v podzemí (5, 11, 17, 21)
-   a jak se ti líbí jeskyně, jestli je přelet mapy příjemný, jestli
-   déšť, jiskry a prach nezpomalují telefon a jestli obtížnost roste plynule.
-   [Návod](docs/ANDROID_DEMO.md).
+1. **Vyzkoušet APK 0.15.0 na telefonu** – aktualizuje 0.14.0 bez ztráty
+   postupu: [stáhnout](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.15.0/android/Lemmings-2026-Android-0.15.0.apk).
+   Zajímá mě: je štítek nad lumíkem a hláška čitelná, pomáhá náhled cíle
+   při držení prstu, je minimapa užitečná a nepřekáží, a jak se hrají
+   patrové mise v podzemí (5, 11, 17, 21). [Návod](docs/ANDROID_DEMO.md).
 2. **Podpisový klíč natrvalo** – export hlídá stálý podpis, ale klíč žije
    jen v tomto cloudovém prostředí; jeho přenos mimo něj čeká na tvé
    rozhodnutí (viz Známé bugy).
-3. Ladění obtížnosti podle tvého hraní (hlavně kapitola IV).
+3. Ladění obtížnosti a případně výběr podle směru podle tvého hraní.
+4. Pak etapa 11 – vydání 1.0 (název, ikona, licence, Windows).
 
 Etapa 4 je technicky dokončená: osm dovedností, tři zkušební mise a hřiště.
 [Ověření etapy 4](docs/ETAPA_4_OVERENI.md), [plán dvanácti etap](docs/PLAN_VYVOJE.md).
 Nativní běh a výkon na Macu a Androidu zbývají ověřit, Windows jsou odložené na závěr.
 
 ## ✅ Hotovo
+- **Etapa 10 – pohodlí a betatest:** důvod, proč dovednost nejde dát
+  (`SkillRules` v simulaci, hláška nad lištou), **štítek nad lumíkem**
+  (co dělá, trvalé vlastnosti, počet v davu, důvod odmítnutí),
+  **náhled cíle** při držení prstu, **minimapa** s rámečkem záběru
+  (klepnutím přesune pohled, vypnout jde v Nastavení). Maraton celé
+  kampaně v jedné aplikaci (24/24, bez úniku uzlů a paměti), kontrola
+  devíti rozlišení po 100 % a 130 % (oprava: na telefonu s rozhraním
+  130 % se nevešla 7. karta mise) a měření výkonu logiky (pod 5 ms).
+  Testy `test_comfort`, skripty `scripts/soak.gd`, `scripts/qa_resolutions.gd`.
 - **Android APK 0.14.0** ve větvi `downloads/android-0.14.0` (versionCode
   15, stejný podpis): patrové mise v podzemí, 24 misí. Herní soubory z APK
   prošly průchodem menu a všechny čtyři patrové mise se spustily v podzemí.

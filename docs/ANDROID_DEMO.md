@@ -1,30 +1,32 @@
-# Android demo 0.14.0
+# Android demo 0.15.0
 
-Vývojové APK se **čtyřmi patrovými misemi v podzemí** (jedna v každé
+Vývojové APK s **pomocí při hraní** (etapa 10): hláška, proč dovednost
+nejde dát, štítek nad lumíkem (co dělá, kolik jich je v davu), náhled
+cíle při držení prstu a **minimapa** v rohu. Dál má **čtyři patrové mise v podzemí** (jedna v každé
 kapitole, kampaň má 24 misí) a novým prostředím jeskyně a dolu,
 **přeletem mapy** na začátku mise a **šipkou k východu** mimo záběr, vlastním vzhledem
 každé kapitoly (louka, skalní les, sopka s jiskrami, bouřka s deštěm
 a blesky), přetočením o 5 s, pomocníky (krok o tik, zpomalení ½×, ukázka
-řešení každé mise) a **celou kampaní – 20 misí ve čtyřech kapitolách**
+řešení každé mise) a **celou kampaní – 24 misí ve čtyřech kapitolách**
 s hvězdami, úvodními kartami misí, nápovědou a Hřištěm (etapa 9), dále
 menu, ukládáním postupu, origami grafikou a zvuky. Hudba přijde později.
-Popis změn: [etapa 9](ETAPA_9_OVERENI.md), [herní design](HERNI_DESIGN.md),
+Popis změn: [etapa 10](ETAPA_10_OVERENI.md), [etapa 9](ETAPA_9_OVERENI.md), [herní design](HERNI_DESIGN.md),
 [etapa 6](ETAPA_6_OVERENI.md), [zvuky](ZVUK.md).
 
 ![Patrové mise z herních souborů APK 0.14.0: Důlní patra, Mraveniště, Podzemní vodopád a Hluboká šachta (Linux, ne telefon)](images/android-0.14.0.jpg)
 
 ## Stažení a instalace
 
-[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.14.0/android/Lemmings-2026-Android-0.14.0.apk) (70 MiB).
+[Stáhnout APK z GitHubu](https://github.com/JendaNDT/Lemmings-2026/raw/refs/heads/downloads/android-0.15.0/android/Lemmings-2026-Android-0.15.0.apk) (70 MiB).
 
-Soubor `Lemmings-2026-Android-0.14.0.apk` je v samostatné větvi
-`downloads/android-0.14.0`, spolu s návodem a SHA-256 kontrolním součtem.
-Starší APK zůstávají ve větvích `downloads/android-0.13.0` a dřívějších.
+Soubor `Lemmings-2026-Android-0.15.0.apk` je v samostatné větvi
+`downloads/android-0.15.0`, spolu s návodem a SHA-256 kontrolním součtem.
+Starší APK zůstávají ve větvích `downloads/android-0.14.0` a dřívějších.
 Stáhnout na telefon nebo tablet, otevřít a případně povolit instalaci
 z použitého prohlížeče či správce souborů. Hra se jmenuje
 **Lemmings 2026 Demo** a běží na šířku.
 
-**Aktualizace z 0.5.0 až 0.13.0** proběhne přímo (stejný testovací
+**Aktualizace z 0.5.0 až 0.14.0** proběhne přímo (stejný testovací
 podpis) a uložený postup i hvězdy zůstanou. Z verze 0.4.0 a starší je potřeba
 nejdřív odinstalovat (jiný podpis).
 
@@ -35,11 +37,11 @@ má otevřené i nové mise před ní. Všechny mise hned otevře
 
 - Android 7.0 / API 24 a novější, OpenGL ES 3.0.
 - Architektury `arm64-v8a` a `armeabi-v7a` v jednom APK.
-- Verze 0.14.0, versionCode 15, balíček `org.lemmings2026.demo`.
+- Verze 0.15.0, versionCode 16, balíček `org.lemmings2026.demo`.
 - Target SDK 36; aplikace nepožaduje žádná Android oprávnění.
 - Testovací podpis, schémata v2/v3. Není určený pro vydání do Google Play;
   soukromý klíč je mimo repozitář i předávané artefakty.
-  Certifikát SHA-256 (stejný jako 0.5.0–0.13.0, ověřuje ho export):
+  Certifikát SHA-256 (stejný jako 0.5.0–0.14.0, ověřuje ho export):
   `fdb924fa25c6dfec478caa66dd8ba03ec91909d475de240d9213a50f6681407f`.
 
 SHA-256 APK: `dd137a891235c8c1d1618e5110e0b89bed2e48db44ba7d267812f0c8a80189ef`.
@@ -73,7 +75,16 @@ se pamatuje). **Odpálit vše** vyžaduje potvrzení; v dialogu se čas zastaví
 a klepnutí nepřidělí dovednost postavě pod oknem.
 
 Dotykový výběr má širší dosah (v nastavení Běžný / Velký) a vybírá
-nejbližší postavu, které lze aktuální dovednost přidělit. Přechod na pozadí
+nejbližší postavu, které lze aktuální dovednost přidělit. Dokud prst drží
+na ploše bez posunu, postava, kterou klepnutí zasáhne, se zvýrazní a štítek
+nad ní ukáže, co dělá, kolik lumíků je v davu a případně proč jí vybraná
+dovednost nejde dát. Když přidělení nevyjde, hláška nad lištou řekne proč
+(„Tenhle lumík už kope.“, „Ve vzduchu jde dát jen lezec, padák nebo
+bomba.“, „Kopáč: už nezbývá žádný.“).
+
+**Minimapa** v pravém horním rohu ukazuje celou misi, lumíky a rámeček
+záběru; klepnutí nebo tažení po ní přesune pohled a nic nepřidělí.
+Vypnout jde v Nastavení → Zobrazení. Přechod na pozadí
 vždy hru pozastaví a vymaže rozpracovaná gesta. Obnovení pohybu zůstává
 na hráči. Telefon začíná na střední kvalitě efektů; počítadlo FPS
 a velikost rozhraní jsou v Nastavení → Zobrazení.

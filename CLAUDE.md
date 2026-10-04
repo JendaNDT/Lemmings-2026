@@ -81,6 +81,11 @@
 - Přelet mapy (`PaperFlyover`, vrstva `FlyoverHint`) a ukazatele k východu
   (`PaperGuide`) jsou jen vzhled: simulace během přeletu stojí, kamera
   zůstává jediným převodem a první klepnutí přelet jen přeskočí.
+- Proč dovednost nejde dát, rozhoduje jen `SkillRules.refusal()` (sim);
+  `can_assign()` je zkratka. Texty hlášek jsou v `PlayInfo`. Minimapa
+  (`Minimap`) simulaci jen čte, kameru přesouvá hra; dotyk začatý na ní
+  nepatří herní ploše. Po změně kampaně nebo HUD spustit
+  `scripts/soak.gd` a `scripts/qa_resolutions.gd`.
 
 ## Výtvarná reference
 - Kapitoly mají vlastní vzhled (`PaperTheme`, krajiny z

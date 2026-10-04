@@ -171,6 +171,14 @@ Prověřit dlouhé hraní, opakované přechody a restarty, různá rozlišení,
 
 **Podmínka dokončení:** nejsou známé chyby způsobující pád, ztrátu postupu nebo nemožnost dokončit level; hra splňuje dohodnutou výkonnost a čitelnost.
 
+**Stav (4. 10. 2026):** hotové vysvětlení nedostupných dovedností
+(důvod v `SkillRules`, hláška a štítek nad lumíkem), výběr v davu
+a zvýraznění cíle (počet v davu, náhled cíle při držení prstu), minimapa,
+maraton celé kampaně bez úniku paměti a uzlů, kontrola devíti rozlišení
+(oprava karet misí na telefonu se zvětšeným rozhraním) a měření
+výkonu logiky ([ověření](ETAPA_10_OVERENI.md)). Zbývá betatest na
+telefonu (čitelnost, výkon vykreslování) a podle něj výběr podle směru.
+
 ## Etapa 11 — Vydání 1.0
 
 Dokončit vlastní veřejný název, ikonu, titulky, licence, návod a známá omezení. Připravit opakovatelné exporty, verzování a distribuci. Na skutečných Windows bez vývojových nástrojů provést dosud odložené ověření spuštění, grafických ovladačů, ovládání, celé kampaně, ukládání a aktualizací. Zjištěné problémy s kompatibilitou opravit před vydáním.

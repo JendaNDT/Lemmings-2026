@@ -13,6 +13,13 @@ signal reset_requested
 ## Zvuk kliknutí (přehraje App, menu samo zvuk nemá).
 signal clicked
 
+## Výška karty mise a nejmenší výška, když se tři řady karet nevejdou
+## (telefon se zvětšeným rozhraním); okolí mřížky na obrazovce misí.
+const CARD_HEIGHT := 150.0
+const CARD_MIN_HEIGHT := 104.0
+const CARD_GAP := 14.0
+const LEVELS_CHROME := 196.0
+
 var settings: GameSettings
 var progress: Progress
 var ui_scale := 1.0
@@ -294,8 +301,8 @@ func _build_levels() -> void:
 	_grid.columns = 3
 	# Stejná šířka i pro kapitolu s jedinou misí (3 karty + mezery).
 	_grid.custom_minimum_size = Vector2(3 * 300 + 2 * 14, 0)
-	_grid.add_theme_constant_override("h_separation", 14)
-	_grid.add_theme_constant_override("v_separation", 14)
+	_grid.add_theme_constant_override("h_separation", int(CARD_GAP))
+	_grid.add_theme_constant_override("v_separation", int(CARD_GAP))
 	col.add_child(_grid)
 	for i in Campaign.count():
 		var card := _make_card(i)
@@ -304,7 +311,7 @@ func _build_levels() -> void:
 
 
 func _make_card(index: int) -> Button:
-	var card := PaperUi.button("", Vector2(300, 150))
+	var card := PaperUi.button("", Vector2(300, CARD_HEIGHT))
 	card.pressed.connect(func() -> void:
 		clicked.emit()
 		var resume: bool = progress.has_suspended() \
@@ -377,3 +384,24 @@ func _fit() -> void:
 	var vp := get_viewport().get_visible_rect().size
 	_root.scale = Vector2(ui_scale, ui_scale)
 	_root.size = vp / ui_scale
+	_fit_cards()
+
+
+## Karty se na nízké obrazovce zmenší, aby se vešly řady nejdelší kapitoly;
+## hvězdy a tečky se pak posunou níž.
+func _fit_cards() -> void:
+	var longest := 1
+	for chapter: Array in Campaign.CHAPTERS:
+		longest = maxi(longest, int(chapter[3]))
+	var rows := ceili(longest / 3.0)
+	var room := (_root.size.y - LEVELS_CHROME - CARD_GAP * (rows - 1)) / rows
+	var height := clampf(room, CARD_MIN_HEIGHT, CARD_HEIGHT)
+	var compact := height < CARD_HEIGHT - 20.0
+	for card in cards:
+		card.custom_minimum_size.y = height
+		var marks := card.get_node("Marks") as Control
+		marks.offset_top = -34.0 if compact else -40.0
+		marks.offset_bottom = -8.0 if compact else -12.0
+		var badge := card.get_node("Badge") as Control
+		badge.offset_top = -44.0 if compact else -50.0
+		badge.offset_bottom = -8.0 if compact else -12.0
