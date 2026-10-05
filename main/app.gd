@@ -16,6 +16,7 @@ var progress_path := Progress.PATH
 var menu: MenuScreens
 var backdrop: MenuBackdrop
 var game: Node
+var music: GameMusic
 var _audio: GameAudio
 
 
@@ -31,6 +32,9 @@ func _ready() -> void:
 	_audio = GameAudio.new()
 	_audio.name = "MenuAudio"
 	add_child(_audio)
+	music = GameMusic.new()
+	music.name = "Music"
+	add_child(music)
 	menu = MenuScreens.new(settings, progress)
 	menu.play_requested.connect(start_mission)
 	menu.playground_requested.connect(start_playground)
@@ -62,6 +66,7 @@ func _start(scene: PackedScene, resume: bool) -> void:
 	game.set("show_briefing", true)
 	game.set("settings", settings)
 	game.set("progress", progress)
+	game.set("music", music)
 	game.set("resume_suspended", resume)
 	game.connect("leave_requested", _on_leave)
 	menu.close_settings()
@@ -75,6 +80,7 @@ func _start(scene: PackedScene, resume: bool) -> void:
 func _on_leave(target: String) -> void:
 	if game == null:
 		return
+	music.stop_music()
 	game.queue_free()
 	game = null
 	backdrop.visible = true

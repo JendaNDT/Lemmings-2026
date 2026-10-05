@@ -1,5 +1,5 @@
 # Paperlings (pracovně Lemmings 2026) – Project Status
-*Naposled aktualizováno: 04. 10. 2026*
+*Naposled aktualizováno: 05. 10. 2026*
 
 ## 🎯 Co to je
 **Paperlings** – papírová logická hra inspirovaná Lemmings (1991):
@@ -9,6 +9,12 @@ Vychází pro **Windows, macOS a Android** přes GitHub Releases.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
+**Nově ve zdrojích: čtyři hudební skladby** se střídáním po jednotlivých
+misích, opakováním a vlastní hlasitostí. Podrobnosti: [hudba](docs/HUDBA.md).
+Zveřejněné sestavení 1.0.0-rc1 je stále bez této změny. Nové Android APK
+zatím nelze podepsat jako aktualizaci: dostupný klíč v tomto prostředí
+neodpovídá certifikátu vydání rc1. Podpis ani ID aplikace neměníme.
+
 **Otestuj kandidáta 1.0.0-rc1 na Windows** podle
 [kontrolního seznamu](docs/TEST_WINDOWS.md) a pošli mi výsledky.
 [Stáhnout (Windows, macOS, Android)](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1).
@@ -21,11 +27,17 @@ Další kroky:
 1. **Test na Windows** (výše) – co nepůjde, opravím.
 2. Vyzkoušet rc1 na **telefonu** (aktualizuje 0.15.0 bez ztráty postupu)
    a případně na Macu.
-3. **Podpisový klíč natrvalo** – klíč Androidu žije jen v cloudu; jeho
-   přenos mimo něj čeká na tvé rozhodnutí (viz Známé bugy).
+3. **Podpisový klíč Androidu** – bezpečně zpřístupnit správný klíč
+   v aktuálním prostředí pro další aktualizaci (viz Známé bugy).
 4. Po testech **vydání 1.0.0** (stejný postup, bez „rc“).
 
 ## ✅ Hotovo
+- **Hudba:** čtyři WAV nahrávky od Jendy převedeny do stereo Vorbis
+  (dohromady 9,88 MB), zachovaná délka, srovnaná hlasitost. `GameMusic`
+  střídá skladby 1–4 v celé kampani 24 misí; prolíná opakování i změnu
+  skladby, drží hudbu při restartu, pauze, změně rychlosti a přetočení.
+  Hlasitost používá stávající nastavení. Původ, podmínky, převod a kontrolní
+  součty jsou v `assets/music/` a `assets/music.lock.json`.
 - **Kandidát 1.0.0-rc1** – předběžné vydání na GitHubu pro Windows, macOS
   a Android (versionCode 1000001, stejný podpis). Balíčky obsahují licenci,
   návod a THIRD_PARTY_NOTICES.txt.
@@ -245,7 +257,6 @@ Další kroky:
 ### MVP (nutné pro v1)
 - Menu a výběr levelů, ukládání postupu
 - 15–20 vlastních levelů
-- Hudba (zvuky jsou hotové)
 - Prostředí pro další mise kampaně (nové motivy krajiny)
 - Pravidelnější hřeben plamenů nad lávou při oddálení doladit podle názoru
 
@@ -258,11 +269,11 @@ Další kroky:
 - Editor levelů ve hře
 
 ## 🐛 Známé bugy
-- Testovací podpisový klíč Androidu žije jen v tomto cloudovém prostředí.
-  Export teď s jiným klíčem skončí chybou (žádné tiché „nejde nainstalovat“),
-  ale až prostředí zanikne, další APK půjde nainstalovat jen po odinstalaci.
-  Vynesení klíče do souboru pro uložení zastavila bezpečnostní kontrola
-  prostředí – čeká na rozhodnutí autora.
+- Odpovídající podpisový klíč Androidu pro verze od 0.5.0 není v aktuálním
+  prostředí dostupný (ověřeno 5. 10. 2026). Přítomný klíč má jiný veřejný
+  otisk; export změnu odmítne. Aktualizace APK čeká na bezpečné zpřístupnění
+  správného klíče. Neobcházet kontrolu a nedoporučovat odinstalaci jako
+  náhradu za aktualizaci: odinstalace by smazala hráčův postup.
 - Origami grafika zatím neběžela na Macu ani Androidu; výkon na skutečné
   GPU není změřený (cloud kreslí softwarově, ~0,2 s na snímek).
 - Proti mockupu je generovaná krajina jednodušší a postavy jsou při

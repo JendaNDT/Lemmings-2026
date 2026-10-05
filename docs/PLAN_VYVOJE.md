@@ -140,8 +140,11 @@ U každého podkladu evidovat původ, podmínky a exportní parametry.
 **Podmínka dokončení:** všechny činnosti mají jednotný čitelný obrazový
 a zvukový projev; zátěžový level splňuje změřený výkonnostní cíl.
 
-**Stav zvuku (3. 10. 2026):** zvukové efekty všech událostí, okolní
-smyčky a zvuky rozhraní jsou hotové ([zvuky](ZVUK.md)); hudbu doplní autor.
+**Stav zvuku (5. 10. 2026):** zvukové efekty všech událostí, okolní
+smyčky a zvuky rozhraní jsou hotové ([zvuky](ZVUK.md)). Do vývojových
+zdrojů přibyly čtyři dodané skladby, střídání po misích, opakování,
+prolínání a samostatná hlasitost ([hudba](HUDBA.md)); zveřejněné rc1
+sestavení je ještě bez hudby.
 
 ## Etapa 9 — Kampaň s 15–20 levely
 

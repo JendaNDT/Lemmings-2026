@@ -69,7 +69,13 @@
   `python assets/origami/source/build_all.py`. Font OFL musí být distribuovaný s licencí.
   Zvuky jsou v `assets/audio/` (generátor `source/build_sfx.py`, manifest
   `assets/audio.lock.json`, mix `sfx.json`); hraje je `GameAudio`, simulaci jen čte.
-  Hudbu doplní autor později (sběrnice Music).
+  Hudba je v `assets/music/` (čtyři uživatelem dodané nahrávky, převod
+  `source/build_music.py`, původ a podmínky uvnitř, manifest `assets/music.lock.json`).
+  `GameMusic` v aplikaci střídá skladby podle pořadí misí modulo 4,
+  prolíná smyčky i změny misí na sběrnici Music. Restart stejné skladby,
+  pauza a rychlost simulace ani přetočení nesmějí měnit přehrávání.
+  Headless testy jsou tiché; skutečný mix ověřuje `scripts/qa_music.gd`
+  v grafickém Godotu s Movie Makerem. Podrobnosti: `docs/HUDBA.md`.
   Pracovní fázi animace řídí tiky, nikoli čas enginu.
 - Hlavní scéna je `main/app.tscn` (`App`: menu, spouštění a uvolňování hry).
   Postup a nastavení zapisovat jen přes `SaveFile` (`Progress`, `GameSettings`);

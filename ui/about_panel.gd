@@ -9,6 +9,7 @@ signal closed
 const TABS := ["O hře", "Jak hrát", "Licence"]
 const AUTHOR := "Jenda"
 const OFL_PATH := "res://assets/fonts/OFL.txt"
+const MUSIC_TERMS_PATH := "res://assets/music/LICENSE.txt"
 const TEXT_WIDTH := 780.0
 
 var settings: GameSettings
@@ -120,14 +121,16 @@ static func credits() -> String:
 		+ "podle zadání autora – vibecoding\n"
 		+ "Engine: Godot Engine (godotengine.org), licence MIT\n"
 		+ "Písmo: Nunito – The Nunito Project Authors, SIL Open Font License 1.1\n"
-		+ "Grafika a zvuky jsou vygenerované vlastními skripty projektu; hudba zatím není.")
+		+ "Grafika a zvukové efekty vznikly skripty projektu. "
+		+ "Čtyři hudební skladby dodal Jenda pro tuto hru.")
 
 
 ## Licence samotné hry (rozhodnutí autora: volně ke hraní, ostatní práva vyhrazena).
 static func license_summary() -> String:
 	return ("Paperlings © 2026 %s. Hru můžeš zdarma stahovat, hrát a sdílet odkaz na ni. " % AUTHOR
 		+ "Všechna ostatní práva vyhrazena: kód, grafiku, zvuky ani mise nelze bez svolení "
-		+ "autora použít v jiných dílech. Hra je poskytovaná tak, jak je, bez záruky.")
+		+ "autora použít v jiných dílech. Práva k dodaným hudebním nahrávkám zůstávají "
+		+ "jejich držitelům. Hra je poskytovaná tak, jak je, bez záruky.")
 
 
 ## Seznam součástí Godot Engine s autory a licencemi (Engine.get_copyright_info()).
@@ -159,7 +162,10 @@ static func guide() -> Array:
 			+ "nehne, uvolní ho jen bomba. Ocel nejde prokopat ani vyhodit. Voda a láva "
 			+ "jsou smrtelné, pasti chytí jednu postavičku po druhé. Když dovednost nejde dát, "
 			+ "hláška nad lištou řekne proč."],
-		["Známá omezení", "Hudba zatím chybí. Hra je nová – když narazíš na chybu, nahlas ji "
+		["Hudba", "Čtyři skladby se střídají po misích a v každé misi se opakují. "
+			+ "Hlasitost změníš v Nastavení → Zvuk → Hudba. Pauza, rychlost ani −5 s "
+			+ "hudbu neposouvají; na pozadí telefonu se pozastaví."],
+		["Známá omezení", "Hra je nová – když narazíš na chybu, nahlas ji "
 			+ "v záložce O hře. Postup se ukládá v zařízení a přenese se při aktualizaci."],
 	]
 
@@ -203,6 +209,8 @@ func _build_licenses(page: VBoxContainer) -> void:
 	_text(page, Engine.get_license_text())
 	_heading(page, "Písmo Nunito (SIL Open Font License 1.1)")
 	_text(page, FileAccess.get_file_as_string(OFL_PATH).strip_edges())
+	_heading(page, "Hudební nahrávky dodané pro hru")
+	_text(page, FileAccess.get_file_as_string(MUSIC_TERMS_PATH).strip_edges())
 	_heading(page, "Součásti Godot Engine")
 	_text(page, components_text(), 15)
 	_heading(page, "Plné texty licencí součástí")

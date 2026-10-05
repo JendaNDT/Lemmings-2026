@@ -1,0 +1,34 @@
+{
+  "package": "paperlings-music",
+  "license": "LicenseRef-UserProvided-Paperlings",
+  "files": [
+    {
+      "path": "assets/music/LICENSE.txt",
+      "sha256": "4e72313159880e501ea379d28820a14ed6893396baad7cf204b86fa3ea5fac59"
+    },
+    {
+      "path": "assets/music/provenance.json",
+      "sha256": "d1a04bd344fbbaf0b87e2e255411fe15181a89937fd3450341dce0a26c30f9cd"
+    },
+    {
+      "path": "assets/music/source/build_music.py",
+      "sha256": "82d9664bf0fcb8f32b4bccffbccc13dc9a670602dd8a8b17f73e4445d6100656"
+    },
+    {
+      "path": "assets/music/track_01.ogg",
+      "sha256": "de38867a7bc0d26b28018804caa2edadc01e5f90096219b73d694f0dc07442e9"
+    },
+    {
+      "path": "assets/music/track_02.ogg",
+      "sha256": "d0d9736358ac8c4c62fdd4e56ea732567ada8045be026ad96ff6db9605f81556"
+    },
+    {
+      "path": "assets/music/track_03.ogg",
+      "sha256": "6dca9630c908387e3351afa8bf44fac5d50486bdf5a6ab559921e7f60f70e9b8"
+    },
+    {
+      "path": "assets/music/track_04.ogg",
+      "sha256": "a6127c681e7cfac1b10ebf261abbe37029ec4c3fec17d85f57f585c07a0907a3"
+    }
+  ]
+}

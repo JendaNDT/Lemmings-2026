@@ -59,7 +59,7 @@ ukončení zvuk nezahltí. Výška tónu se při každém přehrání nepatrně 
   na zvuky, hlídá otevření líhně a spuštění odpočtu, hraje smyčky
   a zvuky rozhraní. Simulaci jen čte; náhoda výšky tónu je místní.
   Sběrnice `SFX`, `UI`, `Ambient` a `Music` vedou do `Master`, kde je
-  omezovač špiček. Ztlumení se ukládá do `user://settings.cfg`.
+  omezovač špiček. Hlasitosti i ztlumení ukládá `GameSettings` přes `SaveFile`.
 - V automatických testech bez obrazovky se zvuky jen zaznamenají
   (nepřehrávají), aby po rychlém ukončení testu nezůstaly v mixéru.
 
@@ -83,5 +83,6 @@ ukončení zvuk nezahltí. Výška tónu se při každém přehrání nepatrně 
   a hlasitost a zkontroloval záznam ze hry. Jak znějí, musí posoudit autor.
 - Zvuky jsou v [APK 0.5.0](ANDROID_DEMO.md); na Macu ani v telefonu zatím
   neověřené.
-- Hudba chybí (doplní autor). Hlasitosti zatím nejdou nastavit v menu
-  (menu a nastavení jsou v etapě 6), jen ztlumit vše.
+- Aktualizace 5. 10. 2026: hlasitosti jsou v **Nastavení → Zvuk**,
+  ve vývojových zdrojích je i [čtyřskladbová hudba](HUDBA.md).
+  Původní záznamy výše dokládají samotné efekty z etapy zvuku.

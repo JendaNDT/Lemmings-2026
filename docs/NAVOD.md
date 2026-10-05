@@ -58,9 +58,17 @@ v **O hře → Jak hrát**, nápověda k misi v pauze (tlačítko **Menu**).
   podržíš na postavičce, štítek ukáže, koho klepnutí zasáhne. Tlačítko Zpět
   otevře menu.
 
+## Hudba (aktuální vývojové zdroje)
+
+Každá mise má jednu ze čtyř skladeb; po čtvrté misi se pořadí opakuje.
+Skladba hraje dokola, i během pauzy. Restart mise, zrychlení, zpomalení
+a přetočení hry hudbu nerestartují ani nemění její tempo.
+V **Nastavení → Zvuk → Hudba** ji zeslabíš nebo vypneš nezávisle na efektech.
+Při návratu do hlavního menu dozní a při uspání aplikace se pozastaví.
+Dosud vydané balíčky 1.0.0-rc1 tuto novinku ještě neobsahují.
+
 ## Známá omezení
 
-- Hudba zatím chybí (zvuky a okolní ruchy ano).
 - Sestavení pro Windows a macOS nejsou podepsaná, proto varování při
   prvním spuštění (viz výše).
 - Android verze se instaluje mimo Google Play (podepsaná klíčem projektu,

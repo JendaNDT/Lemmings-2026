@@ -31,6 +31,8 @@ var progress: Progress
 var resume_suspended := false
 ## Na začátku mise ukázat úvodní kartu (spouští-li misi menu; testy a editor ne).
 var show_briefing := false
+## Aplikace vlastní přehrávač přes přechody menu; samostatná scéna vytvoří svůj.
+var music: GameMusic
 var _sim: LevelSim
 var _level: LevelDefinition
 var _selected_skill := -1
@@ -44,7 +46,7 @@ var _pause_before_menu := false
 var _mission_id := ""
 ## Poslední načtení obnovilo rozehraný pokus (pro testy a ladění).
 var _resumed := false
-## Zvuky (efekty podle událostí simulace, okolí, rozhraní). Hudba přijde později.
+## Zvuky podle simulace a samostatná hudba podle mise (čas hry ji neřídí).
 var _audio: GameAudio
 ## Ukázka řešení: hra přehrává uložený záznam mise, hráč jen sleduje.
 var _demo := false
@@ -105,6 +107,10 @@ func _ready() -> void:
 	_audio = GameAudio.new()
 	_audio.name = "Audio"
 	add_child(_audio)
+	if music == null:
+		music = GameMusic.new()
+		music.name = "Music"
+		add_child(music)
 	_camera.top_padding = Hud.TOP_BAR_HEIGHT
 	_camera.bottom_padding = Hud.BOTTOM_BAR_HEIGHT
 	if _view != null:
@@ -185,6 +191,7 @@ func _load_level(intro := true, demo := false) -> void:
 	_hud.setup(_sim, ("Ukázka · " + title) if _demo else title, _level.hints,
 		not _level.solution.is_empty(), _demo)
 	_audio.setup(_sim, _logic_to_audio)
+	music.play_mission(_mission_id)
 
 	# Obnovený pokus začne v pauze, ať se hráč nejdřív rozkouká.
 	_paused = _resumed

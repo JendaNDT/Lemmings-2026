@@ -4,8 +4,8 @@ extends Node2D
 ##
 ## Simulaci jen čte (události, tik, stav odpočtu, masku). Zvuky v prostoru
 ## stojí na místě události na obrazovce: vlevo/vpravo podle polohy, mimo záběr
-## tišší. Náhodná výška tónu je místní a výsledek hry neovlivní. Hudbu autor
-## doplní později – má připravenou vlastní sběrnici Music. Hlasitost a ztlumení
+## tišší. Náhodná výška tónu je místní a výsledek hry neovlivní. Hudba má
+## vlastní GameMusic a sběrnici Music. Hlasitost a ztlumení
 ## řídí GameSettings (ukládá je), tento uzel jen přehrává.
 
 const DATA_PATH := "res://assets/audio/sfx.json"

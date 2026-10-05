@@ -116,7 +116,7 @@ func _test_limits_and_mute() -> void:
 		- linear_to_db(0.5)) < 0.01 and AudioServer.is_bus_mute(music),
 		"zvuk jde zase zapnout; hlasitost efektů 50 %, hudba na nule je ztlumená")
 	for bus: String in GameAudio.BUSES:
-		check(AudioServer.get_bus_index(bus) >= 0, "sběrnice %s existuje (hudba přijde později)" % bus)
+		check(AudioServer.get_bus_index(bus) >= 0, "sběrnice %s existuje" % bus)
 	GameSettings.new().apply_audio()
 	audio.free()
 	await process_frame

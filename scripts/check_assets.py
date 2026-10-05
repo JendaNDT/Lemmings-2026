@@ -49,6 +49,21 @@ def verify(root):
         if path.is_file() and path.suffix != '.import' and '__pycache__' not in path.parts:
             assert path.resolve() in listed, f'mimo manifest: {path}'
     print(f"[OK] {len(audio['files'])} zvukových podkladů souhlasí s manifestem")
+    music = json.loads((root / 'assets/music.lock.json').read_text())
+    assert music['license'] == 'LicenseRef-UserProvided-Paperlings'
+    folder = (root / 'assets/music').resolve()
+    listed = set()
+    for entry in music['files']:
+        path = root / entry['path']
+        assert not path.is_symlink() and path.resolve().is_relative_to(folder)
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == entry['sha256'], entry['path']
+        listed.add(path.resolve())
+    for path in folder.rglob('*'):
+        if path.is_file() and path.suffix != '.import' and '__pycache__' not in path.parts:
+            assert path.resolve() in listed, f'mimo manifest: {path}'
+    assert len(list(folder.glob('*.ogg'))) == 4
+    assert (folder / 'LICENSE.txt').resolve() in listed
+    print(f"[OK] {len(music['files'])} hudebních podkladů souhlasí s manifestem")
 
 
 if __name__ == '__main__':

@@ -67,7 +67,11 @@ pravidla a ověření: [`docs/ETAPA_5_OVERENI.md`](docs/ETAPA_5_OVERENI.md).
 
 **Zvuky:** papírové efekty dovedností, nebezpečí, líhně, východu
 a rozhraní, okolní vítr a smyčky vody a lávy, krátké znělky výhry
-a prohry. Hudba přijde později. Ukázka:
+a prohry. Ve vývojových zdrojích jsou nyní i **čtyři dodané skladby**:
+po misích se střídají 1 → 2 → 3 → 4 a znovu od začátku,
+uvnitř mise se vybraná skladba opakuje. Hlasitost mění
+**Nastavení → Zvuk → Hudba**. [Podrobnosti a ověření hudby](docs/HUDBA.md).
+Dosavadní zveřejněná sestavení 1.0.0-rc1 hudbu ještě neobsahují. Ukázka efektů:
 [`docs/audio/zvukova-ukazka.m4a`](docs/audio/zvukova-ukazka.m4a) · mise 6
 se zvukem: [`docs/images/zvuk-mise6.mp4`](docs/images/zvuk-mise6.mp4) ·
 popis: [`docs/ZVUK.md`](docs/ZVUK.md).

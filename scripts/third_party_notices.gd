@@ -23,6 +23,9 @@ func _initialize() -> void:
 		"== Písmo Nunito (SIL Open Font License 1.1) ==",
 		FileAccess.get_file_as_string(AboutPanel.OFL_PATH).strip_edges(),
 		"",
+		"== Hudební nahrávky dodané pro hru ==",
+		FileAccess.get_file_as_string(AboutPanel.MUSIC_TERMS_PATH).strip_edges(),
+		"",
 		"== Plné texty licencí součástí Godot Engine ==",
 	]
 	var texts := Engine.get_license_info()

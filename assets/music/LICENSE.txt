@@ -1,0 +1,12 @@
+LicenseRef-UserProvided-Paperlings
+
+Čtyři hudební nahrávky poskytl Jenda v této konverzaci dne 5. října 2026
+s výslovným zadáním vložit je do Paperlings a střídat po jednotlivých misích.
+Soubory jsou použity v rozsahu tohoto zadání. Vlastnictví ani jméno
+skladatele nebyly uvedeny; tento záznam je nevymýšlí. Původní práva
+k nahrávkám zůstávají jejich držitelům. Tento projekt neuděluje novou
+licenci k samostatnému použití nebo šíření nahrávek mimo hru.
+
+Původní názvy a SHA-256 souborů jsou v provenance.json. Názvy souborů
+nejsou tvrzením o původu hudby z konkrétní hry. Převod mění jen formát,
+hlasitost a krátké technické náběhy/dozvuky, nikoli autorství nahrávek.

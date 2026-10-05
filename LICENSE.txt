@@ -14,6 +14,9 @@ s jejími vlastníky není nijak spojená a nepoužívá z ní žádné obrázky
 písma ani mise.
 
 Součásti třetích stran mají vlastní licence:
+- Hudební nahrávky dodané pro hru – původ a rozsah použití jsou popsány
+  v assets/music/LICENSE.txt a assets/music/provenance.json. Jejich
+  zařazení nepřevádí původní práva k nahrávkám na autora projektu.
 - Godot Engine – licence MIT, © 2014-present Godot Engine contributors,
   © 2007-2014 Juan Linietsky, Ariel Manzur; jeho součásti mají licence
   uvedené ve hře (O hře → Licence) a v souboru THIRD_PARTY_NOTICES.txt

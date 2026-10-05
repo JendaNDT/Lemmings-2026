@@ -1,0 +1,250 @@
+{
+  "package": "paperlings-music",
+  "version": "1.0.0",
+  "date": "2026-10-05",
+  "license": "LicenseRef-UserProvided-Paperlings",
+  "source": "Four user-supplied WAV attachments",
+  "authorization": "User requested integrating these recordings into Paperlings",
+  "composer": "not supplied",
+  "generation_provider": null,
+  "ffmpeg": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "policy": {
+    "format": "Ogg Vorbis",
+    "sample_rate": 48000,
+    "channels": 2,
+    "target_lufs": -21,
+    "true_peak_target_db": -2,
+    "max_total_bytes": 20000000,
+    "original_wavs_modified": false
+  },
+  "tracks": [
+    {
+      "slot": 0,
+      "source_name": "Lemmings 1 (1).wav",
+      "source_sha256": "3e7e085a03f13ba2e10dd4496325dd8e33d5fabfac2863b421d087bfd8938370",
+      "source_bytes": 18292240,
+      "file": "track_01.ogg",
+      "sha256": "de38867a7bc0d26b28018804caa2edadc01e5f90096219b73d694f0dc07442e9",
+      "bytes": 1791099,
+      "duration_seconds": 95.2,
+      "source_audio": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s16le",
+            "sample_rate": "48000",
+            "channels": 2
+          }
+        ],
+        "format": {
+          "duration": "95.200000"
+        }
+      },
+      "original_measurement": {
+        "input_i": "-15.37",
+        "input_tp": "-2.90",
+        "input_lra": "2.80",
+        "input_thresh": "-25.42",
+        "output_i": "-20.68",
+        "output_tp": "-8.26",
+        "output_lra": "2.60",
+        "output_thresh": "-30.70",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.32"
+      },
+      "encoded_measurement": {
+        "input_i": "-21.00",
+        "input_tp": "-8.25",
+        "input_lra": "2.90",
+        "input_thresh": "-31.06",
+        "output_i": "-20.68",
+        "output_tp": "-8.05",
+        "output_lra": "2.70",
+        "output_thresh": "-30.71",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.32"
+      },
+      "transform": "Two-pass -21 LUFS / -2 dBTP, stereo 48 kHz Vorbis q5, 25 ms fades",
+      "campaign_missions": [
+        1,
+        5,
+        9,
+        13,
+        17,
+        21
+      ]
+    },
+    {
+      "slot": 1,
+      "source_name": "Lemmings 1.wav",
+      "source_sha256": "a005e0a07ec786221689e50c8fa2916d4d5a827a0c3af78b5f98445182d490e7",
+      "source_bytes": 20596240,
+      "file": "track_02.ogg",
+      "sha256": "d0d9736358ac8c4c62fdd4e56ea732567ada8045be026ad96ff6db9605f81556",
+      "bytes": 2053144,
+      "duration_seconds": 107.2,
+      "source_audio": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s16le",
+            "sample_rate": "48000",
+            "channels": 2
+          }
+        ],
+        "format": {
+          "duration": "107.200000"
+        }
+      },
+      "original_measurement": {
+        "input_i": "-15.49",
+        "input_tp": "-2.86",
+        "input_lra": "2.50",
+        "input_thresh": "-25.53",
+        "output_i": "-20.10",
+        "output_tp": "-6.98",
+        "output_lra": "1.40",
+        "output_thresh": "-30.12",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.90"
+      },
+      "encoded_measurement": {
+        "input_i": "-21.00",
+        "input_tp": "-8.21",
+        "input_lra": "2.50",
+        "input_thresh": "-31.04",
+        "output_i": "-20.11",
+        "output_tp": "-7.16",
+        "output_lra": "1.40",
+        "output_thresh": "-30.13",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.89"
+      },
+      "transform": "Two-pass -21 LUFS / -2 dBTP, stereo 48 kHz Vorbis q5, 25 ms fades",
+      "campaign_missions": [
+        2,
+        6,
+        10,
+        14,
+        18,
+        22
+      ]
+    },
+    {
+      "slot": 2,
+      "source_name": "Lemmings 2 (1).wav",
+      "source_sha256": "ec4a3276a775269edaab36b1feb873a98d7823a75fd1000122b5f7368b745ed9",
+      "source_bytes": 29812252,
+      "file": "track_03.ogg",
+      "sha256": "6dca9630c908387e3351afa8bf44fac5d50486bdf5a6ab559921e7f60f70e9b8",
+      "bytes": 2989772,
+      "duration_seconds": 155.2,
+      "source_audio": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s16le",
+            "sample_rate": "48000",
+            "channels": 2
+          }
+        ],
+        "format": {
+          "duration": "155.200000"
+        }
+      },
+      "original_measurement": {
+        "input_i": "-15.86",
+        "input_tp": "-2.90",
+        "input_lra": "4.30",
+        "input_thresh": "-25.90",
+        "output_i": "-20.63",
+        "output_tp": "-7.59",
+        "output_lra": "3.50",
+        "output_thresh": "-30.65",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.37"
+      },
+      "encoded_measurement": {
+        "input_i": "-21.00",
+        "input_tp": "-7.80",
+        "input_lra": "4.30",
+        "input_thresh": "-31.04",
+        "output_i": "-20.63",
+        "output_tp": "-7.35",
+        "output_lra": "3.50",
+        "output_thresh": "-30.65",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.37"
+      },
+      "transform": "Two-pass -21 LUFS / -2 dBTP, stereo 48 kHz Vorbis q5, 25 ms fades",
+      "campaign_missions": [
+        3,
+        7,
+        11,
+        15,
+        19,
+        23
+      ]
+    },
+    {
+      "slot": 3,
+      "source_name": "Lemmings 2.wav",
+      "source_sha256": "6104f728f416ad42ce44c52dbe0644be9aa6011d077584d549b6a8a9153dcdb8",
+      "source_bytes": 31194652,
+      "file": "track_04.ogg",
+      "sha256": "a6127c681e7cfac1b10ebf261abbe37029ec4c3fec17d85f57f585c07a0907a3",
+      "bytes": 3049386,
+      "duration_seconds": 162.4,
+      "source_audio": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "pcm_s16le",
+            "sample_rate": "48000",
+            "channels": 2
+          }
+        ],
+        "format": {
+          "duration": "162.400000"
+        }
+      },
+      "original_measurement": {
+        "input_i": "-15.96",
+        "input_tp": "-3.05",
+        "input_lra": "3.00",
+        "input_thresh": "-26.00",
+        "output_i": "-20.80",
+        "output_tp": "-8.07",
+        "output_lra": "2.90",
+        "output_thresh": "-30.83",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.20"
+      },
+      "encoded_measurement": {
+        "input_i": "-20.99",
+        "input_tp": "-8.06",
+        "input_lra": "3.10",
+        "input_thresh": "-31.03",
+        "output_i": "-20.81",
+        "output_tp": "-7.94",
+        "output_lra": "2.90",
+        "output_thresh": "-30.83",
+        "normalization_type": "dynamic",
+        "target_offset": "-0.19"
+      },
+      "transform": "Two-pass -21 LUFS / -2 dBTP, stereo 48 kHz Vorbis q5, 25 ms fades",
+      "campaign_missions": [
+        4,
+        8,
+        12,
+        16,
+        20,
+        24
+      ]
+    }
+  ]
+}

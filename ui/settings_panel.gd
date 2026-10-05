@@ -17,7 +17,7 @@ const MOUSE_HINT := ("Myš: levé tlačítko přidělí dovednost, pravé nebo p
 	+ "o tik, Backspace −5 s, F rychlost, R znovu, N odpálit vše, T zvuk, M pohyb postav, "
 	+ "Esc menu.")
 const VOLUME_ROWS := [["master", "Celková hlasitost"], ["sfx", "Efekty"],
-	["ui", "Rozhraní"], ["ambient", "Okolí (vítr, voda, láva)"], ["music", "Hudba (připravuje se)"]]
+	["ui", "Rozhraní"], ["ambient", "Okolí (vítr, voda, láva)"], ["music", "Hudba"]]
 
 var settings: GameSettings
 ## Nabídnout „Smazat postup“ (jen v hlavním menu, ne uprostřed mise).
