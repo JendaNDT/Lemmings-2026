@@ -84,7 +84,11 @@ Výchozí scéna je `main/game_origami.tscn`.
 
 ## Stažení – hudební vydání 1.0.0-rc2
 
-[**Paperlings pro Windows a Android na jenda.cool**](https://jenda.cool/paperlings/)
+[**Stáhnout Android APK**](https://raw.githubusercontent.com/JendaNDT/Lemmings-2026/refs/heads/downloads/android-1.0.0-rc2/android/Paperlings-1.0.0-rc2-Android.apk) ·
+[**Stáhnout Windows ZIP**](https://raw.githubusercontent.com/JendaNDT/Lemmings-2026/refs/heads/downloads/android-1.0.0-rc2/windows/Paperlings-1.0.0-rc2-Windows.zip)
+
+Stažení z GitHubu je ověřené proti SHA-256. Stránka na jenda.cool je připravená,
+ale zatím není zveřejněná: zápis do repozitáře webu končí odmítnutím přístupu.
 
 Oba balíčky obsahují čtyři hudební skladby a 24 misí:
 

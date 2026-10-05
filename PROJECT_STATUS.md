@@ -13,12 +13,20 @@ Vývoj a kontroly probíhají v cloudu.
 misích, opakováním a vlastní hlasitostí. Podrobnosti: [hudba](docs/HUDBA.md).
 Windows i Android **1.0.0-rc2 obsahují hudbu**. Autor zvolil nový podpis
 a samostatnou čistou Android instalaci (`cool.jenda.paperlings`), bez
-převzetí postupu z testovací aplikace. Balíčky jsou připravené pro jenda.cool;
-stav nahrání je třeba ověřit na webu. Starší rc1 je bez hudby.
+převzetí postupu z testovací aplikace. Oba balíčky jsou **nahrané na GitHubu**
+ve větvi `downloads/android-1.0.0-rc2`; celé veřejné stažení obou souborů
+bylo ověřeno proti SHA-256. [Odkazy ke stažení](README.md#stažení--hudební-vydání-100-rc2).
+Web jenda.cool zatím zveřejněný není: skutečný push do JendaWeb byl odmítnut
+(HTTP 401), i s dostupným přihlášením; čtení repozitáře funguje. V prostředí
+je uložen návrh obou repozitářů. Hotová změna webu je i v download větvi
+jako `web/JendaWeb-Paperlings-rc2.patch`, bez velkých instalátorů, které
+jsou v téže větvi zvlášť; aplikace patch byla ověřena proti původnímu stromu.
+Po povolení zápisu nahrání provést a ověřit oba soubory přímo z domény.
+Starší rc1 je bez hudby.
 
-**Otestuj kandidáta 1.0.0-rc1 na Windows** podle
+**Otestuj kandidáta 1.0.0-rc2 na Windows** podle
 [kontrolního seznamu](docs/TEST_WINDOWS.md) a pošli mi výsledky.
-[Stáhnout (Windows, macOS, Android)](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1).
+[Stáhnout Windows a Android](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-1.0.0-rc2).
 
 Etapa 11 (vydání 1.0) je technicky hotová: jméno Paperlings, ikona, O hře
 (titulky, návod, licence, hlášení chyb), přenos postupu z testovacích
