@@ -1,4 +1,4 @@
-# SHA-256 otisk certifikátu testovacího podpisu Android APK (veřejný údaj, ne klíč).
-# APK od verze 0.5.0 se podepisují tímto klíčem, aby šla instalovat
-# jako aktualizace. Soukromý klíč do repozitáře nepatří.
-fdb924fa25c6dfec478caa66dd8ba03ec91909d475de240d9213a50f6681407f
+# Public SHA-256 certificate fingerprint for cool.jenda.paperlings.
+# New independent installation authorized by Jenda on 2026-10-05.
+# Keep the private key outside Git; use the same key for future updates.
+566e0d3c2b2d6fd176fd813b295f1b0e78d832a1450fa4df8d17c49a9e1a05cc

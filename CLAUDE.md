@@ -4,7 +4,10 @@
 - Moderní předělávka Lemmings (1991) v **Godot 4.7 + GDScript**.
   Veřejný název je **Paperlings** (zvolil autor 4. 10. 2026); „Lemmings“
   se ve hře ani ve vydání nepoužívá. Interní ID zůstávají kvůli
-  aktualizacím: balíček `org.lemmings2026.demo`, `SaveFile.GAME`, `level_id`.
+  aktualizacím: `SaveFile.GAME`, `level_id`. Android od rc2 používá
+  `cool.jenda.paperlings` a nový release podpis: Jenda 5. 10. 2026 výslovně
+  požádal o samostatnou čistou instalaci bez převzetí starého postupu.
+  Dřívější testovací balíček `org.lemmings2026.demo` se tím neaktualizuje.
   Data na počítači jsou ve vlastní složce `Paperlings`; `SaveMigration`
   jednou přenese postup ze staré `app_userdata/Lemmings 2026`.
 - Testovací sestavení existují pro macOS a Android, do budoucna také Windows.
@@ -25,7 +28,9 @@
 - Připojení pro zápis ani cílová složka zatím nejsou nastavené. Neoznačovat
   nahrávání za funkční nebo soubor za nahraný bez ověření skutečného přenosu.
 - Propojení Disku je na přání Jendy odložené. Aktuální APK předávat přes
-  existující GitHub repozitář v samostatné větvi `downloads/android-0.4.0`.
+  existující GitHub repozitář v samostatné větvi `downloads/android-<verze>`.
+  Od rc2 autor požaduje Windows a nový samostatný Android s hudbou také na
+  `jenda.cool/paperlings/` (web: `JendaNDT/JendaWeb`, větev `main`, automatické nasazení).
   Odkaz na soubor uvnitř cloudového pracovního prostoru mu nestačí ke stažení.
 - Současně udržovat aktuální zdrojový kód na původní pracovní větvi
   `ccr-ee49bb72-jyyh2r`. Instalační APK patří pouze do větve pro stažení.
@@ -94,8 +99,12 @@
   Zdi, kmeny a hráze na zemi zapustit pod povrch (spodní hrana pod
   terénem), jinak pod nimi lumíci projdou škvírou.
 - APK se exportuje jen přes `scripts/export_android.sh`; podpis musí
-  odpovídat otisku ve `scripts/android_signing.txt` (aktualizace přes
-  starší verzi). Klíč nikdy neukládat do repozitáře.
+  odpovídat otisku ve `scripts/android_signing.txt` (stejný podpis pro další
+  aktualizace nové aplikace). Export používá release klíč a proměnné
+  `PAPERLINGS_KEYSTORE_PATH`, `PAPERLINGS_KEYSTORE_PASSWORD_FILE`,
+  `PAPERLINGS_KEYSTORE_ALIAS` (výchozí `paperlings`) a `APKSIGNER_BIN`.
+  Klíč ani heslo nikdy neukládat do repozitáře. Android zálohování je vypnuté;
+  první instalace nového balíčku začíná bez starého postupu.
 - Mobilní ovládání je v `TouchControls`, profil v `DeviceProfile` a nastavení
   `.mobile`/`.android`. Dotyk přiděluje až při uvolnění bez posunu; emulovaná
   myš nesmí ve hře vytvořit druhý příkaz. Dotyky začaté v HUDu patří pouze HUDu.

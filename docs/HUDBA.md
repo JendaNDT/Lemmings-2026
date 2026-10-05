@@ -1,8 +1,9 @@
 # Hudba po jednotlivých misích
 
-Stav: 5. 10. 2026, hotovo ve vývojových zdrojích. Dosavadní zveřejněné
-balíčky **1.0.0-rc1 hudbu ještě neobsahují**. Android aktualizaci aktuálně
-blokuje nedostupný odpovídající podpisový klíč; kontrola podpisu zůstává zapnutá.
+Stav: 5. 10. 2026, hotovo v **1.0.0-rc2 pro Windows i Android**.
+Starší balíčky 1.0.0-rc1 hudbu neobsahují. Autor výslovně zvolil nový
+podpis a samostatnou Android aplikaci `cool.jenda.paperlings`: začíná
+bez starého postupu. Kontrola nového podpisu zůstává zapnutá.
 
 ## Dodané nahrávky a pořadí
 

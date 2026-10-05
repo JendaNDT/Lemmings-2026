@@ -67,7 +67,7 @@ pravidla a ověření: [`docs/ETAPA_5_OVERENI.md`](docs/ETAPA_5_OVERENI.md).
 
 **Zvuky:** papírové efekty dovedností, nebezpečí, líhně, východu
 a rozhraní, okolní vítr a smyčky vody a lávy, krátké znělky výhry
-a prohry. Ve vývojových zdrojích jsou nyní i **čtyři dodané skladby**:
+a prohry. V sestavení 1.0.0-rc2 jsou **čtyři dodané skladby**:
 po misích se střídají 1 → 2 → 3 → 4 a znovu od začátku,
 uvnitř mise se vybraná skladba opakuje. Hlasitost mění
 **Nastavení → Zvuk → Hudba**. [Podrobnosti a ověření hudby](docs/HUDBA.md).
@@ -82,26 +82,30 @@ Hra vychází pro **Windows**, **macOS (Apple Silicon i Intel)** a **Android**
 ze stejného herního jádra; Linux slouží jen k automatickým kontrolám.
 Výchozí scéna je `main/game_origami.tscn`.
 
-## Stažení – kandidát na vydání 1.0
+## Stažení – hudební vydání 1.0.0-rc2
 
-[**Paperlings 1.0.0-rc1 – Windows, macOS a Android**](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1)
-(předběžné vydání na GitHubu, ke každému souboru SHA-256).
+[**Paperlings pro Windows a Android na jenda.cool**](https://jenda.cool/paperlings/)
+
+Oba balíčky obsahují čtyři hudební skladby a 24 misí:
 
 | Soubor | Pro |
 |---|---|
-| `Paperlings-1.0.0-rc1-Windows.zip` | Windows 10/11, 64 bit – rozbal a spusť `Paperlings.exe` |
-| `Paperlings-1.0.0-rc1-macOS.zip` | macOS (Apple Silicon i Intel) |
-| `Paperlings-1.0.0-rc1-Android.apk` | Android 7.0+ (aktualizuje testovací verze 0.5.0 a novější) |
+| `Paperlings-1.0.0-rc2-Windows.zip` | Windows 10/11, 64 bit – rozbal a spusť `Paperlings.exe` |
+| `Paperlings-1.0.0-rc2-Android.apk` | Android 7.0+, telefon i tablet – samostatná nová instalace |
 
-Instalace, aktualizace, ovládání, známá omezení a hlášení chyb:
-[návod pro hráče](docs/NAVOD.md). Sestavení nejsou podepsaná certifikátem
-Microsoftu ani Applu, proto systém napoprvé varuje. Uložený postup
-z testovacích verzí (*Lemmings 2026*) se přenese sám.
+**Nový Android začíná od první mise, bez starého postupu.** Používá nový
+podpis a identitu `cool.jenda.paperlings`; starou testovací hru neaktualizuje
+ani nemaže. Nový postup ukládá normálně. Windows není digitálně podepsaný.
+Nativní běh těchto balíčků na Windows a Androidu ještě čeká na ověření;
+exporty, obsah hudby a kontrolní součty jsou ověřené v cloudu.
 
-Samotné APK je i ve [větvi pro stažení](https://github.com/JendaNDT/Lemmings-2026/tree/downloads/android-1.0.0-rc1).
+[Návod pro hráče](docs/NAVOD.md) · [poznámky k rc2](docs/vydani/1.0.0-rc2.md).
+Předchozí [vydání rc1 pro Windows, macOS a Android](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1)
+zůstává dostupné, ale hudbu ještě nemá.
+
 Jak vzniká vydání: `python scripts/release.py build` (kontrola, exporty
-a balíčky) a větev `vydani/<verze>` (workflow *Vydání* na GitHubu).
-Podrobnosti k Android sestavení: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
+a balíčky), Android přes `scripts/export_android.sh` se správným soukromým
+klíčem. Podrobnosti: [`docs/ANDROID_DEMO.md`](docs/ANDROID_DEMO.md).
 
 ## Starší verze
 

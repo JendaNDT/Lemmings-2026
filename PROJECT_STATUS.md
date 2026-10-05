@@ -11,9 +11,10 @@ Vývoj a kontroly probíhají v cloudu.
 ## ⏭️ Příští krok
 **Nově ve zdrojích: čtyři hudební skladby** se střídáním po jednotlivých
 misích, opakováním a vlastní hlasitostí. Podrobnosti: [hudba](docs/HUDBA.md).
-Zveřejněné sestavení 1.0.0-rc1 je stále bez této změny. Nové Android APK
-zatím nelze podepsat jako aktualizaci: dostupný klíč v tomto prostředí
-neodpovídá certifikátu vydání rc1. Podpis ani ID aplikace neměníme.
+Windows i Android **1.0.0-rc2 obsahují hudbu**. Autor zvolil nový podpis
+a samostatnou čistou Android instalaci (`cool.jenda.paperlings`), bez
+převzetí postupu z testovací aplikace. Balíčky jsou připravené pro jenda.cool;
+stav nahrání je třeba ověřit na webu. Starší rc1 je bez hudby.
 
 **Otestuj kandidáta 1.0.0-rc1 na Windows** podle
 [kontrolního seznamu](docs/TEST_WINDOWS.md) a pošli mi výsledky.
@@ -25,10 +26,9 @@ verzí a opakovatelné vydání ([ověření](docs/ETAPA_11_OVERENI.md)).
 
 Další kroky:
 1. **Test na Windows** (výše) – co nepůjde, opravím.
-2. Vyzkoušet rc1 na **telefonu** (aktualizuje 0.15.0 bez ztráty postupu)
-   a případně na Macu.
-3. **Podpisový klíč Androidu** – bezpečně zpřístupnit správný klíč
-   v aktuálním prostředí pro další aktualizaci (viz Známé bugy).
+2. Vyzkoušet **rc2 na telefonu** jako samostatnou novou instalaci s hudbou.
+3. **Nový podpisový klíč Androidu** – bezpečně uchovat pro všechny další
+   aktualizace; soukromé soubory jsou mimo repozitář (viz Známé bugy).
 4. Po testech **vydání 1.0.0** (stejný postup, bez „rc“).
 
 ## ✅ Hotovo
@@ -269,11 +269,11 @@ Další kroky:
 - Editor levelů ve hře
 
 ## 🐛 Známé bugy
-- Odpovídající podpisový klíč Androidu pro verze od 0.5.0 není v aktuálním
-  prostředí dostupný (ověřeno 5. 10. 2026). Přítomný klíč má jiný veřejný
-  otisk; export změnu odmítne. Aktualizace APK čeká na bezpečné zpřístupnění
-  správného klíče. Neobcházet kontrolu a nedoporučovat odinstalaci jako
-  náhradu za aktualizaci: odinstalace by smazala hráčův postup.
+- Android rc2 má na výslovné přání autora nový balíček a nový podpis.
+  Neaktualizuje starou testovací aplikaci; první instalace začne od nuly.
+  Nový release klíč a heslo jsou pouze v soukromém lokálním nastavení cloudu,
+  nikoli v Gitu. Bezpečná záloha mimo toto prostředí zatím není ověřená.
+  Další verze musí zachovat nový podpis; export jiný odmítne.
 - Origami grafika zatím neběžela na Macu ani Androidu; výkon na skutečné
   GPU není změřený (cloud kreslí softwarově, ~0,2 s na snímek).
 - Proti mockupu je generovaná krajina jednodušší a postavy jsou při
@@ -295,8 +295,9 @@ Další kroky:
 ## 🏗️ Klíčová rozhodnutí
 *(Aby ses k tomu zase zbytečně nevracel.)*
 - **Veřejný název:** **Paperlings** (4. 10. 2026). Interní ID (balíček
-  `org.lemmings2026.demo`, značka uložených dat, `level_id`) zůstávají,
-  aby aktualizace nesmazala postup. Vydání přes **GitHub Releases**.
+  značka uložených dat a `level_id`) zůstávají. **Výjimka schválená autorem
+  5. 10. 2026:** Android od rc2 přechází na `cool.jenda.paperlings` s novým
+  podpisem a čistým postupem; samostatná instalace vedle staré testovací hry.
 - **Engine:** Godot 4.7 + GDScript (ne C#) – jednodušší pro vibecoding, funguje i export na web.
 - **Logika × grafika:** úplně oddělené. `sim/` nesmí obsahovat grafiku, Input ani náhodu.
 - **Měřítko logiky:** jako originál (lumík 10 px, 17 tiků/s). Grafika se jen zvětšuje a vyhlazuje.

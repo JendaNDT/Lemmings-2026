@@ -5,6 +5,10 @@
 /build/
 __pycache__/
 *.py[cod]
+*.keystore
+*.jks
+*.p12
+*.password
 
 # OS
 .DS_Store

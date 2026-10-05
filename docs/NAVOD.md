@@ -29,9 +29,11 @@ a nepotřebuje žádná oprávnění.
 
 ## Aktualizace a uložený postup
 
-Novou verzi nainstaluj přes starou (na počítači přepiš složku hry,
-na Androidu otevři nové APK). Postup, hvězdy, nastavení i rozehraná
-mise zůstanou. Ukládají se zvlášť od hry:
+Na počítači při aktualizaci přepiš složku hry. Postup, hvězdy, nastavení
+i rozehraná mise zůstanou. **Android 1.0.0-rc2 je nová samostatná instalace:**
+začne od první mise bez převzetí starého postupu. Starší testovací aplikaci
+nepřepíše. Další aktualizace této nové aplikace už instaluj přes ni.
+Data se ukládají zvlášť od hry:
 
 - Windows: `%APPDATA%\Paperlings`
 - macOS: `~/Library/Application Support/Paperlings`
@@ -39,9 +41,8 @@ mise zůstanou. Ukládají se zvlášť od hry:
 - Android: úložiště aplikace (smaže se jen odinstalací)
 
 Postup z testovacích verzí s pracovním názvem *Lemmings 2026* se na
-počítači při prvním spuštění přenese sám. Na Androidu jde aktualizovat
-z testovacích verzí 0.5.0 a novějších; verzi 0.4.0 a starší nejdřív
-odinstaluj.
+počítači při prvním spuštění přenese sám. Android rc2 má vlastní úložiště
+a vypnuté zálohování do systému. Svůj nový postup si ukládá běžně při hraní.
 
 ## Jak hrát
 
@@ -58,7 +59,7 @@ v **O hře → Jak hrát**, nápověda k misi v pauze (tlačítko **Menu**).
   podržíš na postavičce, štítek ukáže, koho klepnutí zasáhne. Tlačítko Zpět
   otevře menu.
 
-## Hudba (aktuální vývojové zdroje)
+## Hudba (od verze 1.0.0-rc2)
 
 Každá mise má jednu ze čtyř skladeb; po čtvrté misi se pořadí opakuje.
 Skladba hraje dokola, i během pauzy. Restart mise, zrychlení, zpomalení
@@ -71,8 +72,8 @@ Dosud vydané balíčky 1.0.0-rc1 tuto novinku ještě neobsahují.
 
 - Sestavení pro Windows a macOS nejsou podepsaná, proto varování při
   prvním spuštění (viz výše).
-- Android verze se instaluje mimo Google Play (podepsaná klíčem projektu,
-  aby šla aktualizovat přes starší verzi).
+- Android verze se instaluje mimo Google Play. Rc2 používá nový podpis
+  a vlastní instalaci; další aktualizace musí zachovat tento nový podpis.
 - Hra je ověřená automatickými testy a průchody v cloudu; na skutečných
   zařízeních ji zatím zkoušelo jen pár lidí. Na velmi slabých telefonech
   pomůže Nastavení → Zobrazení → Kvalita efektů: Nízká.
