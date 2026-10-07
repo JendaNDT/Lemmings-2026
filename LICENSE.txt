@@ -1,0 +1,32 @@
+Paperlings (pracovně Lemmings 2026)
+Copyright © 2026 Jenda. Všechna práva vyhrazena.
+
+Hru Paperlings můžeš zdarma stahovat z oficiálního vydání, hrát ji a sdílet
+odkaz na ni. Zdrojový kód, grafika, zvuky a mise jsou v tomto repozitáři
+veřejně k nahlédnutí, ale bez písemného svolení autora je nelze kopírovat,
+upravovat, šířit ani používat v jiných dílech.
+
+Hra se poskytuje „tak, jak je“, bez jakékoli záruky. Autor neodpovídá
+za škody vzniklé jejím používáním.
+
+Inspirováno klasickou hrou Lemmings (1991, DMA Design). Paperlings s ní ani
+s jejími vlastníky není nijak spojená a nepoužívá z ní žádné obrázky, zvuky,
+písma ani mise.
+
+Součásti třetích stran mají vlastní licence:
+- Hudební nahrávky dodané pro hru – původ a rozsah použití jsou popsány
+  v assets/music/LICENSE.txt a assets/music/provenance.json. Jejich
+  zařazení nepřevádí původní práva k nahrávkám na autora projektu.
+- Godot Engine – licence MIT, © 2014-present Godot Engine contributors,
+  © 2007-2014 Juan Linietsky, Ariel Manzur; jeho součásti mají licence
+  uvedené ve hře (O hře → Licence) a v souboru THIRD_PARTY_NOTICES.txt
+  u každého vydání.
+- Písmo Nunito – SIL Open Font License 1.1, © 2014 The Nunito Project
+  Authors (assets/fonts/OFL.txt).
+
+English summary: Paperlings © 2026 Jenda. All rights reserved. You may
+download the game free of charge from the official release, play it and
+share a link to it. The source code and assets are publicly visible but
+may not be copied, modified, redistributed or reused without the author's
+written permission. Third-party components (Godot Engine – MIT, Nunito
+font – OFL 1.1) keep their own licenses.
