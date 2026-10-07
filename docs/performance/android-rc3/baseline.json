@@ -1,0 +1,46 @@
+[
+	{
+		"draw_calls": 1197.0,
+		"logical": "(1280.0, 800.0)",
+		"median_ms": 217.888,
+		"mode": 1,
+		"p95_ms": 243.939,
+		"process_ms": 221.597,
+		"render_pixels": "(2560, 1600)",
+		"renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+		"window": "(2560, 1600)"
+	},
+	{
+		"draw_calls": 1197.0,
+		"logical": "(1280.0, 800.0)",
+		"median_ms": 76.881,
+		"mode": 2,
+		"p95_ms": 88.533,
+		"process_ms": 87.882,
+		"render_pixels": "(1280, 800)",
+		"renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+		"window": "(2560, 1600)"
+	},
+	{
+		"draw_calls": 1197.0,
+		"logical": "(1280.0, 800.0)",
+		"median_ms": 77.912,
+		"mode": 2,
+		"p95_ms": 88.436,
+		"process_ms": 89.05,
+		"render_pixels": "(1280, 800)",
+		"renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+		"window": "(2560, 1600)"
+	},
+	{
+		"draw_calls": 1197.0,
+		"logical": "(1280.0, 800.0)",
+		"median_ms": 223.21,
+		"mode": 1,
+		"p95_ms": 249.173,
+		"process_ms": 254.014,
+		"render_pixels": "(2560, 1600)",
+		"renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+		"window": "(2560, 1600)"
+	}
+]

@@ -1,0 +1,24 @@
+[
+	{
+		"draw_calls": 84.0,
+		"logical": "(1280.0, 800.0)",
+		"median_ms": 69.05,
+		"mode": 2,
+		"p95_ms": 87.983,
+		"process_ms": 77.782,
+		"render_pixels": "(1280, 800)",
+		"renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+		"window": "(2560, 1600)"
+	},
+	{
+		"draw_calls": 84.0,
+		"logical": "(1280.0, 800.0)",
+		"median_ms": 72.01,
+		"mode": 2,
+		"p95_ms": 88.276,
+		"process_ms": 88.12,
+		"render_pixels": "(1280, 800)",
+		"renderer": "llvmpipe (LLVM 19.1.7, 256 bits)",
+		"window": "(2560, 1600)"
+	}
+]

@@ -9,6 +9,8 @@ const COLORS := [Color("9a9a4e"), Color("b5b45e"), Color("7c8240"), Color("9aa45
 const LIGHT := Color("d8cf7e")
 ## Podíl sloupců povrchu, ve kterých roste trs (deterministický výběr).
 const DENSITY := 340
+## Stejné tři trojúhelníky pro stéblo i jeho světlý přehyb.
+const BLADE_INDICES := [0, 1, 4, 1, 3, 4, 1, 2, 3]
 
 var mask: TerrainMask
 ## Barvy stébel a světlé špičky (téma kapitoly; výchozí = louka).
@@ -18,6 +20,9 @@ var light: Color = LIGHT
 var time := 0.0
 ## Trsy: x, y povrchu, semínko.
 var tufts: Array[Vector3i] = []
+## Při pauze a mezi stop-motion tiky zůstává geometrie stejná.
+var _drawn_time := NAN
+var _drawn_version := -1
 
 
 func setup(terrain_mask: TerrainMask, surface: Array[Vector2i]) -> void:
@@ -45,12 +50,18 @@ func blade_tip(tuft: Vector3i, blade: int) -> Vector2:
 
 
 func _process(_delta: float) -> void:
-	queue_redraw()
+	if mask != null and (time != _drawn_time or mask.version != _drawn_version):
+		queue_redraw()
 
 
 func _draw() -> void:
 	if mask == null:
 		return
+	_drawn_time = time
+	_drawn_version = mask.version
+	var points := PackedVector2Array()
+	var tints := PackedColorArray()
+	var indices := PackedInt32Array()
 	for tuft in tufts:
 		if not tuft_visible(tuft):
 			continue
@@ -63,10 +74,24 @@ func _draw() -> void:
 			# Stéblo se ohýbá: střed se posune jen o část výchylky špičky.
 			var mid := root.lerp(tip, 0.55) + Vector2((tip.x - root.x) * -0.15, 0.0)
 			var color: Color = colors[posmod(tuft.z + blade, colors.size())]
-			draw_colored_polygon(PackedVector2Array([
+			_append_blade(points, tints, indices, PackedVector2Array([
 				root + Vector2(-w, 0.0), mid + Vector2(-w * 0.55, 0.0), tip,
 				mid + Vector2(w * 0.55, 0.0), root + Vector2(w, 0.0)]), color)
 			# Světlá polovina stébla (přehyb papíru, světlo zleva).
-			draw_colored_polygon(PackedVector2Array([
+			_append_blade(points, tints, indices, PackedVector2Array([
 				root + Vector2(-w, 0.0), mid + Vector2(-w * 0.55, 0.0), tip, mid, root]),
 				color.lerp(light, 0.35))
+	# Jeden příkaz místo dvou polygonů na každé stéblo. Pořadí trojúhelníků
+	# i barvy zachovávají překrytí stébel; kolize se dál jen čtou z masky.
+	if not points.is_empty():
+		RenderingServer.canvas_item_add_triangle_array(get_canvas_item(), indices, points, tints)
+
+
+static func _append_blade(points: PackedVector2Array, tints: PackedColorArray,
+		indices: PackedInt32Array, polygon: PackedVector2Array, color: Color) -> void:
+	var start := points.size()
+	points.append_array(polygon)
+	for _i in polygon.size():
+		tints.append(color)
+	for index: int in BLADE_INDICES:
+		indices.append(start + index)

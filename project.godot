@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Paperlings"
 config/description="Papírová logická hra: proveď zástup postaviček nástrahami k východu."
-config/version="1.0.0-rc2"
+config/version="1.0.0-rc3"
 run/main_scene="res://main/app.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://assets/origami/icon/icon_256.png"
@@ -34,6 +34,7 @@ window/size/viewport_height.android=720
 window/size/window_width_override=1600
 window/size/window_height_override=900
 window/stretch/mode="canvas_items"
+window/stretch/mode.android="viewport"
 window/stretch/aspect="expand"
 window/handheld/orientation=0
 

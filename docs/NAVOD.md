@@ -7,8 +7,8 @@ dovednostmi. Hra je zdarma, bez reklam a bez připojení k internetu.
 
 ## Stažení a instalace
 
-Všechny verze jsou na stránce
-[Vydání (Releases)](https://github.com/JendaNDT/Lemmings-2026/releases).
+Aktuální odkazy jsou v [přehledu stažení](../README.md#stažení);
+starší vydání na stránce [Releases](https://github.com/JendaNDT/Lemmings-2026/releases).
 U každého souboru je kontrolní součet SHA-256 (`SHA256SUMS.txt`).
 
 **Windows 10/11 (64 bit):** stáhni `Paperlings-<verze>-Windows.zip`, rozbal
@@ -33,6 +33,8 @@ Na počítači při aktualizaci přepiš složku hry. Postup, hvězdy, nastaven�
 i rozehraná mise zůstanou. **Android 1.0.0-rc2 je nová samostatná instalace:**
 začne od první mise bez převzetí starého postupu. Starší testovací aplikaci
 nepřepíše. Další aktualizace této nové aplikace už instaluj přes ni.
+**Android rc3 instaluj přes rc2, bez odinstalace:** podpis i identita zůstávají stejné,
+takže nový postup z rc2 zůstane zachovaný.
 Data se ukládají zvlášť od hry:
 
 - Windows: `%APPDATA%\Paperlings`
@@ -67,6 +69,16 @@ a přetočení hry hudbu nerestartují ani nemění její tempo.
 V **Nastavení → Zvuk → Hudba** ji zeslabíš nebo vypneš nezávisle na efektech.
 Při návratu do hlavního menu dozní a při uspání aplikace se pozastaví.
 Dosud vydané balíčky 1.0.0-rc1 tuto novinku ještě neobsahují.
+
+## Plynulost na telefonu a tabletu
+
+Od Android verze rc3 se hra vykresluje do návrhového rozlišení (např. 1280 × 800
+na tabletu 16:10) a zvětší na displej. Papírová stébla trávy se kreslí společně.
+Na displejích s vysokým rozlišením je obraz trochu měkčí, ale šetří výkon.
+
+V **Nastavení → Zobrazení** můžeš zapnout **Ukazovat snímky za sekundu (FPS)**
+a snížit **Kvalitu efektů**. **Pohyb postav: Stop-motion** je záměrně krokovaná
+animace; při vysokém FPS a trhaném pohybu jen postav zvol **Plynulý**.
 
 ## Známá omezení
 

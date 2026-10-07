@@ -1,0 +1,30 @@
+[OK] 3 soubory písma souhlasí s manifestem
+[OK] 128 origami podkladů souhlasí s manifestem
+[OK] 36 zvukových podkladů souhlasí s manifestem
+[OK] 7 hudebních podkladů souhlasí s manifestem
+[OK] godot-version
+4.7.stable.official.5b4e0cb0f
+[OK] gdparse
+[OK] gdlint
+[OK] import
+[OK] test_about
+[OK] test_audio
+[OK] test_comfort
+[OK] test_difficulty
+[OK] test_flyover
+[OK] test_game
+[OK] test_hazards
+[OK] test_helpers
+[OK] test_level_01
+[OK] test_mechanics
+[OK] test_menu
+[OK] test_music
+[OK] test_origami
+[OK] test_replay
+[OK] test_save
+[OK] test_skills
+[OK] test_stage4
+[OK] test_touch
+[OK] benchmark_sim
+[OK] startup
+Hotovo: 99 GDScriptů, 19 sad, 474 kontrol. Logy: /workspace/Lemmings-2026/build/checks

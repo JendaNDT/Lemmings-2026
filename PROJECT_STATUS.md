@@ -1,5 +1,5 @@
 # Paperlings (pracovně Lemmings 2026) – Project Status
-*Naposled aktualizováno: 05. 10. 2026*
+*Naposled aktualizováno: 07. 10. 2026*
 
 ## 🎯 Co to je
 **Paperlings** – papírová logická hra inspirovaná Lemmings (1991):
@@ -9,13 +9,26 @@ Vychází pro **Windows, macOS a Android** přes GitHub Releases.
 Vývoj a kontroly probíhají v cloudu.
 
 ## ⏭️ Příští krok
+**Android 1.0.0-rc3 – výkon na tabletech:** skutečný HD viewport místo
+vykreslování do plného rozlišení displeje a společná geometrie trávy.
+V první misi se počet kreslicích příkazů snížil z 1197 na 84; shoda
+rasteru trávy a ovládání při škálování jsou ověřené. 99 GDScriptů,
+19 sad a 474 kontrol prošlo, navíc 16 grafických kontrol mobilních vstupů.
+Aktualizovat přímo přes rc2 bez odinstalace, podpis i postup zůstávají.
+APK je ve větvi `downloads/android-1.0.0-rc3`; celé stažení z GitHubu
+bylo porovnáno s SHA-256 podepsaného balíčku.
+Na tabletu hlášeném jako „Lenovo IdeaPad 11“ zatím FPS změřené nemáme;
+další krok je uživatelské srovnání stejné mise a kvality.
+[Podrobnosti](docs/VYKON_ANDROID.md) · [stažení](README.md#stažení).
+
 **Nově ve zdrojích: čtyři hudební skladby** se střídáním po jednotlivých
 misích, opakováním a vlastní hlasitostí. Podrobnosti: [hudba](docs/HUDBA.md).
 Windows i Android **1.0.0-rc2 obsahují hudbu**. Autor zvolil nový podpis
 a samostatnou čistou Android instalaci (`cool.jenda.paperlings`), bez
 převzetí postupu z testovací aplikace. Oba balíčky jsou **nahrané na GitHubu**
 ve větvi `downloads/android-1.0.0-rc2`; celé veřejné stažení obou souborů
-bylo ověřeno proti SHA-256. [Odkazy ke stažení](README.md#stažení--hudební-vydání-100-rc2).
+bylo ověřeno proti SHA-256. Android nyní nahrazuje rc3; Windows zůstává rc2.
+[Odkazy ke stažení](README.md#stažení).
 Web jenda.cool zatím zveřejněný není: skutečný push do JendaWeb byl odmítnut
 (HTTP 401), i s dostupným přihlášením; čtení repozitáře funguje. V prostředí
 je uložen návrh obou repozitářů. Hotová změna webu je i v download větvi
@@ -34,7 +47,7 @@ verzí a opakovatelné vydání ([ověření](docs/ETAPA_11_OVERENI.md)).
 
 Další kroky:
 1. **Test na Windows** (výše) – co nepůjde, opravím.
-2. Vyzkoušet **rc2 na telefonu** jako samostatnou novou instalaci s hudbou.
+2. Vyzkoušet **rc3 na tabletu** a porovnat FPS. Aktualizace rc2 zachovává postup i hudbu.
 3. **Nový podpisový klíč Androidu** – bezpečně uchovat pro všechny další
    aktualizace; soukromé soubory jsou mimo repozitář (viz Známé bugy).
 4. Po testech **vydání 1.0.0** (stejný postup, bez „rc“).

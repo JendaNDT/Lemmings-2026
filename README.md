@@ -82,9 +82,9 @@ Hra vychází pro **Windows**, **macOS (Apple Silicon i Intel)** a **Android**
 ze stejného herního jádra; Linux slouží jen k automatickým kontrolám.
 Výchozí scéna je `main/game_origami.tscn`.
 
-## Stažení – hudební vydání 1.0.0-rc2
+## Stažení
 
-[**Stáhnout Android APK**](https://raw.githubusercontent.com/JendaNDT/Lemmings-2026/refs/heads/downloads/android-1.0.0-rc2/android/Paperlings-1.0.0-rc2-Android.apk) ·
+[**Stáhnout Android APK 1.0.0-rc3**](https://raw.githubusercontent.com/JendaNDT/Lemmings-2026/refs/heads/downloads/android-1.0.0-rc3/android/Paperlings-1.0.0-rc3-Android.apk) ·
 [**Stáhnout Windows ZIP**](https://raw.githubusercontent.com/JendaNDT/Lemmings-2026/refs/heads/downloads/android-1.0.0-rc2/windows/Paperlings-1.0.0-rc2-Windows.zip)
 
 Stažení z GitHubu je ověřené proti SHA-256. Stránka na jenda.cool je připravená,
@@ -95,15 +95,19 @@ Oba balíčky obsahují čtyři hudební skladby a 24 misí:
 | Soubor | Pro |
 |---|---|
 | `Paperlings-1.0.0-rc2-Windows.zip` | Windows 10/11, 64 bit – rozbal a spusť `Paperlings.exe` |
-| `Paperlings-1.0.0-rc2-Android.apk` | Android 7.0+, telefon i tablet – samostatná nová instalace |
+| `Paperlings-1.0.0-rc3-Android.apk` | Android 7.0+, telefon i tablet – aktualizace rc2 |
 
-**Nový Android začíná od první mise, bez starého postupu.** Používá nový
-podpis a identitu `cool.jenda.paperlings`; starou testovací hru neaktualizuje
-ani nemaže. Nový postup ukládá normálně. Windows není digitálně podepsaný.
-Nativní běh těchto balíčků na Windows a Androidu ještě čeká na ověření;
-exporty, obsah hudby a kontrolní součty jsou ověřené v cloudu.
+**Android rc3 instaluj přes rc2 bez odinstalace – postup zůstane.** Má stejný
+podpis a identitu `cool.jenda.paperlings`. Opravuje zbytečné vykreslování do
+plného rozlišení displeje a slučuje kreslení trávy; na jemných displejích je
+obraz trochu měkčí. [Měření a ověření výkonu](docs/VYKON_ANDROID.md).
+Starou testovací hru `org.lemmings2026.demo` neaktualizuje ani nemaže;
+první instalace nové identity začíná od první mise.
+Windows není digitálně podepsaný. Export, hudba a kontrolní součty jsou
+ověřené v cloudu; skutečné FPS rc3 na uživatelově Androidu čeká na ověření.
 
-[Návod pro hráče](docs/NAVOD.md) · [poznámky k rc2](docs/vydani/1.0.0-rc2.md).
+[Návod pro hráče](docs/NAVOD.md) · [Android rc3](docs/vydani/1.0.0-rc3.md) ·
+[Windows rc2](docs/vydani/1.0.0-rc2.md).
 Předchozí [vydání rc1 pro Windows, macOS a Android](https://github.com/JendaNDT/Lemmings-2026/releases/tag/v1.0.0-rc1)
 zůstává dostupné, ale hudbu ještě nemá.
 

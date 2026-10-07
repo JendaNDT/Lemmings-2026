@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-07",
+  "file": "Paperlings-1.0.0-rc3-Android.apk",
+  "bytes": 80460958,
+  "sha256": "e13db4f4ac01f2b619ff743d34b948c741da8b973a90566d7f886968cb69a0aa",
+  "download_verified": true,
+  "package": "cool.jenda.paperlings",
+  "version_code": 1000003,
+  "certificate_sha256": "566e0d3c2b2d6fd176fd813b295f1b0e78d832a1450fa4df8d17c49a9e1a05cc",
+  "url": "https://raw.githubusercontent.com/JendaNDT/Lemmings-2026/refs/heads/downloads/android-1.0.0-rc3/android/Paperlings-1.0.0-rc3-Android.apk"
+}
