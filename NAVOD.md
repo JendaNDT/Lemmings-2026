@@ -7,7 +7,7 @@ dovednostmi. Hra je zdarma, bez reklam a bez připojení k internetu.
 
 ## Stažení a instalace
 
-Aktuální odkazy jsou v [přehledu stažení](../README.md#stažení--hudební-vydání-100-rc2);
+Aktuální odkazy jsou v [přehledu stažení](https://github.com/JendaNDT/Lemmings-2026/blob/ccr-ee49bb72-jyyh2r/README.md#stažení);
 starší vydání na stránce [Releases](https://github.com/JendaNDT/Lemmings-2026/releases).
 U každého souboru je kontrolní součet SHA-256 (`SHA256SUMS.txt`).
 
